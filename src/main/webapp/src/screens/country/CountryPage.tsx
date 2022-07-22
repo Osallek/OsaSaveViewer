@@ -9,12 +9,13 @@ import { Link, useParams } from 'react-router-dom';
 import CountryDiplomacyTab from 'screens/country/CountryDiplomacyTab';
 import CountryEcoTab from 'screens/country/CountryEcoTab';
 import CountryEstateTab from 'screens/country/CountryEstateTab';
+import CountryMilitaryTab from 'screens/country/CountryMilitaryTab';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { formatNumber, stringComparator } from 'utils/format.utils';
 import {
-  convertSave, fakeTag, getCountry, getCountrysFlag, getCountrysName, getCultureName, getPlayer, getReligionImage, getReligionName
+  convertSave, fakeTag, getCountries, getCountry, getCountrysFlag, getCountrysName, getCultureName, getPlayer, getReligionImage, getReligionName
 } from 'utils/save.utils';
 
 function CountryPage() {
@@ -133,8 +134,7 @@ function CountryPage() {
                         } }
                       >
                         {
-                          save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
-                            .sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b))).map(c => (
+                          getCountries(save).sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b))).map(c => (
                             <MenuItem component={ Link } to={ `/save/${ saveId }/${ c.tag }` } style={ { color: theme.palette.primary.contrastText } }
                                       key={ `menu-${ c.tag }` } onClick={ () => setCountriesAnchorEl(null) }>
                               { getCountrysName(c) }
@@ -416,6 +416,9 @@ function CountryPage() {
                     </Grid>
                     <Grid container display={ activeTab === 2 ? 'block' : 'none' } key='grid2'>
                       <CountryDiplomacyTab country={ country } save={ save }/>
+                    </Grid>
+                    <Grid container display={ activeTab === 3 ? 'block' : 'none' } key='grid3'>
+                      <CountryMilitaryTab country={ country } save={ save }/>
                     </Grid>
                   </Grid>
                 </Grid>

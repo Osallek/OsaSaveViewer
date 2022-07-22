@@ -205,6 +205,8 @@ const country = {
   'country.atWarWith': 'En guerre avec',
   'country.warnings': 'À avertit',
   'country.warningsBy': 'Avertit par',
+  'country.armyStats': 'Puissance terrestre',
+  'country.navyStats': 'Puissance navale',
 }
 
 export default country;

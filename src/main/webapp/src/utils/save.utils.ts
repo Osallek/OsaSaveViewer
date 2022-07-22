@@ -1,12 +1,11 @@
 import { eu4Locale } from 'index';
 import {
   ColorNamedImageLocalised, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save, SaveArea, SaveCountry,
-  SaveCountryState,
-  SaveCulture, SaveDependency, SaveEmpire, SaveProvince, SaveProvinceHistory, SaveReligion
+  SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveProvince, SaveProvinceHistory, SaveReligion
 } from 'types/api.types';
 import { CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
 import { getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getPrivilegeUrl, getReligionUrl } from 'utils/data.utils';
-import { capitalize, toRecord } from 'utils/format.utils';
+import { capitalize, numberComparator, toRecord } from 'utils/format.utils';
 
 export const fakeTag = "---";
 
@@ -23,6 +22,10 @@ export function getName(localised: Localised): string | undefined {
     capitalize(localised.localisations[eu4Locale]) :
     (localised.localisations !== undefined && localised.localisations[Localization.ENGLISH] !== undefined) ?
       localised.localisations[Localization.ENGLISH] : undefined;
+}
+
+export function getCountries(save: MapSave): Array<SaveCountry> {
+  return save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive);
 }
 
 export function getPHistory(province: SaveProvince, date: string, save: MapSave): ProvinceHistory {
@@ -474,4 +477,8 @@ export function getTotalStableExpense(country: SaveCountry): number {
 
 export function getTotalTotalExpenses(country: SaveCountry): number {
   return Object.values(Expense).map(value => getTotalExpenses(country, value)).reduce((s, d) => s + d ?? 0, 0);
+}
+
+export function getRank(save: MapSave, country: SaveCountry, mapper: (country: SaveCountry) => number | undefined): number {
+  return Array.from(new Set<number>(getCountries(save).map(c => mapper(c) ?? 0))).sort((a, b) => -numberComparator(a, b)).indexOf(mapper(country) ?? 0) + 1;
 }

@@ -14,6 +14,7 @@ const common = {
   'common.type': 'Type',
   'common.value': 'Valeur',
   'common.percent': 'Pourcentage',
+  'common.rank': 'Classement',
 }
 
 export default common;

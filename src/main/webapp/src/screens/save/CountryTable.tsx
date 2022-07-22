@@ -1,26 +1,7 @@
 import { FilterList, Launch } from '@mui/icons-material';
 import {
-  Autocomplete,
-  Avatar,
-  Card,
-  CardContent,
-  Checkbox,
-  ClickAwayListener,
-  FormControlLabel,
-  Grid,
-  IconButton,
-  Paper,
-  Popper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  TextField,
-  Typography,
-  useTheme
+  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell,
+  TableContainer, TableHead, TableRow, TableSortLabel, TextField, Typography, useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -33,21 +14,8 @@ import { Expense, Income, Losses, PowerSpent, SaveCountry } from 'types/api.type
 import { MapSave } from 'types/map.types';
 import { formatDate, formatNumber, numberComparator, round, round1000, stringComparator } from 'utils/format.utils';
 import {
-  fakeTag,
-  getCountrysFlag,
-  getCountrysName,
-  getCRealDev,
-  getDiscipline,
-  getExpense,
-  getIncome,
-  getLoans,
-  getLosses,
-  getManaSpent,
-  getNbImprovements,
-  getPlayer,
-  getStableIncome,
-  getTerritory, getTotalExpense,
-  getTotalExpenses, getTotalIncome, getTotalTotalExpenses
+  getCountries, getCountrysFlag, getCountrysName, getCRealDev, getDiscipline, getExpense, getIncome, getLoans, getLosses, getManaSpent, getNbImprovements,
+  getPlayer, getStableIncome, getTerritory, getTotalExpense, getTotalExpenses, getTotalIncome, getTotalTotalExpenses
 } from 'utils/save.utils';
 
 const onlyPlayers = 'onlyPlayers';
@@ -80,8 +48,7 @@ function getNameColumn(): Column {
       </Grid>
     ),
     comparatorValue: (save, selectedDate, country) => getCountrysName(country),
-    filterValues: save => Array.from(
-      new Set<string>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(c => getCountrysName(c)).sort(stringComparator))),
+    filterValues: save => Array.from(new Set<string>(getCountries(save).map(c => getCountrysName(c)).sort(stringComparator))),
     filter: (save, selectedDate, country, filter) => filter.includes(getCountrysName(country)),
   };
 }
@@ -93,8 +60,7 @@ function getPlayerColumn(): Column {
     minWidth: 170,
     value: (save, selectedDate, country) => getPlayer(country),
     comparatorValue: (save, selectedDate, country) => getPlayer(country),
-    filterValues: save => Array.from(new Set<string>(
-      save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).flatMap(c => c.players ? c.players.flat() : []).sort(stringComparator))),
+    filterValues: save => Array.from(new Set<string>(getCountries(save).flatMap(c => c.players ? c.players.flat() : []).sort(stringComparator))),
     filter: (save, selectedDate, country, filter) => {
       if (filter === undefined || filter.length === 0) {
         return true;
@@ -127,9 +93,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
               { formatNumber(country.dev) }
             </Typography>,
           comparatorValue: (save, selectedDate, country) => country.dev,
-          filterValues: (save, selectedDate) => Array.from(new Set<number>(
-            save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => country.dev | 0)
-              .sort(numberComparator))),
+          filterValues: (save, selectedDate) => Array.from(new Set<number>(getCountries(save).map(country => country.dev | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(country.dev | 0)
         },
         {
@@ -143,8 +107,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           ),
           comparatorValue: (save, selectedDate, country) => getCRealDev(country, save, selectedDate),
           filterValues: (save, selectedDate) => Array.from(new Set<number>(
-            save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => getCRealDev(country, save, selectedDate) | 0).sort(
-              numberComparator))),
+            getCountries(save).map(country => getCRealDev(country, save, selectedDate) | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(getCRealDev(country, save, selectedDate) | 0),
         },
         {
@@ -157,8 +120,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </Typography>,
           comparatorValue: (save, selectedDate, country) => country.dev / country.nbProvince,
           filterValues: (save, selectedDate) => Array.from(new Set<number>(
-            save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
-              .map(country => (country.dev / country.nbProvince) | 0)
+            getCountries(save).map(country => (country.dev / country.nbProvince) | 0)
               .sort(numberComparator))),
           filter: (save, selectedDate, country, filter) =>
             filter.includes((country.dev / country.nbProvince) | 0)
@@ -173,7 +135,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </Typography>,
           comparatorValue: (save, selectedDate, country) => getNbImprovements(country, save, selectedDate),
           filterValues: (save, selectedDate) => Array.from(new Set<number>(
-            save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => getNbImprovements(country, save, selectedDate))
+            getCountries(save).map(country => getNbImprovements(country, save, selectedDate))
               .sort(numberComparator))),
           filter: (save, selectedDate, country, filter) =>
             filter.includes(getNbImprovements(country, save, selectedDate))
@@ -194,7 +156,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </Typography>
           ),
           comparatorValue: (save, selectedDate, country) => country.nbProvince,
-          filterValues: (save, selectedDate) => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: (save, selectedDate) => Array.from(new Set<number>(getCountries(save)
             .map(country => country.nbProvince).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(country.nbProvince),
         },
@@ -207,7 +169,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           </Typography>,
           comparatorValue: (save, selectedDate, country) => country.ideaGroups ? Object.values(country.ideaGroups).filter((value, index) => index > 0).reduce(
             (s, a) => s + a, 0) : 0,
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(
+          filterValues: save => Array.from(new Set<number>(getCountries(save).map(
             c => (c.ideaGroups ? Object.values(c.ideaGroups).filter((value, index) => index > 0).reduce((s, a) => s + a, 0) : 0)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(
             country.ideaGroups ? Object.values(country.ideaGroups).filter((value, index) => index > 0).reduce((s, a) => s + a, 0) : 0),
@@ -220,7 +182,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             { `${ country.admTech ?? 0 } / ${ country.dipTech ?? 0 } / ${ country.milTech ?? 0 } ` }
           </Typography>,
           comparatorValue: (save, selectedDate, country) => (country.admTech ?? 0) + (country.dipTech ?? 0) + (country.milTech ?? 0),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(
+          filterValues: save => Array.from(new Set<number>(getCountries(save).map(
             country => (country.admTech ?? 0) + (country.dipTech ?? 0) + (country.milTech ?? 0)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes((country.admTech ?? 0) + (country.dipTech ?? 0) + (country.milTech ?? 0)),
         },
@@ -231,7 +193,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.prestige ?? 0) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.prestige ?? 0,
           filterValues: save => Array.from(new Set<number>(
-            save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => (country.prestige ?? 0) | 0).sort(numberComparator))),
+            getCountries(save).map(country => (country.prestige ?? 0) | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes((country.prestige ?? 0) | 0),
         },
         {
@@ -241,7 +203,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.innovativeness ?? 0) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.innovativeness ?? 0,
           filterValues: save => Array.from(new Set<number>(
-            save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => (country.innovativeness ?? 0) | 0).sort(numberComparator))),
+            getCountries(save).map(country => (country.innovativeness ?? 0) | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes((country.innovativeness ?? 0) | 0),
         },
         {
@@ -251,7 +213,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.powerProjection ?? 0) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.powerProjection ?? 0,
           filterValues: save => Array.from(new Set<number>(
-            save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => (country.powerProjection ?? 0) | 0).sort(numberComparator))),
+            getCountries(save).map(country => (country.powerProjection ?? 0) | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes((country.powerProjection ?? 0) | 0),
         },
         {
@@ -262,7 +224,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => country.greatPowerRank,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => country.greatPowerRank ?? 1).sort(numberComparator))),
+              getCountries(save).map(country => country.greatPowerRank ?? 1).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(country.greatPowerRank),
         },
         getPlayerColumn(),
@@ -279,7 +241,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => country.income ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => (country.income ?? 0) | 0).sort(numberComparator))),
+              getCountries(save).map(country => (country.income ?? 0) | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes((country.income ?? 0) | 0),
         },
         {
@@ -289,7 +251,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(getLoans(country)) }</Typography>,
           comparatorValue: (save, selectedDate, country) => getLoans(country),
           filterValues: save => Array.from(
-            new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => getLoans(country) | 0).sort(numberComparator))),
+            new Set<number>(getCountries(save).map(country => getLoans(country) | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(getLoans(country) | 0),
         },
         {
@@ -300,7 +262,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => country.inflation ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => (country.inflation ?? 0) | 0).sort(numberComparator))),
+              getCountries(save).map(country => (country.inflation ?? 0) | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes((country.inflation ?? 0) | 0),
         },
         {
@@ -311,7 +273,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => country.mercantilism ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => (country.mercantilism ?? 0) | 0).sort(numberComparator))),
+              getCountries(save).map(country => (country.mercantilism ?? 0) | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes((country.mercantilism ?? 0) | 0),
         },
         {
@@ -322,7 +284,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => country.corruption ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => (country.corruption ?? 0) | 0).sort(numberComparator))),
+              getCountries(save).map(country => (country.corruption ?? 0) | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes((country.corruption ?? 0) | 0),
         },
         {
@@ -333,7 +295,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => getTerritory(country),
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => getTerritory(country) | 0).sort(numberComparator))),
+              getCountries(save).map(country => getTerritory(country) | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(getTerritory(country) | 0),
         },
         {
@@ -343,7 +305,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           value: (save, selectedDate, country) => <Typography variant='body1'>{ formatDate(country.lastBankrupt) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.lastBankrupt,
           filterValues: save => Array.from(
-            new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).filter(country => country.lastBankrupt)
+            new Set<number>(getCountries(save).filter(country => country.lastBankrupt)
               .map(country => country.lastBankrupt ? Number.parseInt(country.lastBankrupt.slice(0, 4)) : 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) =>
             country.lastBankrupt !== undefined && filter.includes(Number.parseInt(country.lastBankrupt.slice(0, 4))),
@@ -361,7 +323,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.armyMorale) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.armyMorale,
           filterValues: save => Array.from(
-            new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => country.armyMorale | 0).sort(numberComparator))),
+            new Set<number>(getCountries(save).map(country => country.armyMorale | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(country.armyMorale | 0),
         },
         {
@@ -370,7 +332,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           minWidth: 100,
           value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(getDiscipline(country)) }</Typography>,
           comparatorValue: (save, selectedDate, country) => getDiscipline(country),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => getDiscipline(country) | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(getDiscipline(country) | 0),
         },
@@ -382,7 +344,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => country.armyLimit,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => round(country.armyLimit, 10)).sort(numberComparator))),
+              getCountries(save).map(country => round(country.armyLimit, 10)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(round(country.armyLimit, 10)),
         },
         {
@@ -393,7 +355,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => country.maxManpower,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => round(country.maxManpower, 10)).sort(numberComparator))),
+              getCountries(save).map(country => round(country.maxManpower, 10)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(round(country.maxManpower, 10)),
         },
         {
@@ -404,7 +366,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => country.armyTradition ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => round(country.armyTradition ?? 0, 10)).sort(numberComparator))),
+              getCountries(save).map(country => round(country.armyTradition ?? 0, 10)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(round(country.armyTradition ?? 0, 10)),
         },
         {
@@ -415,7 +377,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => (country.armyProfessionalism ?? 0) * 100,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => round((country.armyProfessionalism ?? 0) * 100, 10)).sort(
+              getCountries(save).map(country => round((country.armyProfessionalism ?? 0) * 100, 10)).sort(
                 numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(round((country.armyProfessionalism ?? 0) * 100, 10)),
         },
@@ -432,7 +394,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.navalMorale) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.navalMorale,
           filterValues: save => Array.from(
-            new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => country.navalMorale | 0).sort(numberComparator))),
+            new Set<number>(getCountries(save).map(country => country.navalMorale | 0).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(country.navalMorale | 0),
         },
         {
@@ -443,7 +405,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => country.navalLimit,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => round(country.navalLimit, 10)).sort(numberComparator))),
+              getCountries(save).map(country => round(country.navalLimit, 10)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(round(country.navalLimit, 10)),
         },
         {
@@ -454,7 +416,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => country.maxSailors / 1000,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => round(country.maxSailors / 1000, 10)).sort(numberComparator))),
+              getCountries(save).map(country => round(country.maxSailors / 1000, 10)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(round(country.maxSailors / 1000, 10)),
         },
         {
@@ -465,7 +427,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, selectedDate, country) => country.navyTradition ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
-              save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => round(country.navyTradition ?? 0, 10)).sort(numberComparator))),
+              getCountries(save).map(country => round(country.navyTradition ?? 0, 10)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(round(country.navyTradition ?? 0, 10)),
         },
         getPlayerColumn()
@@ -474,7 +436,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
     case CountryTableType.EXP:
       col = Object.values(Expense).map((value, index) => {
         const max = Math.max(
-          ...save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => country.expenses ? country.expenses[value] : 0));
+          ...getCountries(save).map(country => country.expenses ? country.expenses[value] : 0));
         const radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
         return {
@@ -489,14 +451,14 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </>
           ),
           comparatorValue: (save, selectedDate, country) => country.expenses && country.expenses[value] ? country.expenses[value] : 0,
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round((country.expenses && country.expenses[value] ? country.expenses[value] : 0), radix)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(
             round((country.expenses && country.expenses[value] ? country.expenses[value] : 0), radix))
         }
       });
 
-      max = Math.max(...save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+      max = Math.max(...getCountries(save)
         .flatMap(country => Object.values(Expense).map(value => getExpense(country, value)).reduce((s, d) => s + d ?? 0, 0)));
       radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
@@ -512,7 +474,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </Typography>
           ),
           comparatorValue: (save, selectedDate, country) => getTotalExpense(country),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getTotalExpense(country), radix))
             .sort(numberComparator))),
           filter: (save, selectedDate, country, filter) =>
@@ -524,7 +486,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
 
     case CountryTableType.INC:
       col = Object.values(Income).map((value, index) => {
-        const max = Math.max(...save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => getIncome(country, value)));
+        const max = Math.max(...getCountries(save).map(country => getIncome(country, value)));
         const radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
         return {
@@ -545,14 +507,14 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </>
           ),
           comparatorValue: (save, selectedDate, country) => getIncome(country, value),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getIncome(country, value), radix)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) =>
             filter.includes(round(getIncome(country, value), radix))
         }
       });
 
-      max = Math.max(...save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+      max = Math.max(...getCountries(save)
         .flatMap(country => Object.values(Income).map(value => getIncome(country, value)).reduce((s, d) => s + d ?? 0, 0)));
       radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
@@ -569,7 +531,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           ),
           comparatorValue: (save, selectedDate, country) => Object.values(Income)
             .map(value => getIncome(country, value)).reduce((s, d) => s + d ?? 0, 0),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getTotalIncome(country), radix))
             .sort(numberComparator))),
           filter: (save, selectedDate, country, filter) =>
@@ -581,7 +543,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
 
     case CountryTableType.TOTAL_EXP:
       col = Object.values(Expense).map((value, index) => {
-        const max = Math.max(...save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => getTotalExpenses(country, value)));
+        const max = Math.max(...getCountries(save).map(country => getTotalExpenses(country, value)));
         const radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
         return {
@@ -596,14 +558,14 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </>
           ),
           comparatorValue: (save, selectedDate, country) => getTotalExpenses(country, value),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getTotalExpenses(country, value), radix)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) => filter.includes(
             round(getTotalExpenses(country, value), radix))
         }
       });
 
-      max = Math.max(...save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+      max = Math.max(...getCountries(save)
         .flatMap(country => Object.values(Expense).map(value => getTotalExpenses(country, value)).reduce((s, d) => s + d ?? 0, 0)));
       radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
@@ -620,7 +582,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           ),
           comparatorValue: (save, selectedDate, country) => Object.values(Expense)
             .map(value => getTotalExpenses(country, value)).reduce((s, d) => s + d ?? 0, 0),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getTotalTotalExpenses(country), radix))
             .sort(numberComparator))),
           filter: (save, selectedDate, country, filter) =>
@@ -632,7 +594,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
 
     case CountryTableType.MANA_SPENT:
       col = Object.values(PowerSpent).filter(value => !value.startsWith('USELESS') && !value.startsWith('OTHER')).map(value => {
-        const max = Math.max(...save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => getManaSpent(country, value) | 0));
+        const max = Math.max(...getCountries(save).map(country => getManaSpent(country, value) | 0));
         const radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
         return {
@@ -654,7 +616,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </>
           ),
           comparatorValue: (save, selectedDate, country) => getManaSpent(country, value),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getManaSpent(country, value), radix)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) =>
             filter.includes(round(getManaSpent(country, value), radix))
@@ -684,7 +646,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           ),
           comparatorValue: (save, selectedDate, country) => Object.values(PowerSpent).map(value => getManaSpent(country, value))
             .reduce((s, d) => s + d ?? 0, 0),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round1000(Object.values(PowerSpent).map(value => getManaSpent(country, value)).reduce((s, d) => s + d ?? 0, 0)))
             .sort(numberComparator))),
           filter: (save, selectedDate, country, filter) =>
@@ -696,7 +658,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
 
     case CountryTableType.LOSSES_ARMY:
       col = Object.values(Losses).filter((value, index) => index <= 8).map(value => {
-        const max = Math.max(...save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => getLosses(country, value) | 0));
+        const max = Math.max(...getCountries(save).map(country => getLosses(country, value) | 0));
         const radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
         return {
@@ -709,7 +671,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </Typography>
           ),
           comparatorValue: (save, selectedDate, country) => getLosses(country, value),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getLosses(country, value), radix)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) =>
             filter.includes(round(getLosses(country, value), radix))
@@ -730,7 +692,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           ),
           comparatorValue: (save, selectedDate, country) => Object.values(Losses).filter((value, index) => index <= 8)
             .map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round1000(
               Object.values(Losses).filter((value, index) => index <= 8).map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0)))
             .sort(numberComparator))),
@@ -745,7 +707,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
 
     case CountryTableType.LOSSES_NAVY:
       col = Object.values(Losses).filter((value, index) => index > 8).map(value => {
-        const max = Math.max(...save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).map(country => getLosses(country, value) | 0));
+        const max = Math.max(...getCountries(save).map(country => getLosses(country, value) | 0));
         const radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
         return {
@@ -758,7 +720,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </Typography>
           ),
           comparatorValue: (save, selectedDate, country) => getLosses(country, value),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getLosses(country, value), radix)).sort(numberComparator))),
           filter: (save, selectedDate, country, filter) =>
             filter.includes(round(getLosses(country, value), radix))
@@ -779,7 +741,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           ),
           comparatorValue: (save, selectedDate, country) => Object.values(Losses).filter((value, index) => index > 8)
             .map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0),
-          filterValues: save => Array.from(new Set<number>(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive)
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round1000(
               Object.values(Losses).filter((value, index) => index > 8).map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0)))
             .sort(numberComparator))),
@@ -839,7 +801,7 @@ function CountryTable({ save, type, selectedDate, visible }: CountryTableProps) 
       setOrder('asc');
     }
 
-    setCountries(save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive).filter(country => {
+    setCountries(getCountries(save).filter(country => {
         if (Object.keys(filters).length === 0) {
           return true;
         }
