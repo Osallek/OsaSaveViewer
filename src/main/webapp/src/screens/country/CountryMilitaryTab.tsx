@@ -7,8 +7,6 @@ import { formatNumber } from 'utils/format.utils';
 import { getRank } from 'utils/save.utils';
 
 function getRankDisplay(rank: number): any {
-  console.log(rank);
-
   switch (rank) {
     case 1:
       return <Avatar src='/eu4/country/first.png' variant='square' style={ { marginLeft: 'auto' } }/>;

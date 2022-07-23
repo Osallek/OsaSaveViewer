@@ -60,6 +60,8 @@ public final class ExtractorSaveDTO {
 
     private List<NamedLocalisedDTO> subjectTypes;
 
+    private List<IdeaGroupDTO> ideaGroups;
+
     private SortedSet<PreviousSaveDTO> previousSaves;
 
     public String getOwner() {
@@ -276,6 +278,14 @@ public final class ExtractorSaveDTO {
 
     public void setSubjectTypes(List<NamedLocalisedDTO> subjectTypes) {
         this.subjectTypes = subjectTypes;
+    }
+
+    public List<IdeaGroupDTO> getIdeaGroups() {
+        return ideaGroups;
+    }
+
+    public void setIdeaGroups(List<IdeaGroupDTO> ideaGroups) {
+        this.ideaGroups = ideaGroups;
     }
 
     public SortedSet<PreviousSaveDTO> getPreviousSaves() {

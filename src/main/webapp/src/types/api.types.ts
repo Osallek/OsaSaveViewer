@@ -37,6 +37,7 @@ export type Save = {
   estates: Array<ColorNamedImageLocalised>;
   estatePrivileges: Array<NamedImageLocalised>;
   subjectTypes: Array<NamedLocalised>;
+  ideaGroups: Array<SaveIdeaGroup>;
   previousSaves: Array<PreviousSave>;
 };
 
@@ -583,4 +584,8 @@ export type CountryPreviousSave = {
   armyLimit: number;
   armyProfessionalism: number;
   losses: number;
+}
+
+export type SaveIdeaGroup = NamedImageLocalised & {
+  ideas: Array<NamedImageLocalised>;
 }

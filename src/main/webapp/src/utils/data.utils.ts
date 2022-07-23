@@ -24,9 +24,16 @@ export function getEstateUrl(key: string | undefined): string {
   return key ? getDataUrl(`estates/${key}.png`) : getEstateUrl('noEstate');
 }
 
-
 export function getPrivilegeUrl(key: string | undefined): string {
   return key ? getDataUrl(`privileges/${key}.png`) : getPrivilegeUrl('noPrivilege');
+}
+
+export function getIdeaGroupUrl(key: string | undefined): string {
+  return key ? getDataUrl(`idea_groups/${key}.png`) : getPrivilegeUrl('noIdeaGroup');
+}
+
+export function getIdeaUrl(key: string | undefined): string {
+  return key ? getDataUrl(`modifiers/${key}.png`) : getPrivilegeUrl('noModifier');
 }
 
 export function getProvincesUrl(key: string): string {

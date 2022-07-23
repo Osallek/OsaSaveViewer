@@ -1,8 +1,7 @@
 package fr.osallek.osasaveviewer.controller.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.HashSet;
 import java.util.Set;
-import org.apache.commons.collections4.CollectionUtils;
 
 public final class AssetsDTO {
 
@@ -25,6 +24,10 @@ public final class AssetsDTO {
     private Set<String> estates;
 
     private Set<String> privileges;
+
+    private Set<String> ideaGroups;
+
+    private Set<String> modifiers = new HashSet<>();
 
     public boolean isProvinces() {
         return provinces;
@@ -104,5 +107,21 @@ public final class AssetsDTO {
 
     public void setPrivileges(Set<String> privileges) {
         this.privileges = privileges;
+    }
+
+    public Set<String> getIdeaGroups() {
+        return ideaGroups;
+    }
+
+    public void setIdeaGroups(Set<String> ideaGroups) {
+        this.ideaGroups = ideaGroups;
+    }
+
+    public Set<String> getModifiers() {
+        return modifiers;
+    }
+
+    public void setModifiers(Set<String> modifiers) {
+        this.modifiers = modifiers;
     }
 }

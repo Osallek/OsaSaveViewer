@@ -1,10 +1,10 @@
 import { eu4Locale } from 'index';
 import {
   ColorNamedImageLocalised, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save, SaveArea, SaveCountry,
-  SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveProvince, SaveProvinceHistory, SaveReligion
+  SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveProvince, SaveProvinceHistory, SaveReligion
 } from 'types/api.types';
 import { CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
-import { getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getPrivilegeUrl, getReligionUrl } from 'utils/data.utils';
+import { getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getPrivilegeUrl, getReligionUrl } from 'utils/data.utils';
 import { capitalize, numberComparator, toRecord } from 'utils/format.utils';
 
 export const fakeTag = "---";
@@ -305,6 +305,26 @@ export function getPrivilegesName(privilege: NamedImageLocalised, estate: ColorN
 
 export function getPrivilegesImage(privilege: NamedImageLocalised): string {
   return getPrivilegeUrl(privilege.image);
+}
+
+export function getIdeaGroup(save: MapSave, name: string): SaveIdeaGroup {
+  return save.ideaGroups.find(ideaGroup => name === ideaGroup.name) ?? save.ideaGroups[0];
+}
+
+export function getIdeaGroupName(save: MapSave, name: string): string {
+  return getIdeaGroupsName(getIdeaGroup(save, name));
+}
+
+export function getIdeaGroupsName(ideaGroup: SaveIdeaGroup): string {
+  return getName(ideaGroup) ?? ideaGroup.name;
+}
+
+export function getIdeaGroupsImage(ideaGroup: SaveIdeaGroup): string {
+  return getIdeaGroupUrl(ideaGroup.image);
+}
+
+export function getIdeaName(idea: NamedImageLocalised): string {
+  return getName(idea) ?? idea.name;
 }
 
 export function getArea(save: MapSave, province: SaveProvince): SaveArea {

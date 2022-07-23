@@ -9,6 +9,7 @@ import { Link, useParams } from 'react-router-dom';
 import CountryDiplomacyTab from 'screens/country/CountryDiplomacyTab';
 import CountryEcoTab from 'screens/country/CountryEcoTab';
 import CountryEstateTab from 'screens/country/CountryEstateTab';
+import CountryIdeaTab from 'screens/country/CountryIdeaTab';
 import CountryMilitaryTab from 'screens/country/CountryMilitaryTab';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
@@ -396,7 +397,6 @@ function CountryPage() {
                       <Tab label={ intl.formatMessage({ id: 'country.tab.estates' }) }/>
                       <Tab label={ intl.formatMessage({ id: 'country.tab.dip' }) }/>
                       <Tab label={ intl.formatMessage({ id: 'country.tab.mil' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.government' }) }/>
                       <Tab label={ intl.formatMessage({ id: 'country.tab.ideas' }) }/>
                       <Tab label={ intl.formatMessage({ id: 'country.tab.rulers' }) }/>
                       <Tab label={ intl.formatMessage({ id: 'country.tab.leaders' }) }/>
@@ -419,6 +419,9 @@ function CountryPage() {
                     </Grid>
                     <Grid container display={ activeTab === 3 ? 'block' : 'none' } key='grid3'>
                       <CountryMilitaryTab country={ country } save={ save }/>
+                    </Grid>
+                    <Grid container display={ activeTab === 4 ? 'block' : 'none' } key='grid4'>
+                      <CountryIdeaTab country={ country } save={ save }/>
                     </Grid>
                   </Grid>
                 </Grid>
