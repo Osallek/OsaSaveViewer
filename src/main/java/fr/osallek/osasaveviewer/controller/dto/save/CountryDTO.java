@@ -816,6 +816,14 @@ public class CountryDTO extends ImageLocalised {
         this.nbInstitutions = nbInstitutions;
     }
 
+    public Map<LocalDate, String> getChangedTag() {
+        return changedTag;
+    }
+
+    public void setChangedTag(Map<LocalDate, String> changedTag) {
+        this.changedTag = changedTag;
+    }
+
     public SortedSet<CountryPreviousSaveDTO> getPreviousSaves() {
         return previousSaves;
     }

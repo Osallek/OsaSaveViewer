@@ -11,6 +11,7 @@ import CountryEcoTab from 'screens/country/CountryEcoTab';
 import CountryEstateTab from 'screens/country/CountryEstateTab';
 import CountryIdeaTab from 'screens/country/CountryIdeaTab';
 import CountryMilitaryTab from 'screens/country/CountryMilitaryTab';
+import CountryMonarchTab from 'screens/country/CountryMonarchTab';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
@@ -422,6 +423,9 @@ function CountryPage() {
                     </Grid>
                     <Grid container display={ activeTab === 4 ? 'block' : 'none' } key='grid4'>
                       <CountryIdeaTab country={ country } save={ save }/>
+                    </Grid>
+                    <Grid container display={ activeTab === 5 ? 'block' : 'none' } key='grid5'>
+                      <CountryMonarchTab country={ country } save={ save }/>
                     </Grid>
                   </Grid>
                 </Grid>

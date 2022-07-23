@@ -7,6 +7,7 @@ const common = {
   'common.search': 'Rechercher...',
   'common.validate': 'Valider',
   'common.total': 'Total',
+  'common.mean': 'Moyenne',
   'common.graph': 'Voir les statistiques',
   'common.previousSaves': 'Sessions précédentes',
   'common.saveNotFound': 'Partie introuvable',
@@ -15,6 +16,8 @@ const common = {
   'common.value': 'Valeur',
   'common.percent': 'Pourcentage',
   'common.rank': 'Classement',
+  'common.duration.year': '{years, plural, =0 {} one {# an} other {# ans}}',
+  'common.duration.month': '{months, plural, =0 {}  other {# mois}}',
 }
 
 export default common;

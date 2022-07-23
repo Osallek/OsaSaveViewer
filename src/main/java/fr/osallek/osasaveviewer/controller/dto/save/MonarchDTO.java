@@ -39,6 +39,8 @@ public class MonarchDTO {
 
     private LeaderDTO leader;
 
+    private Integer duration;
+
     public LocalDate getMonarchDate() {
         return monarchDate;
     }
@@ -173,5 +175,13 @@ public class MonarchDTO {
 
     public void setLeader(LeaderDTO leader) {
         this.leader = leader;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
     }
 }

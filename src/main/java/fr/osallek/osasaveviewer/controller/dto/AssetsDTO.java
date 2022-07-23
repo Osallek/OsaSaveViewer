@@ -29,6 +29,8 @@ public final class AssetsDTO {
 
     private Set<String> modifiers = new HashSet<>();
 
+    private Set<String> personalities;
+
     public boolean isProvinces() {
         return provinces;
     }
@@ -123,5 +125,13 @@ public final class AssetsDTO {
 
     public void setModifiers(Set<String> modifiers) {
         this.modifiers = modifiers;
+    }
+
+    public Set<String> getPersonalities() {
+        return personalities;
+    }
+
+    public void setPersonalities(Set<String> personalities) {
+        this.personalities = personalities;
     }
 }

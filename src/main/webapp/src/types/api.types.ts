@@ -38,6 +38,7 @@ export type Save = {
   estatePrivileges: Array<NamedImageLocalised>;
   subjectTypes: Array<NamedLocalised>;
   ideaGroups: Array<SaveIdeaGroup>;
+  personalities: Array<NamedImageLocalised>;
   previousSaves: Array<PreviousSave>;
 };
 
@@ -390,6 +391,7 @@ export type SaveMonarch = {
   birthDate: string;
   deathDate?: string;
   leader?: SaveLeader;
+  duration?: number;
 }
 
 export type SaveQueen = SaveMonarch & {

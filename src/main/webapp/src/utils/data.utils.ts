@@ -36,6 +36,10 @@ export function getIdeaUrl(key: string | undefined): string {
   return key ? getDataUrl(`modifiers/${key}.png`) : getPrivilegeUrl('noModifier');
 }
 
+export function getPersonalityUrl(key: string | undefined): string {
+  return key ? getDataUrl(`personalities/${key}.png`) : getPersonalityUrl('noPersonality');
+}
+
 export function getProvincesUrl(key: string): string {
   return getDataUrl(`provinces/${key}.png`);
 }

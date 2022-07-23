@@ -207,6 +207,12 @@ const country = {
   'country.warningsBy': 'Avertit par',
   'country.armyStats': 'Puissance terrestre',
   'country.navyStats': 'Puissance navale',
+  'country.monarch.name': 'Nom',
+  'country.monarch.start': 'Début du règne',
+  'country.monarch.end': 'Fin du règne',
+  'country.monarch.duration': 'Durée du règne',
+  'country.monarch.skills': 'Compétences',
+  'country.monarch.personalities': 'Personnalités',
 }
 
 export default country;

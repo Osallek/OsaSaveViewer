@@ -50,3 +50,8 @@ export function colorToHex(color: SaveColor): string {
     return hex.length === 1 ? '0' + hex : hex
   }).join('');
 }
+
+export function formatDuration(months: number | undefined): string {
+  return months ? `${ intl.formatMessage({ id: 'common.duration.year' }, { years: (months / 12 | 0) }) } 
+  ${ intl.formatMessage({ id: 'common.duration.month' }, { months: months % 12 }) }` : '';
+}

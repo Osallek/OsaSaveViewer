@@ -34,7 +34,7 @@ public class DataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataService.class);
 
     public static final List<String> FOLDERS = List.of("advisors", "buildings", "colors", "estates", "flags", "goods", "idea_groups", "institutions", "modifiers",
-                                                       "privileges", "provinces", "religions");
+                                                       "personalities", "privileges", "provinces", "religions");
 
     private final SaveService saveService;
 
@@ -156,6 +156,7 @@ public class DataService {
 
         assets.setPrivileges(save.getEstatePrivileges()
                                  .stream()
+                                 .filter(privilege -> privilege.getImage() != null)
                                  .filter(privilege -> !Files.exists(this.properties.getDataFolder()
                                                                                    .resolve("privileges")
                                                                                    .resolve(privilege.getImage() + ".png")))
@@ -164,7 +165,8 @@ public class DataService {
 
         assets.setIdeaGroups(save.getIdeaGroups()
                                  .stream()
-                                 .filter(estate -> !Files.exists(this.properties.getDataFolder().resolve("idea_groups").resolve(estate.getImage() + ".png")))
+                                 .filter(group -> group.getImage() != null)
+                                 .filter(group -> !Files.exists(this.properties.getDataFolder().resolve("idea_groups").resolve(group.getImage() + ".png")))
                                  .map(NamedImageLocalisedDTO::getName)
                                  .collect(Collectors.toSet()));
 
@@ -172,9 +174,17 @@ public class DataService {
                                          .stream()
                                          .map(IdeaGroupDTO::getIdeas)
                                          .flatMap(Collection::stream)
+                                         .filter(idea -> idea.getImage() != null)
                                          .filter(idea -> !Files.exists(this.properties.getDataFolder().resolve("modifiers").resolve(idea.getImage() + ".png")))
                                          .map(NamedImageLocalisedDTO::getName)
                                          .collect(Collectors.toSet()));
+
+        assets.setPersonalities(save.getPersonalities()
+                                    .stream()
+                                    .filter(personality -> personality.getImage() != null)
+                                    .filter(p -> !Files.exists(this.properties.getDataFolder().resolve("personalities").resolve(p.getImage() + ".png")))
+                                    .map(NamedImageLocalisedDTO::getName)
+                                    .collect(Collectors.toSet()));
 
         return assets;
     }

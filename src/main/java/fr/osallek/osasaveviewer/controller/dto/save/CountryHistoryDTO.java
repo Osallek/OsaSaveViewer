@@ -8,6 +8,6 @@ public record CountryHistoryDTO(LocalDate date, Boolean abolishedSerfdom, Leader
                                 List<String> removeAcceptedCultures, Integer governmentRank, Integer capital, String changedCountryNameFrom,
                                 String changedCountryAdjectiveFrom, ColorDTO changedCountryMapcolorFrom, String addGovernmentReform, String primaryCulture,
                                 String government, String religion, String secondaryReligion, String technologyGroup, String unitType, String changedTagFrom,
-                                String religiousSchool, String setCountryFlag, String decision, QueenDTO queen, QueenDTO monarchConsort, MonarchDTO monarch,
-                                HeirDTO monarchHeir, HeirDTO heir, HeirDTO monarchForeignHeir, Integer union, Integer tradePort, Boolean elector) {
+                                String religiousSchool, String setCountryFlag, String decision, QueenDTO queen, MonarchDTO monarch, HeirDTO heir, Integer union,
+                                Integer tradePort, Boolean elector) {
 }
