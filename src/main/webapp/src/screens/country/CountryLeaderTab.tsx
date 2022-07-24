@@ -17,8 +17,6 @@ function CountryLeaderTab({ country, save }: CountryLeaderTabProps) {
 
   const leaders = getLeaders(country);
 
-  console.log(leaders);
-
   return (
     <>
       <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>

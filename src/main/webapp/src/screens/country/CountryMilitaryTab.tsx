@@ -6,16 +6,16 @@ import { MapSave } from 'types/map.types';
 import { formatNumber } from 'utils/format.utils';
 import { getRank } from 'utils/save.utils';
 
-function getRankDisplay(rank: number): any {
+export function getRankDisplay(rank: number, margin: string = 'auto'): any {
   switch (rank) {
     case 1:
-      return <Avatar src='/eu4/country/first.png' variant='square' style={ { marginLeft: 'auto' } }/>;
+      return <Avatar src='/eu4/country/first.png' variant='square' style={ { marginLeft: margin } }/>;
 
     case 2:
-      return <Avatar src='/eu4/country/second.png' variant='square' style={ { marginLeft: 'auto' } }/>;
+      return <Avatar src='/eu4/country/second.png' variant='square' style={ { marginLeft: margin } }/>;
 
     case 3:
-      return <Avatar src='/eu4/country/third.png' variant='square' style={ { marginLeft: 'auto' } }/>;
+      return <Avatar src='/eu4/country/third.png' variant='square' style={ { marginLeft: margin } }/>;
 
     default:
       return rank;

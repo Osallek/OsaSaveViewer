@@ -48,7 +48,7 @@ function CountryMonarchTab({ country, save }: CountryMonarchTabProps) {
               <>
                 {
                   monarchs.map((monarch, i) => (
-                      <TableRow>
+                      <TableRow key={ `monarch-${ country.tag }-${ i }` }>
                         <TableCell style={ { backgroundColor: theme.palette.primary.light, borderBottomColor: theme.palette.primary.main } }>
                           { monarch.name }
                         </TableCell>
@@ -91,14 +91,15 @@ function CountryMonarchTab({ country, save }: CountryMonarchTabProps) {
                   { intl.formatMessage({ id: 'common.mean' }) }
                 </TableCell>
                 <TableCell>
-                  { `${ formatNumber(monarchs.map(m => m.adm * (m.duration ?? 0)).reduce((a, b) => a + b, 0) /
-                    monarchs.map(m => (m.duration ?? 0)).reduce((a, b) => a + b, 0)) } /
+                  { monarchs.filter(m => m.duration !== undefined).length > 0 &&
+                    `${ formatNumber(monarchs.map(m => m.adm * (m.duration ?? 0)).reduce((a, b) => a + b, 0) /
+                      monarchs.map(m => (m.duration ?? 0)).reduce((a, b) => a + b, 0)) } /
                   ${ formatNumber(monarchs.map(m => m.dip * (m.duration ?? 0)).reduce((a, b) => a + b, 0) /
-                    monarchs.map(m => (m.duration ?? 0)).reduce((a, b) => a + b, 0)) } /
+                      monarchs.map(m => (m.duration ?? 0)).reduce((a, b) => a + b, 0)) } /
                   ${ formatNumber(monarchs.map(m => m.mil * (m.duration ?? 0)).reduce((a, b) => a + b, 0) /
-                    monarchs.map(m => (m.duration ?? 0)).reduce((a, b) => a + b, 0)) }
+                      monarchs.map(m => (m.duration ?? 0)).reduce((a, b) => a + b, 0)) }
                   (${ formatNumber(monarchs.map(m => (m.adm + m.dip + m.mil) * (m.duration ?? 0)).reduce((a, b) => a + b, 0) /
-                    monarchs.map(m => (m.duration ?? 0)).reduce((a, b) => a + b, 0)) })` }
+                      monarchs.map(m => (m.duration ?? 0)).reduce((a, b) => a + b, 0)) })` }
                 </TableCell>
               </TableRow>
             </TableBody>

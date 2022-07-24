@@ -1,6 +1,7 @@
-import { green, grey, orange, red } from '@mui/material/colors';
+import { blue, blueGrey, deepOrange, green, grey, lime, orange, red, teal, yellow } from '@mui/material/colors';
+import amber from '@mui/material/colors/amber';
 import { intl } from 'index';
-import { Expense, Income, SaveCountry, SaveEstate } from 'types/api.types';
+import { Expense, Income, PowerSpent, SaveCountry, SaveEstate } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { colorToHex, numberComparator } from 'utils/format.utils';
 import { getEstate, getEstatesName } from 'utils/save.utils';
@@ -180,4 +181,132 @@ export function getEstatePie(country: SaveCountry, save: MapSave): Array<EstateP
   array.push({ name: intl.formatMessage({ id: 'country.crown' }), value: 100 - array.reduce((s, e) => s + e.value, 0), color: grey[800] });
 
   return array.sort((a, b) => -numberComparator(a.value, b.value));
+}
+
+export interface ManaSpentBar {
+  name: string;
+  type: PowerSpent;
+  adm?: number;
+  dip?: number;
+  mil?: number;
+  total: number;
+  index: number;
+}
+
+export function getManaSpentBar(country: SaveCountry): Array<ManaSpentBar> {
+  const array: Array<ManaSpentBar> = [];
+
+  Object.values(PowerSpent).filter(value => !value.startsWith('USELESS')).forEach((type, index) => {
+    const a: ManaSpentBar = { type, name: intl.formatMessage({ id: `country.mana.${ type }` }), total: 0, index };
+
+    if (country.admPowerSpent && country.admPowerSpent[type] !== undefined) {
+      a.adm = country.admPowerSpent[type];
+    }
+
+    if (country.dipPowerSpent && country.dipPowerSpent[type] !== undefined) {
+      a.dip = country.dipPowerSpent[type];
+    }
+
+    if (country.milPowerSpent && country.milPowerSpent[type] !== undefined) {
+      a.mil = country.milPowerSpent[type];
+    }
+
+    if (a.adm || a.dip || a.mil) {
+      a.total = (a.adm ?? 0) + (a.dip ?? 0) + (a.mil ?? 0);
+      array.push(a);
+    }
+  });
+
+  return array.sort((a, b) => -numberComparator(a.total, b.total));
+}
+
+export function powerSpentToColor(powerSpent: PowerSpent): string {
+  switch (powerSpent) {
+    case PowerSpent.IDEAS:
+      return green[500];
+
+    case PowerSpent.TECHNOLOGY:
+      return blue[500];
+
+    case PowerSpent.STABILITY:
+      return amber[500];
+
+    case PowerSpent.DEVELOPMENT:
+      return green[300];
+
+    case PowerSpent.SEIZE_COLONY:
+    case PowerSpent.BURN_COLONY:
+      return red[900];
+
+    case PowerSpent.KILL_NATIVES:
+    case PowerSpent.HARSH_TREATMENT:
+    case PowerSpent.SCORCHING_EARTH:
+      return red[300];
+
+    case PowerSpent.PEACE_DEAL:
+      return orange[400];
+
+    case PowerSpent.REDUCE_INFLATION:
+    case PowerSpent.REDUCING_WAR_EXHAUSTION:
+      return orange[700];
+
+    case PowerSpent.MOVE_CAPITAL:
+    case PowerSpent.MOVE_TRADE_CAPITAL:
+      return amber[800];
+
+    case PowerSpent.CORING:
+      return amber[300];
+
+    case PowerSpent.REMOVE_RIVALRY:
+      return orange[200];
+
+    case PowerSpent.CULTURE_CONVERSION:
+    case PowerSpent.PROMOTE_CULTURE:
+    case PowerSpent.DEMOTE_CULTURE:
+    case PowerSpent.SET_PRIMARY_CULTURE:
+    case PowerSpent.FORCE_CULTURE:
+      return orange[900];
+
+    case PowerSpent.INCREASE_TARIFFS:
+    case PowerSpent.CREATE_TRADE_POST:
+    case PowerSpent.DECREASE_TARIFFS:
+      return deepOrange[700];
+
+    case PowerSpent.SIBERIAN_FRONTIER:
+      return deepOrange[500];
+
+    case PowerSpent.MERCANTILISM:
+      return green[800];
+
+    case PowerSpent.BARRAGING:
+    case PowerSpent.SORTIE_FROM_SIEGE:
+    case PowerSpent.BUILD_SUPPLY_DEPOT:
+    case PowerSpent.NAVAL_BARRAGING:
+    case PowerSpent.FORCING_MARCH:
+    case PowerSpent.ASSAULTING:
+      return grey[700];
+
+    case PowerSpent.STRENGTHEN_GOVERNMENT:
+    case PowerSpent.MILITARIZATION:
+    case PowerSpent.PROMOTE_FACTION:
+      return blueGrey[900];
+
+    case PowerSpent.OTHER_37:
+    case PowerSpent.OTHER_44:
+      return teal[800];
+
+    case PowerSpent.HIRING_GENERAL:
+      return blueGrey[500];
+
+    case PowerSpent.USELESS_19:
+    case PowerSpent.USELESS_24:
+    case PowerSpent.USELESS_31:
+    case PowerSpent.USELESS_40:
+    case PowerSpent.USELESS_BUY_GENERAL:
+    case PowerSpent.USELESS_BUY_ADMIRAL:
+    case PowerSpent.USELESS_BUY_CONQUISTADOR:
+    case PowerSpent.USELESS_BUY_EXPLORER:
+    case PowerSpent.USELESS_FORCE_MARCH:
+      return 'white';
+  }
 }

@@ -18,7 +18,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={`grid-incomevsexpense-${country.tag}`}>
+      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `grid-incomevsexpense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.incomeVsExpense' }) }
         </Typography>
@@ -64,7 +64,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           </Bar>
         </BarChart>
       </Grid>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={`grid-income-${country.tag}`}>
+      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `grid-income-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.income' }) }
         </Typography>
@@ -120,7 +120,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
                   .sort(([, valueA], [, valueB]) => -numberComparator(valueA, valueB))
                   .map(([key, value]) => (
                     <TableRow
-                      key={ key }
+                      key={ `${ country }-income-${ key }` }
                     >
                       <TableCell align='center'>
                         <div style={ {
@@ -147,7 +147,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           </Table>
         </TableContainer>
       </Grid>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={`grid-expense-${country.tag}`}>
+      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `grid-expense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.expense' }) }
         </Typography>
@@ -200,9 +200,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
                   .filter(([key, value]) => value > 0)
                   .sort(([, valueA], [, valueB]) => -numberComparator(valueA, valueB))
                   .map(([key, value]) => (
-                    <TableRow
-                      key={ key }
-                    >
+                    <TableRow key={ `${ country }-income-${ key }` }>
                       <TableCell align='center'>
                         <div style={ {
                           width: 10,
@@ -228,7 +226,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           </Table>
         </TableContainer>
       </Grid>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: 8 } } key={`grid-totalexpense-${country.tag}`}>
+      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: 8 } } key={ `grid-totalexpense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.totalExpense' }) }
         </Typography>
@@ -285,9 +283,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
                 Object.entries(country.totalExpenses).filter(([key, value]) => value > 0)
                   .sort(([, valueA], [, valueB]) => -numberComparator(valueA, valueB))
                   .map(([key, value]) => (
-                    <TableRow
-                      key={ key }
-                    >
+                    <TableRow key={ `${ country }-total-expense-${ key }` }>
                       <TableCell align='center'>
                         <div style={ {
                           width: 10,
