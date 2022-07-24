@@ -39,6 +39,7 @@ export type Save = {
   subjectTypes: Array<NamedLocalised>;
   ideaGroups: Array<SaveIdeaGroup>;
   personalities: Array<NamedImageLocalised>;
+  leaderPersonalities: Array<NamedImageLocalised>;
   previousSaves: Array<PreviousSave>;
 };
 
@@ -464,8 +465,9 @@ export type SaveLeader = {
   shock: number;
   siege: number;
   personality?: string;
-  activation: string;
+  activation?: string;
   deathDate?: string;
+  duration?: number;
 }
 
 export enum SaveLeaderType {

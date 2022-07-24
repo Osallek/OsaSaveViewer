@@ -10,6 +10,7 @@ import CountryDiplomacyTab from 'screens/country/CountryDiplomacyTab';
 import CountryEcoTab from 'screens/country/CountryEcoTab';
 import CountryEstateTab from 'screens/country/CountryEstateTab';
 import CountryIdeaTab from 'screens/country/CountryIdeaTab';
+import CountryLeaderTab from 'screens/country/CountryLeaderTab';
 import CountryMilitaryTab from 'screens/country/CountryMilitaryTab';
 import CountryMonarchTab from 'screens/country/CountryMonarchTab';
 import theme from 'theme';
@@ -426,6 +427,9 @@ function CountryPage() {
                     </Grid>
                     <Grid container display={ activeTab === 5 ? 'block' : 'none' } key='grid5'>
                       <CountryMonarchTab country={ country } save={ save }/>
+                    </Grid>
+                    <Grid container display={ activeTab === 6 ? 'block' : 'none' } key='grid6'>
+                      <CountryLeaderTab country={ country } save={ save }/>
                     </Grid>
                   </Grid>
                 </Grid>

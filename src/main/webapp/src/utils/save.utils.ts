@@ -1,10 +1,12 @@
 import { eu4Locale } from 'index';
 import {
   ColorNamedImageLocalised, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save, SaveArea, SaveCountry,
-  SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveMonarch, SaveProvince, SaveProvinceHistory, SaveReligion
+  SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMonarch, SaveProvince, SaveProvinceHistory, SaveReligion
 } from 'types/api.types';
 import { CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
-import { getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getPersonalityUrl, getPrivilegeUrl, getReligionUrl } from 'utils/data.utils';
+import {
+  getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getLeaderPersonalityUrl, getPersonalityUrl, getPrivilegeUrl, getReligionUrl
+} from 'utils/data.utils';
 import { capitalize, numberComparator, toRecord } from 'utils/format.utils';
 
 export const fakeTag = "---";
@@ -343,6 +345,26 @@ export function getPersonalitysImage(personality: NamedImageLocalised): string {
   return getPersonalityUrl(personality.image);
 }
 
+export function getLeaderPersonality(save: MapSave, name: string): NamedImageLocalised {
+  return save.leaderPersonalities.find(leaderPersonality => name === leaderPersonality.name) ?? save.leaderPersonalities[0];
+}
+
+export function getLeaderPersonalityName(save: MapSave, name: string): string {
+  return getLeaderPersonalitysName(getLeaderPersonality(save, name));
+}
+
+export function getLeaderPersonalitysName(leaderPersonality: NamedImageLocalised): string {
+  return getName(leaderPersonality) ?? leaderPersonality.name;
+}
+
+export function getLeaderPersonalityImage(save: MapSave, name: string): string {
+  return getLeaderPersonalitysImage(getLeaderPersonality(save, name));
+}
+
+export function getLeaderPersonalitysImage(leaderPersonality: NamedImageLocalised): string {
+  return getLeaderPersonalityUrl(leaderPersonality.image);
+}
+
 export function getArea(save: MapSave, province: SaveProvince): SaveArea {
   return save.areas.find(value => value.provinces.includes(province.id)) ?? save.areas[0];
 }
@@ -521,4 +543,16 @@ export function getRank(save: MapSave, country: SaveCountry, mapper: (country: S
 
 export function getMonarchs(country: SaveCountry): Array<SaveMonarch> {
   return country.history.map(h => h.monarch).filter(m => m !== undefined) as Array<SaveMonarch>;
+}
+
+export function getLeaders(country: SaveCountry): Array<SaveLeader> {
+  const leaders = country.history.map(h => h.leader).filter(m => m !== undefined) as Array<SaveLeader>;
+
+  country.history.map(h => h.monarch).forEach(m => {
+    if (m !== undefined && m.leader !== undefined) {
+      leaders.push(m.leader);
+    }
+  });
+
+  return leaders;
 }

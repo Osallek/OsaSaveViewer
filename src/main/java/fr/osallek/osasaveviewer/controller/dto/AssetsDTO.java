@@ -27,9 +27,11 @@ public final class AssetsDTO {
 
     private Set<String> ideaGroups;
 
-    private Set<String> modifiers = new HashSet<>();
+    private Set<String> ideas;
 
     private Set<String> personalities;
+
+    private Set<String> leaderPersonalities;
 
     public boolean isProvinces() {
         return provinces;
@@ -119,12 +121,12 @@ public final class AssetsDTO {
         this.ideaGroups = ideaGroups;
     }
 
-    public Set<String> getModifiers() {
-        return modifiers;
+    public Set<String> getIdeas() {
+        return ideas;
     }
 
-    public void setModifiers(Set<String> modifiers) {
-        this.modifiers = modifiers;
+    public void setIdeas(Set<String> ideas) {
+        this.ideas = ideas;
     }
 
     public Set<String> getPersonalities() {
@@ -133,5 +135,13 @@ public final class AssetsDTO {
 
     public void setPersonalities(Set<String> personalities) {
         this.personalities = personalities;
+    }
+
+    public Set<String> getLeaderPersonalities() {
+        return leaderPersonalities;
+    }
+
+    public void setLeaderPersonalities(Set<String> leaderPersonalities) {
+        this.leaderPersonalities = leaderPersonalities;
     }
 }

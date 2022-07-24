@@ -213,6 +213,12 @@ const country = {
   'country.monarch.duration': 'Durée du règne',
   'country.monarch.skills': 'Compétences',
   'country.monarch.personalities': 'Personnalités',
+  'country.leader.name': 'Nom',
+  'country.leader.start': 'Début du service',
+  'country.leader.end': 'Mort',
+  'country.leader.duration': 'Durée du service',
+  'country.leader.skills': 'Compétences',
+  'country.leader.personality': 'Personnalité',
 }
 
 export default country;

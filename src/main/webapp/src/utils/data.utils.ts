@@ -37,7 +37,11 @@ export function getIdeaUrl(key: string | undefined): string {
 }
 
 export function getPersonalityUrl(key: string | undefined): string {
-  return key ? getDataUrl(`personalities/${key}.png`) : getPersonalityUrl('noPersonality');
+  return key ? getDataUrl(`modifiers/${key}.png`) : getPersonalityUrl('noModifier');
+}
+
+export function getLeaderPersonalityUrl(key: string | undefined): string {
+  return key ? getDataUrl(`modifiers/${key}.png`) : getPersonalityUrl('noModifier');
 }
 
 export function getProvincesUrl(key: string): string {
