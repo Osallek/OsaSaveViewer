@@ -1,4 +1,6 @@
-import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+  Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Legend, Pie, PieChart, Sector } from 'recharts';
@@ -8,7 +10,7 @@ import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { getManaSpentBar, ManaSpentBar, powerSpentToColor } from 'utils/chart.utils';
 import { formatNumber } from 'utils/format.utils';
-import { getRank } from 'utils/save.utils';
+import { getRank, isAdm, isDip, isMil } from 'utils/save.utils';
 
 interface CountryManaTabProps {
   country: SaveCountry;
@@ -63,21 +65,22 @@ const renderActiveShape = (props: any, total: number) => {
 function CountryManaTab({ country, save }: CountryManaTabProps) {
   const intl = useIntl();
 
-  const [data, setData] = useState<Array<ManaSpentBar>>(getManaSpentBar(country));
-  const [total, setTotal] = useState<number>(data.reduce((sum, s) => sum + s.total, 0));
-  const [activeIndex, setActiveIndex] = useState<number[]>([0, 0, 0]);
+  const [ data, setData ] = useState<Array<ManaSpentBar>>(getManaSpentBar(country));
+  const [ total, setTotal ] = useState<number>(data.reduce((sum, s) => sum + s.total, 0));
+  const [ activeIndex, setActiveIndex ] = useState<number[]>([ 0, 0, 0 ]);
 
   useEffect(() => {
     setData(getManaSpentBar(country));
-  }, [country]);
+  }, [ country ]);
 
   useEffect(() => {
     setTotal(data.reduce((sum, s) => sum + s.total, 0));
-  }, [data]);
+  }, [ data ]);
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `grid-incomevsexpense-${ country.tag }` }>
+      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
+            key={ `grid-incomevsexpense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.MANA_SPENT' }) }
         </Typography>
@@ -95,7 +98,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
             outerRadius={ 110 }
             dataKey='adm'
             onMouseEnter={ (_, index) => {
-              setActiveIndex(prevState => [index, prevState[1], prevState[2]]);
+              setActiveIndex(prevState => [ index, prevState[1], prevState[2] ]);
             } }
           >
             { data.map((entry, index) => (
@@ -117,7 +120,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
             outerRadius={ 110 }
             dataKey='dip'
             onMouseEnter={ (_, index) => {
-              setActiveIndex(prevState => [prevState[0], index, prevState[2]]);
+              setActiveIndex(prevState => [ prevState[0], index, prevState[2] ]);
             } }
           >
             { data.map((entry, index) => (
@@ -140,7 +143,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
               outerRadius={ 110 }
               dataKey='mil'
               onMouseEnter={ (_, index) => {
-                setActiveIndex(prevState => [prevState[0], prevState[1], index]);
+                setActiveIndex(prevState => [ prevState[0], prevState[1], index ]);
               } }
             >
               { data.map((entry, index) => (
@@ -153,24 +156,30 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
           <Table>
             <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>
               <TableRow>
-                <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.color' }) }</TableCell>
-                <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.type' }) }</TableCell>
+                <TableCell
+                  style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.color' }) }</TableCell>
+                <TableCell
+                  style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.type' }) }</TableCell>
                 <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
                   { intl.formatMessage({ id: 'country.mana.adm' }) }
                 </TableCell>
-                <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.rank' }) }</TableCell>
+                <TableCell
+                  style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.rank' }) }</TableCell>
                 <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
                   { intl.formatMessage({ id: 'country.mana.dip' }) }
                 </TableCell>
-                <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.rank' }) }</TableCell>
+                <TableCell
+                  style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.rank' }) }</TableCell>
                 <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
                   { intl.formatMessage({ id: 'country.mana.mil' }) }
                 </TableCell>
-                <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.rank' }) }</TableCell>
+                <TableCell
+                  style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.rank' }) }</TableCell>
                 <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
                   { intl.formatMessage({ id: 'common.total' }) }
                 </TableCell>
-                <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.rank' }) }</TableCell>
+                <TableCell
+                  style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.rank' }) }</TableCell>
                 <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
                   { intl.formatMessage({ id: 'common.percent' }) }
                 </TableCell>
@@ -191,22 +200,22 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
                     { intl.formatMessage({ id: `country.mana.${ spent.type }` }) }
                   </TableCell>
                   <TableCell align='right'>
-                    { formatNumber(spent.adm) }
+                    { isAdm(spent.type) && formatNumber(spent.adm) }
                   </TableCell>
                   <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                    { getRankDisplay(getRank(save, country, c => (c.admPowerSpent && c.admPowerSpent[spent.type]) ? c.admPowerSpent[spent.type] : 0)) }
+                    { isAdm(spent.type) && getRankDisplay(getRank(save, country, c => (c.admPowerSpent && c.admPowerSpent[spent.type]) ? c.admPowerSpent[spent.type] : 0)) }
                   </TableCell>
                   <TableCell align='right'>
-                    { formatNumber(spent.dip) }
+                    { isDip(spent.type) && formatNumber(spent.dip) }
                   </TableCell>
                   <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                    { getRankDisplay(getRank(save, country, c => (c.dipPowerSpent && c.dipPowerSpent[spent.type]) ? c.dipPowerSpent[spent.type] : 0)) }
+                    { isDip(spent.type) && getRankDisplay(getRank(save, country, c => (c.dipPowerSpent && c.dipPowerSpent[spent.type]) ? c.dipPowerSpent[spent.type] : 0)) }
                   </TableCell>
                   <TableCell align='right'>
-                    { formatNumber(spent.mil) }
+                    { isMil(spent.type) && formatNumber(spent.mil) }
                   </TableCell>
                   <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                    { getRankDisplay(getRank(save, country, c => (c.milPowerSpent && c.milPowerSpent[spent.type]) ? c.milPowerSpent[spent.type] : 0)) }
+                    { isMil(spent.type) && getRankDisplay(getRank(save, country, c => (c.milPowerSpent && c.milPowerSpent[spent.type]) ? c.milPowerSpent[spent.type] : 0)) }
                   </TableCell>
                   <TableCell align='right'>
                     { formatNumber(spent.total) }
@@ -223,45 +232,90 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
                   </TableCell>
                 </TableRow>
               )) }
-              <TableRow>
-                <TableCell/>
-                <TableCell style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                  { intl.formatMessage({ id: 'common.total' }) }
+              <TableRow style={ { backgroundColor: theme.palette.primary.light } }>
+                <TableCell style={ { borderBottom: 'none', color: theme.palette.primary.contrastText } }/>
+                <TableCell style={ {
+                  borderRight: '1px solid rgba(224, 224, 224, 1)',
+                  borderBottom: 'none'
+                } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { intl.formatMessage({ id: 'common.total' }) }
+                  </Typography>
                 </TableCell>
-                <TableCell align='right'>
-                  { formatNumber(data.reduce((sum, s) => sum + (s.adm ?? 0), 0)) }
+                <TableCell align='right' style={ { borderBottom: 'none' } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { formatNumber(data.reduce((sum, s) => sum + (s.adm ?? 0), 0)) }
+                  </Typography>
                 </TableCell>
-                <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
+                <TableCell align='right'
+                           style={ {
+                             borderRight: '1px solid rgba(224, 224, 224, 1)',
+                             borderBottom: 'none',
+                             color: theme.palette.primary.contrastText
+                           } }>
                   { getRankDisplay(getRank(save, country, c => {
                     return (c.admPowerSpent ? Object.values(c.admPowerSpent).reduce((sum, n) => sum + n, 0) : 0);
                   })) }
                 </TableCell>
-                <TableCell align='right'>
-                  { formatNumber(data.reduce((sum, s) => sum + (s.dip ?? 0), 0)) }
+                <TableCell align='right' style={ { borderBottom: 'none' } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { formatNumber(data.reduce((sum, s) => sum + (s.dip ?? 0), 0)) }
+                  </Typography>
                 </TableCell>
-                <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                  { getRankDisplay(getRank(save, country, c => {
-                    return (c.dipPowerSpent ? Object.values(c.dipPowerSpent).reduce((sum, n) => sum + n, 0) : 0);
-                  })) }
+                <TableCell align='right'
+                           style={ {
+                             borderRight: '1px solid rgba(224, 224, 224, 1)',
+                             borderBottom: 'none'
+                           } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { getRankDisplay(getRank(save, country, c => {
+                      return (c.dipPowerSpent ? Object.values(c.dipPowerSpent).reduce((sum, n) => sum + n, 0) : 0);
+                    })) }
+                  </Typography>
                 </TableCell>
-                <TableCell align='right'>
-                  { formatNumber(data.reduce((sum, s) => sum + (s.mil ?? 0), 0)) }
+                <TableCell align='right' style={ { borderBottom: 'none' } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { formatNumber(data.reduce((sum, s) => sum + (s.mil ?? 0), 0)) }
+                  </Typography>
                 </TableCell>
-                <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                  { getRankDisplay(getRank(save, country, c => {
-                    return (c.milPowerSpent ? Object.values(c.milPowerSpent).reduce((sum, n) => sum + n, 0) : 0);
-                  })) }
+                <TableCell align='right'
+                           style={ {
+                             borderRight: '1px solid rgba(224, 224, 224, 1)',
+                             borderBottom: 'none'
+                           } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { getRankDisplay(getRank(save, country, c => {
+                      return (c.milPowerSpent ? Object.values(c.milPowerSpent).reduce((sum, n) => sum + n, 0) : 0);
+                    })) }
+                  </Typography>
                 </TableCell>
-                <TableCell align='right'>
-                  { formatNumber(total) }
+                <TableCell align='right' style={ { borderBottom: 'none', color: theme.palette.primary.contrastText } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { formatNumber(total) }
+                  </Typography>
                 </TableCell>
-                <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                  { getRankDisplay(getRank(save, country, c => {
-                    return (c.admPowerSpent ? Object.values(c.admPowerSpent).reduce((sum, n) => sum + n, 0) : 0) +
-                      (c.dipPowerSpent ? Object.values(c.dipPowerSpent).reduce((sum, n) => sum + n, 0) : 0) +
-                      (c.milPowerSpent ? Object.values(c.milPowerSpent).reduce((sum, n) => sum + n, 0) : 0);
-                  })) }
+                <TableCell align='right'
+                           style={ {
+                             borderRight: '1px solid rgba(224, 224, 224, 1)',
+                             borderBottom: 'none'
+                           } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { getRankDisplay(getRank(save, country, c => {
+                      return (c.admPowerSpent ? Object.values(c.admPowerSpent).reduce((sum, n) => sum + n, 0) : 0) +
+                        (c.dipPowerSpent ? Object.values(c.dipPowerSpent).reduce((sum, n) => sum + n, 0) : 0) +
+                        (c.milPowerSpent ? Object.values(c.milPowerSpent).reduce((sum, n) => sum + n, 0) : 0);
+                    })) }
+                  </Typography>
                 </TableCell>
+                <TableCell style={ { borderBottom: 'none' } }/>
               </TableRow>
             </TableBody>
           </Table>

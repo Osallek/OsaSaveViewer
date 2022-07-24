@@ -1,4 +1,6 @@
-import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from '@mui/material';
+import {
+  Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme
+} from '@mui/material';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { SaveCountry } from 'types/api.types';
@@ -57,7 +59,8 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
                   <Grid container alignItems='center'>
                     <Avatar src='/eu4/country/manpower.png' variant='square' style={ { marginRight: 8 } }/>
-                    <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                    <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.manpower' }) }
                     </Typography>
                   </Grid>
@@ -73,7 +76,8 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
                   <Grid container alignItems='center'>
                     <Avatar src='/eu4/country/land_limit.png' variant='square' style={ { marginRight: 8 } }/>
-                    <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                    <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.armyLimit' }) }
                     </Typography>
                   </Grid>
@@ -89,7 +93,8 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
                   <Grid container alignItems='center'>
                     <Avatar src='/eu4/country/land_morale.png' variant='square' style={ { marginRight: 8 } }/>
-                    <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                    <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.armyMorale' }) }
                     </Typography>
                   </Grid>
@@ -105,7 +110,8 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
                   <Grid container alignItems='center'>
                     <Avatar src='/eu4/country/discipline.png' variant='square' style={ { marginRight: 8 } }/>
-                    <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                    <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.discipline' }) }
                     </Typography>
                   </Grid>
@@ -121,31 +127,34 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
                   <Grid container alignItems='center'>
                     <Avatar src='/eu4/country/army_tradition.png' variant='square' style={ { marginRight: 8 } }/>
-                    <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                    <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.armyTradition' }) }
                     </Typography>
                   </Grid>
                 </TableCell>
                 <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                  { `${ formatNumber(country.armyTradition) }%` }
+                  { `${ formatNumber(country.armyTradition ?? 0) }%` }
                 </TableCell>
                 <TableCell align='right'>
                   { getRankDisplay(getRank(save, country, c => c.armyTradition)) }
                 </TableCell>
               </TableRow>
               <TableRow key={ `prof-${ country.tag }` }>
-                <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
+                <TableCell style={ { backgroundColor: theme.palette.primary.light, borderBottom: 'none' } }>
                   <Grid container alignItems='center'>
                     <Avatar src='/eu4/country/professionalism.png' variant='square' style={ { marginRight: 8 } }/>
-                    <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                    <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.armyProfessionalism' }) }
                     </Typography>
                   </Grid>
                 </TableCell>
-                <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
+                <TableCell align='right'
+                           style={ { borderRight: '1px solid rgba(224, 224, 224, 1)', borderBottom: 'none' } }>
                   { `${ formatNumber((country.armyProfessionalism ?? 0) * 100) }%` }
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={ { borderBottom: 'none' } }>
                   { getRankDisplay(getRank(save, country, c => c.armyProfessionalism)) }
                 </TableCell>
               </TableRow>
@@ -177,7 +186,8 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
                   <Grid container alignItems='center'>
                     <Avatar src='/eu4/country/sailors.png' variant='square' style={ { marginRight: 8 } }/>
-                    <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                    <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.sailors' }) }
                     </Typography>
                   </Grid>
@@ -193,7 +203,8 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
                   <Grid container alignItems='center'>
                     <Avatar src='/eu4/country/naval_limit.png' variant='square' style={ { marginRight: 8 } }/>
-                    <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                    <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.navalLimit' }) }
                     </Typography>
                   </Grid>
@@ -209,31 +220,34 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
                   <Grid container alignItems='center'>
                     <Avatar src='/eu4/country/naval_morale.png' variant='square' style={ { marginRight: 8 } }/>
-                    <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                    <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.navalMorale' }) }
                     </Typography>
                   </Grid>
                 </TableCell>
                 <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                  { formatNumber(country.navalMorale) }
+                  { formatNumber(country.navalMorale ?? 0) }
                 </TableCell>
                 <TableCell align='right'>
                   { getRankDisplay(getRank(save, country, c => c.navalMorale)) }
                 </TableCell>
               </TableRow>
               <TableRow key={ `naval-trad-${ country.tag }` }>
-                <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
+                <TableCell style={ { backgroundColor: theme.palette.primary.light, borderBottom: 'none' } }>
                   <Grid container alignItems='center'>
                     <Avatar src='/eu4/country/naval_tradition.png' variant='square' style={ { marginRight: 8 } }/>
-                    <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                    <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.navalTradition' }) }
                     </Typography>
                   </Grid>
                 </TableCell>
-                <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                  { `${ formatNumber(country.navyTradition) }%` }
+                <TableCell align='right'
+                           style={ { borderRight: '1px solid rgba(224, 224, 224, 1)', borderBottom: 'none' } }>
+                  { `${ formatNumber(country.navyTradition ?? 0) }%` }
                 </TableCell>
-                <TableCell align='right'>
+                <TableCell align='right' style={ { borderBottom: 'none' } }>
                   { getRankDisplay(getRank(save, country, c => c.navyTradition)) }
                 </TableCell>
               </TableRow>

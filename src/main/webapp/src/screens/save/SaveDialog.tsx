@@ -42,17 +42,17 @@ function SaveDialog({ save, onClose, selectedDate }: SaveDialogProps) {
   const intl = useIntl();
   const theme = useTheme();
 
-  const [view, setView] = useState<Views>(Views.COUNTRIES);
+  const [ view, setView ] = useState<Views>(Views.COUNTRIES);
 
-  const [provincesTable, setProvincesTable] = useState<ProvinceTableType>(ProvinceTableType.INFO);
-  const [provincesAnchorEl, setProvincesAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [ provincesTable, setProvincesTable ] = useState<ProvinceTableType>(ProvinceTableType.INFO);
+  const [ provincesAnchorEl, setProvincesAnchorEl ] = React.useState<null | HTMLElement>(null);
   const provincesOpen = Boolean(provincesAnchorEl);
 
-  const [countriesTable, setCountriesTable] = useState<CountryTableType>(CountryTableType.DEV);
-  const [countriesAnchorEl, setCountriesAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [ countriesTable, setCountriesTable ] = useState<CountryTableType>(CountryTableType.DEV);
+  const [ countriesAnchorEl, setCountriesAnchorEl ] = React.useState<null | HTMLElement>(null);
   const countriesOpen = Boolean(countriesAnchorEl);
 
-  const [previousSavesAnchorEl, setPreviousSavesAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [ previousSavesAnchorEl, setPreviousSavesAnchorEl ] = React.useState<null | HTMLElement>(null);
   const previousSavesOpen = Boolean(previousSavesAnchorEl);
 
   const handleProvincesClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -116,7 +116,8 @@ function SaveDialog({ save, onClose, selectedDate }: SaveDialogProps) {
               {
                 Object.values(CountryTableType).map(value => (
                   <MenuItem onClick={ () => handleCountriesClose(value) }
-                            style={ { color: theme.palette.primary.contrastText } }>
+                            style={ { color: theme.palette.primary.contrastText } }
+                            key={ `country-${ value }` }>
                     { intl.formatMessage({ id: `country.${ value }` }) }
                   </MenuItem>
                 ))
@@ -147,7 +148,8 @@ function SaveDialog({ save, onClose, selectedDate }: SaveDialogProps) {
               {
                 Object.values(ProvinceTableType).map(value => (
                   <MenuItem onClick={ () => handleProvincesClose(value) }
-                            style={ { color: theme.palette.primary.contrastText } }>
+                            style={ { color: theme.palette.primary.contrastText } }
+                            key={ `province-${ value }` }>
                     { intl.formatMessage({ id: `province.${ value }` }) }
                   </MenuItem>
                 ))
@@ -184,8 +186,10 @@ function SaveDialog({ save, onClose, selectedDate }: SaveDialogProps) {
                   >
                     {
                       save.previousSaves.map(previousSave => (
-                        <MenuItem component={ Link } to={ `/save/${ previousSave.id }` } target='_blank' rel='noopener noreferrer'
-                                  style={ { color: theme.palette.primary.contrastText } }>
+                        <MenuItem component={ Link } to={ `/save/${ previousSave.id }` } target='_blank'
+                                  rel='noopener noreferrer'
+                                  style={ { color: theme.palette.primary.contrastText } }
+                                  key={ `save-${ previousSave.id }` }>
                           { `${ previousSave.name } [${ formatDate(previousSave.date) }]` }
                         </MenuItem>
                       ))

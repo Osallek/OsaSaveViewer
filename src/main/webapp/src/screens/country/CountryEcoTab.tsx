@@ -1,11 +1,15 @@
-import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+  Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography
+} from '@mui/material';
 import { green, red } from '@mui/material/colors';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { Bar, BarChart, CartesianGrid, Cell, LabelList, Tooltip, XAxis, YAxis } from 'recharts';
 import theme from 'theme';
 import { Expense, Income, SaveCountry } from 'types/api.types';
-import { expenseToColor, getExpenseStackBar, getIncomeStackBar, getTotalExpenseStackBar, incomeToColor } from 'utils/chart.utils';
+import {
+  expenseToColor, getExpenseStackBar, getIncomeStackBar, getTotalExpenseStackBar, incomeToColor
+} from 'utils/chart.utils';
 import { formatNumber, numberComparator } from 'utils/format.utils';
 import { getTotalStableExpense, getTotalStableIncome, getTotalTotalExpenses } from 'utils/save.utils';
 
@@ -18,14 +22,15 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `grid-incomevsexpense-${ country.tag }` }>
+      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
+            key={ `grid-incomevsexpense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.incomeVsExpense' }) }
         </Typography>
         <BarChart
           width={ 600 } height={ 500 }
-          data={ [{ name: intl.formatMessage({ id: 'country.income' }), value: getTotalStableIncome(country) },
-            { name: intl.formatMessage({ id: 'country.expense' }), value: getTotalStableExpense(country) }] }
+          data={ [ { name: intl.formatMessage({ id: 'country.income' }), value: getTotalStableIncome(country) },
+            { name: intl.formatMessage({ id: 'country.expense' }), value: getTotalStableExpense(country) } ] }
           margin={ {
             top: 20,
             right: 30,
@@ -37,11 +42,11 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           <XAxis dataKey='name'/>
           <YAxis dataKey='value'/>
           <Tooltip formatter={ (value: number) => {
-            return [formatNumber(value), undefined];
+            return [ formatNumber(value), undefined ];
           } }/>
           <Bar dataKey='value' isAnimationActive={ false }>
-            { [{ name: intl.formatMessage({ id: 'country.income' }), value: getTotalStableIncome(country) },
-              { name: intl.formatMessage({ id: 'country.expense' }), value: getTotalStableExpense(country) }]
+            { [ { name: intl.formatMessage({ id: 'country.income' }), value: getTotalStableIncome(country) },
+              { name: intl.formatMessage({ id: 'country.expense' }), value: getTotalStableExpense(country) } ]
               .map((entry, index) => (
                 <>
                   <Cell fill={ index === 0 ? green[500] : red[500] } key={ `cell-${ index }` }/>
@@ -64,7 +69,8 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           </Bar>
         </BarChart>
       </Grid>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `grid-income-${ country.tag }` }>
+      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
+            key={ `grid-income-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.income' }) }
         </Typography>
@@ -81,16 +87,17 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           <CartesianGrid strokeDasharray='3 3'/>
           <XAxis dataKey='name'/>
           <YAxis/>
-          <Tooltip formatter={ (value: number, name: string) => ([`${ formatNumber(value) } (${ formatNumber(
+          <Tooltip formatter={ (value: number, name: string) => ([ `${ formatNumber(value) } (${ formatNumber(
             (100 * value) / getTotalStableIncome(country)) }%)`,
-            intl.formatMessage({ id: `country.income.${ name }` })]) }/>
+            intl.formatMessage({ id: `country.income.${ name }` }) ]) }/>
           {
             country.incomes &&
             Object.entries(country.incomes).filter((value, index) => index <= 7)
-              .filter(([, value]) => value > 0)
-              .sort(([, valueA], [, valueB]) => -numberComparator(valueA, valueB))
-              .map(([key, value]) => (
-                <Bar dataKey={ key } stackId='a' isAnimationActive={ false } fill={ incomeToColor(Income[key as keyof typeof Income]) }>
+              .filter(([ , value ]) => value > 0)
+              .sort(([ , valueA ], [ , valueB ]) => -numberComparator(valueA, valueB))
+              .map(([ key, value ]) => (
+                <Bar dataKey={ key } stackId='a' isAnimationActive={ false }
+                     fill={ incomeToColor(Income[key as keyof typeof Income]) }>
                   <LabelList dataKey={ key } position='middle' formatter={ (value: number) => {
                     return value / getTotalStableIncome(country) > 0.03 ? `${ formatNumber(value) } (${ formatNumber(
                       (100 * value) / getTotalStableIncome(country)) }%)` : '';
@@ -103,8 +110,10 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           <Table>
             <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>
               <TableRow>
-                <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.color' }) }</TableCell>
-                <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.type' }) }</TableCell>
+                <TableCell
+                  style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.color' }) }</TableCell>
+                <TableCell
+                  style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.type' }) }</TableCell>
                 <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
                   { intl.formatMessage({ id: 'common.value' }) }
                 </TableCell>
@@ -116,9 +125,9 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
             <TableBody>
               { country.incomes &&
                 Object.entries(country.incomes).filter((value, index) => index <= 7)
-                  .filter(([, value]) => value > 0)
-                  .sort(([, valueA], [, valueB]) => -numberComparator(valueA, valueB))
-                  .map(([key, value]) => (
+                  .filter(([ , value ]) => value > 0)
+                  .sort(([ , valueA ], [ , valueB ]) => -numberComparator(valueA, valueB))
+                  .map(([ key, value ]) => (
                     <TableRow
                       key={ `${ country }-income-${ key }` }
                     >
@@ -132,22 +141,31 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
                       </TableCell>
                       <TableCell>{ intl.formatMessage({ id: `country.income.${ key }` }) }</TableCell>
                       <TableCell align='right'>{ formatNumber(value) }</TableCell>
-                      <TableCell align='right'>{ `${ formatNumber((100 * value) / getTotalStableIncome(country)) }%` }</TableCell>
+                      <TableCell
+                        align='right'>{ `${ formatNumber((100 * value) / getTotalStableIncome(country)) }%` }</TableCell>
                     </TableRow>
                   )) }
-              <TableRow>
-                <TableCell colSpan={ 2 } align='right'>
-                  { intl.formatMessage({ id: 'common.total' }) }
+              <TableRow style={ { backgroundColor: theme.palette.primary.light } }>
+                <TableCell colSpan={ 2 } align='right' style={ { borderBottom: 'none' } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { intl.formatMessage({ id: 'common.total' }) }
+                  </Typography>
                 </TableCell>
-                <TableCell colSpan={ 2 }>
-                  { formatNumber(getTotalStableIncome(country)) }
+                <TableCell align='right' style={ { borderBottom: 'none' } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { formatNumber(getTotalStableIncome(country)) }
+                  </Typography>
                 </TableCell>
+                <TableCell style={ { borderBottom: 'none' } }/>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
       </Grid>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `grid-expense-${ country.tag }` }>
+      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
+            key={ `grid-expense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.expense' }) }
         </Typography>
@@ -164,16 +182,17 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           <CartesianGrid strokeDasharray='3 3'/>
           <XAxis dataKey='name'/>
           <YAxis/>
-          <Tooltip formatter={ (value: number, name: string) => ([`${ formatNumber(value) } (${ formatNumber(
+          <Tooltip formatter={ (value: number, name: string) => ([ `${ formatNumber(value) } (${ formatNumber(
             (100 * value) / getTotalStableExpense(country)) }%)`,
-            intl.formatMessage({ id: `country.expense.${ name }` })]) }/>
+            intl.formatMessage({ id: `country.expense.${ name }` }) ]) }/>
           {
             country.expenses &&
             Object.entries(country.expenses).filter((value, index) => index <= 8)
-              .filter(([, value]) => value > 0)
-              .sort(([, valueA], [, valueB]) => -numberComparator(valueA, valueB))
-              .map(([key, value]) => (
-                <Bar dataKey={ key } stackId='a' isAnimationActive={ false } fill={ expenseToColor(Expense[key as keyof typeof Expense]) }>
+              .filter(([ , value ]) => value > 0)
+              .sort(([ , valueA ], [ , valueB ]) => -numberComparator(valueA, valueB))
+              .map(([ key, value ]) => (
+                <Bar dataKey={ key } stackId='a' isAnimationActive={ false }
+                     fill={ expenseToColor(Expense[key as keyof typeof Expense]) }>
                   <LabelList dataKey={ key } position='middle' formatter={ (value: number) => {
                     return value / getTotalStableExpense(country) > 0.03 ? `${ formatNumber(value) } (${ formatNumber(
                       (100 * value) / getTotalStableExpense(country)) }%)` : '';
@@ -186,8 +205,10 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           <Table>
             <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>
               <TableRow>
-                <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.color' }) }</TableCell>
-                <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.type' }) }</TableCell>
+                <TableCell
+                  style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.color' }) }</TableCell>
+                <TableCell
+                  style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.type' }) }</TableCell>
                 <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>{ intl.formatMessage(
                   { id: 'common.value' }) }</TableCell>
                 <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>{ intl.formatMessage(
@@ -197,9 +218,9 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
             <TableBody>
               { country.expenses &&
                 Object.entries(country.expenses).filter((value, index) => index <= 8)
-                  .filter(([key, value]) => value > 0)
-                  .sort(([, valueA], [, valueB]) => -numberComparator(valueA, valueB))
-                  .map(([key, value]) => (
+                  .filter(([ key, value ]) => value > 0)
+                  .sort(([ , valueA ], [ , valueB ]) => -numberComparator(valueA, valueB))
+                  .map(([ key, value ]) => (
                     <TableRow key={ `${ country }-income-${ key }` }>
                       <TableCell align='center'>
                         <div style={ {
@@ -211,22 +232,31 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
                       </TableCell>
                       <TableCell>{ intl.formatMessage({ id: `country.expense.${ key }` }) }</TableCell>
                       <TableCell align='right'>{ formatNumber(value) }</TableCell>
-                      <TableCell align='right'>{ `${ formatNumber((100 * value) / getTotalStableExpense(country)) }%` }</TableCell>
+                      <TableCell
+                        align='right'>{ `${ formatNumber((100 * value) / getTotalStableExpense(country)) }%` }</TableCell>
                     </TableRow>
                   )) }
-              <TableRow>
-                <TableCell colSpan={ 2 } align='right'>
-                  { intl.formatMessage({ id: 'common.total' }) }
+              <TableRow style={ { backgroundColor: theme.palette.primary.light } }>
+                <TableCell colSpan={ 2 } align='right' style={ { borderBottom: 'none' } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { intl.formatMessage({ id: 'common.total' }) }
+                  </Typography>
                 </TableCell>
-                <TableCell colSpan={ 2 }>
-                  { formatNumber(getTotalStableExpense(country)) }
+                <TableCell align='right' style={ { borderBottom: 'none' } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { formatNumber(getTotalStableExpense(country)) }
+                  </Typography>
                 </TableCell>
+                <TableCell style={ { borderBottom: 'none' } }/>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
       </Grid>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: 8 } } key={ `grid-totalexpense-${ country.tag }` }>
+      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: 8 } }
+            key={ `grid-totalexpense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.totalExpense' }) }
         </Typography>
@@ -244,14 +274,15 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           <XAxis dataKey='name'/>
           <YAxis/>
           <Tooltip formatter={ (value: number, name: string) =>
-            ([`${ formatNumber(value) } (${ formatNumber((100 * value) / getTotalTotalExpenses(country)) }%)`,
-              intl.formatMessage({ id: `country.expense.${ name }` })]) }/>
+            ([ `${ formatNumber(value) } (${ formatNumber((100 * value) / getTotalTotalExpenses(country)) }%)`,
+              intl.formatMessage({ id: `country.expense.${ name }` }) ]) }/>
           {
             country.totalExpenses &&
-            Object.entries(country.totalExpenses).filter(([, value]) => value > 0)
-              .sort(([, valueA], [, valueB]) => -numberComparator(valueA, valueB))
-              .map(([key, value]) => (
-                <Bar dataKey={ key } stackId='a' isAnimationActive={ false } fill={ expenseToColor(Expense[key as keyof typeof Expense]) }>
+            Object.entries(country.totalExpenses).filter(([ , value ]) => value > 0)
+              .sort(([ , valueA ], [ , valueB ]) => -numberComparator(valueA, valueB))
+              .map(([ key, value ]) => (
+                <Bar dataKey={ key } stackId='a' isAnimationActive={ false }
+                     fill={ expenseToColor(Expense[key as keyof typeof Expense]) }>
                   <LabelList dataKey={ key } position='middle' formatter={ (value: number) => {
                     return value / getTotalTotalExpenses(country) > 0.02 ? `${ formatNumber(value) } (${ formatNumber(
                       (100 * value) / getTotalTotalExpenses(country)) }%)` : '';
@@ -280,9 +311,9 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
             </TableHead>
             <TableBody>
               { country.totalExpenses &&
-                Object.entries(country.totalExpenses).filter(([key, value]) => value > 0)
-                  .sort(([, valueA], [, valueB]) => -numberComparator(valueA, valueB))
-                  .map(([key, value]) => (
+                Object.entries(country.totalExpenses).filter(([ key, value ]) => value > 0)
+                  .sort(([ , valueA ], [ , valueB ]) => -numberComparator(valueA, valueB))
+                  .map(([ key, value ]) => (
                     <TableRow key={ `${ country }-total-expense-${ key }` }>
                       <TableCell align='center'>
                         <div style={ {
@@ -294,16 +325,24 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
                       </TableCell>
                       <TableCell>{ intl.formatMessage({ id: `country.expense.${ key }` }) }</TableCell>
                       <TableCell align='right'>{ formatNumber(value) }</TableCell>
-                      <TableCell align='right'>{ `${ formatNumber((100 * value) / getTotalTotalExpenses(country)) }%` }</TableCell>
+                      <TableCell
+                        align='right'>{ `${ formatNumber((100 * value) / getTotalTotalExpenses(country)) }%` }</TableCell>
                     </TableRow>
                   )) }
-              <TableRow>
-                <TableCell colSpan={ 2 } align='right'>
-                  { intl.formatMessage({ id: 'common.total' }) }
+              <TableRow style={ { backgroundColor: theme.palette.primary.light } }>
+                <TableCell colSpan={ 2 } align='right' style={ { borderBottom: 'none' } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { intl.formatMessage({ id: 'common.total' }) }
+                  </Typography>
                 </TableCell>
-                <TableCell colSpan={ 2 }>
-                  { formatNumber(getTotalTotalExpenses(country)) }
+                <TableCell align='right' style={ { borderBottom: 'none' } }>
+                  <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                              style={ { fontWeight: 'bold' } }>
+                    { formatNumber(getTotalTotalExpenses(country)) }
+                  </Typography>
                 </TableCell>
+                <TableCell style={ { borderBottom: 'none' } }/>
               </TableRow>
             </TableBody>
           </Table>

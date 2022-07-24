@@ -265,7 +265,7 @@ export enum PowerSpent {
   OTHER_44 = 'OTHER_44',
   FORCING_MARCH = 'FORCING_MARCH',
   HIRING_GENERAL = 'HIRING_GENERAL',
-  FORCE_CULTURE = 'FORCE_CULTURE',
+  FORCE_CULTURE = 'FORCE_CULTURE', //Failed seems to be hiring generals
 }
 
 export enum Expense {

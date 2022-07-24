@@ -1,10 +1,10 @@
-import { blue, blueGrey, deepOrange, green, grey, lime, orange, red, teal, yellow } from '@mui/material/colors';
+import {blue, blueGrey, deepOrange, green, grey, orange, red, teal} from '@mui/material/colors';
 import amber from '@mui/material/colors/amber';
-import { intl } from 'index';
-import { Expense, Income, PowerSpent, SaveCountry, SaveEstate } from 'types/api.types';
-import { MapSave } from 'types/map.types';
-import { colorToHex, numberComparator } from 'utils/format.utils';
-import { getEstate, getEstatesName } from 'utils/save.utils';
+import {intl} from 'index';
+import {Expense, Income, PowerSpent, SaveCountry, SaveEstate} from 'types/api.types';
+import {MapSave} from 'types/map.types';
+import {colorToHex, numberComparator} from 'utils/format.utils';
+import {getEstate, getEstatesName} from 'utils/save.utils';
 
 export function incomeToColor(income: Income): string {
   switch (income) {

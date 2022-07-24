@@ -1,4 +1,6 @@
-import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, useTheme } from '@mui/material';
+import {
+  Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, useTheme
+} from '@mui/material';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { SaveCountry } from 'types/api.types';
@@ -49,7 +51,10 @@ function CountryLeaderTab({ country, save }: CountryLeaderTabProps) {
                 {
                   leaders.map((leader, i) => (
                       <TableRow key={ `${ country.tag }-leader-${ i }` }>
-                        <TableCell style={ { backgroundColor: theme.palette.primary.light, borderBottomColor: theme.palette.primary.main } }>
+                        <TableCell style={ {
+                          backgroundColor: theme.palette.primary.light,
+                          borderBottomColor: theme.palette.primary.main
+                        } }>
                           { leader.name }
                         </TableCell>
                         <TableCell>
@@ -90,17 +95,12 @@ function CountryLeaderTab({ country, save }: CountryLeaderTabProps) {
                 </TableCell>
                 <TableCell>
                   {
-                    leaders.filter(l => l.duration !== undefined).length > 0 &&
-                    `${ formatNumber(leaders.map(l => l.shock * (l.duration ?? 0)).reduce((a, b) => a + b, 0) /
-                      leaders.map(l => (l.duration ?? 0)).reduce((a, b) => a + b, 0)) } /
-                  ${ formatNumber(leaders.map(l => l.fire * (l.duration ?? 0)).reduce((a, b) => a + b, 0) /
-                      leaders.map(l => (l.duration ?? 0)).reduce((a, b) => a + b, 0)) } /
-                  ${ formatNumber(leaders.map(l => l.manuever * (l.duration ?? 0)).reduce((a, b) => a + b, 0) /
-                      leaders.map(l => (l.duration ?? 0)).reduce((a, b) => a + b, 0)) } /
-                  ${ formatNumber(leaders.map(l => l.siege * (l.duration ?? 0)).reduce((a, b) => a + b, 0) /
-                      leaders.map(l => (l.duration ?? 0)).reduce((a, b) => a + b, 0)) }
-                  (${ formatNumber(leaders.map(l => (l.shock + l.fire + l.manuever + l.siege) * (l.duration ?? 0)).reduce((a, b) => a + b, 0) /
-                      leaders.map(l => (l.duration ?? 0)).reduce((a, b) => a + b, 0)) })`
+                    leaders.length > 0 &&
+                    `${ formatNumber(leaders.map(l => l.shock).reduce((a, b) => a + b, 0) / leaders.length) } /
+                  ${ formatNumber(leaders.map(l => l.fire).reduce((a, b) => a + b, 0) / leaders.length) } /
+                  ${ formatNumber(leaders.map(l => l.manuever).reduce((a, b) => a + b, 0) / leaders.length) } /
+                  ${ formatNumber(leaders.map(l => l.siege).reduce((a, b) => a + b, 0) / leaders.length) }
+                  (${ formatNumber(leaders.map(l => (l.shock + l.fire + l.manuever + l.siege)).reduce((a, b) => a + b, 0) / leaders.length) })`
                   }
                 </TableCell>
               </TableRow>

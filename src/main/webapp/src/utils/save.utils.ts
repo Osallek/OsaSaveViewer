@@ -1,13 +1,15 @@
 import { eu4Locale } from 'index';
 import {
-  ColorNamedImageLocalised, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save, SaveArea, SaveCountry,
-  SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMonarch, SaveProvince, SaveProvinceHistory, SaveReligion
+  ColorNamedImageLocalised, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised,
+  PowerSpent, Save, SaveArea, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup,
+  SaveLeader, SaveMonarch, SaveProvince, SaveProvinceHistory, SaveReligion
 } from 'types/api.types';
 import { CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
 import {
-  getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getLeaderPersonalityUrl, getPersonalityUrl, getPrivilegeUrl, getReligionUrl
+  getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getLeaderPersonalityUrl, getPersonalityUrl,
+  getPrivilegeUrl, getReligionUrl
 } from 'utils/data.utils';
-import { capitalize, numberComparator, toRecord } from 'utils/format.utils';
+import { capitalize, numberComparator, stringComparator, toRecord } from 'utils/format.utils';
 
 export const fakeTag = "---";
 
@@ -62,7 +64,7 @@ function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHist
       let buildings: Array<string> = (history && history.buildings) ?? [];
 
       if (h.buildings) {
-        Object.entries(h.buildings).forEach(([key, value]) => {
+        Object.entries(h.buildings).forEach(([ key, value ]) => {
           if (value) {
             buildings.concat(key);
           } else {
@@ -399,7 +401,7 @@ function getCHistoryInternal(country: SaveCountry, date: string): CountryHistory
       let ideasLevel: Record<string, string> = (history && history.ideasLevel) ?? {};
 
       if (h.ideasLevel) {
-        Object.entries(h.ideasLevel).forEach(([key, value]) => {
+        Object.entries(h.ideasLevel).forEach(([ key, value ]) => {
           if (value) {
             ideasLevel[key] = h.date;
           } else {
@@ -542,7 +544,9 @@ export function getRank(save: MapSave, country: SaveCountry, mapper: (country: S
 }
 
 export function getMonarchs(country: SaveCountry): Array<SaveMonarch> {
-  return country.history.map(h => h.monarch).filter(m => m !== undefined) as Array<SaveMonarch>;
+  const array = country.history.map(h => h.monarch).filter(m => m !== undefined) as Array<SaveMonarch>;
+
+  return array.sort((a, b) => stringComparator(a.monarchDate ?? '', b.monarchDate ?? ''));
 }
 
 export function getLeaders(country: SaveCountry): Array<SaveLeader> {
@@ -554,5 +558,170 @@ export function getLeaders(country: SaveCountry): Array<SaveLeader> {
     }
   });
 
-  return leaders;
+  return leaders.sort((a, b) => stringComparator(a.activation ?? '', b.activation ?? ''));
+}
+
+export function isAdm(powerSpent: PowerSpent): boolean {
+  switch (powerSpent) {
+    case PowerSpent.IDEAS:
+    case PowerSpent.TECHNOLOGY:
+    case PowerSpent.DEVELOPMENT:
+    case PowerSpent.REDUCE_INFLATION:
+    case PowerSpent.MOVE_CAPITAL:
+    case PowerSpent.STABILITY:
+    case PowerSpent.CORING:
+    case PowerSpent.PROMOTE_FACTION:
+    case PowerSpent.INCREASE_TARIFFS:
+    case PowerSpent.DECREASE_TARIFFS:
+    case PowerSpent.OTHER_44:
+      return true;
+
+    case PowerSpent.USELESS_BUY_GENERAL:
+    case PowerSpent.USELESS_BUY_ADMIRAL:
+    case PowerSpent.USELESS_BUY_CONQUISTADOR:
+    case PowerSpent.USELESS_FORCE_MARCH:
+    case PowerSpent.ASSAULTING:
+    case PowerSpent.SEIZE_COLONY:
+    case PowerSpent.BURN_COLONY:
+    case PowerSpent.KILL_NATIVES:
+    case PowerSpent.SCORCHING_EARTH:
+    case PowerSpent.PEACE_DEAL:
+    case PowerSpent.USELESS_BUY_EXPLORER:
+    case PowerSpent.REMOVE_RIVALRY:
+    case PowerSpent.USELESS_19:
+    case PowerSpent.CULTURE_CONVERSION:
+    case PowerSpent.HARSH_TREATMENT:
+    case PowerSpent.REDUCING_WAR_EXHAUSTION:
+    case PowerSpent.USELESS_24:
+    case PowerSpent.MERCANTILISM:
+    case PowerSpent.MOVE_TRADE_CAPITAL:
+    case PowerSpent.CREATE_TRADE_POST:
+    case PowerSpent.SORTIE_FROM_SIEGE:
+    case PowerSpent.USELESS_31:
+    case PowerSpent.SET_PRIMARY_CULTURE:
+    case PowerSpent.PROMOTE_CULTURE:
+    case PowerSpent.DEMOTE_CULTURE:
+    case PowerSpent.STRENGTHEN_GOVERNMENT:
+    case PowerSpent.MILITARIZATION:
+    case PowerSpent.OTHER_37:
+    case PowerSpent.BARRAGING:
+    case PowerSpent.SIBERIAN_FRONTIER:
+    case PowerSpent.USELESS_40:
+    case PowerSpent.BUILD_SUPPLY_DEPOT:
+    case PowerSpent.FORCING_MARCH:
+    case PowerSpent.HIRING_GENERAL:
+    case PowerSpent.FORCE_CULTURE:
+    case PowerSpent.NAVAL_BARRAGING:
+      return false;
+  }
+}
+
+export function isDip(powerSpent: PowerSpent): boolean {
+  switch (powerSpent) {
+    case PowerSpent.IDEAS:
+    case PowerSpent.TECHNOLOGY:
+    case PowerSpent.DEVELOPMENT:
+    case PowerSpent.PEACE_DEAL:
+    case PowerSpent.REMOVE_RIVALRY:
+    case PowerSpent.CULTURE_CONVERSION:
+    case PowerSpent.REDUCING_WAR_EXHAUSTION:
+    case PowerSpent.PROMOTE_FACTION:
+    case PowerSpent.MERCANTILISM:
+    case PowerSpent.MOVE_TRADE_CAPITAL:
+    case PowerSpent.CREATE_TRADE_POST:
+    case PowerSpent.SET_PRIMARY_CULTURE:
+    case PowerSpent.PROMOTE_CULTURE:
+    case PowerSpent.DEMOTE_CULTURE:
+    case PowerSpent.SIBERIAN_FRONTIER:
+    case PowerSpent.OTHER_44:
+    case PowerSpent.FORCE_CULTURE:
+      return true;
+
+    case PowerSpent.STABILITY:
+    case PowerSpent.USELESS_BUY_GENERAL:
+    case PowerSpent.USELESS_BUY_ADMIRAL:
+    case PowerSpent.USELESS_BUY_CONQUISTADOR:
+    case PowerSpent.USELESS_BUY_EXPLORER:
+    case PowerSpent.USELESS_FORCE_MARCH:
+    case PowerSpent.ASSAULTING:
+    case PowerSpent.SEIZE_COLONY:
+    case PowerSpent.BURN_COLONY:
+    case PowerSpent.KILL_NATIVES:
+    case PowerSpent.SCORCHING_EARTH:
+    case PowerSpent.REDUCE_INFLATION:
+    case PowerSpent.MOVE_CAPITAL:
+    case PowerSpent.CORING:
+    case PowerSpent.USELESS_19:
+    case PowerSpent.HARSH_TREATMENT:
+    case PowerSpent.USELESS_24:
+    case PowerSpent.DECREASE_TARIFFS:
+    case PowerSpent.INCREASE_TARIFFS:
+    case PowerSpent.SORTIE_FROM_SIEGE:
+    case PowerSpent.USELESS_31:
+    case PowerSpent.STRENGTHEN_GOVERNMENT:
+    case PowerSpent.MILITARIZATION:
+    case PowerSpent.OTHER_37:
+    case PowerSpent.BARRAGING:
+    case PowerSpent.USELESS_40:
+    case PowerSpent.BUILD_SUPPLY_DEPOT:
+    case PowerSpent.NAVAL_BARRAGING:
+    case PowerSpent.FORCING_MARCH:
+    case PowerSpent.HIRING_GENERAL:
+      return false;
+  }
+}
+
+export function isMil(powerSpent: PowerSpent): boolean {
+  switch (powerSpent) {
+    case PowerSpent.IDEAS:
+    case PowerSpent.TECHNOLOGY:
+    case PowerSpent.DEVELOPMENT:
+    case PowerSpent.ASSAULTING:
+    case PowerSpent.SEIZE_COLONY:
+    case PowerSpent.BURN_COLONY:
+    case PowerSpent.KILL_NATIVES:
+    case PowerSpent.SCORCHING_EARTH:
+    case PowerSpent.HARSH_TREATMENT:
+    case PowerSpent.PROMOTE_FACTION:
+    case PowerSpent.SORTIE_FROM_SIEGE:
+    case PowerSpent.STRENGTHEN_GOVERNMENT:
+    case PowerSpent.MILITARIZATION:
+    case PowerSpent.BARRAGING:
+    case PowerSpent.BUILD_SUPPLY_DEPOT:
+    case PowerSpent.NAVAL_BARRAGING:
+    case PowerSpent.OTHER_44:
+    case PowerSpent.FORCING_MARCH:
+    case PowerSpent.FORCE_CULTURE:
+    case PowerSpent.HIRING_GENERAL:
+      return true;
+
+    case PowerSpent.USELESS_24:
+    case PowerSpent.INCREASE_TARIFFS:
+    case PowerSpent.MERCANTILISM:
+    case PowerSpent.DECREASE_TARIFFS:
+    case PowerSpent.MOVE_TRADE_CAPITAL:
+    case PowerSpent.CREATE_TRADE_POST:
+    case PowerSpent.REDUCING_WAR_EXHAUSTION:
+    case PowerSpent.STABILITY:
+    case PowerSpent.USELESS_BUY_GENERAL:
+    case PowerSpent.USELESS_BUY_ADMIRAL:
+    case PowerSpent.USELESS_BUY_CONQUISTADOR:
+    case PowerSpent.USELESS_FORCE_MARCH:
+    case PowerSpent.USELESS_BUY_EXPLORER:
+    case PowerSpent.PEACE_DEAL:
+    case PowerSpent.REDUCE_INFLATION:
+    case PowerSpent.MOVE_CAPITAL:
+    case PowerSpent.CORING:
+    case PowerSpent.REMOVE_RIVALRY:
+    case PowerSpent.USELESS_19:
+    case PowerSpent.CULTURE_CONVERSION:
+    case PowerSpent.USELESS_31:
+    case PowerSpent.SET_PRIMARY_CULTURE:
+    case PowerSpent.PROMOTE_CULTURE:
+    case PowerSpent.DEMOTE_CULTURE:
+    case PowerSpent.OTHER_37:
+    case PowerSpent.SIBERIAN_FRONTIER:
+    case PowerSpent.USELESS_40:
+      return false;
+  }
 }

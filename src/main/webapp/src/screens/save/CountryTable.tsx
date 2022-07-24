@@ -1,7 +1,8 @@
 import { FilterList, Launch } from '@mui/icons-material';
 import {
-  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, TableSortLabel, TextField, Typography, useTheme
+  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, Grid, IconButton, Paper,
+  Popper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TextField, Typography,
+  useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -14,8 +15,9 @@ import { Expense, Income, Losses, PowerSpent, SaveCountry } from 'types/api.type
 import { MapSave } from 'types/map.types';
 import { formatDate, formatNumber, numberComparator, round, round1000, stringComparator } from 'utils/format.utils';
 import {
-  getCountries, getCountrysFlag, getCountrysName, getCRealDev, getDiscipline, getExpense, getIncome, getLoans, getLosses, getManaSpent, getNbImprovements,
-  getPlayer, getStableIncome, getTerritory, getTotalExpense, getTotalExpenses, getTotalIncome, getTotalTotalExpenses
+  getCountries, getCountrysFlag, getCountrysName, getCRealDev, getDiscipline, getExpense, getIncome, getLoans,
+  getLosses, getManaSpent, getNbImprovements, getPlayer, getStableIncome, getTerritory, getTotalExpense,
+  getTotalExpenses, getTotalIncome, getTotalTotalExpenses, isAdm, isDip, isMil
 } from 'utils/save.utils';
 
 const onlyPlayers = 'onlyPlayers';
@@ -190,7 +192,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'prestige',
           label: intl.formatMessage({ id: 'country.prestige' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.prestige ?? 0) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.prestige ?? 0) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.prestige ?? 0,
           filterValues: save => Array.from(new Set<number>(
             getCountries(save).map(country => (country.prestige ?? 0) | 0).sort(numberComparator))),
@@ -200,7 +203,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'innovativeness',
           label: intl.formatMessage({ id: 'country.innovativeness' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.innovativeness ?? 0) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.innovativeness ?? 0) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.innovativeness ?? 0,
           filterValues: save => Array.from(new Set<number>(
             getCountries(save).map(country => (country.innovativeness ?? 0) | 0).sort(numberComparator))),
@@ -210,7 +214,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'pp',
           label: intl.formatMessage({ id: 'country.powerProjection' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.powerProjection ?? 0) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.powerProjection ?? 0) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.powerProjection ?? 0,
           filterValues: save => Array.from(new Set<number>(
             getCountries(save).map(country => (country.powerProjection ?? 0) | 0).sort(numberComparator))),
@@ -220,7 +225,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'greatpower',
           label: intl.formatMessage({ id: 'country.greatPower' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ country.greatPowerRank ?? '' }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ country.greatPowerRank ?? '' }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.greatPowerRank,
           filterValues: save => Array.from(
             new Set<number>(
@@ -237,7 +243,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'income',
           label: intl.formatMessage({ id: 'country.income' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.income) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.income) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.income ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
@@ -248,7 +255,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'loans',
           label: intl.formatMessage({ id: 'country.loans' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(getLoans(country)) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(getLoans(country)) }</Typography>,
           comparatorValue: (save, selectedDate, country) => getLoans(country),
           filterValues: save => Array.from(
             new Set<number>(getCountries(save).map(country => getLoans(country) | 0).sort(numberComparator))),
@@ -258,7 +266,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'inflation',
           label: intl.formatMessage({ id: 'country.inflation' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.inflation) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.inflation) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.inflation ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
@@ -269,7 +278,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'mercantilism',
           label: intl.formatMessage({ id: 'country.mercantilism' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.mercantilism) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.mercantilism) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.mercantilism ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
@@ -280,7 +290,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'corruption',
           label: intl.formatMessage({ id: 'country.corruption' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.corruption) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.corruption) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.corruption ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
@@ -291,7 +302,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'territory',
           label: intl.formatMessage({ id: 'country.territory' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(getTerritory(country)) + '%' }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(getTerritory(country)) + '%' }</Typography>,
           comparatorValue: (save, selectedDate, country) => getTerritory(country),
           filterValues: save => Array.from(
             new Set<number>(
@@ -302,7 +314,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'lastBankrupt',
           label: intl.formatMessage({ id: 'country.lastBankrupt' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatDate(country.lastBankrupt) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatDate(country.lastBankrupt) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.lastBankrupt,
           filterValues: save => Array.from(
             new Set<number>(getCountries(save).filter(country => country.lastBankrupt)
@@ -320,7 +333,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'armyMorale',
           label: intl.formatMessage({ id: 'country.armyMorale' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.armyMorale) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.armyMorale) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.armyMorale,
           filterValues: save => Array.from(
             new Set<number>(getCountries(save).map(country => country.armyMorale | 0).sort(numberComparator))),
@@ -330,7 +344,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'discipline',
           label: intl.formatMessage({ id: 'country.discipline' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(getDiscipline(country)) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(getDiscipline(country)) }</Typography>,
           comparatorValue: (save, selectedDate, country) => getDiscipline(country),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => getDiscipline(country) | 0).sort(numberComparator))),
@@ -340,7 +355,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'armyLimit',
           label: intl.formatMessage({ id: 'country.armyLimit' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.armyLimit) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.armyLimit) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.armyLimit,
           filterValues: save => Array.from(
             new Set<number>(
@@ -351,7 +367,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'maxManpower',
           label: intl.formatMessage({ id: 'country.maxManpower' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.maxManpower) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.maxManpower) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.maxManpower,
           filterValues: save => Array.from(
             new Set<number>(
@@ -362,7 +379,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'armyTradition',
           label: intl.formatMessage({ id: 'country.armyTradition' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.armyTradition ?? 0) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.armyTradition ?? 0) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.armyTradition ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
@@ -373,7 +391,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'armyProfessionalism',
           label: intl.formatMessage({ id: 'country.armyProfessionalism' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber((country.armyProfessionalism ?? 0) * 100) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber((country.armyProfessionalism ?? 0) * 100) }</Typography>,
           comparatorValue: (save, selectedDate, country) => (country.armyProfessionalism ?? 0) * 100,
           filterValues: save => Array.from(
             new Set<number>(
@@ -391,7 +410,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'navalMorale',
           label: intl.formatMessage({ id: 'country.navalMorale' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.navalMorale) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.navalMorale) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.navalMorale,
           filterValues: save => Array.from(
             new Set<number>(getCountries(save).map(country => country.navalMorale | 0).sort(numberComparator))),
@@ -401,7 +421,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'navalLimit',
           label: intl.formatMessage({ id: 'country.navalLimit' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.navalLimit) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.navalLimit) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.navalLimit,
           filterValues: save => Array.from(
             new Set<number>(
@@ -412,7 +433,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'maxSailors',
           label: intl.formatMessage({ id: 'country.maxSailors' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.maxSailors / 1000) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.maxSailors / 1000) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.maxSailors / 1000,
           filterValues: save => Array.from(
             new Set<number>(
@@ -423,7 +445,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'navalTradition',
           label: intl.formatMessage({ id: 'country.navalTradition' }),
           minWidth: 100,
-          value: (save, selectedDate, country) => <Typography variant='body1'>{ formatNumber(country.navyTradition ?? 0) }</Typography>,
+          value: (save, selectedDate, country) => <Typography
+            variant='body1'>{ formatNumber(country.navyTradition ?? 0) }</Typography>,
           comparatorValue: (save, selectedDate, country) => country.navyTradition ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
@@ -604,14 +627,25 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           value: (save, selectedDate, country) => (
             <>
               <Grid container flexDirection='column' alignItems='center'>
-                <Typography variant='body1'>
-                  { `${ formatNumber(country.admPowerSpent ? country.admPowerSpent[value] : 0) } / 
-                ${ formatNumber(country.dipPowerSpent ? country.dipPowerSpent[value] : 0) } / 
-                ${ formatNumber(country.milPowerSpent ? country.milPowerSpent[value] : 0) }` }
-                </Typography>
-                <Typography variant='body1'>
-                  { `(${ formatNumber(getManaSpent(country, value)) })` }
-                </Typography>
+                {
+                  ((isAdm(value) ? 1 : 0) + (isDip(value) ? 1 : 0) + (isMil(value) ? 1 : 0) > 1) ?
+                    (
+                      <>
+                        <Typography variant='body1'>
+                          { `${ formatNumber(country.admPowerSpent ? country.admPowerSpent[value] : 0) } / ${ formatNumber(country.dipPowerSpent ? country.dipPowerSpent[value] : 0) } / ${ formatNumber(country.milPowerSpent ? country.milPowerSpent[value] : 0) }` }
+                        </Typography>
+                        <Typography variant='body1'>
+                          { `(${ formatNumber(getManaSpent(country, value)) })` }
+                        </Typography>
+                      </>
+                    )
+                    :
+                    (
+                      <Typography variant='body1'>
+                        { `${ formatNumber((country.admPowerSpent && country.admPowerSpent[value]) ?? (country.dipPowerSpent && country.dipPowerSpent[value]) ?? (country.milPowerSpent && country.milPowerSpent[value])) }` }
+                      </Typography>
+                    )
+                }
               </Grid>
             </>
           ),
@@ -766,15 +800,15 @@ function CountryTable({ save, type, selectedDate, visible }: CountryTableProps) 
   const intl = useIntl();
   const theme = useTheme();
 
-  const [columns, setColumns] = useState<Column[]>([]);
-  const [orderBy, setOrderBy] = useState<Column | undefined>(undefined);
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [countries, setCountries] = useState<SaveCountry[]>([]);
+  const [ columns, setColumns ] = useState<Column[]>([]);
+  const [ orderBy, setOrderBy ] = useState<Column | undefined>(undefined);
+  const [ order, setOrder ] = useState<'asc' | 'desc'>('asc');
+  const [ countries, setCountries ] = useState<SaveCountry[]>([]);
 
-  const [filters, setFilters] = useState<Record<string, (string | number)[]>>({});
-  const [filterPopoverOpen, setFilterPopoverOpen] = useState<boolean>(false);
-  const [filterPopoverLoc, setFilterPopoverLoc] = useState<number[]>([0, 0]);
-  const [filterPopoverColumn, setFilterPopoverColumn] = useState<Column>(columns[0]);
+  const [ filters, setFilters ] = useState<Record<string, (string | number)[]>>({});
+  const [ filterPopoverOpen, setFilterPopoverOpen ] = useState<boolean>(false);
+  const [ filterPopoverLoc, setFilterPopoverLoc ] = useState<number[]>([ 0, 0 ]);
+  const [ filterPopoverColumn, setFilterPopoverColumn ] = useState<Column>(columns[0]);
   const filterPopoverDiv = useRef<HTMLDivElement>(null);
 
   const columnsRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -806,7 +840,7 @@ function CountryTable({ save, type, selectedDate, visible }: CountryTableProps) 
           return true;
         }
 
-        for (const [key, value] of Object.entries(filters)) {
+        for (const [ key, value ] of Object.entries(filters)) {
           if (key === onlyPlayers && (country.players === undefined || country.players.length === 0)) {
             return false;
           } else {
@@ -852,11 +886,11 @@ function CountryTable({ save, type, selectedDate, visible }: CountryTableProps) 
         return 0;
       })
     )
-  }, [columns, filters, order, orderBy, save, selectedDate, type]);
+  }, [ columns, filters, order, orderBy, save, selectedDate, type ]);
 
   useEffect(() => {
     columnsRefs.current = columnsRefs.current.slice(0, columns.length);
-  }, [columns]);
+  }, [ columns ]);
 
   useEffect(() => {
     setColumns(getColumns(type, save));
@@ -864,12 +898,12 @@ function CountryTable({ save, type, selectedDate, visible }: CountryTableProps) 
     if (listRef.current) {
       listRef.current.scrollToItem(0, 'start');
     }
-  }, [type, save]);
+  }, [ type, save ]);
 
   useEffect(() => {
     setOrderBy(columns[columns.length - 1]);
     setOrder('asc');
-  }, [columns]);
+  }, [ columns ]);
 
   const renderRow = ({ index, style }: ListChildComponentProps<SaveCountry[]>) => {
     const country = countries[index];
@@ -974,7 +1008,7 @@ function CountryTable({ save, type, selectedDate, visible }: CountryTableProps) 
                                   } else {
                                     setFilters(prevState => ({
                                       ...prevState,
-                                      [onlyPlayers]: ['true']
+                                      [onlyPlayers]: [ 'true' ]
                                     }));
                                   }
                                 } }/>
@@ -991,10 +1025,11 @@ function CountryTable({ save, type, selectedDate, visible }: CountryTableProps) 
                     key={ column.id }
                     style={ { minWidth: column.minWidth, backgroundColor: theme.palette.primary.light } }
                   >
-                    <Grid container alignItems='center' ref={ el => columnsRefs.current[index] = el } style={ { flexFlow: 'nowrap' } }>
+                    <Grid container alignItems='center' ref={ el => columnsRefs.current[index] = el }
+                          style={ { flexFlow: 'nowrap' } }>
                       <IconButton
                         onClick={ (e) => {
-                          setFilterPopoverLoc([e.clientX, e.clientY + 25]);
+                          setFilterPopoverLoc([ e.clientX, e.clientY + 25 ]);
                           setFilterPopoverOpen(true);
                           setFilterPopoverColumn(column);
                         } }
