@@ -1,9 +1,7 @@
-import {
-  Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, useTheme
-} from '@mui/material';
-import React from 'react';
+import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { SaveCountry } from 'types/api.types';
+import { SaveCountry, SaveLeader } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { formatDate, formatDuration, formatNumber } from 'utils/format.utils';
 import { getLeaderPersonalityImage, getLeaderPersonalityName, getLeaders } from 'utils/save.utils';
@@ -17,7 +15,11 @@ function CountryLeaderTab({ country, save }: CountryLeaderTabProps) {
   const intl = useIntl();
   const theme = useTheme();
 
-  const leaders = getLeaders(country);
+  const [leaders, setLeaders] = useState<Array<SaveLeader>>([]);
+
+  useEffect(() => {
+    setLeaders(getLeaders(country));
+  }, [country]);
 
   return (
     <>
@@ -55,7 +57,9 @@ function CountryLeaderTab({ country, save }: CountryLeaderTabProps) {
                           backgroundColor: theme.palette.primary.light,
                           borderBottomColor: theme.palette.primary.main
                         } }>
-                          { leader.name }
+                          <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                            { leader.name }
+                          </Typography>
                         </TableCell>
                         <TableCell>
                           { formatDate(leader.activation) }

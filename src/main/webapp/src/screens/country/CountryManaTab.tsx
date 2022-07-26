@@ -82,51 +82,51 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.MANA_SPENT' }) }
         </Typography>
-        <PieChart width={ 550 } height={ 500 }>
-          <Legend verticalAlign="top" height={ 36 } content={
-            <Typography variant='h6'>
-              { intl.formatMessage({ id: 'country.mana.adm' }) }
-            </Typography>
-          }/>
-          <Pie
-            activeIndex={ activeIndex[0] }
-            activeShape={ props => renderActiveShape(props, total) }
-            data={ data }
-            innerRadius={ 90 }
-            outerRadius={ 110 }
-            dataKey='adm'
-            onMouseEnter={ (_, index) => {
-              setActiveIndex(prevState => [index, prevState[1], prevState[2]]);
-            } }
-          >
-            { data.map((entry, index) => (
-              <Cell key={ `cell-${ index }` } fill={ powerSpentToColor(entry.type) }/>
-            )) }
-          </Pie>
-        </PieChart>
-        <PieChart width={ 550 } height={ 500 }>
-          <Legend verticalAlign="top" height={ 36 } content={
-            <Typography variant='h6'>
-              { intl.formatMessage({ id: 'country.mana.dip' }) }
-            </Typography>
-          }/>
-          <Pie
-            activeIndex={ activeIndex[1] }
-            activeShape={ props => renderActiveShape(props, total) }
-            data={ data }
-            innerRadius={ 90 }
-            outerRadius={ 110 }
-            dataKey='dip'
-            onMouseEnter={ (_, index) => {
-              setActiveIndex(prevState => [prevState[0], index, prevState[2]]);
-            } }
-          >
-            { data.map((entry, index) => (
-              <Cell key={ `cell-${ index }` } fill={ powerSpentToColor(entry.type) }/>
-            )) }
-          </Pie>
-        </PieChart>
         <Grid container style={ { width: '100%', justifyContent: 'center' } }>
+          <PieChart width={ 550 } height={ 500 }>
+            <Legend verticalAlign="top" height={ 36 } content={
+              <Typography variant='h6'>
+                { intl.formatMessage({ id: 'country.mana.adm' }) }
+              </Typography>
+            }/>
+            <Pie
+              activeIndex={ activeIndex[0] }
+              activeShape={ props => renderActiveShape(props, total) }
+              data={ data }
+              innerRadius={ 90 }
+              outerRadius={ 110 }
+              dataKey='adm'
+              onMouseEnter={ (_, index) => {
+                setActiveIndex(prevState => [index, prevState[1], prevState[2]]);
+              } }
+            >
+              { data.map((entry, index) => (
+                <Cell key={ `cell-${ index }` } fill={ powerSpentToColor(entry.type) }/>
+              )) }
+            </Pie>
+          </PieChart>
+          <PieChart width={ 550 } height={ 500 }>
+            <Legend verticalAlign="top" height={ 36 } content={
+              <Typography variant='h6'>
+                { intl.formatMessage({ id: 'country.mana.dip' }) }
+              </Typography>
+            }/>
+            <Pie
+              activeIndex={ activeIndex[1] }
+              activeShape={ props => renderActiveShape(props, total) }
+              data={ data }
+              innerRadius={ 90 }
+              outerRadius={ 110 }
+              dataKey='dip'
+              onMouseEnter={ (_, index) => {
+                setActiveIndex(prevState => [prevState[0], index, prevState[2]]);
+              } }
+            >
+              { data.map((entry, index) => (
+                <Cell key={ `cell-${ index }` } fill={ powerSpentToColor(entry.type) }/>
+              )) }
+            </Pie>
+          </PieChart>
           <PieChart width={ 550 } height={ 500 }>
             <Legend verticalAlign="top" height={ 36 } content={
               <Typography variant='h6'>

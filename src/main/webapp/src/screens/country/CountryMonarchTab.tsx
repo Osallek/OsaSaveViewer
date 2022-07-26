@@ -1,4 +1,4 @@
-import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, useTheme } from '@mui/material';
+import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { SaveCountry, SaveMonarch } from 'types/api.types';
@@ -53,8 +53,13 @@ function CountryMonarchTab({ country, save }: CountryMonarchTabProps) {
                 {
                   monarchs.map((monarch, i) => (
                       <TableRow key={ `monarch-${ country.tag }-${ i }` }>
-                        <TableCell style={ { backgroundColor: theme.palette.primary.light, borderBottomColor: theme.palette.primary.main } }>
-                          { monarch.name }
+                        <TableCell style={ {
+                          backgroundColor: theme.palette.primary.light,
+                          borderBottomColor: theme.palette.primary.main
+                        } }>
+                          <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
+                            { monarch.name }
+                          </Typography>
                         </TableCell>
                         <TableCell>
                           { formatDate(monarch.monarchDate) }

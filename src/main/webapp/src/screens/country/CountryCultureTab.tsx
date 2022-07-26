@@ -1,4 +1,4 @@
-import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
@@ -6,9 +6,9 @@ import { getRankDisplay } from 'screens/country/CountryMilitaryTab';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { getReligionsPie, ReligionPie } from 'utils/chart.utils';
+import { CulturePie, getCulturesPie } from 'utils/chart.utils';
 import { formatNumber, toRecord } from 'utils/format.utils';
-import { getDevReligion, getNbReligion, getProvinces, getRank, getReligionImage } from 'utils/save.utils';
+import { getDevCulture, getNbCulture, getProvinces, getRank } from 'utils/save.utils';
 
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
@@ -57,29 +57,29 @@ const renderActiveShape = (props: any) => {
   return g;
 };
 
-interface CountryReligionTabProps {
+interface CountryCultureTabProps {
   country: SaveCountry;
   save: MapSave;
 }
 
-function CountryReligionTab({ country, save }: CountryReligionTabProps) {
+function CountryCultureTab({ country, save }: CountryCultureTabProps) {
   const intl = useIntl();
 
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [religions, setReligions] = useState<Array<ReligionPie>>([]);
+  const [cultures, setCultures] = useState<Array<CulturePie>>([]);
   const [nbProvinces, setNbProvinces] = useState<number>(0);
   const [ranks, setRanks] = useState<Record<string, number>>({});
   const [devRanks, setDevRanks] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    setReligions(getReligionsPie(country, save));
+    setCultures(getCulturesPie(country, save));
     setNbProvinces(getProvinces(country, save).length);
   }, [country, save]);
 
   useEffect(() => {
-    setRanks(toRecord(religions, r => r.type, r => getRank(save, country, c => getNbReligion(c, save, r.type))));
-    setDevRanks(toRecord(religions, r => r.type, r => getRank(save, country, c => getDevReligion(c, save, r.type))));
-  }, [country, save, religions]);
+    setRanks(toRecord(cultures, r => r.type, r => getRank(save, country, c => getNbCulture(c, save, r.type))));
+    setDevRanks(toRecord(cultures, r => r.type, r => getRank(save, country, c => getDevCulture(c, save, r.type))));
+  }, [country, save, cultures]);
 
   return (
     <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
@@ -87,15 +87,15 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
         <Pie
           activeIndex={ activeIndex }
           activeShape={ renderActiveShape }
-          data={ religions }
+          data={ cultures }
           innerRadius={ 100 }
           outerRadius={ 120 }
           dataKey='dev'
           onMouseEnter={ (_, index) => setActiveIndex(index) }
           isAnimationActive={ false }
         >
-          { religions.map((entry, index) => (
-            <Cell key={ `cell-religion-${ index }` } fill={ entry.color }/>
+          { cultures.map((entry, index) => (
+            <Cell key={ `cell-culture-${ index }` } fill={ entry.color }/>
           )) }
         </Pie>
       </PieChart>
@@ -127,10 +127,8 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
           </TableHead>
           <TableBody>
             {
-              religions.map((item, index) => (
-                <TableRow
-                  key={ `religion-${ item.type }-${ country.tag }` }
-                >
+              cultures.map((item, index) => (
+                <TableRow key={ `culture-${ item.type }-${ country.tag }` }>
                   <TableCell align='center'>
                     <div style={ {
                       width: 10,
@@ -140,12 +138,9 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
                     } }/>
                   </TableCell>
                   <TableCell>
-                    <Grid container item alignItems='center'>
-                      <Avatar src={ getReligionImage(save, item.type) } variant='square'/>
-                      <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
-                        { item.name }
-                      </Typography>
-                    </Grid>
+                    <Typography variant='body1' component='span'>
+                      { item.name }
+                    </Typography>
                   </TableCell>
                   <TableCell align='right'>{ formatNumber(item.value) }</TableCell>
                   <TableCell align='right'>{ getRankDisplay(ranks[item.type] ?? 0) }</TableCell>
@@ -164,4 +159,4 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
   )
 }
 
-export default React.memo(CountryReligionTab);
+export default React.memo(CountryCultureTab);

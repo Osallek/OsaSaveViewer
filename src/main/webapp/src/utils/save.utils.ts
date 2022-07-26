@@ -571,6 +571,14 @@ export function getDevReligion(country: SaveCountry, save: MapSave, religion: st
   return getProvinces(country, save).filter(province => religion === getPHistory(province, save).religion).reduce((s, p) => s + (p.baseTax ?? 0) + (p.baseProduction ?? 0) + (p.baseManpower ?? 0), 0);
 }
 
+export function getNbCulture(country: SaveCountry, save: MapSave, culture: string): number {
+  return getProvinces(country, save).filter(province => culture === getPHistory(province, save).culture).length;
+}
+
+export function getDevCulture(country: SaveCountry, save: MapSave, culture: string): number {
+  return getProvinces(country, save).filter(province => culture === getPHistory(province, save).culture).reduce((s, p) => s + (p.baseTax ?? 0) + (p.baseProduction ?? 0) + (p.baseManpower ?? 0), 0);
+}
+
 export function isAdm(powerSpent: PowerSpent): boolean {
   switch (powerSpent) {
     case PowerSpent.IDEAS:

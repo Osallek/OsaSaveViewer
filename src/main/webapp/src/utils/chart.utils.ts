@@ -5,7 +5,7 @@ import { Expense, Income, PowerSpent, SaveCountry, SaveEstate } from 'types/api.
 import { MapSave } from 'types/map.types';
 import { colorToHex, numberComparator, stringComparator } from 'utils/format.utils';
 import {
-  getBuildingName, getBuildingsName, getEstate, getEstatesName, getNbBuildings, getPHistory, getProvinces, getReligion, getReligionsName
+  getBuildingsName, getCulture, getCulturesName, getEstate, getEstatesName, getNbBuildings, getPHistory, getProvinces, getReligion, getReligionsName
 } from 'utils/save.utils';
 
 export function incomeToColor(income: Income): string {
@@ -358,6 +358,43 @@ export function getReligionsPie(country: SaveCountry, save: MapSave): Array<Reli
           value: 1,
           dev: (province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0),
           color: colorToHex(r.color)
+        };
+      }
+    }
+  });
+
+  return Object.values(record).sort((a, b) => -numberComparator(a.value, b.value));
+}
+
+export interface CulturePie {
+  name: string;
+  type: string;
+  value: number;
+  dev: number;
+  color: string;
+}
+
+export function getCulturesPie(country: SaveCountry, save: MapSave): Array<CulturePie> {
+  const record: Record<string, CulturePie> = {};
+
+  getProvinces(country, save).forEach(province => {
+    const culture = getPHistory(province, save).culture;
+
+    if (culture) {
+      let element = record[culture];
+
+      if (element) {
+        element.value = element.value + 1;
+        element.dev = element.dev + (province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0);
+      } else {
+        const c = getCulture(save, culture);
+
+        record[culture] = {
+          name: getCulturesName(c),
+          type: culture,
+          value: 1,
+          dev: (province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0),
+          color: colorToHex(c.color)
         };
       }
     }
