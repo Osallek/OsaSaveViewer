@@ -1,7 +1,7 @@
 import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, useTheme } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { SaveCountry } from 'types/api.types';
+import { SaveCountry, SaveMonarch } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { formatDate, formatDuration, formatNumber } from 'utils/format.utils';
 import { getMonarchs, getPersonality, getPersonalitysImage, getPersonalitysName } from 'utils/save.utils';
@@ -15,7 +15,11 @@ function CountryMonarchTab({ country, save }: CountryMonarchTabProps) {
   const intl = useIntl();
   const theme = useTheme();
 
-  const monarchs = getMonarchs(country);
+  const [monarchs, setMonarchs] = useState<Array<SaveMonarch>>([]);
+
+  useEffect(() => {
+    setMonarchs(getMonarchs(country));
+  }, [country]);
 
   return (
     <>
@@ -110,4 +114,4 @@ function CountryMonarchTab({ country, save }: CountryMonarchTabProps) {
   )
 }
 
-export default CountryMonarchTab;
+export default React.memo(CountryMonarchTab);

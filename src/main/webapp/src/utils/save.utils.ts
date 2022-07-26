@@ -30,7 +30,7 @@ export function getCountries(save: MapSave): Array<SaveCountry> {
   return save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive);
 }
 
-export function getPHistory(province: SaveProvince, date: string, save: MapSave): ProvinceHistory {
+export function getPHistory(province: SaveProvince, save: MapSave, date: string = save.date): ProvinceHistory {
   return date === save.date ? save.currentProvinces[province.id] : getPHistoryInternal(province, date);
 }
 
@@ -99,8 +99,8 @@ export function getPRealDev(province: SaveProvince): number {
   return ((province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0)) * (100 - (province.autonomy ?? 0)) / 100;
 }
 
-export function getProvinces(country: SaveCountry, save: MapSave, selectedDate: string): SaveProvince[] {
-  return save.provinces.filter(p => country.tag === getPHistory(p, selectedDate, save).owner);
+export function getProvinces(country: SaveCountry, save: MapSave, selectedDate: string = save.date): SaveProvince[] {
+  return save.provinces.filter(p => country.tag === getPHistory(p, save, selectedDate).owner);
 }
 
 export function getCRealDev(country: SaveCountry, save: MapSave, selectedDate: string): number {
@@ -559,24 +559,16 @@ export function getLeaders(country: SaveCountry): Array<SaveLeader> {
   return leaders.sort((a, b) => stringComparator(a.activation ?? '', b.activation ?? ''));
 }
 
-export function getNbBuildings(country: SaveCountry, save: MapSave): Record<string, number> {
-  const record: Record<string, number> = {};
+export function getNbBuildings(country: SaveCountry, save: MapSave, building: string): number {
+  return getProvinces(country, save).flatMap(province => province.buildings ?? []).filter(value => building === value).length;
+}
 
-  getProvinces(country, save, save.date).forEach(province => {
-    if (province.buildings) {
-      province.buildings.forEach(building => {
-        let f = record[building];
+export function getNbReligion(country: SaveCountry, save: MapSave, religion: string): number {
+  return getProvinces(country, save).filter(province => religion === getPHistory(province, save).religion).length;
+}
 
-        if (f) {
-          record[building] = f + 1;
-        } else {
-          record[building] = 1;
-        }
-      });
-    }
-  });
-
-  return record;
+export function getDevReligion(country: SaveCountry, save: MapSave, religion: string): number {
+  return getProvinces(country, save).filter(province => religion === getPHistory(province, save).religion).reduce((s, p) => s + (p.baseTax ?? 0) + (p.baseProduction ?? 0) + (p.baseManpower ?? 0), 0);
 }
 
 export function isAdm(powerSpent: PowerSpent): boolean {

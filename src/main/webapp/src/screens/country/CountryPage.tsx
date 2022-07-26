@@ -15,6 +15,7 @@ import CountryLeaderTab from 'screens/country/CountryLeaderTab';
 import CountryManaTab from 'screens/country/CountryManaTab';
 import CountryMilitaryTab from 'screens/country/CountryMilitaryTab';
 import CountryMonarchTab from 'screens/country/CountryMonarchTab';
+import CountryReligionTab from 'screens/country/CountryReligionTab';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
@@ -436,8 +437,14 @@ function CountryPage() {
                     <Grid container display={ activeTab === 7 ? 'block' : 'none' } key='grid7'>
                       <CountryManaTab country={ country } save={ save }/>
                     </Grid>
-                    <Grid container display={ activeTab === 8 ? 'block' : 'none' } style={ { height: '100%' } } key='grid8'>
+                    <Grid container display={ activeTab === 8 ? 'block' : 'none' } key='grid8'>
                       <CountryBuildingTab country={ country } save={ save }/>
+                    </Grid>
+                    <Grid container display={ activeTab === 9 ? 'block' : 'none' } key='grid9'>
+                      Missions
+                    </Grid>
+                    <Grid container display={ activeTab === 10 ? 'block' : 'none' }  key='grid10'>
+                      <CountryReligionTab country={ country } save={ save }/>
                     </Grid>
                   </Grid>
                 </Grid>

@@ -28,7 +28,7 @@ interface ProvincePopperCardProps {
 
 function ProvincePopperCard({ save, province, onClose, selectedDate, viewMore }: ProvincePopperCardProps) {
   const intl = useIntl();
-  const history = getPHistory(province, selectedDate, save);
+  const history = getPHistory(province, save, selectedDate);
 
   return (
     <Card style={ { backgroundColor: theme.palette.primary.main, minWidth: 200 } }>

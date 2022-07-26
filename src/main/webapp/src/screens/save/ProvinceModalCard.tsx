@@ -38,7 +38,7 @@ interface ProvinceModalCardProps {
 
 function ProvinceModalCard({ province, selectedDate, save }: ProvinceModalCardProps) {
   const intl = useIntl();
-  const history = getPHistory(province, selectedDate, save);
+  const history = getPHistory(province, save, selectedDate);
   const state = getAreaState(getArea(save, province), history.owner);
   const timeline = province.history.filter((value, index) => index !== 1).filter(h => interestingHistory(h)).sort((a, b) => -stringComparator(a.date, b.date));
 

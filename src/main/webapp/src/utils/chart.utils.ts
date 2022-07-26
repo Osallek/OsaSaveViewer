@@ -4,7 +4,9 @@ import { intl } from 'index';
 import { Expense, Income, PowerSpent, SaveCountry, SaveEstate } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { colorToHex, numberComparator, stringComparator } from 'utils/format.utils';
-import { getBuildingName, getEstate, getEstatesName, getNbBuildings } from 'utils/save.utils';
+import {
+  getBuildingName, getBuildingsName, getEstate, getEstatesName, getNbBuildings, getPHistory, getProvinces, getReligion, getReligionsName
+} from 'utils/save.utils';
 
 export function incomeToColor(income: Income): string {
   switch (income) {
@@ -318,11 +320,48 @@ export interface BuildingBar {
 }
 
 export function getBuildingsBar(country: SaveCountry, save: MapSave): Array<BuildingBar> {
-  return Object.entries(getNbBuildings(country, save)).map(([building, value]) => {
+  return save.buildings.map(building => {
     return {
-      name: getBuildingName(save, building),
-      type: building,
-      value
+      name: getBuildingsName(building),
+      type: building.name,
+      value: getNbBuildings(country, save, building.name),
     }
-  }).sort((a, b) => stringComparator(a.name, b.name));
+  }).filter(value => value.value > 0).sort((a, b) => stringComparator(a.name, b.name));
+}
+
+export interface ReligionPie {
+  name: string;
+  type: string;
+  value: number;
+  dev: number;
+  color: string;
+}
+
+export function getReligionsPie(country: SaveCountry, save: MapSave): Array<ReligionPie> {
+  const record: Record<string, ReligionPie> = {};
+
+  getProvinces(country, save).forEach(province => {
+    const religion = getPHistory(province, save).religion;
+
+    if (religion) {
+      let element = record[religion];
+
+      if (element) {
+        element.value = element.value + 1;
+        element.dev = element.dev + (province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0);
+      } else {
+        const r = getReligion(save, religion);
+
+        record[religion] = {
+          name: getReligionsName(r),
+          type: religion,
+          value: 1,
+          dev: (province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0),
+          color: colorToHex(r.color)
+        };
+      }
+    }
+  });
+
+  return Object.values(record).sort((a, b) => -numberComparator(a.value, b.value));
 }

@@ -1,6 +1,4 @@
-import {
-  Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography
-} from '@mui/material';
+import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Legend, Pie, PieChart, Sector } from 'recharts';
@@ -65,17 +63,17 @@ const renderActiveShape = (props: any, total: number) => {
 function CountryManaTab({ country, save }: CountryManaTabProps) {
   const intl = useIntl();
 
-  const [ data, setData ] = useState<Array<ManaSpentBar>>(getManaSpentBar(country));
-  const [ total, setTotal ] = useState<number>(data.reduce((sum, s) => sum + s.total, 0));
-  const [ activeIndex, setActiveIndex ] = useState<number[]>([ 0, 0, 0 ]);
+  const [data, setData] = useState<Array<ManaSpentBar>>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [activeIndex, setActiveIndex] = useState<number[]>([0, 0, 0]);
 
   useEffect(() => {
     setData(getManaSpentBar(country));
-  }, [ country ]);
+  }, [country]);
 
   useEffect(() => {
     setTotal(data.reduce((sum, s) => sum + s.total, 0));
-  }, [ data ]);
+  }, [data]);
 
   return (
     <>
@@ -98,7 +96,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
             outerRadius={ 110 }
             dataKey='adm'
             onMouseEnter={ (_, index) => {
-              setActiveIndex(prevState => [ index, prevState[1], prevState[2] ]);
+              setActiveIndex(prevState => [index, prevState[1], prevState[2]]);
             } }
           >
             { data.map((entry, index) => (
@@ -120,7 +118,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
             outerRadius={ 110 }
             dataKey='dip'
             onMouseEnter={ (_, index) => {
-              setActiveIndex(prevState => [ prevState[0], index, prevState[2] ]);
+              setActiveIndex(prevState => [prevState[0], index, prevState[2]]);
             } }
           >
             { data.map((entry, index) => (
@@ -143,7 +141,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
               outerRadius={ 110 }
               dataKey='mil'
               onMouseEnter={ (_, index) => {
-                setActiveIndex(prevState => [ prevState[0], prevState[1], index ]);
+                setActiveIndex(prevState => [prevState[0], prevState[1], index]);
               } }
             >
               { data.map((entry, index) => (
@@ -325,4 +323,4 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
   )
 }
 
-export default CountryManaTab;
+export default React.memo(CountryManaTab);
