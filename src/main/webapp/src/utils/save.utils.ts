@@ -1,13 +1,11 @@
 import { eu4Locale } from 'index';
 import {
-  ColorNamedImageLocalised, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised,
-  PowerSpent, Save, SaveArea, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup,
-  SaveLeader, SaveMonarch, SaveProvince, SaveProvinceHistory, SaveReligion
+  ColorNamedImageLocalised, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save, SaveArea, SaveCountry,
+  SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMonarch, SaveProvince, SaveProvinceHistory, SaveReligion
 } from 'types/api.types';
 import { CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
 import {
-  getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getLeaderPersonalityUrl, getPersonalityUrl,
-  getPrivilegeUrl, getReligionUrl
+  getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getLeaderPersonalityUrl, getPersonalityUrl, getPrivilegeUrl, getReligionUrl
 } from 'utils/data.utils';
 import { capitalize, numberComparator, stringComparator, toRecord } from 'utils/format.utils';
 
@@ -64,7 +62,7 @@ function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHist
       let buildings: Array<string> = (history && history.buildings) ?? [];
 
       if (h.buildings) {
-        Object.entries(h.buildings).forEach(([ key, value ]) => {
+        Object.entries(h.buildings).forEach(([key, value]) => {
           if (value) {
             buildings.concat(key);
           } else {
@@ -401,7 +399,7 @@ function getCHistoryInternal(country: SaveCountry, date: string): CountryHistory
       let ideasLevel: Record<string, string> = (history && history.ideasLevel) ?? {};
 
       if (h.ideasLevel) {
-        Object.entries(h.ideasLevel).forEach(([ key, value ]) => {
+        Object.entries(h.ideasLevel).forEach(([key, value]) => {
           if (value) {
             ideasLevel[key] = h.date;
           } else {
@@ -559,6 +557,26 @@ export function getLeaders(country: SaveCountry): Array<SaveLeader> {
   });
 
   return leaders.sort((a, b) => stringComparator(a.activation ?? '', b.activation ?? ''));
+}
+
+export function getNbBuildings(country: SaveCountry, save: MapSave): Record<string, number> {
+  const record: Record<string, number> = {};
+
+  getProvinces(country, save, save.date).forEach(province => {
+    if (province.buildings) {
+      province.buildings.forEach(building => {
+        let f = record[building];
+
+        if (f) {
+          record[building] = f + 1;
+        } else {
+          record[building] = 1;
+        }
+      });
+    }
+  });
+
+  return record;
 }
 
 export function isAdm(powerSpent: PowerSpent): boolean {

@@ -1,10 +1,10 @@
-import {blue, blueGrey, deepOrange, green, grey, orange, red, teal} from '@mui/material/colors';
+import { blue, blueGrey, deepOrange, green, grey, orange, red, teal } from '@mui/material/colors';
 import amber from '@mui/material/colors/amber';
-import {intl} from 'index';
-import {Expense, Income, PowerSpent, SaveCountry, SaveEstate} from 'types/api.types';
-import {MapSave} from 'types/map.types';
-import {colorToHex, numberComparator} from 'utils/format.utils';
-import {getEstate, getEstatesName} from 'utils/save.utils';
+import { intl } from 'index';
+import { Expense, Income, PowerSpent, SaveCountry, SaveEstate } from 'types/api.types';
+import { MapSave } from 'types/map.types';
+import { colorToHex, numberComparator, stringComparator } from 'utils/format.utils';
+import { getBuildingName, getEstate, getEstatesName, getNbBuildings } from 'utils/save.utils';
 
 export function incomeToColor(income: Income): string {
   switch (income) {
@@ -309,4 +309,20 @@ export function powerSpentToColor(powerSpent: PowerSpent): string {
     case PowerSpent.USELESS_FORCE_MARCH:
       return 'white';
   }
+}
+
+export interface BuildingBar {
+  name: string;
+  type: string;
+  value: number;
+}
+
+export function getBuildingsBar(country: SaveCountry, save: MapSave): Array<BuildingBar> {
+  return Object.entries(getNbBuildings(country, save)).map(([building, value]) => {
+    return {
+      name: getBuildingName(save, building),
+      type: building,
+      value
+    }
+  }).sort((a, b) => stringComparator(a.name, b.name));
 }

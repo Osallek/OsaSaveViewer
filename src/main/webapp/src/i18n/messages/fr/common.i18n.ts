@@ -18,6 +18,7 @@ const common = {
   'common.rank': 'Classement',
   'common.duration.year': '{years, plural, =0 {} one {# an} other {# ans}}',
   'common.duration.month': '{months, plural, =0 {}  other {# mois}}',
+  'common.quantity': 'Nombre',
 }
 
 export default common;

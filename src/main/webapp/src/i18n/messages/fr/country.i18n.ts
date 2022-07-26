@@ -224,6 +224,7 @@ const country = {
   'country.leader.duration': 'Durée du service',
   'country.leader.skills': 'Compétences',
   'country.leader.personality': 'Personnalité',
+  'country.building': 'Bâtiment',
 }
 
 export default country;

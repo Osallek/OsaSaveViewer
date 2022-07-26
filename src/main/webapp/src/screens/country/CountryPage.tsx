@@ -6,6 +6,7 @@ import { api } from 'api';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
+import CountryBuildingTab from 'screens/country/CountryBuildingTab';
 import CountryDiplomacyTab from 'screens/country/CountryDiplomacyTab';
 import CountryEcoTab from 'screens/country/CountryEcoTab';
 import CountryEstateTab from 'screens/country/CountryEstateTab';
@@ -434,6 +435,9 @@ function CountryPage() {
                     </Grid>
                     <Grid container display={ activeTab === 7 ? 'block' : 'none' } key='grid7'>
                       <CountryManaTab country={ country } save={ save }/>
+                    </Grid>
+                    <Grid container display={ activeTab === 8 ? 'block' : 'none' } style={ { height: '100%' } } key='grid8'>
+                      <CountryBuildingTab country={ country } save={ save }/>
                     </Grid>
                   </Grid>
                 </Grid>
