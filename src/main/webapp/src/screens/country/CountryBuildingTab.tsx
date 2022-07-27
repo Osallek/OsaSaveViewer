@@ -106,4 +106,4 @@ function CountryBuildingTab({ country, save }: CountryBuildingTabProps) {
   )
 }
 
-export default React.memo(CountryBuildingTab);
+export default CountryBuildingTab;

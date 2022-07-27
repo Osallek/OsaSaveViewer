@@ -323,4 +323,4 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
   )
 }
 
-export default React.memo(CountryManaTab);
+export default CountryManaTab;

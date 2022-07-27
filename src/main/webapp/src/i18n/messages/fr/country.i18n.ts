@@ -26,6 +26,7 @@ const country = {
   'country.nbProvinces': 'Nombre de provinces',
   'country.tech': 'Technologies',
   'country.innovativeness': 'Innovation',
+  'country.absolutism': 'Absolutisme',
   'country.powerProjection': 'Projection de puissance',
   'country.greatPower': 'Grand puissance',
   'country.income': 'Revenu',

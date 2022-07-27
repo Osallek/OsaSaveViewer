@@ -1,7 +1,5 @@
 import { Home, KeyboardArrowDown, Map } from '@mui/icons-material';
-import {
-  AppBar, Avatar, Backdrop, Button, Card, CardContent, CircularProgress, Divider, Grid, Menu, MenuItem, Tab, Tabs, Toolbar, Typography
-} from '@mui/material';
+import { AppBar, Avatar, Backdrop, Button, CircularProgress, Grid, Menu, MenuItem, Tab, Tabs, Toolbar, Typography } from '@mui/material';
 import { api } from 'api';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -12,6 +10,7 @@ import CountryDiplomacyTab from 'screens/country/CountryDiplomacyTab';
 import CountryEcoTab from 'screens/country/CountryEcoTab';
 import CountryEstateTab from 'screens/country/CountryEstateTab';
 import CountryIdeaTab from 'screens/country/CountryIdeaTab';
+import CountryInfoTab from 'screens/country/CountryInfoTab';
 import CountryLeaderTab from 'screens/country/CountryLeaderTab';
 import CountryManaTab from 'screens/country/CountryManaTab';
 import CountryMilitaryTab from 'screens/country/CountryMilitaryTab';
@@ -20,10 +19,8 @@ import CountryReligionTab from 'screens/country/CountryReligionTab';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { formatNumber, stringComparator } from 'utils/format.utils';
-import {
-  convertSave, fakeTag, getCountries, getCountry, getCountrysFlag, getCountrysName, getCultureName, getPlayer, getReligionImage, getReligionName
-} from 'utils/save.utils';
+import { stringComparator } from 'utils/format.utils';
+import { convertSave, fakeTag, getCountries, getCountry, getCountrysFlag, getCountrysName, getPlayer } from 'utils/save.utils';
 
 function CountryPage() {
   const params = useParams();
@@ -188,235 +185,8 @@ function CountryPage() {
                       <Grid item style={ { flex: 1 } }/>
                     </Tabs>
                   </Grid>
-                  <Grid container item display={ activeTab === 1 ? 'flex' : 'none' } xs={ 12 } md={ 8 } lg={ 4 } xl={ 3 } key='grid0'>
-                    <Card style={ { backgroundColor: theme.palette.primary.light, width: '100%' } }>
-                      <CardContent style={ { backgroundColor: theme.palette.primary.light } }>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.dev' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { formatNumber(country.dev) }
-                            </Typography>
-                            <Avatar src='/eu4/country/dev.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.income' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { formatNumber(country.income) }
-                            </Typography>
-                            <Avatar src={ '/eu4/country/income.png' } variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.religion' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { getReligionName(save, country.religion) }
-                            </Typography>
-                            <Avatar src={ getReligionImage(save, country.religion) } variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.culture' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { getCultureName(save, country.primaryCulture) }
-                            </Typography>
-                            <Avatar src='/eu4/country/culture.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.prestige' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { formatNumber(country.prestige) }
-                            </Typography>
-                            <Avatar src='/eu4/country/prestige.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.tech' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { `${ country.admTech } / ${ country.dipTech } / ${ country.milTech }` }
-                            </Typography>
-                            <Avatar src='/eu4/country/tech.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.innovativeness' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { `${ formatNumber(country.innovativeness) }%` }
-                            </Typography>
-                            <Avatar src='/eu4/country/innovativeness.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.nbProvinces' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { country.nbProvince }
-                            </Typography>
-                            <Avatar src='/eu4/country/province.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.manpower' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { country.maxManpower }
-                            </Typography>
-                            <Avatar src='/eu4/country/manpower.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.armyLimit' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { formatNumber(country.armyLimit) }
-                            </Typography>
-                            <Avatar src='/eu4/country/land_limit.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.armyMorale' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { formatNumber(country.armyMorale) }
-                            </Typography>
-                            <Avatar src='/eu4/country/land_morale.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.armyProfessionalism' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { `${ formatNumber((country.armyProfessionalism ?? 0) * 100) }%` }
-                            </Typography>
-                            <Avatar src='/eu4/country/professionalism.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.sailors' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { country.maxSailors / 1000 }
-                            </Typography>
-                            <Avatar src='/eu4/country/sailors.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.navalLimit' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { formatNumber(country.navalLimit) }
-                            </Typography>
-                            <Avatar src='/eu4/country/naval_limit.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                        <Divider color={ theme.palette.primary.main } style={ { marginTop: 16, marginBottom: 16 } }/>
-                        <Grid container alignItems='center' justifyContent='space-between'>
-                          <Grid item alignItems='center'>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { intl.formatMessage({ id: 'country.navalMorale' }) }
-                            </Typography>
-                          </Grid>
-                          <Grid item alignItems='center'
-                                style={ { display: 'flex', backgroundColor: theme.palette.primary.main, paddingLeft: 8, borderRadius: 30 } }>
-                            <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
-                              { formatNumber(country.navalMorale) }
-                            </Typography>
-                            <Avatar src='/eu4/country/naval_morale.png' variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </Card>
+                  <Grid container item display={ activeTab === 1 ? 'flex' : 'none' } xs={ 12 } md={ 12 } lg={ 8 } xl={ 6 } key='grid0'>
+                    <CountryInfoTab country={ country } save={ save }/>
                   </Grid>
                   <Grid container item display={ activeTab === 2 ? 'block' : 'none' } key='grid1'>
                     <CountryEcoTab country={ country }/>

@@ -159,4 +159,4 @@ function CountryCultureTab({ country, save }: CountryCultureTabProps) {
   )
 }
 
-export default React.memo(CountryCultureTab);
+export default CountryCultureTab;

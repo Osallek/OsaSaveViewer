@@ -164,4 +164,4 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
   )
 }
 
-export default React.memo(CountryReligionTab);
+export default CountryReligionTab;

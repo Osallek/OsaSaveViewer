@@ -119,4 +119,4 @@ function CountryMonarchTab({ country, save }: CountryMonarchTabProps) {
   )
 }
 
-export default React.memo(CountryMonarchTab);
+export default CountryMonarchTab;

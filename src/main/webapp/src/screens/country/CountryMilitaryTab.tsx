@@ -126,7 +126,7 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
               <TableRow key={ `army-trad-${ country.tag }` }>
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
                   <Grid container alignItems='center'>
-                    <Avatar src='/eu4/country/army_tradition.png' variant='square' style={ { marginRight: 8 } }/>
+                    <Avatar src='/eu4/country/land_tradition.png' variant='square' style={ { marginRight: 8 } }/>
                     <Typography variant='body1' color={ theme.palette.primary.contrastText }
                                 style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.armyTradition' }) }
