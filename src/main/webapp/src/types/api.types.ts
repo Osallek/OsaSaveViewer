@@ -11,6 +11,7 @@ export enum Localization {
 }
 
 export type Save = {
+  startDate: string;
   date: string;
   id: string;
   name: string;
@@ -40,7 +41,7 @@ export type Save = {
   ideaGroups: Array<SaveIdeaGroup>;
   personalities: Array<NamedImageLocalised>;
   leaderPersonalities: Array<NamedImageLocalised>;
-  previousSaves: Array<PreviousSave>;
+  previousSaves?: Array<PreviousSave>;
 };
 
 export type Localised = {

@@ -226,6 +226,13 @@ const country = {
   'country.leader.skills': 'Compétences',
   'country.leader.personality': 'Personnalité',
   'country.building': 'Bâtiment',
+  'country.history.income': 'Historique du revenu',
+  'country.history.nbProvinces': 'Historique du nombre de provinces',
+  'country.history.dev': 'Historique du développement',
+  'country.history.maxManpower': 'Historique des réserves terrestres',
+  'country.history.armyLimit': 'Historique de la limite terrestre',
+  'country.history.armyProfessionalism': 'Historique du professionnalisme',
+  'country.history.losses': 'Historique des pertes',
 }
 
 export default country;

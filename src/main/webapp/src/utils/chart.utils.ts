@@ -1,11 +1,12 @@
-import { blue, blueGrey, deepOrange, green, grey, orange, red, teal } from '@mui/material/colors';
+import { blue, blueGrey, brown, cyan, deepOrange, green, grey, orange, purple, red, teal, yellow } from '@mui/material/colors';
 import amber from '@mui/material/colors/amber';
 import { intl } from 'index';
-import { Expense, Income, PowerSpent, SaveCountry, SaveEstate } from 'types/api.types';
+import { CountryPreviousSave, Expense, Income, PowerSpent, SaveCountry, SaveEstate } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { colorToHex, numberComparator, stringComparator } from 'utils/format.utils';
+import { colorToHex, getYear, numberComparator, stringComparator } from 'utils/format.utils';
 import {
-  getBuildingsName, getCulture, getCulturesName, getEstate, getEstatesName, getNbBuildings, getPHistory, getProvinces, getReligion, getReligionsName
+  getBuildingsName, getCulture, getCulturesName, getEstate, getEstatesName, getNbBuildings, getPHistory, getPrevious, getProvinces, getRank, getReligion,
+  getReligionsName
 } from 'utils/save.utils';
 
 export function incomeToColor(income: Income): string {
@@ -401,4 +402,136 @@ export function getCulturesPie(country: SaveCountry, save: MapSave): Array<Cultu
   });
 
   return Object.values(record).sort((a, b) => -numberComparator(a.value, b.value));
+}
+
+export interface HistoryLine {
+  year: number;
+  value: number;
+}
+
+export function getIncomeLine(country: SaveCountry): Array<HistoryLine> {
+  const lines: Array<HistoryLine> = [];
+
+  if (country.incomeStatistics) {
+    Object.entries(country.incomeStatistics).forEach(([key, value]) => {
+      const year = parseInt(key);
+
+      lines.push({ year, value })
+    })
+  }
+
+  return lines.sort((a, b) => numberComparator(a.year, b.year));
+}
+
+export function getNbProvincesLine(country: SaveCountry): Array<HistoryLine> {
+  const lines: Array<HistoryLine> = [];
+
+  if (country.nationSizeStatistics) {
+    Object.entries(country.nationSizeStatistics).forEach(([key, value]) => {
+      const year = parseInt(key);
+
+      lines.push({ year, value })
+    })
+  }
+
+  return lines.sort((a, b) => numberComparator(a.year, b.year));
+}
+
+export interface SaveGradient {
+  percent: number;
+  color: string;
+}
+
+export function getSavesGradient(save: MapSave): Array<SaveGradient> {
+  const array: Array<SaveGradient> = [{ percent: 0, color: green[500] }];
+
+  if (save.previousSaves && save.previousSaves.length > 0) {
+    const startYear = getYear(save.startDate);
+    const endYear = getYear(save.date);
+
+    save.previousSaves.forEach((previousSave, index) => {
+      array.push({ percent: (getYear(previousSave.date) - startYear) / (endYear - startYear), color: array[array.length - 1].color });
+      array.push({ percent: (getYear(previousSave.date) - startYear) / (endYear - startYear), color: saveToColor(index) });
+    });
+  }
+
+  array.push({ percent: 100, color: array[array.length - 1].color });
+
+  return array;
+}
+
+export function saveToColor(index: number): string {
+  switch (index % 10) {
+    case 0:
+      return '#000000';
+
+    case 1:
+      return blue[500];
+
+    case 2:
+      return brown[500];
+
+    case 3:
+      return yellow[500];
+
+    case 4:
+      return grey[700];
+
+    case 5:
+      return purple[700];
+
+    case 6:
+      return teal[800];
+
+    case 7:
+      return orange[600];
+
+    case 8:
+      return cyan[600];
+
+    case 9:
+      return red[500];
+  }
+
+  return green[500];
+}
+
+export interface PreviousBar {
+  name: string;
+  value: number;
+  index: number;
+  rank: number;
+  progress?: number;
+}
+
+export function getPreviousBar(country: SaveCountry, save: MapSave, mapper: (previous: CountryPreviousSave) => number, current: (country: SaveCountry) => number): Array<PreviousBar> {
+  if (!country.previousSaves || country.previousSaves.length === 0) {
+    return [{ name: `${ intl.formatMessage({ id: 'common.save' }) } 1`, value: current(country), index: 1, rank: getRank(save, country, c => current(c)), progress: undefined }];
+  } else {
+    const array = country.previousSaves.map((value, index) => {
+      const currentValue = getPrevious(country, index + 1, mapper, current);
+      const previousValue = getPrevious(country, index, mapper, current);
+
+      return {
+        name: `${ intl.formatMessage({ id: 'common.save' }) } ${ index + 1 }`,
+        value: mapper(value),
+        index: index + 1,
+        rank: getRank(save, country, c => (c.players !== undefined && c.previousSaves && c.previousSaves[index]) ? mapper(c.previousSaves[index]) : 0),
+        progress: (currentValue && previousValue) ? ((currentValue / previousValue) - 1) * 100 : undefined
+      };
+    });
+
+    const currentValue = getPrevious(country, country.previousSaves.length + 1, mapper, current);
+    const previousValue = getPrevious(country, country.previousSaves.length + 1 - 1, mapper, current);
+
+    array.push({
+      name: `${ intl.formatMessage({ id: 'common.save' }) } ${ country.previousSaves.length + 1 }`,
+      value: current(country),
+      index: country.previousSaves.length + 1,
+      rank: getRank(save, country, c => current(c)),
+      progress: (currentValue && previousValue) ? ((currentValue / previousValue) - 1) * 100 : undefined
+    });
+
+    return array;
+  }
 }

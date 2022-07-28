@@ -6,6 +6,8 @@ import java.util.SortedSet;
 
 public final class ExtractorSaveDTO {
 
+    private LocalDate startDate;
+
     private String owner;
 
     private String previousSave;
@@ -67,6 +69,14 @@ public final class ExtractorSaveDTO {
     private List<NamedImageLocalisedDTO> leaderPersonalities;
 
     private SortedSet<PreviousSaveDTO> previousSaves;
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
 
     public String getOwner() {
         return owner;

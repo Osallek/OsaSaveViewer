@@ -10,6 +10,7 @@ const common = {
   'common.mean': 'Moyenne',
   'common.graph': 'Voir les statistiques',
   'common.previousSaves': 'Sessions précédentes',
+  'common.save': 'Session',
   'common.saveNotFound': 'Partie introuvable',
   'common.color': 'Couleur',
   'common.type': 'Type',

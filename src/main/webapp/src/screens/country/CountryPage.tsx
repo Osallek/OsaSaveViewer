@@ -9,6 +9,7 @@ import CountryCultureTab from 'screens/country/CountryCultureTab';
 import CountryDiplomacyTab from 'screens/country/CountryDiplomacyTab';
 import CountryEcoTab from 'screens/country/CountryEcoTab';
 import CountryEstateTab from 'screens/country/CountryEstateTab';
+import CountryHistoryTab from 'screens/country/CountryHistoryTab';
 import CountryIdeaTab from 'screens/country/CountryIdeaTab';
 import CountryInfoTab from 'screens/country/CountryInfoTab';
 import CountryLeaderTab from 'screens/country/CountryLeaderTab';
@@ -165,7 +166,6 @@ function CountryPage() {
                       variant='scrollable'
                       scrollButtons='auto'
                       style={ { marginBottom: 8 } }
-                      centered
                     >
                       <Grid item style={ { flex: 1 } }/>
                       <Tab label={ intl.formatMessage({ id: 'country.tab.info' }) }/>
@@ -223,6 +223,9 @@ function CountryPage() {
                   </Grid>
                   <Grid container display={ activeTab === 13 ? 'block' : 'none' } key='grid12'>
                     <CountryCultureTab country={ country } save={ save }/>
+                  </Grid>
+                  <Grid container display={ activeTab === 14 ? 'block' : 'none' } key='grid13'>
+                    <CountryHistoryTab country={ country } save={ save }/>
                   </Grid>
                 </Grid>
               </>

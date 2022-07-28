@@ -1,13 +1,14 @@
 import { eu4Locale } from 'index';
 import {
-  ColorNamedImageLocalised, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save, SaveArea, SaveCountry,
-  SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMonarch, SaveProvince, SaveProvinceHistory, SaveReligion
+  ColorNamedImageLocalised, CountryPreviousSave, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save,
+  SaveArea, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMonarch, SaveProvince, SaveProvinceHistory,
+  SaveReligion
 } from 'types/api.types';
 import { CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
 import {
   getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getLeaderPersonalityUrl, getPersonalityUrl, getPrivilegeUrl, getReligionUrl
 } from 'utils/data.utils';
-import { capitalize, numberComparator, stringComparator, toRecord } from 'utils/format.utils';
+import { capitalize, getYear, numberComparator, stringComparator, toRecord } from 'utils/format.utils';
 
 export const fakeTag = "---";
 
@@ -741,5 +742,43 @@ export function isMil(powerSpent: PowerSpent): boolean {
     case PowerSpent.SIBERIAN_FRONTIER:
     case PowerSpent.USELESS_40:
       return false;
+  }
+}
+
+export function getSaveIndex(year: number, save: MapSave): number {
+  if (!save.previousSaves || save.previousSaves.length === 0) {
+    return 1;
+  } else {
+    let i = 1;
+
+    for (let i1 = 0; i1 < save.previousSaves.length; i1++) {
+      const previousSave = save.previousSaves[i1];
+
+      if (getYear(previousSave.date) < year) {
+        i = i1 + 2;
+      } else {
+        break;
+      }
+    }
+
+    return i;
+  }
+}
+
+export function getPrevious(country: SaveCountry, index: number, mapper: (previous: CountryPreviousSave) => number, current: (country: SaveCountry) => number): number | undefined {
+  if (!country.previousSaves || country.previousSaves.length === 0) {
+    if (index === 1) {
+      return current(country);
+    } else {
+      return undefined;
+    }
+  } else {
+    if (index > 0 && country.previousSaves.length >= index) {
+      return mapper(country.previousSaves[index - 1]);
+    } else if (index === country.previousSaves.length + 1) {
+      return current(country);
+    } else {
+      return undefined;
+    }
   }
 }

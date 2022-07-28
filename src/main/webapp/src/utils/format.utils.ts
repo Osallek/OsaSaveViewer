@@ -1,6 +1,10 @@
 import { intl } from 'index';
 import { SaveColor } from 'types/api.types';
 
+export function getYear(date: string): number {
+  return parseInt(date.substring(0, date.indexOf('-')));
+}
+
 export function toRecord<T, V, K extends string | number | symbol>(array: T[], keyMapper: (t: T) => K, valueMapper: (t: T) => V): Record<K, V> {
   return array.reduce((acc, item) => (acc[keyMapper(item)] = valueMapper(item), acc), {} as Record<K, V>)
 }
@@ -23,8 +27,8 @@ export function capitalize(s: string): string {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 }
 
-export function formatNumber(number: number | undefined): string {
-  return number !== undefined ? intl.formatNumber(number, { maximumFractionDigits: 2 }) : '';
+export function formatNumber(number: number | undefined, max: number = 2): string {
+  return number !== undefined ? intl.formatNumber(number, { maximumFractionDigits: max }) : '';
 }
 
 export function formatDate(date: string | undefined): string {
