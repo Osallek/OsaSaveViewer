@@ -99,11 +99,11 @@ export function prepareArray(save: MapSave, gl: WebGL2RenderingContext): Provinc
   };
 }
 
-export function getTextureFromSave(provincesTexture: ProvincesTexture, save: MapSave, gl: WebGL2RenderingContext, mapMod: MapMode, date?: string) {
+export function getTextureFromSave(provincesTexture: ProvincesTexture, save: MapSave, gl: WebGL2RenderingContext, mapMod: MapMode) {
   if (provincesTexture.array) {
-    const data = mapModes[mapMod].prepare(save, date ?? save.date);
+    const data = mapModes[mapMod].prepare(save);
     for (const province of save.provinces) {
-      const color = mapModes[mapMod].provinceColor(province, save, date ?? save.date, data);
+      const color = mapModes[mapMod].provinceColor(province, save, data);
       provincesTexture.array[(province.id - 1) * 4] = color.red;
       provincesTexture.array[(province.id - 1) * 4 + 1] = color.green;
       provincesTexture.array[(province.id - 1) * 4 + 2] = color.blue;

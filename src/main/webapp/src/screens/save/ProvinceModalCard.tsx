@@ -8,37 +8,18 @@ import { SaveProvince } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { formatDate, formatNumber, stringComparator } from 'utils/format.utils';
 import {
-  getArea,
-  getAreaState,
-  getBuilding,
-  getBuildingImage,
-  getBuildingName,
-  getBuildingsImage,
-  getBuildingsName,
-  getCountry,
-  getCountryFlag,
-  getCountryName,
-  getCountrysFlag,
-  getCountrysName,
-  getCultureName,
-  getPDev,
-  getGoodImage,
-  getGoodName,
-  getPHistory,
-  getReligionImage,
-  getReligionName,
-  interestingHistory
+  getArea, getAreaState, getBuilding, getBuildingImage, getBuildingName, getBuildingsImage, getBuildingsName, getCountry, getCountryFlag, getCountryName,
+  getCountrysFlag, getCountrysName, getCultureName, getGoodImage, getGoodName, getPDev, getPHistory, getReligionImage, getReligionName, interestingHistory
 } from 'utils/save.utils';
 
 interface ProvinceModalCardProps {
   province: SaveProvince;
-  selectedDate: string;
   save: MapSave;
 }
 
-function ProvinceModalCard({ province, selectedDate, save }: ProvinceModalCardProps) {
+function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
   const intl = useIntl();
-  const history = getPHistory(province, save, selectedDate);
+  const history = getPHistory(province, save);
   const state = getAreaState(getArea(save, province), history.owner);
   const timeline = province.history.filter((value, index) => index !== 1).filter(h => interestingHistory(h)).sort((a, b) => -stringComparator(a.date, b.date));
 
@@ -116,7 +97,7 @@ function ProvinceModalCard({ province, selectedDate, save }: ProvinceModalCardPr
                   history.cores.map(value => getCountry(save, value))
                     .sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b)))
                     .map(value => (
-                      <Tooltip title={ getCountrysName(value) } key={ `tooltip-core-${ value }` }>
+                      <Tooltip title={ getCountrysName(value) } key={ `tooltip-core-${ value.tag }` }>
                         <Avatar src={ getCountrysFlag(value) } variant='square'
                                 style={ { marginRight: 8 } }/>
                       </Tooltip>

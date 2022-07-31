@@ -22,7 +22,6 @@ function SavePage() {
   const [statDialog, setStatDialog] = useState<boolean>(false);
 
   const [mapMode, setMapMode] = useState<MapMode>(MapMode.POLITICAL);
-  const [selectedDate, setSelectedDate] = useState<string | undefined>(undefined);
 
   const { id } = params;
 
@@ -104,7 +103,7 @@ function SavePage() {
                         } }/>
                 </Tooltip>
               }
-              <SaveMap save={ save } mapMode={ mapMode } selectedDate={ selectedDate } setReady={ setMapReady }/>
+              <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady }/>
               {
                 save &&
                 (
@@ -115,8 +114,7 @@ function SavePage() {
                     onClose={ () => setStatDialog(false) }
                     closeAfterTransition
                   >
-                    <SaveDialog save={ save } selectedDate={ selectedDate ?? save.date }
-                                onClose={ () => setStatDialog(false) }/>
+                    <SaveDialog save={ save } onClose={ () => setStatDialog(false) }/>
                   </Dialog>
                 )
               }

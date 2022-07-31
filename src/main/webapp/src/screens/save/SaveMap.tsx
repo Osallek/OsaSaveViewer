@@ -13,12 +13,11 @@ import { getProvince } from 'utils/save.utils';
 
 interface SaveMapProps {
   save?: MapSave;
-  selectedDate?: string;
   mapMode: MapMode;
   setReady: (ready: boolean) => void;
 }
 
-function SaveMap({ save, selectedDate, mapMode, setReady }: SaveMapProps) {
+function SaveMap({ save, mapMode, setReady }: SaveMapProps) {
   const offsetBounce = 25;
   const [displayable, setDisplayable] = useState<boolean>(false);
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -202,14 +201,14 @@ function SaveMap({ save, selectedDate, mapMode, setReady }: SaveMapProps) {
 
   useEffect(() => {
     if (displayable && gl && currentColorsTexture && save) {
-      getTextureFromSave(currentColorsTexture, save, gl, mapMode, selectedDate);
+      getTextureFromSave(currentColorsTexture, save, gl, mapMode);
 
       gl.bindTexture(gl.TEXTURE_2D, currentColorsTexture.texture);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
 
       setReady(true);
     }
-  }, [save, currentColorsTexture, gl, selectedDate, mapMode, currentColorsLoc, setReady, displayable]);
+  }, [save, currentColorsTexture, gl, mapMode, currentColorsLoc, setReady, displayable]);
 
   useEffect(() => setClickedProvince(null), [mapMode]);
 
@@ -309,59 +308,57 @@ function SaveMap({ save, selectedDate, mapMode, setReady }: SaveMapProps) {
     <>
       {
         save &&
-        <>
-          <canvas id='save-map-canvas'
-                  ref={ canvas }
-                  style={ {
-                    width: '100%',
-                    height: '100%',
-                    minHeight: 500,
-                    minWidth: 500,
-                    backgroundColor: '#5e5e5e'
-                  } }
-                  onClick={ e => clickProvince(e) }/>
-          <div ref={ popoverDiv } style={ { position: 'fixed', left: lastMousePos[0], top: lastMousePos[1] } }/>
-          {
-            (popoverDiv.current && clickedProvince && !mouseDown && !provinceModalOpen) &&
-            <Popper open anchorEl={ popoverDiv.current } placement='top' transition>
-              { ({ TransitionProps }) => (
-                <Grow { ...TransitionProps } timeout={ 350 }>
-                  <div>
-                    <ProvincePopperCard province={ clickedProvince } onClose={ () => setClickedProvince(null) }
-                                        selectedDate={ selectedDate ?? save.date } save={ save }
-                                        viewMore={ () => setProvinceModalOpen(true) }/>
-                  </div>
-                </Grow>
-              ) }
-            </Popper>
-          }
-          {
-            (clickedProvince && provinceModalOpen) &&
-            <Dialog
-              open={ provinceModalOpen }
-              onClose={ () => closeModal() }
-              scroll='paper'
-              closeAfterTransition
-              fullWidth
-              maxWidth='md'
-              BackdropComponent={ Backdrop }
-              BackdropProps={ {
-                timeout: 500,
-              } }
-            >
-              <Fade in={ provinceModalOpen }>
-                <div style={ {
-                  backgroundColor: theme.palette.primary.main,
-                  color: 'white',
-                  zIndex: 1
-                } }>
-                  <ProvinceDialogContent province={ clickedProvince } save={ save }
-                                         selectedDate={ selectedDate ?? save.date }/>
-                </div>
-              </Fade>
-            </Dialog>
-          }
-        </>
+          <>
+              <canvas id='save-map-canvas'
+                      ref={ canvas }
+                      style={ {
+                        width: '100%',
+                        height: '100%',
+                        minHeight: 500,
+                        minWidth: 500,
+                        backgroundColor: '#5e5e5e'
+                      } }
+                      onClick={ e => clickProvince(e) }/>
+              <div ref={ popoverDiv } style={ { position: 'fixed', left: lastMousePos[0], top: lastMousePos[1] } }/>
+            {
+              (popoverDiv.current && clickedProvince && !mouseDown && !provinceModalOpen) &&
+                <Popper open anchorEl={ popoverDiv.current } placement='top' transition>
+                  { ({ TransitionProps }) => (
+                    <Grow { ...TransitionProps } timeout={ 350 }>
+                      <div>
+                        <ProvincePopperCard province={ clickedProvince } onClose={ () => setClickedProvince(null) } save={ save }
+                                            viewMore={ () => setProvinceModalOpen(true) }/>
+                      </div>
+                    </Grow>
+                  ) }
+                </Popper>
+            }
+            {
+              (clickedProvince && provinceModalOpen) &&
+                <Dialog
+                    open={ provinceModalOpen }
+                    onClose={ () => closeModal() }
+                    scroll='paper'
+                    closeAfterTransition
+                    fullWidth
+                    maxWidth='md'
+                    BackdropComponent={ Backdrop }
+                    BackdropProps={ {
+                      timeout: 500,
+                    } }
+                >
+                    <Fade in={ provinceModalOpen }>
+                        <div style={ {
+                          backgroundColor: theme.palette.primary.main,
+                          color: 'white',
+                          zIndex: 1
+                        } }>
+                            <ProvinceDialogContent province={ clickedProvince } save={ save }/>
+                        </div>
+                    </Fade>
+                </Dialog>
+            }
+          </>
       }
     </>
   )

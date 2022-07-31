@@ -11,7 +11,6 @@ import { formatDate } from 'utils/format.utils';
 interface SaveDialogProps {
   save: MapSave;
   onClose: () => void;
-  selectedDate: string;
 }
 
 enum Views {
@@ -38,7 +37,7 @@ export enum CountryTableType {
   LOSSES_NAVY = 'LOSSES_NAVY',
 }
 
-function SaveDialog({ save, onClose, selectedDate }: SaveDialogProps) {
+function SaveDialog({ save, onClose }: SaveDialogProps) {
   const intl = useIntl();
   const theme = useTheme();
 
@@ -201,10 +200,8 @@ function SaveDialog({ save, onClose, selectedDate }: SaveDialogProps) {
           }
         </Toolbar>
       </AppBar>
-      <CountryTable save={ save } selectedDate={ selectedDate } type={ countriesTable }
-                    visible={ Views.COUNTRIES === view }/>
-      <ProvinceTable save={ save } selectedDate={ selectedDate } type={ provincesTable }
-                     visible={ Views.PROVINCES === view }/>
+      <CountryTable save={ save } type={ countriesTable } visible={ Views.COUNTRIES === view }/>
+      <ProvinceTable save={ save } type={ provincesTable } visible={ Views.PROVINCES === view }/>
     </>
   )
 }

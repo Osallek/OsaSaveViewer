@@ -62,12 +62,11 @@ interface Column {
 
 interface ProvinceTableProps {
   save: MapSave;
-  selectedDate: string;
   type: ProvinceTableType;
   visible: boolean;
 }
 
-function ProvinceTable({ save, selectedDate, type, visible }: ProvinceTableProps) {
+function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
   const intl = useIntl();
   const theme = useTheme();
 
@@ -178,7 +177,7 @@ function ProvinceTable({ save, selectedDate, type, visible }: ProvinceTableProps
       label: intl.formatMessage({ id: 'province.owner' }),
       minWidth: 170,
       value: province => {
-        const h = getPHistory(province, save, selectedDate);
+        const h = getPHistory(province, save);
 
         if (h.owner) {
           return (
@@ -193,17 +192,17 @@ function ProvinceTable({ save, selectedDate, type, visible }: ProvinceTableProps
           return (<></>);
         }
       },
-      comparatorValue: province => getCountryName(save, getPHistory(province, save, selectedDate).owner),
+      comparatorValue: province => getCountryName(save, getPHistory(province, save).owner),
       filterValues: Array.from(
         new Set<string>(save.countries.filter(c => c.alive).filter(c => c.tag !== fakeTag).map(c => getCountrysName(c)).sort(stringComparator))),
-      filter: (province, filter) => filter.includes(getCountryName(save, getPHistory(province, save, selectedDate).owner)),
+      filter: (province, filter) => filter.includes(getCountryName(save, getPHistory(province, save).owner)),
     },
     {
       id: 'religion',
       label: intl.formatMessage({ id: 'province.religion' }),
       minWidth: 170,
       value: province => {
-        const h = getPHistory(province, save, selectedDate);
+        const h = getPHistory(province, save);
 
         if (h.religion) {
           return (
@@ -218,16 +217,16 @@ function ProvinceTable({ save, selectedDate, type, visible }: ProvinceTableProps
           return (<></>);
         }
       },
-      comparatorValue: province => getReligionName(save, getPHistory(province, save, selectedDate).religion),
+      comparatorValue: province => getReligionName(save, getPHistory(province, save).religion),
       filterValues: Array.from(new Set<string>(save.religions.map(g => getReligionsName(g)).sort(stringComparator))),
-      filter: (province, filter) => filter.includes(getReligionName(save, getPHistory(province, save, selectedDate).religion)),
+      filter: (province, filter) => filter.includes(getReligionName(save, getPHistory(province, save).religion)),
     },
     {
       id: 'culture',
       label: intl.formatMessage({ id: 'province.culture' }),
       minWidth: 150,
       value: province => {
-        const h = getPHistory(province, save, selectedDate);
+        const h = getPHistory(province, save);
 
         if (h.culture) {
           return (
@@ -237,16 +236,16 @@ function ProvinceTable({ save, selectedDate, type, visible }: ProvinceTableProps
           return (<></>);
         }
       },
-      comparatorValue: province => getCultureName(save, getPHistory(province, save, selectedDate).culture),
+      comparatorValue: province => getCultureName(save, getPHistory(province, save).culture),
       filterValues: Array.from(new Set<string>(save.cultures.map(c => getCulturesName(c)).sort(stringComparator))),
-      filter: (province, filter) => filter.includes(getCultureName(save, getPHistory(province, save, selectedDate).culture)),
+      filter: (province, filter) => filter.includes(getCultureName(save, getPHistory(province, save).culture)),
     },
     {
       id: 'good',
       label: intl.formatMessage({ id: 'province.good' }),
       minWidth: 200,
       value: province => {
-        const h = getPHistory(province, save, selectedDate);
+        const h = getPHistory(province, save);
 
         if (h.tradeGood) {
           return (
@@ -261,9 +260,9 @@ function ProvinceTable({ save, selectedDate, type, visible }: ProvinceTableProps
           return (<></>);
         }
       },
-      comparatorValue: province => getGoodName(save, getPHistory(province, save, selectedDate).tradeGood),
+      comparatorValue: province => getGoodName(save, getPHistory(province, save).tradeGood),
       filterValues: Array.from(new Set<string>(save.tradeGoods.map(g => getGoodsName(g)).sort(stringComparator))),
-      filter: (province, filter) => filter.includes(getGoodName(save, getPHistory(province, save, selectedDate).tradeGood)),
+      filter: (province, filter) => filter.includes(getGoodName(save, getPHistory(province, save).tradeGood)),
     },
     {
       id: 'buildings',

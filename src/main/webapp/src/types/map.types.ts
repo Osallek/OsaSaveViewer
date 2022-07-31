@@ -1,13 +1,6 @@
 import { Save, SaveColor, SaveHeir, SaveLeader, SaveMonarch, SaveProvince, SaveQueen } from 'types/api.types';
 import {
-  DEV_GRADIENT,
-  DEVASTATION_GRADIENT,
-  EMPTY_COLOR,
-  getGradient,
-  GREEN_COLOR,
-  HRE_ELECTOR_COLOR,
-  HRE_EMPEROR_COLOR,
-  PROSPERITY_GRADIENT
+  DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, getGradient, GREEN_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, PROSPERITY_GRADIENT
 } from 'utils/colors.utils';
 import { getArea, getAreaState, getCHistory, getCountry, getCulture, getEmperor, getGood, getOverlord, getPHistory, getReligion } from 'utils/save.utils';
 
@@ -27,17 +20,17 @@ export enum MapMode {
 
 export interface IMapMode {
   mapMode: MapMode;
-  provinceColor: (province: SaveProvince, save: MapSave, date: string, data: any) => SaveColor;
+  provinceColor: (province: SaveProvince, save: MapSave, data: any) => SaveColor;
   image: string;
   allowDate: boolean;
-  prepare: (save: MapSave, date: string) => any
+  prepare: (save: MapSave) => any
 }
 
 export const mapModes: Record<MapMode, IMapMode> = {
   [MapMode.POLITICAL]: {
     mapMode: MapMode.POLITICAL,
-    provinceColor: (province, save, date) => {
-      const owner = getPHistory(province, save, date).owner;
+    provinceColor: (province, save) => {
+      const owner = getPHistory(province, save).owner;
 
       return owner ? getCountry(save, owner).colors.mapColor : EMPTY_COLOR;
     },
@@ -47,8 +40,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
   },
   [MapMode.RELIGION]: {
     mapMode: MapMode.RELIGION,
-    provinceColor: (province, save, date) => {
-      const religion = getPHistory(province, save, date).religion;
+    provinceColor: (province, save) => {
+      const religion = getPHistory(province, save).religion;
 
       return religion ? getReligion(save, religion).color : EMPTY_COLOR;
     },
@@ -58,7 +51,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
   },
   [MapMode.DEVELOPMENT]: {
     mapMode: MapMode.DEVELOPMENT,
-    provinceColor: (province, save, date, data: Record<number, SaveColor>) => {
+    provinceColor: (province, save, data: Record<number, SaveColor>) => {
       const dev = (province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0);
       let color = Object.values(data)[0];
 
@@ -74,7 +67,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'development',
     allowDate: false,
-    prepare: (save, date) => {
+    prepare: (save) => {
       let min = 3;
       let max = Number.MAX_VALUE;
 
@@ -105,8 +98,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
   },
   [MapMode.HRE]: {
     mapMode: MapMode.HRE,
-    provinceColor: (province, save, date, { electors, emperor }: { electors: Array<string>, emperor: string }) => {
-      const history = getPHistory(province, save, date);
+    provinceColor: (province, save, { electors, emperor }: { electors: Array<string>, emperor: string }) => {
+      const history = getPHistory(province, save);
 
       if (history && history.owner) {
         if (emperor === history.owner) {
@@ -120,17 +113,17 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'hre',
     allowDate: true,
-    prepare: (save, date) => {
+    prepare: (save) => {
       return {
-        electors: save.countries.filter(country => country.history).filter(country => getCHistory(country, date, save).elector).map(value => value.tag),
-        emperor: getEmperor(save.hre, date)
+        electors: save.countries.filter(country => country.history).filter(country => getCHistory(country, save).elector).map(value => value.tag),
+        emperor: getEmperor(save.hre, save.date)
       }
     }
   },
   [MapMode.GREAT_POWER]: {
     mapMode: MapMode.GREAT_POWER,
-    provinceColor: (province, save, date) => {
-      const owner = getPHistory(province, save, date).owner;
+    provinceColor: (province, save) => {
+      const owner = getPHistory(province, save).owner;
 
       if (!owner) {
         return EMPTY_COLOR;
@@ -145,8 +138,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
   },
   [MapMode.INSTITUTION]: {
     mapMode: MapMode.INSTITUTION,
-    provinceColor: (province, save, date, { gradient }: { gradient: Array<SaveColor> }) => {
-      const owner = getPHistory(province, save, date).owner;
+    provinceColor: (province, save, { gradient }: { gradient: Array<SaveColor> }) => {
+      const owner = getPHistory(province, save).owner;
 
       if (!owner) {
         return EMPTY_COLOR;
@@ -158,7 +151,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'institution',
     allowDate: false,
-    prepare: (save, date) => {
+    prepare: (save) => {
       return {
         gradient: getGradient(save.institutions.filter(value => value !== undefined && value.origin >= 0).length + 1)
       }
@@ -166,12 +159,12 @@ export const mapModes: Record<MapMode, IMapMode> = {
   },
   [MapMode.TECHNOLOGY]: {
     mapMode: MapMode.TECHNOLOGY,
-    provinceColor: (province, save, date, {
+    provinceColor: (province, save, {
       gradient,
       min,
       max
     }: { gradient: Array<SaveColor>, min: number, max: number }) => {
-      const owner = getPHistory(province, save, date).owner;
+      const owner = getPHistory(province, save).owner;
 
       if (!owner) {
         return EMPTY_COLOR;
@@ -184,7 +177,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'technology',
     allowDate: false,
-    prepare: (save, date) => {
+    prepare: (save) => {
       let maxAdm = 1;
       let maxDip = 1;
       let maxMil = 1;
@@ -215,8 +208,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
   },
   [MapMode.GOOD]: {
     mapMode: MapMode.GOOD,
-    provinceColor: (province, save, date) => {
-      const good = getPHistory(province, save, date).tradeGood;
+    provinceColor: (province, save) => {
+      const good = getPHistory(province, save).tradeGood;
 
       return good ? getGood(save, good).color : EMPTY_COLOR;
     },
@@ -226,8 +219,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
   },
   [MapMode.CULTURE]: {
     mapMode: MapMode.CULTURE,
-    provinceColor: (province, save, date) => {
-      const culture = getPHistory(province, save, date).culture;
+    provinceColor: (province, save) => {
+      const culture = getPHistory(province, save).culture;
 
       return culture ? getCulture(save, culture).color : EMPTY_COLOR;
     },
@@ -237,7 +230,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
   },
   [MapMode.DEVASTATION]: {
     mapMode: MapMode.DEVASTATION,
-    provinceColor: (province, save, date, data) => {
+    provinceColor: (province, save) => {
       if (province.devastation) {
         return DEVASTATION_GRADIENT[10 - (province.devastation / 10 | 0)];
       }
@@ -248,7 +241,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
         return EMPTY_COLOR;
       }
 
-      const owner = getPHistory(province, save, date).owner;
+      const owner = getPHistory(province, save).owner;
       const state = getAreaState(area, owner);
 
       if (state) {
@@ -263,8 +256,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
   },
   [MapMode.PLAYERS]: {
     mapMode: MapMode.PLAYERS,
-    provinceColor: (province, save, date) => {
-      const owner = getPHistory(province, save, date).owner;
+    provinceColor: (province, save) => {
+      const owner = getPHistory(province, save).owner;
 
       if (!owner) {
         return EMPTY_COLOR;

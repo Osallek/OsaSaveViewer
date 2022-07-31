@@ -22,13 +22,12 @@ interface ProvincePopperCardProps {
   save: MapSave;
   province: SaveProvince;
   onClose: () => void;
-  selectedDate: string;
   viewMore: () => void;
 }
 
-function ProvincePopperCard({ save, province, onClose, selectedDate, viewMore }: ProvincePopperCardProps) {
+function ProvincePopperCard({ save, province, onClose, viewMore }: ProvincePopperCardProps) {
   const intl = useIntl();
-  const history = getPHistory(province, save, selectedDate);
+  const history = getPHistory(province, save);
 
   return (
     <Card style={ { backgroundColor: theme.palette.primary.main, minWidth: 200 } }>

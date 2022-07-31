@@ -31,8 +31,8 @@ export function getCountries(save: MapSave): Array<SaveCountry> {
   return save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive);
 }
 
-export function getPHistory(province: SaveProvince, save: MapSave, date: string = save.date): ProvinceHistory {
-  return date === save.date ? save.currentProvinces[province.id] : getPHistoryInternal(province, date);
+export function getPHistory(province: SaveProvince, save: MapSave): ProvinceHistory {
+  return save.currentProvinces[province.id];
 }
 
 function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHistory {
@@ -100,16 +100,16 @@ export function getPRealDev(province: SaveProvince): number {
   return ((province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0)) * (100 - (province.autonomy ?? 0)) / 100;
 }
 
-export function getProvinces(country: SaveCountry, save: MapSave, selectedDate: string = save.date): SaveProvince[] {
-  return save.provinces.filter(p => country.tag === getPHistory(p, save, selectedDate).owner);
+export function getProvinces(country: SaveCountry, save: MapSave): SaveProvince[] {
+  return save.provinces.filter(p => country.tag === getPHistory(p, save).owner);
 }
 
-export function getCRealDev(country: SaveCountry, save: MapSave, selectedDate: string): number {
-  return getProvinces(country, save, selectedDate).reduce((s, p) => s + getPRealDev(p), 0);
+export function getCRealDev(country: SaveCountry, save: MapSave): number {
+  return getProvinces(country, save).reduce((s, p) => s + getPRealDev(p), 0);
 }
 
-export function getNbImprovements(country: SaveCountry, save: MapSave, selectedDate: string): number {
-  return getProvinces(country, save, selectedDate)
+export function getNbImprovements(country: SaveCountry, save: MapSave): number {
+  return getProvinces(country, save)
     .reduce((s, p) => s + (p.improvements && p.improvements[country.tag] ? p.improvements[country.tag] : 0), 0);
 }
 
@@ -374,8 +374,8 @@ export function getAreaState(area: SaveArea, tag?: string): SaveCountryState | n
   return (area.states && tag) ? area.states[tag] : null;
 }
 
-export function getCHistory(country: SaveCountry, date: string, save: MapSave): CountryHistory {
-  return date === save.date ? save.currentCountries[country.tag] : getCHistoryInternal(country, date);
+export function getCHistory(country: SaveCountry, save: MapSave): CountryHistory {
+  return save.currentCountries[country.tag];
 }
 
 function getCHistoryInternal(country: SaveCountry, date: string): CountryHistory {
