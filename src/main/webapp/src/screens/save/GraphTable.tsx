@@ -1,4 +1,4 @@
-import { Grid, Typography, useTheme } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -15,7 +15,6 @@ interface GraphTableProps {
 
 function GraphTable({ save, visible }: GraphTableProps) {
   const intl = useIntl();
-  const theme = useTheme();
 
   const [charts, setCharts] = useState<Array<Array<PreviousLine>>>([]);
 
@@ -49,7 +48,8 @@ function GraphTable({ save, visible }: GraphTableProps) {
                         <CartesianGrid strokeDasharray='3 3'/>
                         <XAxis dataKey='name'/>
                         <YAxis/>
-                        <Tooltip formatter={ (value: number, name: string) => [formatNumber(value), getCountryName(save, name)] }/>
+                        <Tooltip formatter={ (value: number, name: string) => [formatNumber(value), getCountryName(save, name)] }
+                                 itemSorter={ item => -(item.value as number) }/>
                         {
                           Object.keys(chart[0]).filter(value => 'name' !== value).map(value => {
                               return <Line type='monotone' dataKey={ value } stroke={ colorToHex(getCountry(save, value).colors.countryColor) }/>
