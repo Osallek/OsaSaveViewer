@@ -3,7 +3,9 @@ import { AppBar, Button, Grid, IconButton, Menu, MenuItem, Toolbar, Typography, 
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
+import CompareTable from 'screens/save/CompareTable';
 import CountryTable from 'screens/save/CountryTable';
+import GraphTable from 'screens/save/GraphTable';
 import ProvinceTable from 'screens/save/ProvinceTable';
 import { MapSave } from 'types/map.types';
 import { formatDate } from 'utils/format.utils';
@@ -15,7 +17,9 @@ interface SaveDialogProps {
 
 enum Views {
   PROVINCES,
-  COUNTRIES
+  COUNTRIES,
+  GRAPH,
+  COMPARE,
 }
 
 export enum ProvinceTableType {
@@ -41,17 +45,17 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
   const intl = useIntl();
   const theme = useTheme();
 
-  const [ view, setView ] = useState<Views>(Views.COUNTRIES);
+  const [view, setView] = useState<Views>(Views.COUNTRIES);
 
-  const [ provincesTable, setProvincesTable ] = useState<ProvinceTableType>(ProvinceTableType.INFO);
-  const [ provincesAnchorEl, setProvincesAnchorEl ] = React.useState<null | HTMLElement>(null);
+  const [provincesTable, setProvincesTable] = useState<ProvinceTableType>(ProvinceTableType.INFO);
+  const [provincesAnchorEl, setProvincesAnchorEl] = React.useState<null | HTMLElement>(null);
   const provincesOpen = Boolean(provincesAnchorEl);
 
-  const [ countriesTable, setCountriesTable ] = useState<CountryTableType>(CountryTableType.DEV);
-  const [ countriesAnchorEl, setCountriesAnchorEl ] = React.useState<null | HTMLElement>(null);
+  const [countriesTable, setCountriesTable] = useState<CountryTableType>(CountryTableType.DEV);
+  const [countriesAnchorEl, setCountriesAnchorEl] = React.useState<null | HTMLElement>(null);
   const countriesOpen = Boolean(countriesAnchorEl);
 
-  const [ previousSavesAnchorEl, setPreviousSavesAnchorEl ] = React.useState<null | HTMLElement>(null);
+  const [previousSavesAnchorEl, setPreviousSavesAnchorEl] = React.useState<null | HTMLElement>(null);
   const previousSavesOpen = Boolean(previousSavesAnchorEl);
 
   const handleProvincesClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -73,6 +77,12 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
     setView(Views.COUNTRIES);
     setCountriesTable(type);
   };
+
+  const handleOtherClick = (type: Views) => {
+    setCountriesAnchorEl(null);
+    setProvincesAnchorEl(null);
+    setView(type);
+  }
 
   return (
     <>
@@ -154,54 +164,71 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
                 ))
               }
             </Menu>
+            <Button
+              key='button-graph'
+              variant='outlined'
+              color='secondary'
+              sx={ { m: 1 } }
+              onClick={ () => handleOtherClick(Views.GRAPH) }
+            >
+              { intl.formatMessage({ id: 'common.rank' }) }
+            </Button>
+            <Button
+              key='button-compare'
+              variant='outlined'
+              color='secondary'
+              sx={ { m: 1 } }
+              onClick={ () => handleOtherClick(Views.COMPARE) }
+            >
+              { intl.formatMessage({ id: 'common.compare' }) }
+            </Button>
           </Grid>
           {
             save.previousSaves && save.previousSaves.length > 0 &&
             (
-              <>
-                <Grid container/>
-                <Grid container justifyContent='end'>
-                  <Button
-                    key='button-provinces'
-                    variant='outlined'
-                    color='secondary'
-                    sx={ { m: 1 } }
-                    aria-controls={ previousSavesOpen ? 'basic-menu' : undefined }
-                    aria-haspopup="true"
-                    aria-expanded={ previousSavesOpen ? 'true' : undefined }
-                    onClick={ event => setPreviousSavesAnchorEl(event.currentTarget) }
-                    endIcon={ <KeyboardArrowDown/> }
-                  >
-                    { intl.formatMessage({ id: 'common.previousSaves' }) }
-                  </Button>
-                  <Menu
-                    id="basic-menu"
-                    anchorEl={ previousSavesAnchorEl }
-                    open={ previousSavesOpen }
-                    onClose={ () => setPreviousSavesAnchorEl(null) }
-                    MenuListProps={ {
-                      style: { backgroundColor: theme.palette.primary.light }
-                    } }
-                  >
-                    {
-                      save.previousSaves.map(previousSave => (
-                        <MenuItem component={ Link } to={ `/save/${ previousSave.id }` } target='_blank'
-                                  rel='noopener noreferrer'
-                                  style={ { color: theme.palette.primary.contrastText } }
-                                  key={ `save-${ previousSave.id }` }>
-                          { `${ previousSave.name } [${ formatDate(previousSave.date) }]` }
-                        </MenuItem>
-                      ))
-                    }
-                  </Menu>
-                </Grid>
-              </>
+              <Grid container justifyContent='end'>
+                <Button
+                  key='button-provinces'
+                  variant='outlined'
+                  color='secondary'
+                  sx={ { m: 1 } }
+                  aria-controls={ previousSavesOpen ? 'basic-menu' : undefined }
+                  aria-haspopup="true"
+                  aria-expanded={ previousSavesOpen ? 'true' : undefined }
+                  onClick={ event => setPreviousSavesAnchorEl(event.currentTarget) }
+                  endIcon={ <KeyboardArrowDown/> }
+                >
+                  { intl.formatMessage({ id: 'common.previousSaves' }) }
+                </Button>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={ previousSavesAnchorEl }
+                  open={ previousSavesOpen }
+                  onClose={ () => setPreviousSavesAnchorEl(null) }
+                  MenuListProps={ {
+                    style: { backgroundColor: theme.palette.primary.light }
+                  } }
+                >
+                  {
+                    save.previousSaves.map(previousSave => (
+                      <MenuItem component={ Link } to={ `/save/${ previousSave.id }` } target='_blank'
+                                rel='noopener noreferrer'
+                                style={ { color: theme.palette.primary.contrastText } }
+                                key={ `save-${ previousSave.id }` }>
+                        { `${ previousSave.name } [${ formatDate(previousSave.date) }]` }
+                      </MenuItem>
+                    ))
+                  }
+                </Menu>
+              </Grid>
             )
           }
         </Toolbar>
       </AppBar>
       <CountryTable save={ save } type={ countriesTable } visible={ Views.COUNTRIES === view }/>
       <ProvinceTable save={ save } type={ provincesTable } visible={ Views.PROVINCES === view }/>
+      <GraphTable save={ save } visible={ Views.GRAPH === view }/>
+      <CompareTable save={ save } visible={ Views.COMPARE === view }/>
     </>
   )
 }

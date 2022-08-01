@@ -20,6 +20,9 @@ const common = {
   'common.duration.year': '{years, plural, =0 {} one {# an} other {# ans}}',
   'common.duration.month': '{months, plural, =0 {}  other {# mois}}',
   'common.quantity': 'Nombre',
+  'common.compare': 'Comparaison',
+  'common.teamA': 'Équipe 1',
+  'common.teamB': 'Équipe 2',
 }
 
 export default common;

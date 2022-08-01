@@ -52,6 +52,7 @@ const country = {
   'country.sailors': 'Réserves de marins',
   'country.maxSailors': 'Réserves de marins',
   'country.navalTradition': 'Tradition navale',
+  'country.losses': 'Pertes',
   'country.income.TAXES': 'Taxes',
   'country.income.PRODUCTION': 'Production',
   'country.income.TRADE': 'Commerce',

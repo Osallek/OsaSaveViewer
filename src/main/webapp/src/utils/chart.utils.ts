@@ -1,12 +1,13 @@
 import { blue, blueGrey, brown, cyan, deepOrange, green, grey, orange, purple, red, teal, yellow } from '@mui/material/colors';
 import amber from '@mui/material/colors/amber';
 import { intl } from 'index';
+import { AxisDomain } from 'recharts/types/util/types';
 import { CountryPreviousSave, Expense, Income, PowerSpent, SaveCountry, SaveEstate } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { colorToHex, getYear, numberComparator, stringComparator } from 'utils/format.utils';
+import { colorToHex, formatNumber, getYear, numberComparator, stringComparator } from 'utils/format.utils';
 import {
-  getBuildingsName, getCulture, getCulturesName, getEstate, getEstatesName, getNbBuildings, getPHistory, getPrevious, getProvinces, getRank, getReligion,
-  getReligionsName
+  getBuildingsName, getCountries, getCountrysName, getCulture, getCulturesName, getEstate, getEstatesName, getNbBuildings, getPHistory, getPrevious,
+  getProvinces, getRank, getReligion, getReligionsName
 } from 'utils/save.utils';
 
 export function incomeToColor(income: Income): string {
@@ -506,7 +507,13 @@ export interface PreviousBar {
 
 export function getPreviousBar(country: SaveCountry, save: MapSave, mapper: (previous: CountryPreviousSave) => number, current: (country: SaveCountry) => number): Array<PreviousBar> {
   if (!country.previousSaves || country.previousSaves.length === 0) {
-    return [{ name: `${ intl.formatMessage({ id: 'common.save' }) } 1`, value: current(country), index: 1, rank: getRank(save, country, c => current(c)), progress: undefined }];
+    return [{
+      name: `${ intl.formatMessage({ id: 'common.save' }) } 1`,
+      value: current(country),
+      index: 1,
+      rank: getRank(save, country, c => current(c)),
+      progress: undefined
+    }];
   } else {
     const array = country.previousSaves.map((value, index) => {
       const currentValue = getPrevious(country, index + 1, mapper, current);
@@ -535,3 +542,112 @@ export function getPreviousBar(country: SaveCountry, save: MapSave, mapper: (pre
     return array;
   }
 }
+
+export interface PreviousLine {
+  [key: string]: string | number;
+
+  name: string;
+}
+
+export function getPreviousLine(save: MapSave, mapper: (previous: CountryPreviousSave) => number, current: (country: SaveCountry) => number): Array<PreviousLine> {
+  const array: Array<PreviousLine> = [];
+
+  if (save.previousSaves && save.previousSaves.length > 0) {
+    save.previousSaves.forEach((value, index) => array.push({ name: `${ intl.formatMessage({ id: 'common.save' }) } ${ index + 1 }` }));
+    array.push({ name: `${ intl.formatMessage({ id: 'common.save' }) } ${ save.previousSaves.length + 1 }` });
+  } else {
+    array.push({ name: `${ intl.formatMessage({ id: 'common.save' }) } 1` });
+  }
+
+  getCountries(save).filter(c => c.players && c.players.length > 0)
+    .sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b)))
+    .forEach(c => {
+      getPreviousCLine(c, save, mapper, current).forEach((value, index) => array[index][c.tag] = value);
+    });
+
+  return array;
+}
+
+export function getPreviousCLine(country: SaveCountry, save: MapSave, mapper: (previous: CountryPreviousSave) => number, current: (country: SaveCountry) => number): Array<number> {
+  if (!country.previousSaves || country.previousSaves.length === 0) {
+    return [getRank(save, country, c => current(c), true)];
+  } else {
+    const array = country.previousSaves.map(value => mapper(value));
+    array.push(current(country));
+
+    return array;
+  }
+}
+
+export interface CurrentLine {
+  [key: string]: number;
+
+  total: number;
+}
+
+export function getCurrentLine(save: MapSave, tags: Array<string>, current: (country: SaveCountry) => number): CurrentLine {
+  const line: CurrentLine = { total: 0 };
+
+  getCountries(save).filter(c => c.players && c.players.length > 0).filter(c => tags.includes(c.tag))
+    .forEach(c => {
+      line[c.tag] = current(c);
+    });
+
+  line.total = Object.values(line).reduce((s, n) => s + n, 0);
+
+  return line;
+}
+
+export interface SaveChart {
+  previous: (previous: CountryPreviousSave) => number,
+  current: (country: SaveCountry) => number,
+  key: string;
+  valueMapper: (n: number) => string;
+  domain?: AxisDomain;
+}
+
+export const previousCharts: Array<SaveChart> = [
+  {
+    key: 'dev',
+    previous: previous => previous.dev,
+    current: country => country.dev,
+    valueMapper: n => formatNumber(n),
+  },
+  {
+    key: 'income',
+    previous: previous => previous.income,
+    current: country => country.income ?? 0,
+    valueMapper: n => formatNumber(n),
+  },
+  {
+    key: 'nbProvinces',
+    previous: previous => previous.nbProvince,
+    current: country => country.nbProvince,
+    valueMapper: n => formatNumber(n),
+  },
+  {
+    key: 'maxManpower',
+    previous: previous => previous.maxManpower,
+    current: country => country.maxManpower,
+    valueMapper: n => formatNumber(n),
+  },
+  {
+    key: 'armyLimit',
+    previous: previous => previous.armyLimit,
+    current: country => country.armyLimit,
+    valueMapper: n => formatNumber(n),
+  },
+  {
+    key: 'armyProfessionalism',
+    previous: previous => previous.armyProfessionalism * 100,
+    current: country => (country.armyProfessionalism ?? 0) * 100,
+    valueMapper: n => `${ formatNumber(n) }%`,
+    domain: [0, 100],
+  },
+  {
+    key: 'losses',
+    previous: previous => previous.losses,
+    current: country => country.losses ? Object.values(country.losses).reduce((s, n) => s + n, 0) : 0,
+    valueMapper: n => formatNumber(n),
+  },
+];

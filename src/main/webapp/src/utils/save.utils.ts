@@ -538,8 +538,9 @@ export function getTotalTotalExpenses(country: SaveCountry): number {
   return Object.values(Expense).map(value => getTotalExpenses(country, value)).reduce((s, d) => s + d ?? 0, 0);
 }
 
-export function getRank(save: MapSave, country: SaveCountry, mapper: (country: SaveCountry) => number | undefined): number {
-  return Array.from(new Set<number>(getCountries(save).map(c => mapper(c) ?? 0))).sort((a, b) => -numberComparator(a, b)).indexOf(mapper(country) ?? 0) + 1;
+export function getRank(save: MapSave, country: SaveCountry, mapper: (country: SaveCountry) => number | undefined, onlyPlayer: boolean = false): number {
+  return Array.from(new Set<number>(getCountries(save).filter(c => !onlyPlayer || (c.players && c.players.length > 0)).map(c => mapper(c) ?? 0)))
+    .sort((a, b) => -numberComparator(a, b)).indexOf(mapper(country) ?? 0) + 1;
 }
 
 export function getMonarchs(country: SaveCountry): Array<SaveMonarch> {
