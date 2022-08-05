@@ -23,7 +23,7 @@ let theme = createTheme({
           fontWeight: 'bold'
         }
       }
-    },
+    }
   }
 });
 theme = responsiveFontSizes(theme);

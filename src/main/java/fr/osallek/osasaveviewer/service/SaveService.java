@@ -3,6 +3,7 @@ package fr.osallek.osasaveviewer.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.osallek.osasaveviewer.common.exception.PreviousSaveAfterException;
 import fr.osallek.osasaveviewer.common.exception.PreviousSaveDoesNotExistException;
+import fr.osallek.osasaveviewer.common.exception.UnauthorizedException;
 import fr.osallek.osasaveviewer.config.ApplicationProperties;
 import fr.osallek.osasaveviewer.controller.dto.ServerSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.UploadResponseDTO;
@@ -11,17 +12,6 @@ import fr.osallek.osasaveviewer.controller.dto.save.CountryPreviousSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.ExtractorSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.PreviousSaveDTO;
 import fr.osallek.osasaveviewer.service.object.UserInfo;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
-import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
@@ -32,6 +22,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class SaveService {
@@ -48,10 +50,14 @@ public class SaveService {
 
     private final DataService dataService;
 
-    public SaveService(ObjectMapper objectMapper, ApplicationProperties properties, @Lazy DataService dataService) throws IOException {
+    private final UserService userService;
+
+
+    public SaveService(ObjectMapper objectMapper, ApplicationProperties properties, @Lazy DataService dataService, UserService userService) throws IOException {
         this.objectMapper = objectMapper;
         this.properties = properties;
         this.dataService = dataService;
+        this.userService = userService;
 
         FileUtils.forceMkdir(this.properties.getSavesFolder().toFile());
         FileUtils.forceMkdir(this.properties.getUsersFolder().toFile());
@@ -60,7 +66,7 @@ public class SaveService {
         try (Stream<Path> stream = Files.walk(this.properties.getUsersFolder())) {
             stream.forEach(path -> {
                 try {
-                    getUserInfo(FilenameUtils.removeExtension(path.getFileName().toString())).ifPresent(userInfo -> {
+                    this.userService.getUserInfo(FilenameUtils.removeExtension(path.getFileName().toString())).ifPresent(userInfo -> {
                         serverSaves.addAll(userInfo.getSaves());
 
                         if (serverSaves.size() > MAX_QUEUE_SIZE) {
@@ -76,12 +82,12 @@ public class SaveService {
         this.lastSaves.addAll(serverSaves);
     }
 
-    public List<ServerSaveDTO> getLastSaves() {
-        return this.lastSaves.stream().toList();
+    public SortedSet<ServerSaveDTO> getLastSaves() {
+        return new TreeSet<>(this.lastSaves);
     }
 
-    public List<ServerSaveDTO> getSaveForUser(String userId) throws IOException {
-        return getUserInfo(userId).map(UserInfo::getSaves).orElse(new ArrayList<>());
+    public SortedSet<ServerSaveDTO> getSaveForUser(String userId) throws IOException {
+        return this.userService.getUserInfo(userId).map(UserInfo::getSaves).orElse(new TreeSet<>());
     }
 
     public Path getSave(String id) {
@@ -112,9 +118,9 @@ public class SaveService {
         Path dest = this.properties.getSavesFolder().resolve(id + ".json");
         this.objectMapper.writeValue(dest.toFile(), save);
 
-        UserInfo userInfo = getOrCreateUserInfo(save.getOwner());
+        UserInfo userInfo = this.userService.getOrCreateUserInfo(save.getOwner());
         ServerSaveDTO serverSave = userInfo.addSave(save, id);
-        saveUserInfo(userInfo);
+        this.userService.saveUserInfo(userInfo);
 
         UploadResponseDTO response = checkAssets(save, id);
         this.lastSaves.add(serverSave);
@@ -122,31 +128,31 @@ public class SaveService {
         return response;
     }
 
-    public UserInfo getOrCreateUserInfo(String userId) throws IOException {
-        Optional<UserInfo> userInfo = getUserInfo(userId);
-
-        if (userInfo.isPresent()) {
-            return userInfo.get();
+    public UserInfo delete(String id, Optional<String> userId) throws IOException {
+        if (userId.isEmpty()) {
+            throw new UnauthorizedException();
         }
 
-        UserInfo info = new UserInfo(userId);
-        saveUserInfo(info);
+        UserInfo userInfo = this.userService.getOrCreateUserInfo(userId.get());
 
-        return info;
-    }
+        if (CollectionUtils.isNotEmpty(userInfo.getSaves())) {
+            Optional<ServerSaveDTO> save = userInfo.getSaves().stream().filter(serverSave -> id.equals(serverSave.id())).findFirst();
 
-    public Optional<UserInfo> getUserInfo(String userId) throws IOException {
-        Path path = this.properties.getUsersFolder().resolve(userId + ".json");
+            if (save.isPresent()) {
+                Path dest = this.properties.getSavesFolder().resolve(id + ".json");
 
-        if (Files.exists(path)) {
-            return Optional.of(this.objectMapper.readValue(path.toFile(), UserInfo.class));
+                if (Files.exists(dest)) {
+                    FileUtils.deleteQuietly(dest.toFile());
+                }
+
+                userInfo.getSaves().removeIf(s -> id.equals(s.id()));
+                this.lastSaves.removeIf(s -> id.equals(s.id()));
+            } else {
+                throw new UnauthorizedException();
+            }
         }
 
-        return Optional.empty();
-    }
-
-    public void saveUserInfo(UserInfo userInfo) throws IOException {
-        this.objectMapper.writeValue(this.properties.getUsersFolder().resolve(userInfo.getId() + ".json").toFile(), userInfo);
+        return this.userService.saveUserInfo(userInfo);
     }
 
     private String getId(Path path) {
@@ -175,21 +181,17 @@ public class SaveService {
         newSave.setPreviousSaves(previousSaves);
 
         for (CountryDTO country : newSave.getCountries()) {
-            previousSave.getCountries()
-                        .stream()
-                        .filter(c -> c.getTag().equals(country.getTagAtDate(previousSave.getDate())))
-                        .findFirst()
-                        .ifPresent(c -> {
-                            SortedSet<CountryPreviousSaveDTO> previous = c.getPreviousSaves();
+            previousSave.getCountries().stream().filter(c -> c.getTag().equals(country.getTagAtDate(previousSave.getDate()))).findFirst().ifPresent(c -> {
+                SortedSet<CountryPreviousSaveDTO> previous = c.getPreviousSaves();
 
-                            if (CollectionUtils.isEmpty(previous)) {
-                                previous = new TreeSet<>();
-                            }
+                if (CollectionUtils.isEmpty(previous)) {
+                    previous = new TreeSet<>();
+                }
 
-                            previous.add(new CountryPreviousSaveDTO(previousSave, c));
+                previous.add(new CountryPreviousSaveDTO(previousSave, c));
 
-                            country.setPreviousSaves(previous);
-                        });
+                country.setPreviousSaves(previous);
+            });
         }
     }
 }

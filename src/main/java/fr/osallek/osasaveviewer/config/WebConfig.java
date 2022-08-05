@@ -24,56 +24,29 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://localhost:3000", "http://127.0.0.1:8887");
+        registry.addMapping("/**")
+                .allowedMethods("*")
+                .allowedOrigins(this.properties.getFrontUrl().getScheme() + "://" + this.properties.getFrontUrl().getAuthority())
+                .allowCredentials(true);
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         ClassPathResource index = new ClassPathResource("/viewer/index.html");
-        ClassPathResource robots = new ClassPathResource("/viewer/robots.txt");
-        ClassPathResource favicon = new ClassPathResource("/viewer/favicon.ico");
 
         registry.addResourceHandler("/favicon.ico")
                 .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/")
                 .resourceChain(true)
-                .addResolver(new PathResourceResolver() {
-                    @Override
-                    protected Resource getResource(String resourcePath, Resource location) {
-                        return favicon;
-                    }
-                });
+                .addResolver(new PathResourceResolver());
 
         registry.addResourceHandler("/robots.txt")
                 .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/")
                 .resourceChain(true)
-                .addResolver(new PathResourceResolver() {
-                    @Override
-                    protected Resource getResource(String resourcePath, Resource location) {
-                        return robots;
-                    }
-                });
+                .addResolver(new PathResourceResolver());
 
         registry.addResourceHandler("/viewer/eu4/**")
                 .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/eu4/")
                 .setCacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
-                .setOptimizeLocations(true)
-                .resourceChain(true)
-                .addResolver(new PathResourceResolver() {
-                    @Override
-                    protected Resource getResource(String resourcePath, Resource location) {
-                        try {
-                            location = location.createRelative(resourcePath);
-
-                            return location.exists() && location.isReadable() ? location : index;
-                        } catch (Exception e) {
-                            return index;
-                        }
-                    }
-                });
-
-        registry.addResourceHandler("/viewer/static/**")
-                .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/static/")
-                .setCacheControl(CacheControl.maxAge(31536000, TimeUnit.SECONDS))
                 .setOptimizeLocations(true)
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver() {
@@ -104,6 +77,18 @@ public class WebConfig implements WebMvcConfigurer {
                         }
                     }
                 });
+
+        registry.addResourceHandler("/data/users/**")
+                .addResourceLocations("file:/" + this.properties.getUsersFolder() + File.separator)
+                .setCacheControl(CacheControl.noCache())
+                .resourceChain(false)
+                .addResolver(new PathResourceResolver());
+
+        registry.addResourceHandler("/data/saves/**")
+                .addResourceLocations("file:/" + this.properties.getSavesFolder() + File.separator)
+                .setCacheControl(CacheControl.maxAge(31536000, TimeUnit.SECONDS))
+                .resourceChain(false)
+                .addResolver(new PathResourceResolver());
 
         registry.addResourceHandler("/data/**")
                 .addResourceLocations("file:/" + this.properties.getDataFolder() + File.separator)

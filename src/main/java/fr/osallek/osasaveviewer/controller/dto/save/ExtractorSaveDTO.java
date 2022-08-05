@@ -10,6 +10,12 @@ public final class ExtractorSaveDTO {
 
     private String owner;
 
+    private String country;
+
+    private String countryName;
+
+    private String version;
+
     private String previousSave;
 
     private String name;
@@ -84,6 +90,30 @@ public final class ExtractorSaveDTO {
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCountryName() {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getPreviousSave() {

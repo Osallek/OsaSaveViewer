@@ -1,23 +1,27 @@
 package fr.osallek.osasaveviewer.config;
 
-import java.nio.file.Path;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import java.net.URI;
+import java.nio.file.Path;
 
 @Configuration
 @ConfigurationProperties(prefix = "application")
 public class ApplicationProperties {
 
-    private String frontUrl;
+    private URI frontUrl;
 
     private Path baseFolder;
 
-    public String getFrontUrl() {
+    private String steamApiKey;
+
+    public URI getFrontUrl() {
         return frontUrl;
     }
 
     public void setFrontUrl(String frontUrl) {
-        this.frontUrl = frontUrl;
+        this.frontUrl = URI.create(frontUrl);
     }
 
     public Path getBaseFolder() {
@@ -38,5 +42,17 @@ public class ApplicationProperties {
 
     public Path getSavesFolder() {
         return getDataFolder().resolve("saves");
+    }
+
+    public Path getExtractorPath() {
+        return this.baseFolder.resolve("OsaSaveExtractorUpdater.jar");
+    }
+
+    public String getSteamApiKey() {
+        return steamApiKey;
+    }
+
+    public void setSteamApiKey(String steamApiKey) {
+        this.steamApiKey = steamApiKey;
     }
 }

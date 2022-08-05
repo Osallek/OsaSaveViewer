@@ -594,3 +594,25 @@ export type CountryPreviousSave = {
 export type SaveIdeaGroup = NamedImageLocalised & {
   ideas: Array<NamedImageLocalised>;
 }
+
+export type UserInfo = {
+  id: string;
+  name?: string;
+  image?: string;
+  saves?: Array<ServerSave>;
+}
+
+export type ServerSave = {
+  name: string;
+  creationDate: string;
+  date: string;
+  id: string;
+  country: string;
+  countryName: string;
+  flag: string;
+  version: string;
+  nbPlayers: number;
+  ownerId: string;
+  ownerName?: string;
+  ownerImage?: string;
+}

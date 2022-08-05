@@ -11,6 +11,13 @@ import fr.osallek.osasaveviewer.controller.dto.save.ExtractorSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.IdeaGroupDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.NamedImageLocalisedDTO;
 import fr.osallek.osasaveviewer.service.object.UserInfo;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,12 +28,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class DataService {
@@ -36,12 +37,12 @@ public class DataService {
     public static final List<String> FOLDERS = List.of("advisors", "buildings", "colors", "estates", "flags", "goods", "idea_groups", "institutions",
                                                        "modifiers", "privileges", "provinces", "religions");
 
-    private final SaveService saveService;
+    private final UserService userService;
 
     private final ApplicationProperties properties;
 
-    public DataService(SaveService saveService, ApplicationProperties properties) {
-        this.saveService = saveService;
+    public DataService(UserService userService, ApplicationProperties properties) {
+        this.userService = userService;
         this.properties = properties;
     }
 
@@ -54,7 +55,7 @@ public class DataService {
             throw new UnauthorizedException();
         }
 
-        Optional<UserInfo> userInfo = this.saveService.getUserInfo(data.userId());
+        Optional<UserInfo> userInfo = this.userService.getUserInfo(data.userId());
 
         if (userInfo.isEmpty() || userInfo.get().getSaves().stream().noneMatch(save -> save.id().equals(data.saveId()))) {
             throw new UnauthorizedException();

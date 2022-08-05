@@ -35,6 +35,14 @@ export function formatDate(date: string | undefined): string {
   return date ? intl.formatDate(date) : '';
 }
 
+export function formatTime(date: string | undefined): string {
+  return date ? intl.formatTime(date) : '';
+}
+
+export function formatDateTime(date: string | undefined): string {
+  return `${ formatDate(date) } ${ formatTime(date) }`;
+}
+
 export function round1000(v: number): number {
   return round(v, 1000);
 }

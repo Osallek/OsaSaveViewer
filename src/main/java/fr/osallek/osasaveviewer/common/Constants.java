@@ -1,12 +1,13 @@
 package fr.osallek.osasaveviewer.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class Constants {
 
@@ -16,6 +17,8 @@ public final class Constants {
     private static final Logger LOGGER = LoggerFactory.getLogger(Constants.class);
 
     private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
+
+    public static final String COOKIE_NAME = "session";
 
     public static boolean checkPngImage(Path path) throws IOException {
         return checkPngImage(path.toFile());

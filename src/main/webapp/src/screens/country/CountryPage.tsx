@@ -98,7 +98,7 @@ function CountryPage() {
         :
         (loading ?
             (
-              <Backdrop open>
+              <Backdrop open style={ { backgroundColor: theme.palette.primary.light } }>
                 <CircularProgress color='primary'/>
               </Backdrop>
             )

@@ -1,9 +1,15 @@
 const endpoints = {
   user: {
-    one: (id: string) => `/api/save/user/${ id }`,
+    one: (id: string) => `/users/${ id }.json`,
+    profile: '/users/profile',
   },
   save: {
     one: (id: string) => `/saves/${ id }.json`,
+    delete: (id: string) => `/saves/${ id }`,
+    recent: '/saves',
+  },
+  steam: {
+    logout: '/steam/logout',
   },
 };
 

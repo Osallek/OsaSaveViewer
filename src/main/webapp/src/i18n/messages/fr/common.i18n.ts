@@ -1,4 +1,5 @@
 const common = {
+  'common.name': 'Osa Save Viewer',
   'common.viewMore': 'Voir plus',
   'common.provinces': 'Provinces',
   'common.countries': 'Pays',
@@ -12,6 +13,7 @@ const common = {
   'common.previousSaves': 'Sessions précédentes',
   'common.save': 'Session',
   'common.saveNotFound': 'Partie introuvable',
+  'common.userNotFound': 'Utilisateur introuvable',
   'common.color': 'Couleur',
   'common.type': 'Type',
   'common.value': 'Valeur',
@@ -23,6 +25,9 @@ const common = {
   'common.compare': 'Comparaison',
   'common.teamA': 'Équipe 1',
   'common.teamB': 'Équipe 2',
+  'common.profile': 'Profil',
+  'common.logout': 'Se déconnecter',
+  'common.recent': 'Dernière parties analysées',
 }
 
 export default common;

@@ -3,7 +3,7 @@ import { Backdrop, Button, Chip, CircularProgress, Dialog, Grid, Tooltip, Typogr
 import { api } from 'api';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import SaveDialog from 'screens/save/SaveDialog';
 import SaveMap from 'screens/save/SaveMap';
 import theme from 'theme';
@@ -14,6 +14,7 @@ import { convertSave } from 'utils/save.utils';
 function SavePage() {
   const params = useParams();
   const intl = useIntl();
+  const navigate = useNavigate();
 
   const [save, setSave] = useState<MapSave>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -25,14 +26,17 @@ function SavePage() {
 
   const { id } = params;
 
+  let init = false;
+
   useEffect(() => {
     ;(async () => {
       try {
-        if (id) {
+        if (id && !init) {
+          init = true;
           const { data } = await api.save.one(id);
 
           setSave(convertSave(data));
-        } else {
+        } else if (!id) {
           setError(true);
         }
       } catch (e) {
@@ -46,13 +50,10 @@ function SavePage() {
 
   return (
     <>
-      { loading ?
-        (
-          <Backdrop open={ !mapReady }>
-            <CircularProgress color="inherit"/>
-          </Backdrop>
-        )
-        :
+      <Backdrop open={ loading || !mapReady } style={ { backgroundColor: theme.palette.primary.light } }>
+        <CircularProgress color='primary'/>
+      </Backdrop>
+      {
         error ?
           (
             <Grid container alignItems='center' justifyContent='center' flexDirection='column'
@@ -71,7 +72,22 @@ function SavePage() {
           :
           (
             <div style={ { height: '100%', visibility: mapReady ? 'visible' : 'hidden', overflow: 'hidden' } }>
-              <div style={ { position: 'fixed', top: 5, left: 5 } }>
+              <Link to='/'>
+                <Home style={ {
+                  position: 'absolute',
+                  top: 5,
+                  left: 5,
+                  backgroundColor: theme.palette.primary.main,
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: '1.2em',
+                  padding: 4,
+                  width: 24,
+                  height: 24,
+                  borderRadius: '50%'
+                } }/>
+              </Link>
+              <div style={ { position: 'fixed', top: 5, left: 45 } }>
                 {
                   Object.values(MapMode)
                     .map((mm) => (
@@ -88,20 +104,20 @@ function SavePage() {
               </div>
               {
                 save &&
-                <Tooltip title={ intl.formatMessage({ id: 'common.graph' }) } key='tooltip-graph'>
-                  <Chip label={ `${ save.name } (${ formatDate(save.date) })` }
-                        icon={ <BarChart style={ { color: 'white' } }/> }
-                        onClick={ () => setStatDialog(true) }
-                        style={ {
-                          position: 'absolute',
-                          bottom: 5,
-                          left: 5,
-                          backgroundColor: theme.palette.primary.main,
-                          color: 'white',
-                          fontWeight: 'bold',
-                          fontSize: '1.2em'
-                        } }/>
-                </Tooltip>
+                  <Tooltip title={ intl.formatMessage({ id: 'common.graph' }) } key='tooltip-graph'>
+                      <Chip label={ `${ save.name } (${ formatDate(save.date) })` }
+                            icon={ <BarChart style={ { color: 'white' } }/> }
+                            onClick={ () => setStatDialog(true) }
+                            style={ {
+                              position: 'absolute',
+                              bottom: 5,
+                              left: 5,
+                              backgroundColor: theme.palette.primary.main,
+                              color: 'white',
+                              fontWeight: 'bold',
+                              fontSize: '1.2em'
+                            } }/>
+                  </Tooltip>
               }
               <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady }/>
               {

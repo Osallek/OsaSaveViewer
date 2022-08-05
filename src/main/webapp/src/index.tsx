@@ -1,15 +1,17 @@
-import { ThemeProvider } from '@mui/material';
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { createIntl, createIntlCache, RawIntlProvider } from 'react-intl';
-import theme from 'theme';
-import App from './App';
-import fr from './i18n/messages';
-import './index.css';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { ThemeProvider } from '@mui/material';
+import { api } from 'api';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { createIntl, createIntlCache, RawIntlProvider } from 'react-intl';
+import theme from 'theme';
+import { UserInfo } from 'types/api.types';
+import App from './App';
+import fr from './i18n/messages';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
 
 const language = navigator.language;
