@@ -7,6 +7,7 @@ import theme from 'theme';
 import { ServerSave } from 'types/api.types';
 import { getFlagUrl } from 'utils/data.utils';
 import { formatDate, formatDateTime, formatNumber } from 'utils/format.utils';
+import { getName } from 'utils/save.utils';
 
 export interface SaveTableProps {
   saves?: Array<ServerSave>;
@@ -76,7 +77,7 @@ function SaveTable({ saves, currentUser, handleDelete, owner }: SaveTableProps) 
                     <Grid container alignItems='center' flexWrap='nowrap' overflow='hidden'>
                       <Avatar src={ getFlagUrl(save.flag) } variant='square'/>
                       <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
-                        { save.countryName }
+                        { getName(save.countryName) }
                       </Typography>
                     </Grid>
                   </TableCell>

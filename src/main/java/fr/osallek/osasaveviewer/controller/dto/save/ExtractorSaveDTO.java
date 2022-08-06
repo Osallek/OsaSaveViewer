@@ -12,7 +12,7 @@ public final class ExtractorSaveDTO {
 
     private String country;
 
-    private String countryName;
+    private Localised countryName;
 
     private String version;
 
@@ -100,11 +100,11 @@ public final class ExtractorSaveDTO {
         this.country = country;
     }
 
-    public String getCountryName() {
+    public Localised getCountryName() {
         return countryName;
     }
 
-    public void setCountryName(String countryName) {
+    public void setCountryName(Localised countryName) {
         this.countryName = countryName;
     }
 

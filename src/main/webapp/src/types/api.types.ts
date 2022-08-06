@@ -608,7 +608,7 @@ export type ServerSave = {
   date: string;
   id: string;
   country: string;
-  countryName: string;
+  countryName: Localised;
   flag: string;
   version: string;
   nbPlayers: number;
