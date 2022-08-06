@@ -9,6 +9,8 @@ const user = {
   'user.actions': 'Actions',
   'user.delete': 'Supprimer',
   'user.noSave': 'Aucune sauvegarde trouvée',
+  'user.profile': 'Profil',
+  'user.logout': 'Se déconnecter',
 }
 
 export default user;

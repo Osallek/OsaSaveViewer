@@ -1,0 +1,25 @@
+const province = {
+  'province.id': 'Id',
+  'province.name': 'Name',
+  'province.INFO': 'Information',
+  'province.DEV': 'Development',
+  'province.owner': 'Owner',
+  'province.controller': 'Controller',
+  'province.dev': 'Development',
+  'province.realDev': 'Realm development',
+  'province.manualDev': 'Manual development',
+  'province.cores': 'Cores',
+  'province.culture': 'Culture',
+  'province.religion': 'Religion',
+  'province.devastation': 'Devastation',
+  'province.prosperity': 'Prosperity',
+  'province.baseTax': 'Taxes',
+  'province.baseProduction': 'Production',
+  'province.baseManpower': 'Manpower',
+  'province.good': 'Good',
+  'province.colonySize': 'Colony size',
+  'province.buildings': 'Buildings',
+  'province.history': 'History',
+}
+
+export default province

@@ -3,7 +3,6 @@ package fr.osallek.osasaveviewer.controller;
 import fr.osallek.osasaveviewer.common.exception.PreviousSaveAfterException;
 import fr.osallek.osasaveviewer.common.exception.PreviousSaveDoesNotExistException;
 import fr.osallek.osasaveviewer.common.exception.UnauthorizedException;
-import javax.xml.datatype.DatatypeConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.PropertyAccessException;
@@ -12,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.xml.datatype.DatatypeConfigurationException;
 
 @RestControllerAdvice
 public class ExceptionTranslator {

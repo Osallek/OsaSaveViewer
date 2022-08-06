@@ -3,10 +3,6 @@ const common = {
   'common.viewMore': 'Voir plus',
   'common.provinces': 'Provinces',
   'common.countries': 'Pays',
-  'common.rowPerPages': 'Résultats par page',
-  'common.page': 'Page {page} sur {of}',
-  'common.search': 'Rechercher...',
-  'common.validate': 'Valider',
   'common.total': 'Total',
   'common.mean': 'Moyenne',
   'common.graph': 'Voir les statistiques',
@@ -25,9 +21,6 @@ const common = {
   'common.compare': 'Comparaison',
   'common.teamA': 'Équipe 1',
   'common.teamB': 'Équipe 2',
-  'common.profile': 'Profil',
-  'common.logout': 'Se déconnecter',
-  'common.recent': 'Dernière parties analysées',
 }
 
 export default common;

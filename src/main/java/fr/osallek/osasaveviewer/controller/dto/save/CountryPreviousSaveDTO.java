@@ -1,9 +1,10 @@
 package fr.osallek.osasaveviewer.controller.dto.save;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Objects;
-import org.apache.commons.lang3.ObjectUtils;
 
 public record CountryPreviousSaveDTO(LocalDate date, String tag, String image, double dev, double income, int nbProvince, int maxManpower, int armyLimit,
                                      double armyProfessionalism, int losses) implements Comparable<CountryPreviousSaveDTO> {

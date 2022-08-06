@@ -2,7 +2,7 @@ const map = {
   'map.mod.POLITICAL': 'Politique',
   'map.mod.PLAYERS': 'Joueurs',
   'map.mod.RELIGION': 'Religions',
-  'map.mod.DEVELOPMENT': 'Dévelopement',
+  'map.mod.DEVELOPMENT': 'Développement',
   'map.mod.HRE': 'Saint Empire',
   'map.mod.GREAT_POWER': 'Grandes puissances',
   'map.mod.INSTITUTION': 'Institutions',

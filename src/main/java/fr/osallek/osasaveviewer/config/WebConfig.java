@@ -44,40 +44,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
 
-        registry.addResourceHandler("/viewer/eu4/**")
-                .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/eu4/")
-                .setCacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
-                .setOptimizeLocations(true)
-                .resourceChain(true)
-                .addResolver(new PathResourceResolver() {
-                    @Override
-                    protected Resource getResource(String resourcePath, Resource location) {
-                        try {
-                            location = location.createRelative(resourcePath);
-
-                            return location.exists() && location.isReadable() ? location : index;
-                        } catch (Exception e) {
-                            return index;
-                        }
-                    }
-                });
-
-        registry.addResourceHandler("/viewer/**", "/viewer/", "/viewer")
-                .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/")
-                .resourceChain(true)
-                .addResolver(new PathResourceResolver() {
-                    @Override
-                    protected Resource getResource(String resourcePath, Resource location) {
-                        try {
-                            location = location.createRelative(resourcePath);
-
-                            return location.exists() && location.isReadable() ? location : index;
-                        } catch (Exception e) {
-                            return index;
-                        }
-                    }
-                });
-
         registry.addResourceHandler("/data/users/**")
                 .addResourceLocations("file:/" + this.properties.getUsersFolder() + File.separator)
                 .setCacheControl(CacheControl.noCache())
@@ -95,5 +61,28 @@ public class WebConfig implements WebMvcConfigurer {
                 .setCacheControl(CacheControl.maxAge(31536000, TimeUnit.SECONDS))
                 .resourceChain(false)
                 .addResolver(new PathResourceResolver());
+
+        registry.addResourceHandler("/eu4/**")
+                .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/eu4/")
+                .setCacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
+                .setOptimizeLocations(true)
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
+
+        registry.addResourceHandler("/**", "/", "")
+                .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/")
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver() {
+                    @Override
+                    protected Resource getResource(String resourcePath, Resource location) {
+                        try {
+                            location = location.createRelative(resourcePath);
+
+                            return location.exists() && location.isReadable() ? location : index;
+                        } catch (Exception e) {
+                            return index;
+                        }
+                    }
+                });
     }
 }

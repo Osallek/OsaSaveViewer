@@ -13,7 +13,6 @@ function SteamLogin() {
   const { user, setUser } = useContext(UserContext);
 
   const handleClose = () => {
-    console.log('close')
     setAnchorEl(null);
   }
 
@@ -42,10 +41,10 @@ function SteamLogin() {
               MenuListProps={ { onMouseLeave: handleClose } }
             >
               <MenuItem onClick={ handleClose } component={ Link } to={ `/user/${ user.id }` }>
-                { intl.formatMessage({ id: 'common.profile' }) }
+                { intl.formatMessage({ id: 'user.profile' }) }
               </MenuItem>
               <MenuItem onClick={ handleLogout }>
-                { intl.formatMessage({ id: 'common.logout' }) }
+                { intl.formatMessage({ id: 'user.logout' }) }
               </MenuItem>
             </Menu>
             {
