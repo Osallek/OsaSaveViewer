@@ -21,13 +21,10 @@ function UserPage() {
 
   const { id } = params;
 
-  let init = false;
-
   useEffect(() => {
     ;(async () => {
       try {
-        if (id && !init) {
-          init = true;
+        if (id) {
           const { data } = await api.user.one(id);
 
           setPageUser(data);
@@ -35,7 +32,7 @@ function UserPage() {
           if (user && id === user.id) {
             setUser(data);
           }
-        } else if (!id) {
+        } else {
           setError(true);
         }
       } catch (e) {

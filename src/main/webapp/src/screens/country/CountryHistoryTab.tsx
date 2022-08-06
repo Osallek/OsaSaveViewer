@@ -71,7 +71,7 @@ function CountryHistoryTab({ country, save }: CountryHistoryTabProps) {
     setIncome(getIncomeLine(country));
     setNbProvinces(getNbProvincesLine(country));
     setCharts(previousCharts.map(value => getPreviousBar(country, save, value.mapper, value.current)));
-  }, [country]);
+  }, [country, save]);
 
   useEffect(() => {
     setColors(getSavesGradient(save));

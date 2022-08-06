@@ -30,11 +30,11 @@ function CompareTable({ save, visible }: CompareTableProps) {
 
   useEffect(() => {
     setTeamA(previousCharts.map(value => getCurrentLine(save, countriesA.map(c => c.tag), value.current)));
-  }, [countriesA]);
+  }, [countriesA, save]);
 
   useEffect(() => {
     setTeamB(previousCharts.map(value => getCurrentLine(save, countriesB.map(c => c.tag), value.current)));
-  }, [countriesB]);
+  }, [countriesB, save]);
 
   return (
     visible ?

@@ -27,8 +27,10 @@ function App() {
         if (!parsedUser) {
           const { data } = await api.user.profile();
 
-          setUser(data);
-          sessionStorage.setItem(STORAGE_NAME, JSON.stringify(data));
+          if (data) {
+            setUser(data);
+            sessionStorage.setItem(STORAGE_NAME, JSON.stringify(data));
+          }
         } else {
           setUser(parsedUser);
         }

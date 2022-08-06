@@ -17,7 +17,7 @@ let locale = en.locale;
 let messages = en.messages;
 export let eu4Locale = en.eu4;
 
-if (language.startsWith("fryy")) {
+if (language.startsWith("fr")) {
   locale = fr.locale;
   messages = fr.messages;
   eu4Locale = fr.eu4;

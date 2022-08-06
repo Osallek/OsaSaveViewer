@@ -63,25 +63,29 @@ function HomePage() {
                       <Typography gutterBottom variant='h5' component='div'>
                         { intl.formatMessage({ id: 'home.required' }) }
                       </Typography>
-                      <Typography variant='body1' style={ { marginLeft: 32 } }>
-                        <List style={ { listStyleType: 'disc', paddingTop: 0 } }>
+                        <List style={ { listStyleType: 'disc', paddingTop: 0, marginLeft: 32 } }>
                           <ListItem style={ { display: 'list-item' } }>
+                            <Typography variant='body1'>
                             { `${ intl.formatMessage({ id: 'home.steam' }) } ` }
+                            </Typography>
                           </ListItem>
                           <ListItem style={ { display: 'list-item' } }>
+                            <Typography variant='body1'>
                             { `${ intl.formatMessage({ id: 'home.java' }) } ` }
-                            <a href='https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html' target='_blank'>
+                            <a href='https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html' target='_blank' rel='noreferrer'>
                               { intl.formatMessage({ id: 'home.java.download' }) }
                             </a>
+                            </Typography>
                           </ListItem>
                           <ListItem style={ { display: 'list-item' } }>
+                            <Typography variant='body1'>
                             { `${ intl.formatMessage({ id: 'home.extractor' }) } ` }
                             <a href='/download-extractor'>
                               { intl.formatMessage({ id: 'home.extractor.download' }) }
                             </a>
+                            </Typography>
                           </ListItem>
                         </List>
-                      </Typography>
                       <Typography gutterBottom variant='body1' component='div'>
                         { intl.formatMessage({ id: 'home.start.1' }) }
                       </Typography>

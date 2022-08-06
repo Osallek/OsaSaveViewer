@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping
+@RequestMapping("/download-extractor")
 public class ViewerController {
 
     private final ApplicationProperties properties;
@@ -20,7 +20,7 @@ public class ViewerController {
         this.properties = properties;
     }
 
-    @GetMapping("/download-extractor")
+    @GetMapping
     public FileSystemResource getFile(HttpServletResponse response) {
         response.setContentType("application/java-archive");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION,

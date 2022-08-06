@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { formatDate, formatNumber, stringComparator } from 'utils/format.utils';
-import { getCountryFlag, getCountryName, getSubjects, getSubjectType, getSubjectTypeName } from 'utils/save.utils';
+import { getCountryFlag, getCountryName, getSubjects, getSubjectTypeName } from 'utils/save.utils';
 
 interface CountryDiplomacyTabProps {
   country: SaveCountry;

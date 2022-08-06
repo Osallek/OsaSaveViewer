@@ -3,7 +3,7 @@ import { Backdrop, Button, Chip, CircularProgress, Dialog, Grid, Tooltip, Typogr
 import { api } from 'api';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import SaveDialog from 'screens/save/SaveDialog';
 import SaveMap from 'screens/save/SaveMap';
 import theme from 'theme';
@@ -14,7 +14,6 @@ import { convertSave } from 'utils/save.utils';
 function SavePage() {
   const params = useParams();
   const intl = useIntl();
-  const navigate = useNavigate();
 
   const [save, setSave] = useState<MapSave>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -26,17 +25,14 @@ function SavePage() {
 
   const { id } = params;
 
-  let init = false;
-
   useEffect(() => {
     ;(async () => {
       try {
-        if (id && !init) {
-          init = true;
+        if (id) {
           const { data } = await api.save.one(id);
 
           setSave(convertSave(data));
-        } else if (!id) {
+        } else {
           setError(true);
         }
       } catch (e) {
