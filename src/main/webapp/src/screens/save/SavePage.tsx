@@ -8,7 +8,6 @@ import SaveDialog from 'screens/save/SaveDialog';
 import SaveMap from 'screens/save/SaveMap';
 import theme from 'theme';
 import { MapMode, mapModes, MapSave } from 'types/map.types';
-import { formatDate } from 'utils/format.utils';
 import { convertSave } from 'utils/save.utils';
 
 function SavePage() {
@@ -100,20 +99,18 @@ function SavePage() {
               </div>
               {
                 save &&
-                  <Tooltip title={ intl.formatMessage({ id: 'common.graph' }) } key='tooltip-graph'>
-                      <Chip label={ `${ save.name } (${ formatDate(save.date) })` }
-                            icon={ <BarChart style={ { color: 'white' } }/> }
-                            onClick={ () => setStatDialog(true) }
-                            style={ {
-                              position: 'absolute',
-                              bottom: 5,
-                              left: 5,
-                              backgroundColor: theme.palette.primary.main,
-                              color: 'white',
-                              fontWeight: 'bold',
-                              fontSize: '1.2em'
-                            } }/>
-                  </Tooltip>
+                  <Chip label={ intl.formatMessage({ id: 'common.graph' }) }
+                        icon={ <BarChart style={ { color: 'white' } }/> }
+                        onClick={ () => setStatDialog(true) }
+                        style={ {
+                          position: 'absolute',
+                          top: 48,
+                          left: 5,
+                          backgroundColor: theme.palette.primary.main,
+                          color: 'white',
+                          fontWeight: 'bold',
+                          fontSize: '1.2em'
+                        } }/>
               }
               <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady }/>
               {

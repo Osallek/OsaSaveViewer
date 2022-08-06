@@ -37,7 +37,7 @@ const country = {
   'country.inflation': 'Inflation',
   'country.corruption': 'Corruption',
   'country.mercantilism': 'Mercantilisme',
-  'country.territory': 'Territoire',
+  'country.territory': 'Territoires de la couronne',
   'country.lastBankrupt': 'Dernière banqueroute',
   'country.history': 'Histoire',
   'country.armyMorale': 'Morale terrestre',

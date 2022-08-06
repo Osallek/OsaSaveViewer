@@ -1,7 +1,7 @@
 import { FilterList, Launch } from '@mui/icons-material';
 import {
   Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, TableSortLabel, TextField, Typography, useTheme
+  TableContainer, TableHead, TableRow, TableSortLabel, TextField, Tooltip, Typography, useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -280,12 +280,9 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'territory',
           label: intl.formatMessage({ id: 'country.territory' }),
           minWidth: 100,
-          value: (save, country) => <Typography
-            variant='body1'>{ formatNumber(getTerritory(country)) + '%' }</Typography>,
+          value: (save, country) => <Typography variant='body1'>{ formatNumber(getTerritory(country)) + '%' }</Typography>,
           comparatorValue: (save, country) => getTerritory(country),
-          filterValues: save => Array.from(
-            new Set<number>(
-              getCountries(save).map(country => getTerritory(country) | 0).sort(numberComparator))),
+          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => getTerritory(country) | 0).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(getTerritory(country) | 0),
         },
         {
@@ -886,22 +883,24 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
     const country = countries[index];
 
     return (
-      <TableRow hover role="checkbox" tabIndex={ -1 } key={ country.tag }
-                style={ { ...style, backgroundColor: index % 2 === 1 ? 'white' : theme.palette.action.focus } }>
-        { columns.map((column, cIndex) => {
-          return (
-            <TableCell key={ column.id }
-                       style={ {
-                         minWidth: columnsRefs.current[cIndex] ? columnsRefs.current[cIndex]?.clientWidth : column.minWidth,
-                         paddingRight: cIndex === columns.length - 1 ? 0 : 16,
-                         paddingLeft: cIndex === columns.length - 1 ? 8 : 16,
-                         borderBottom: 'none'
-                       } }>
-              { column.value(save, country) }
-            </TableCell>
-          );
-        }) }
-      </TableRow>
+      <Tooltip title={ getCountrysName(country) } followCursor key={ `tooltip-${ country.tag }` }>
+        <TableRow hover role="checkbox" tabIndex={ -1 } key={ country.tag }
+                  style={ { ...style, backgroundColor: index % 2 === 1 ? 'white' : theme.palette.action.focus } }>
+          { columns.map((column, cIndex) => {
+            return (
+              <TableCell key={ column.id }
+                         style={ {
+                           minWidth: columnsRefs.current[cIndex] ? columnsRefs.current[cIndex]?.clientWidth : column.minWidth,
+                           paddingRight: cIndex === columns.length - 1 ? 0 : 16,
+                           paddingLeft: cIndex === columns.length - 1 ? 8 : 16,
+                           borderBottom: 'none'
+                         } }>
+                { column.value(save, country) }
+              </TableCell>
+            );
+          }) }
+        </TableRow>
+      </Tooltip>
     );
   }
 
