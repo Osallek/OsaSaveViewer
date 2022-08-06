@@ -51,19 +51,19 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResolver(new PathResourceResolver());
 
         registry.addResourceHandler("/data/users/**")
-                .addResourceLocations("file:/" + this.properties.getUsersFolder() + File.separator)
+                .addResourceLocations("file:" + this.properties.getUsersFolder() + "/")
                 .setCacheControl(CacheControl.noCache())
                 .resourceChain(false)
                 .addResolver(new PathResourceResolver());
 
         registry.addResourceHandler("/data/saves/**")
-                .addResourceLocations("file:/" + this.properties.getSavesFolder() + File.separator)
+                .addResourceLocations("file:" + this.properties.getSavesFolder() + "/")
                 .setCacheControl(CacheControl.maxAge(31536000, TimeUnit.SECONDS))
                 .resourceChain(false)
                 .addResolver(new PathResourceResolver());
 
         registry.addResourceHandler("/data/**")
-                .addResourceLocations("file:/" + this.properties.getDataFolder() + File.separator)
+                .addResourceLocations("file:" + this.properties.getDataFolder() + "/")
                 .setCacheControl(CacheControl.maxAge(31536000, TimeUnit.SECONDS))
                 .resourceChain(false)
                 .addResolver(new PathResourceResolver());

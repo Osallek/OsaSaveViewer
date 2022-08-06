@@ -36,3 +36,7 @@ build/
 /src/main/webapp/node_modules/
 /data/
 /src/main/webapp/build/
+
+OsaSaveViewer.jar
+
+logs/

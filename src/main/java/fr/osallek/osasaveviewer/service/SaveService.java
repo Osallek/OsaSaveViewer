@@ -164,7 +164,7 @@ public class SaveService {
     }
 
     private UploadResponseDTO checkAssets(ExtractorSaveDTO save, String id) {
-        return new UploadResponseDTO(id, this.properties.getFrontUrl() + "/viewer/save/" + id, this.dataService.dataExists(save));
+        return new UploadResponseDTO(id, this.properties.getFrontUrl() + "/save/" + id, this.dataService.dataExists(save));
     }
 
     private void processPreviousSave(ExtractorSaveDTO newSave, ExtractorSaveDTO previousSave) {
