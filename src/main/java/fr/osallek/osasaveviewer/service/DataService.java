@@ -35,7 +35,7 @@ public class DataService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataService.class);
 
     public static final List<String> FOLDERS = List.of("advisors", "buildings", "colors", "estates", "flags", "goods", "idea_groups", "institutions",
-                                                       "modifiers", "privileges", "provinces", "religions");
+                                                       "missions", "modifiers", "privileges", "provinces", "religions");
 
     private final UserService userService;
 
@@ -195,6 +195,13 @@ public class DataService {
                                                                                     .resolve(p.getImage() + ".png")))
                                           .map(NamedImageLocalisedDTO::getName)
                                           .collect(Collectors.toSet()));
+
+        assets.setMissions(save.getMissions()
+                               .stream()
+                               .filter(mission -> mission.getImage() != null)
+                               .filter(mission -> !Files.exists(this.properties.getDataFolder().resolve("missions").resolve(mission.getImage() + ".png")))
+                               .map(NamedImageLocalisedDTO::getName)
+                               .collect(Collectors.toSet()));
 
         return assets;
     }

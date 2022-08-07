@@ -62,6 +62,10 @@ public class CountryDTO extends ImageLocalised {
 
     private List<CustomNationalIdeaDTO> customNationalIdeas;
 
+    private List<String> missions;
+
+    private List<String> completedMissions;
+
     private SortedMap<Integer, Integer> incomeStatistics;
 
     private SortedMap<Integer, Integer> nationSizeStatistics;
@@ -391,6 +395,22 @@ public class CountryDTO extends ImageLocalised {
 
     public void setCustomNationalIdeas(List<CustomNationalIdeaDTO> customNationalIdeas) {
         this.customNationalIdeas = customNationalIdeas;
+    }
+
+    public List<String> getMissions() {
+        return missions;
+    }
+
+    public void setMissions(List<String> missions) {
+        this.missions = missions;
+    }
+
+    public List<String> getCompletedMissions() {
+        return completedMissions;
+    }
+
+    public void setCompletedMissions(List<String> completedMissions) {
+        this.completedMissions = completedMissions;
     }
 
     public SortedMap<Integer, Integer> getIncomeStatistics() {

@@ -15,6 +15,7 @@ import CountryInfoTab from 'screens/country/CountryInfoTab';
 import CountryLeaderTab from 'screens/country/CountryLeaderTab';
 import CountryManaTab from 'screens/country/CountryManaTab';
 import CountryMilitaryTab from 'screens/country/CountryMilitaryTab';
+import CountryMissionTab from 'screens/country/CountryMissionTab';
 import CountryMonarchTab from 'screens/country/CountryMonarchTab';
 import CountryReligionTab from 'screens/country/CountryReligionTab';
 import theme from 'theme';
@@ -108,24 +109,23 @@ function CountryPage() {
               <>
                 <AppBar sx={ { position: 'relative' } }>
                   <Toolbar>
-                    <Link to={ `/save/${ saveId }` }>
-                      <Map color='secondary'/>
-                    </Link>
-                    <Typography sx={ { ml: 2, mr: 2 } } variant='h6' component='div'>
-                      { save.name }
-                    </Typography>
-                    <Grid container/>
-                    <Grid container justifyContent='end'>
+                    <Grid container alignItems='center'>
+                      <Link to={ `/save/${ saveId }` }>
+                        <Map color='secondary'/>
+                      </Link>
+                      <Typography sx={ { ml: 2, mr: 2 } } variant='h6' component='div'>
+                        { save.name }
+                      </Typography>
                       <Button
                         key='button-countries'
                         variant='outlined'
                         color='secondary'
-                        sx={ { m: 1 } }
                         aria-controls={ countriesOpen ? 'basic-menu' : undefined }
                         aria-haspopup='true'
                         aria-expanded={ countriesOpen ? 'true' : undefined }
                         onClick={ event => setCountriesAnchorEl(event.currentTarget) }
                         endIcon={ <KeyboardArrowDown/> }
+                        style={ { marginLeft: 'auto' } }
                       >
                         { intl.formatMessage({ id: 'common.countries' }) }
                       </Button>
@@ -158,33 +158,33 @@ function CountryPage() {
                     </Grid>
                   </Toolbar>
                 </AppBar>
-                <Grid container alignItems='center' justifyContent='center' style={ { padding: 24 } } key={ `grid-g-${ tag }` }>
-                  <Grid item alignItems='center' justifyContent='center' xs={ 12 }>
-                    <Tabs
-                      value={ activeTab }
-                      onChange={ (event, value) => setActiveTab(value) }
-                      variant='scrollable'
-                      scrollButtons='auto'
-                      style={ { marginBottom: 8 } }
-                    >
-                      <Grid item style={ { flex: 1 } }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.info' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.eco' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.estates' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.dip' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.mil' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.ideas' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.rulers' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.leaders' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.mana' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.buildings' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.missions' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.religions' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.cultures' }) }/>
-                      <Tab label={ intl.formatMessage({ id: 'country.tab.history' }) }/>
-                      <Grid item style={ { flex: 1 } }/>
-                    </Tabs>
-                  </Grid>
+                <Grid item alignItems='center' justifyContent='center' xs={ 12 }>
+                  <Tabs
+                    value={ activeTab }
+                    onChange={ (event, value) => setActiveTab(value) }
+                    variant='scrollable'
+                    scrollButtons='auto'
+                    style={ { marginBottom: 8 } }
+                  >
+                    <Grid item style={ { flex: 1 } }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.info' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.eco' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.estates' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.dip' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.mil' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.ideas' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.rulers' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.leaders' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.mana' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.buildings' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.missions' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.religions' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.cultures' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.history' }) }/>
+                    <Grid item style={ { flex: 1 } }/>
+                  </Tabs>
+                </Grid>
+                <Grid container alignItems='start' justifyContent='center' style={ { padding: 24, height: '100%' } } key={ `grid-g-${ tag }` }>
                   <Grid container item display={ activeTab === 1 ? 'flex' : 'none' } xs={ 12 } md={ 12 } lg={ 8 } xl={ 6 } key='grid0'>
                     <CountryInfoTab country={ country } save={ save }/>
                   </Grid>
@@ -215,8 +215,8 @@ function CountryPage() {
                   <Grid container display={ activeTab === 10 ? 'block' : 'none' } key='grid9'>
                     <CountryBuildingTab country={ country } save={ save }/>
                   </Grid>
-                  <Grid container display={ activeTab === 11 ? 'block' : 'none' } key='grid10'>
-                    Missions
+                  <Grid container display={ activeTab === 11 ? 'block' : 'none' } style={ { height: '100%' } } key='grid10'>
+                    <CountryMissionTab country={ country } save={ save }/>
                   </Grid>
                   <Grid container display={ activeTab === 12 ? 'block' : 'none' } key='grid11'>
                     <CountryReligionTab country={ country } save={ save }/>

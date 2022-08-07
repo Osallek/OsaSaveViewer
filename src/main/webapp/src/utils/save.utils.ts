@@ -1,12 +1,13 @@
 import { eu4Locale } from 'index';
 import {
   ColorNamedImageLocalised, CountryPreviousSave, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save,
-  SaveArea, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMonarch, SaveProvince, SaveProvinceHistory,
-  SaveReligion
+  SaveArea, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMission, SaveMonarch, SaveProvince,
+  SaveProvinceHistory, SaveReligion
 } from 'types/api.types';
 import { CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
 import {
-  getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getLeaderPersonalityUrl, getPersonalityUrl, getPrivilegeUrl, getReligionUrl
+  getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getLeaderPersonalityUrl, getMissionUrl, getPersonalityUrl, getPrivilegeUrl,
+  getReligionUrl
 } from 'utils/data.utils';
 import { capitalize, getYear, numberComparator, stringComparator, toRecord } from 'utils/format.utils';
 
@@ -143,6 +144,30 @@ export function getCountryFlag(save: MapSave, tag: string | undefined): string {
   }
 
   return getCountrysFlag(getCountry(save, tag));
+}
+
+export function getMission(save: MapSave, name: string): SaveMission {
+  return save.missions.find(mission => name === mission.name) ?? save.missions[0];
+}
+
+export function getMissionName(save: MapSave, name: string | undefined): string {
+  if (!name) {
+    return '';
+  }
+
+  return getMissionsName(getMission(save, name));
+}
+
+export function getMissionsName(mission: SaveMission): string {
+  return getName(mission) ?? mission.name;
+}
+
+export function getMissionsImage(mission: SaveMission): string {
+  return getMissionUrl(mission.image);
+}
+
+export function getMissionFlag(save: MapSave, name: string): string {
+  return getMissionsImage(getMission(save, name));
 }
 
 export function getReligion(save: MapSave, name: string): SaveReligion {

@@ -42,6 +42,7 @@ export type Save = {
   personalities: Array<NamedImageLocalised>;
   leaderPersonalities: Array<NamedImageLocalised>;
   previousSaves?: Array<PreviousSave>;
+  missions: Array<SaveMission>;
 };
 
 export type Localised = {
@@ -193,6 +194,8 @@ export type SaveCountry = ImageLocalised & {
   nbProvince: number;
   dev: number;
   previousSaves: Array<CountryPreviousSave>;
+  missions?: Array<string>;
+  completedMissions?: Array<string>;
 }
 
 export enum Losses {
@@ -615,4 +618,8 @@ export type ServerSave = {
   ownerId: string;
   ownerName?: string;
   ownerImage?: string;
+}
+
+export type SaveMission = NamedImageLocalised & {
+  required?: Array<string>;
 }

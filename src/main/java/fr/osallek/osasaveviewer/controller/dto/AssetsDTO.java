@@ -32,6 +32,8 @@ public final class AssetsDTO {
 
     private Set<String> leaderPersonalities;
 
+    private Set<String> missions;
+
     public boolean isProvinces() {
         return provinces;
     }
@@ -142,5 +144,13 @@ public final class AssetsDTO {
 
     public void setLeaderPersonalities(Set<String> leaderPersonalities) {
         this.leaderPersonalities = leaderPersonalities;
+    }
+
+    public Set<String> getMissions() {
+        return missions;
+    }
+
+    public void setMissions(Set<String> missions) {
+        this.missions = missions;
     }
 }

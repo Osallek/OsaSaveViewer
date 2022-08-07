@@ -8,6 +8,10 @@ export function getFlagUrl(key: string| undefined): string {
   return key ? getDataUrl(`flags/${key}.png`) : getFlagUrl('noFlag');
 }
 
+export function getMissionUrl(key: string| undefined): string {
+  return key ? getDataUrl(`missions/${key}.png`) : getMissionUrl('noMission');
+}
+
 export function getReligionUrl(key: string | undefined): string {
   return key ? getDataUrl(`religions/${key}.png`) : getReligionUrl('noReligion');
 }

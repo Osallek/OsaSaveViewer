@@ -76,6 +76,8 @@ public final class ExtractorSaveDTO {
 
     private SortedSet<PreviousSaveDTO> previousSaves;
 
+    private List<MissionDTO> missions;
+
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -354,5 +356,13 @@ public final class ExtractorSaveDTO {
 
     public void setPreviousSaves(SortedSet<PreviousSaveDTO> previousSaves) {
         this.previousSaves = previousSaves;
+    }
+
+    public List<MissionDTO> getMissions() {
+        return missions;
+    }
+
+    public void setMissions(List<MissionDTO> missions) {
+        this.missions = missions;
     }
 }
