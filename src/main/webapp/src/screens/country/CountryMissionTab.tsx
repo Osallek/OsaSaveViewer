@@ -2,7 +2,6 @@ import { Avatar, Badge, Grid, Typography } from '@mui/material';
 import { ElbowType, Enabled, GroupByType, NavigationMode, PageFitMode } from 'basicprimitives';
 import { FamConfigShape, FamDiagram } from 'basicprimitivesreact';
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
@@ -87,12 +86,9 @@ interface CountryMissionTabProps {
 }
 
 function CountryMissionTab({ country, save }: CountryMissionTabProps) {
-  const intl = useIntl();
-
   const [config, setConfig] = useState<FamConfigShape | undefined>(undefined);
 
   useEffect(() => {
-    console.log(country)
     if (country && country.missions && country.missions.length > 0) {
       setConfig(getConfig(country, save));
     }

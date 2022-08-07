@@ -30,6 +30,8 @@ function SavePage() {
         if (id) {
           const { data } = await api.save.one(id);
 
+          document.title = data.name;
+
           setSave(convertSave(data));
         } else {
           setError(true);

@@ -27,6 +27,7 @@ function UserPage() {
         if (id) {
           const { data } = await api.user.one(id);
 
+          document.title = data.name ?? data.id;
           setPageUser(data);
 
           if (user && id === user.id) {

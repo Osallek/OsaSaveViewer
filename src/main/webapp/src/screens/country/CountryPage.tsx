@@ -71,7 +71,8 @@ function CountryPage() {
       if (c.tag !== tag || !c.alive || c.tag === fakeTag) {
         setError(true);
       } else {
-        setCountry(getCountry(save, tag));
+        document.title = `${ save.name } - ${ getCountrysName(c) }`;
+        setCountry(c);
       }
 
       setLoading(false);

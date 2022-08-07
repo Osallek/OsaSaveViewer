@@ -18,6 +18,8 @@ function HomePage() {
   const { user } = useContext(UserContext);
 
   useEffect(() => {
+    document.title = intl.formatMessage({id: 'common.name'});
+
     ;(async () => {
       try {
         const { data } = await api.save.recent();
