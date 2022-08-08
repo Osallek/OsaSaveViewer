@@ -9,6 +9,14 @@ export function toRecord<T, V, K extends string | number | symbol>(array: T[], k
   return array.reduce((acc, item) => (acc[keyMapper(item)] = valueMapper(item), acc), {} as Record<K, V>)
 }
 
+export function toMap<T, V, K extends string | number | symbol>(array: T[], keyMapper: (t: T) => K, valueMapper: (t: T) => V): Map<K, V> {
+  return new Map(
+    array.map(item => {
+      return [keyMapper(item), valueMapper(item)];
+    }),
+  );
+}
+
 export function numberComparator(a: number, b: number): number {
   if (a > b) {
     return 1;

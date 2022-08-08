@@ -9,15 +9,15 @@ import {
   getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getLeaderPersonalityUrl, getMissionUrl, getPersonalityUrl, getPrivilegeUrl,
   getReligionUrl
 } from 'utils/data.utils';
-import { capitalize, getYear, numberComparator, stringComparator, toRecord } from 'utils/format.utils';
+import { capitalize, getYear, numberComparator, stringComparator, toMap } from 'utils/format.utils';
 
 export const fakeTag = "---";
 
 export function convertSave(save: Save): MapSave {
   return {
     ...save,
-    currentProvinces: toRecord(save.provinces, p => p.id, p => getPHistoryInternal(p, save.date)),
-    currentCountries: toRecord(save.countries, c => c.tag, c => getCHistoryInternal(c, save.date)),
+    currentProvinces: toMap(save.provinces, p => p.id, p => getPHistoryInternal(p, save.date)),
+    currentCountries: toMap(save.countries, c => c.tag, c => getCHistoryInternal(c, save.date)),
   }
 }
 
@@ -29,11 +29,11 @@ export function getName(localised: Localised): string | undefined {
 }
 
 export function getCountries(save: MapSave): Array<SaveCountry> {
-  return save.countries.filter(c => c.tag !== fakeTag).filter(c => c.alive);
+  return save.countries.filter(c => c.alive);
 }
 
 export function getPHistory(province: SaveProvince, save: MapSave): ProvinceHistory {
-  return save.currentProvinces[province.id];
+  return save.currentProvinces.get(province.id) ?? save.currentProvinces.values().next().value;
 }
 
 function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHistory {
@@ -103,6 +103,37 @@ export function getPRealDev(province: SaveProvince): number {
 
 export function getProvinces(country: SaveCountry, save: MapSave): SaveProvince[] {
   return save.provinces.filter(p => country.tag === getPHistory(p, save).owner);
+}
+
+export function mapProvinces(country: SaveCountry, save: MapSave, predicate: (history: ProvinceHistory) => boolean, acc: (history: SaveProvince) => number): number {
+  return save.provinces.filter(p => {
+    const history = getPHistory(p, save);
+    return country.tag === history.owner && predicate(history);
+  }).reduce((s, p) => s + acc(p), 0);
+}
+
+export function getPHistories(country: SaveCountry, save: MapSave, predicate: (history: ProvinceHistory) => boolean): ProvinceHistory[] {
+  const histories: ProvinceHistory[] = [];
+
+  for (const [_, history] of save.currentProvinces) {
+    if (history.owner === country.tag && predicate(history)) {
+      histories.push(history);
+    }
+  }
+
+  return histories;
+}
+
+export function mapPHistories(country: SaveCountry, save: MapSave, predicate: (history: ProvinceHistory) => boolean, acc: (history: ProvinceHistory) => number): number {
+  let sum = 0;
+
+  for (const [_, history] of save.currentProvinces) {
+    if (history.owner === country.tag && predicate(history)) {
+      sum += acc(history);
+    }
+  }
+
+  return sum;
 }
 
 export function getCRealDev(country: SaveCountry, save: MapSave): number {
@@ -400,7 +431,7 @@ export function getAreaState(area: SaveArea, tag?: string): SaveCountryState | n
 }
 
 export function getCHistory(country: SaveCountry, save: MapSave): CountryHistory {
-  return save.currentCountries[country.tag];
+  return save.currentCountries.get(country.tag) ?? save.currentCountries.values().next().value;
 }
 
 function getCHistoryInternal(country: SaveCountry, date: string): CountryHistory {
@@ -591,19 +622,19 @@ export function getNbBuildings(country: SaveCountry, save: MapSave, building: st
 }
 
 export function getNbReligion(country: SaveCountry, save: MapSave, religion: string): number {
-  return getProvinces(country, save).filter(province => religion === getPHistory(province, save).religion).length;
+  return mapPHistories(country, save, history => religion === history.religion, () => 1);
 }
 
 export function getDevReligion(country: SaveCountry, save: MapSave, religion: string): number {
-  return getProvinces(country, save).filter(province => religion === getPHistory(province, save).religion).reduce((s, p) => s + (p.baseTax ?? 0) + (p.baseProduction ?? 0) + (p.baseManpower ?? 0), 0);
+  return mapProvinces(country, save, history => religion === history.religion, (p) => (p.baseTax ?? 0) + (p.baseProduction ?? 0) + (p.baseManpower ?? 0));
 }
 
 export function getNbCulture(country: SaveCountry, save: MapSave, culture: string): number {
-  return getProvinces(country, save).filter(province => culture === getPHistory(province, save).culture).length;
+  return mapPHistories(country, save, history => culture === history.culture, () => 1);
 }
 
 export function getDevCulture(country: SaveCountry, save: MapSave, culture: string): number {
-  return getProvinces(country, save).filter(province => culture === getPHistory(province, save).culture).reduce((s, p) => s + (p.baseTax ?? 0) + (p.baseProduction ?? 0) + (p.baseManpower ?? 0), 0);
+  return mapProvinces(country, save, history => culture === history.culture, (p) => (p.baseTax ?? 0) + (p.baseProduction ?? 0) + (p.baseManpower ?? 0));
 }
 
 export function isAdm(powerSpent: PowerSpent): boolean {

@@ -280,8 +280,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
 }
 
 export type MapSave = Save & {
-  currentProvinces: Record<number, ProvinceHistory>;
-  currentCountries: Record<string, CountryHistory>;
+  currentProvinces: Map<number, ProvinceHistory>;
+  currentCountries: Map<string, CountryHistory>;
 }
 
 export type ProvinceHistory = {

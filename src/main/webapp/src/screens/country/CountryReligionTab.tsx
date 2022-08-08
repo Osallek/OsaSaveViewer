@@ -1,4 +1,4 @@
-import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Avatar, CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
@@ -7,7 +7,7 @@ import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { getReligionsPie, ReligionPie } from 'utils/chart.utils';
-import { formatNumber, toRecord } from 'utils/format.utils';
+import { formatNumber } from 'utils/format.utils';
 import { getDevReligion, getNbReligion, getProvinces, getRank, getReligionImage } from 'utils/save.utils';
 
 const renderActiveShape = (props: any) => {
@@ -68,8 +68,9 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [religions, setReligions] = useState<Array<ReligionPie>>([]);
   const [nbProvinces, setNbProvinces] = useState<number>(0);
-  const [ranks, setRanks] = useState<Record<string, number>>({});
-  const [devRanks, setDevRanks] = useState<Record<string, number>>({});
+  const [ranks, setRanks] = useState<Array<number>>([]);
+  const [devRanks, setDevRanks] = useState<Array<number>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     setReligions(getReligionsPie(country, save));
@@ -77,12 +78,18 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
   }, [country, save]);
 
   useEffect(() => {
-    setRanks(toRecord(religions, r => r.type, r => getRank(save, country, c => getNbReligion(c, save, r.type))));
-    setDevRanks(toRecord(religions, r => r.type, r => getRank(save, country, c => getDevReligion(c, save, r.type))));
+    setRanks(religions.map(religion => getRank(save, country, c => getNbReligion(c, save, religion.type))));
+    setDevRanks(religions.map(religion => getRank(save, country, c => getDevReligion(c, save, religion.type))));
   }, [country, save, religions]);
 
+  useEffect(() => {
+    if (ranks.length > 0 && devRanks.length > 0) {
+      setLoading(false);
+    }
+  }, [ranks, devRanks]);
+
   return (
-    <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
+    <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `religions-${ country.tag }` }>
       <PieChart width={ 500 } height={ 500 }>
         <Pie
           activeIndex={ activeIndex }
@@ -128,9 +135,7 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
           <TableBody>
             {
               religions.map((item, index) => (
-                <TableRow
-                  key={ `religion-${ item.type }-${ country.tag }` }
-                >
+                <TableRow key={ `religion-${ item.type }-${ country.tag }` } style={ { height: 73 } }>
                   <TableCell align='center'>
                     <div style={ {
                       width: 10,
@@ -148,15 +153,20 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
                     </Grid>
                   </TableCell>
                   <TableCell align='right'>{ formatNumber(item.value) }</TableCell>
-                  <TableCell align='right'>{ getRankDisplay(ranks[item.type] ?? 0) }</TableCell>
+                  <TableCell align='right'>
+                    { loading ? <CircularProgress color='primary' style={ { height: 30, width: 30 } }/> : getRankDisplay(ranks[index] ?? 0) }
+                  </TableCell>
                   <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
                     { `${ formatNumber(item.value * 100 / nbProvinces) }%` }
                   </TableCell>
                   <TableCell align='right'>{ formatNumber(item.dev) }</TableCell>
-                  <TableCell align='right'>{ getRankDisplay(devRanks[item.type] ?? 0) }</TableCell>
+                  <TableCell align='right'>
+                    { loading ? <CircularProgress color='primary' style={ { height: 30, width: 30 } }/> : getRankDisplay(devRanks[index] ?? 0) }
+                  </TableCell>
                   <TableCell align='right'>{ `${ formatNumber(item.dev * 100 / country.dev) }%` }</TableCell>
                 </TableRow>
-              )) }
+              ))
+            }
           </TableBody>
         </Table>
       </TableContainer>

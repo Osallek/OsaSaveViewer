@@ -1,11 +1,11 @@
 import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { getEstatePie } from 'utils/chart.utils';
+import { EstatePie, getEstatePie } from 'utils/chart.utils';
 import { formatNumber, stringComparator } from 'utils/format.utils';
 import { getEstate, getEstateImage, getPrivilege, getPrivilegesImage, getPrivilegesName } from 'utils/save.utils';
 
@@ -63,6 +63,11 @@ function CountryEstateTab({ country, save }: CountryEstateTabProps) {
   const intl = useIntl();
 
   const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [estates, setEstates] = useState<Array<EstatePie>>([]);
+
+  useEffect(() => {
+    setEstates(getEstatePie(country, save));
+  }, [country, save]);
 
   return (
     <>
@@ -74,13 +79,14 @@ function CountryEstateTab({ country, save }: CountryEstateTabProps) {
           <Pie
             activeIndex={ activeIndex }
             activeShape={ renderActiveShape }
-            data={ getEstatePie(country, save) }
+            data={ estates }
             innerRadius={ 100 }
             outerRadius={ 120 }
             dataKey='value'
             onMouseEnter={ (_, index) => setActiveIndex(index) }
+            isAnimationActive={ false }
           >
-            { getEstatePie(country, save).map((entry, index) => (
+            { estates.map((entry, index) => (
               <Cell key={ `cell-${ index }` } fill={ entry.color }/>
             )) }
           </Pie>
@@ -101,7 +107,7 @@ function CountryEstateTab({ country, save }: CountryEstateTabProps) {
             </TableHead>
             <TableBody>
               {
-                getEstatePie(country, save).map(estate => (
+                estates.map(estate => (
                   <TableRow
                     key={ `row-${ estate.item ? estate.item.type : 'crown' }-${ country.tag }` }
                   >
