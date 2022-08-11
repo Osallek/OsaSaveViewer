@@ -2,7 +2,6 @@
 export default () => {
     // eslint-disable-next-line no-restricted-globals
     self.onmessage = (message) => {
-        console.log(message);
         const {data, IMPASSABLE_COLOR, colorMapping} = message.data;
         const array = new Uint8Array(data.length);
 

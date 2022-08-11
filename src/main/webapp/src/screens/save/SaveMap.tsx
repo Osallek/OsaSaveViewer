@@ -368,15 +368,9 @@ const SaveMap = forwardRef(({ save, mapMode, setReady }: SaveMapProps, ref) => {
               colorMapping.set(key, value);
             }
 
-            console.log('looping');
-            console.time('loop');
-
             const workerInstance = new WorkerBuilder(mapWorker);
             workerInstance.onmessage = (message) => {
               if (message) {
-                console.timeEnd('loop');
-                console.log('looped');
-
                 const newData = exportContext.createImageData(provincesTexture.width, provincesTexture.height);
                 newData.data.set(message.data);
                 exportContext.putImageData(newData, 0, 0);
