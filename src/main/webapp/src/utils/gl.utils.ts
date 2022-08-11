@@ -69,9 +69,7 @@ export function getTexture(url: string, gl: WebGL2RenderingContext): Promise<Tex
   });
 }
 
-export function prepareArray(save: MapSave, gl: WebGL2RenderingContext): ProvincesTexture {
-  const array = new Uint8Array(save.nbProvinces * 4);
-
+export function prepareArray(array: Uint8Array, save: MapSave): void {
   for (const province of save.impassableProvinces) {
     array[(province.id - 1) * 4] = IMPASSABLE_COLOR.red;
     array[(province.id - 1) * 4 + 1] = IMPASSABLE_COLOR.green;
@@ -92,6 +90,11 @@ export function prepareArray(save: MapSave, gl: WebGL2RenderingContext): Provinc
     array[(province.id - 1) * 4 + 2] = OCEAN_COLOR.blue;
     array[(province.id - 1) * 4 + 3] = OCEAN_COLOR.alpha;
   }
+}
+
+export function prepareTexture(save: MapSave, gl: WebGL2RenderingContext): ProvincesTexture {
+  const array = new Uint8Array(save.nbProvinces * 4);
+  prepareArray(array, save);
 
   return {
     array,
@@ -101,14 +104,7 @@ export function prepareArray(save: MapSave, gl: WebGL2RenderingContext): Provinc
 
 export function getTextureFromSave(provincesTexture: ProvincesTexture, save: MapSave, gl: WebGL2RenderingContext, mapMod: MapMode) {
   if (provincesTexture.array) {
-    const data = mapModes[mapMod].prepare(save);
-    for (const province of save.provinces) {
-      const color = mapModes[mapMod].provinceColor(province, save, data);
-      provincesTexture.array[(province.id - 1) * 4] = color.red;
-      provincesTexture.array[(province.id - 1) * 4 + 1] = color.green;
-      provincesTexture.array[(province.id - 1) * 4 + 2] = color.blue;
-      provincesTexture.array[(province.id - 1) * 4 + 3] = color.alpha;
-    }
+    fillMapArray(provincesTexture.array, save, mapMod);
 
     gl.bindTexture(gl.TEXTURE_2D, provincesTexture.texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -122,6 +118,17 @@ export function getTextureFromSave(provincesTexture: ProvincesTexture, save: Map
   }
 }
 
+export function fillMapArray(array: Uint8Array, save: MapSave, mapMod: MapMode) {
+  const data = mapModes[mapMod].prepare(save);
+  for (const province of save.provinces) {
+    const color = mapModes[mapMod].provinceColor(province, save, data);
+    array[(province.id - 1) * 4] = color.red;
+    array[(province.id - 1) * 4 + 1] = color.green;
+    array[(province.id - 1) * 4 + 2] = color.blue;
+    array[(province.id - 1) * 4 + 3] = color.alpha;
+  }
+}
+
 export function getProvinceAt(x: number, y: number, provincesContext: CanvasRenderingContext2D, idColorContext: CanvasRenderingContext2D): number {
   const provinceColor = provincesContext.getImageData(x, y, 1, 1).data;
 
@@ -132,6 +139,16 @@ export function getProvinceAt(x: number, y: number, provincesContext: CanvasRend
   }
 
   return -1;
+}
+
+export function isSaveProvinceLeft(x: number, y: number, provincesContext: CanvasRenderingContext2D): boolean {
+  if (x === 0) {
+    return false;
+  } else if (x === provincesContext.canvas.width) {
+    return false;
+  }
+
+  return arraysEqual(provincesContext.getImageData(x, y, 1, 1).data, provincesContext.getImageData(x - 1, y, 1, 1).data);
 }
 
 function arraysEqual(a: Uint8ClampedArray, b: Uint8ClampedArray) {

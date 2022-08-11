@@ -59,7 +59,7 @@ function HomePage() {
               <Grid container item style={ { marginBottom: 16 } }>
                 <Card style={ { width: '100%' } }>
                   <CardHeader title={ intl.formatMessage({ id: 'home.howTo' }) } titleTypographyProps={ { variant: 'h4' } }
-                              style={ { backgroundColor: theme.palette.primary.light } }/>
+                              style={ { backgroundColor: theme.palette.primary.light, color: theme.palette.primary.contrastText } }/>
                   <CardContent>
                     <Grid container>
                       <Grid container item flexDirection='column' xs={ 12 } lg={ 6 }>

@@ -1,7 +1,7 @@
-import { BarChart, Home } from '@mui/icons-material';
-import { Backdrop, Button, Chip, CircularProgress, Dialog, Grid, Tooltip, Typography } from '@mui/material';
+import { BarChart, Home, PhotoCamera } from '@mui/icons-material';
+import { Backdrop, Button, Chip, CircularProgress, Dialog, Grid, IconButton, Tooltip, Typography } from '@mui/material';
 import { api } from 'api';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
 import SaveDialog from 'screens/save/SaveDialog';
@@ -16,13 +16,24 @@ function SavePage() {
 
   const [save, setSave] = useState<MapSave>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [exporting, setExporting] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [mapReady, setMapReady] = useState<boolean>(false);
   const [statDialog, setStatDialog] = useState<boolean>(false);
+  const mapRef = useRef<any>(null);
 
   const [mapMode, setMapMode] = useState<MapMode>(MapMode.POLITICAL);
 
   const { id } = params;
+
+  const exportImage = async () => {
+    try {
+      setExporting(true);
+      await mapRef.current.exportImage();
+    } finally {
+      setExporting(false);
+    }
+  }
 
   useEffect(() => {
     ;(async () => {
@@ -114,7 +125,26 @@ function SavePage() {
                           fontSize: '1.2em'
                         } }/>
               }
-              <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady }/>
+              {
+                save &&
+                  <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
+                      <IconButton onClick={ exportImage } disabled={ exporting } style={ {
+                        position: 'absolute',
+                        top: 92,
+                        left: 5,
+                        backgroundColor: theme.palette.primary.main,
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: '1.2em',
+                        borderRadius: '50%',
+                      } }>
+                        {
+                          exporting ? <CircularProgress color='secondary' style={ { width: 24, height: 24 } }/> : <PhotoCamera/>
+                        }
+                      </IconButton>
+                  </Tooltip>
+              }
+              <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady } ref={ mapRef }/>
               {
                 save &&
                 (
