@@ -115,7 +115,7 @@ export function mapProvinces(country: SaveCountry, save: MapSave, predicate: (hi
 export function getPHistories(country: SaveCountry, save: MapSave, predicate: (history: ProvinceHistory) => boolean): ProvinceHistory[] {
   const histories: ProvinceHistory[] = [];
 
-  for (const [_, history] of save.currentProvinces) {
+  for (const [, history] of save.currentProvinces) {
     if (history.owner === country.tag && predicate(history)) {
       histories.push(history);
     }
@@ -127,7 +127,7 @@ export function getPHistories(country: SaveCountry, save: MapSave, predicate: (h
 export function mapPHistories(country: SaveCountry, save: MapSave, predicate: (history: ProvinceHistory) => boolean, acc: (history: ProvinceHistory) => number): number {
   let sum = 0;
 
-  for (const [_, history] of save.currentProvinces) {
+  for (const [, history] of save.currentProvinces) {
     if (history.owner === country.tag && predicate(history)) {
       sum += acc(history);
     }

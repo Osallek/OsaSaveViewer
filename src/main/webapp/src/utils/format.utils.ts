@@ -17,6 +17,10 @@ export function toMap<T, V, K extends string | number | symbol>(array: T[], keyM
   );
 }
 
+export function cleanString(s: string): string {
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 export function numberComparator(a: number, b: number): number {
   if (a > b) {
     return 1;

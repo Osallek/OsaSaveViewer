@@ -28,7 +28,7 @@ import { ListChildComponentProps, VariableSizeList } from 'react-window';
 import { ProvinceTableType } from 'screens/save/SaveDialog';
 import { SaveProvince } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { formatNumber, numberComparator, stringComparator } from 'utils/format.utils';
+import { cleanString, formatNumber, numberComparator, stringComparator } from 'utils/format.utils';
 import {
   fakeTag,
   getBuilding,
@@ -438,8 +438,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
                       disablePortal
                       options={ filterPopoverColumn.filterValues }
                       getOptionLabel={ option => option.toString() }
-                      groupBy={ (option) => typeof option === 'string' ? option.slice(0, 1).normalize("NFD").replace(/[\u0300-\u036f]/g,
-                        "").toUpperCase() : '' }
+                      groupBy={ (option) => typeof option === 'string' ? cleanString(option.slice(0, 1)).toUpperCase() : '' }
                       renderInput={ (params) =>
                         <TextField { ...params }
                                    label={ filterPopoverColumn.label }

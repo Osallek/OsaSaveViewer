@@ -12,6 +12,7 @@ import { MapMode, mapModes, MapSave } from 'types/map.types';
 import { getTexture } from 'utils';
 import { IMPASSABLE_COLOR, OCEAN_COLOR } from 'utils/colors.utils';
 import { getColorsUrl, getProvincesUrl } from 'utils/data.utils';
+import { cleanString } from 'utils/format.utils';
 import { getProvinceAt, getTextureFromSave, initShaderProgram, prepareTexture } from 'utils/gl.utils';
 import { getProvince } from 'utils/save.utils';
 
@@ -311,7 +312,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady }: SaveMapProps, ref) => {
     }, [gl, zoomLoc, zoom, offsetLoc, offset, provincesTexture]);
 
     useImperativeHandle(ref, () => ({
-      async exportImage() {
+      async exportImage(mm: MapMode, countries?: Array<string>) {
         return new Promise((resolve) => {
           if (save && provincesTexture && provincesContext && idColorsContext) {
             const exportCanvas = document.createElement<'canvas'>('canvas');
@@ -324,10 +325,10 @@ const SaveMap = forwardRef(({ save, mapMode, setReady }: SaveMapProps, ref) => {
 
             const colorsData = idColorsContext.getImageData(0, 0, idColorsContext.canvas.width, idColorsContext.canvas.height).data;
 
-            const modeData = mapModes[mapMode].prepare(save);
+            const modeData = mapModes[mm].prepare(save);
             for (const province of save.provinces) {
               const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
-              const value = mapModes[mapMode].provinceColor(province, save, modeData);
+              const value = mapModes[mm].provinceColor(province, save, modeData, countries);
 
               colorMapping.set(key, value);
             }
@@ -376,13 +377,13 @@ const SaveMap = forwardRef(({ save, mapMode, setReady }: SaveMapProps, ref) => {
                 exportContext.putImageData(newData, 0, 0);
 
                 const url = exportCanvas.toDataURL('image/png', 1);
-                const link = document.createElement("a")
-                link.href = url
-                link.setAttribute("download", `${ save.name.replace(/\.[^/.]+$/, "") }_${ intl.formatMessage({ id: `map.mod.${ mapMode }` }) }`)
+                const link = document.createElement("a");
+                link.href = url;
+                link.setAttribute("download", `${ cleanString(`${ save.name.replace(/\.[^/.]+$/, "") }_${ intl.formatMessage({ id: `map.mod.${ mm }` }) }`) }.png`);
 
                 if (document.body) {
-                  document.body.appendChild(link)
-                  link.click()
+                  document.body.appendChild(link);
+                  link.click();
                 }
 
                 resolve(true);

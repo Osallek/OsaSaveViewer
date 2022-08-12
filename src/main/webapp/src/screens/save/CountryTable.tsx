@@ -12,7 +12,7 @@ import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { CountryTableType } from 'screens/save/SaveDialog';
 import { Expense, Income, Losses, PowerSpent, SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { formatDate, formatNumber, numberComparator, round, round1000, stringComparator } from 'utils/format.utils';
+import { cleanString, formatDate, formatNumber, numberComparator, round, round1000, stringComparator } from 'utils/format.utils';
 import {
   getCountries, getCountrysFlag, getCountrysName, getCRealDev, getDiscipline, getExpense, getIncome, getLoans, getLosses, getManaSpent, getNbImprovements,
   getPlayer, getStableIncome, getTerritory, getTotalExpense, getTotalExpenses, getTotalIncome, getTotalTotalExpenses, isAdm, isDip, isMil
@@ -930,8 +930,7 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
                       disablePortal
                       options={ filterPopoverColumn.filterValues(save) }
                       getOptionLabel={ option => option.toString() }
-                      groupBy={ (option) => typeof option === 'string' ?
-                        option.slice(0, 1).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() : ''
+                      groupBy={ (option) => typeof option === 'string' ? cleanString(option.slice(0, 1)).toUpperCase() : ''
                       }
                       renderInput={ (params) =>
                         <TextField { ...params }

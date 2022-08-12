@@ -1,22 +1,24 @@
 import { BarChart, Home, PhotoCamera } from '@mui/icons-material';
-import { Backdrop, Button, Chip, CircularProgress, Dialog, Grid, IconButton, Tooltip, Typography } from '@mui/material';
+import { Backdrop, Button, Chip, CircularProgress, Dialog, Grid, IconButton, Tooltip, Typography, useTheme } from '@mui/material';
 import { api } from 'api';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
+import ExportModal from 'screens/save/ExportModal';
 import SaveDialog from 'screens/save/SaveDialog';
 import SaveMap from 'screens/save/SaveMap';
-import theme from 'theme';
 import { MapMode, mapModes, MapSave } from 'types/map.types';
 import { convertSave } from 'utils/save.utils';
 
 function SavePage() {
   const params = useParams();
   const intl = useIntl();
+  const theme = useTheme();
 
   const [save, setSave] = useState<MapSave>();
   const [loading, setLoading] = useState<boolean>(true);
   const [exporting, setExporting] = useState<boolean>(false);
+  const [exportingModal, setExportingModal] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [mapReady, setMapReady] = useState<boolean>(false);
   const [statDialog, setStatDialog] = useState<boolean>(false);
@@ -26,10 +28,11 @@ function SavePage() {
 
   const { id } = params;
 
-  const exportImage = async () => {
+  const exportImage = async (mm: MapMode, countries?: Array<string>) => {
     try {
+      setExportingModal(false);
       setExporting(true);
-      await mapRef.current.exportImage();
+      await mapRef.current.exportImage(mm, countries);
     } finally {
       setExporting(false);
     }
@@ -127,22 +130,25 @@ function SavePage() {
               }
               {
                 save &&
-                  <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
-                      <IconButton onClick={ exportImage } disabled={ exporting } style={ {
-                        position: 'absolute',
-                        top: 92,
-                        left: 5,
-                        backgroundColor: theme.palette.primary.main,
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                        borderRadius: '50%',
-                      } }>
-                        {
-                          exporting ? <CircularProgress color='secondary' style={ { width: 24, height: 24 } }/> : <PhotoCamera/>
-                        }
-                      </IconButton>
-                  </Tooltip>
+                  <>
+                      <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
+                          <IconButton onClick={ () => setExportingModal(true) } disabled={ exporting } style={ {
+                            position: 'absolute',
+                            top: 92,
+                            left: 5,
+                            backgroundColor: theme.palette.primary.main,
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '1.2em',
+                            borderRadius: '50%',
+                          } }>
+                            {
+                              exporting ? <CircularProgress color='secondary' style={ { width: 24, height: 24 } }/> : <PhotoCamera/>
+                            }
+                          </IconButton>
+                      </Tooltip>
+                      <ExportModal open={ exportingModal } save={ save } onClose={ () => setExportingModal(false) } onExport={ exportImage }/>
+                  </>
               }
               <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady } ref={ mapRef }/>
               {

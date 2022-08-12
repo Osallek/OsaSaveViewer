@@ -1,12 +1,14 @@
+import LoadingButton from '@mui/lab/LoadingButton';
 import { Autocomplete, Avatar, Card, CardContent, CardHeader, Chip, Grid, TextField, Typography, useTheme } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { toPng } from 'html-to-image';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { Bar, BarChart, CartesianGrid, LabelList, Tooltip, XAxis, YAxis } from 'recharts';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { CurrentLine, getCurrentLine, previousCharts } from 'utils/chart.utils';
-import { colorToHex, formatNumber, stringComparator } from 'utils/format.utils';
+import { cleanString, colorToHex, formatNumber, stringComparator } from 'utils/format.utils';
 import { getCountries, getCountry, getCountryFlag, getCountryName, getCountrysFlag, getCountrysName } from 'utils/save.utils';
 
 interface CompareTableProps {
@@ -23,6 +25,8 @@ function CompareTable({ save, visible }: CompareTableProps) {
   const [teamA, setTeamA] = useState<Array<CurrentLine>>([]);
   const [teamB, setTeamB] = useState<Array<CurrentLine>>([]);
   const [players, setPlayers] = useState<Array<SaveCountry>>([]);
+  const [exporting, setExporting] = useState<boolean>(false);
+  const mainRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setPlayers(getCountries(save).filter(value => value.players && value.players.length > 0).sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b))));
@@ -36,9 +40,35 @@ function CompareTable({ save, visible }: CompareTableProps) {
     setTeamB(previousCharts.map(value => getCurrentLine(save, countriesB.map(c => c.tag), value.current)));
   }, [countriesB, save]);
 
+  const exportToPng = useCallback(async () => {
+    try {
+      setExporting(true);
+      if (mainRef.current === null) {
+        return
+      }
+
+      await toPng(mainRef.current, { cacheBust: true, backgroundColor: 'white', filter: domNode => domNode.id !== 'export-button' })
+        .then((dataUrl) => {
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.setAttribute('download', `${ cleanString(`${ save.name }_${ intl.formatMessage({ id: 'common.compare' }).toLowerCase() }`) }.png`);
+
+          if (document.body) {
+            document.body.appendChild(link);
+            link.click();
+          }
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    } finally {
+      setExporting(false);
+    }
+  }, [mainRef, setExporting]);
+
   return (
     visible ?
-      <Grid container style={ { justifyContent: 'center', padding: 24 } }>
+      <Grid container style={ { justifyContent: 'center', padding: 24 } } ref={ mainRef }>
         <Grid container item xs={ 12 } md={ 6 } lg={ 4 } flexDirection='column' rowGap={ 2 }>
           <Card style={ { width: '100%', backgroundColor: theme.palette.primary.light } }>
             <CardHeader title={ intl.formatMessage({ id: 'common.teamA' }) } titleTypographyProps={ { color: theme.palette.primary.contrastText } }
@@ -124,6 +154,10 @@ function CompareTable({ save, visible }: CompareTableProps) {
               />
             </CardContent>
           </Card>
+          <LoadingButton variant='contained' color='primary' onClick={ exportToPng } loading={ exporting }
+                         disabled={ exporting || Object.keys(teamA[0]).length <= 1 || Object.keys(teamB[0]).length <= 1 } id='export-button'>
+            { intl.formatMessage({ id: 'common.export' }) }
+          </LoadingButton>
         </Grid>
         <Grid container item xs={ 12 } md={ 10 } lg={ 8 } xl={ 8 }>
           <AutoSizer disableHeight>
@@ -132,7 +166,7 @@ function CompareTable({ save, visible }: CompareTableProps) {
                 {
                   previousCharts.map((chart, i) => {
                       return (
-                        <React.Fragment key={ `rank-${ chart.key }` }>
+                        <React.Fragment key={ `rank-${ chart.key }-${ i }` }>
                           <Typography variant='h6' style={ { textAlign: 'center' } }>
                             { intl.formatMessage({ id: `country.${ chart.key }` }) }
                           </Typography>

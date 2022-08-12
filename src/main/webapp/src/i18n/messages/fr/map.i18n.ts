@@ -1,4 +1,5 @@
 const map = {
+  'map.mod': 'Type de carte',
   'map.mod.POLITICAL': 'Politique',
   'map.mod.PLAYERS': 'Joueurs',
   'map.mod.RELIGION': 'Religions',
