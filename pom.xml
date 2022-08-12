@@ -10,7 +10,7 @@
   </parent>
   <groupId>fr.osallek</groupId>
   <artifactId>osa-save-viewer</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.4</version>
   <name>OsaSaveViewer</name>
   <description>Project to view Paradox&apos;s Saves</description>
 
