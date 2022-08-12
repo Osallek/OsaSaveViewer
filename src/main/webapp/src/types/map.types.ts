@@ -20,7 +20,7 @@ export enum MapMode {
 
 export interface IMapMode {
   mapMode: MapMode;
-  provinceColor: (province: SaveProvince, save: MapSave, data: any, countries?: Array<string>) => SaveColor;
+  provinceColor: (province: SaveProvince, save: MapSave, data: any, countries: Array<string>) => SaveColor;
   image: string;
   allowDate: boolean;
   prepare: (save: MapSave) => any
@@ -32,11 +32,11 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, data, countries) => {
       const owner = getPHistory(province, save).owner;
 
-      if (!owner) {
+      if (!owner || (countries.length > 0 && !countries.includes(owner))) {
         return EMPTY_COLOR;
       }
 
-      return !countries || (countries && countries.includes(owner)) ? getCountry(save, owner).colors.mapColor : EMPTY_COLOR;
+      return getCountry(save, owner).colors.mapColor;
     },
     image: 'political',
     allowDate: true,
@@ -47,11 +47,11 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, data, countries) => {
       const history = getPHistory(province, save);
 
-      if (!history.religion) {
+      if (!history.religion || (countries.length > 0 && (!history.owner || !countries.includes(history.owner)))) {
         return EMPTY_COLOR;
       }
 
-      return !countries || (countries && history.owner && countries.includes(history.owner)) ? getReligion(save, history.religion).color : EMPTY_COLOR;
+      return getReligion(save, history.religion).color;
     },
     image: 'religion',
     allowDate: true,
@@ -60,7 +60,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
   [MapMode.DEVELOPMENT]: {
     mapMode: MapMode.DEVELOPMENT,
     provinceColor: (province, save, data: Record<number, SaveColor>, countries) => {
-      if (countries) {
+      if (countries.length > 0) {
         const history = getPHistory(province, save);
 
         if (!history.owner || (history.owner && !countries.includes(history.owner))) {
@@ -117,7 +117,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, { electors, emperor }: { electors: Array<string>, emperor: string }, countries) => {
       const history = getPHistory(province, save);
 
-      if (countries && (!history.owner || !countries.includes(history.owner))) {
+      if (countries.length > 0 && (!history.owner || !countries.includes(history.owner))) {
         return EMPTY_COLOR;
       }
 
@@ -145,7 +145,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, data, countries) => {
       const owner = getPHistory(province, save).owner;
 
-      if (!owner || (countries && (!owner || !countries.includes(owner)))) {
+      if (!owner || (countries.length > 0 && (!owner || !countries.includes(owner)))) {
         return EMPTY_COLOR;
       }
 
@@ -161,7 +161,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, { gradient }: { gradient: Array<SaveColor> }, countries) => {
       const owner = getPHistory(province, save).owner;
 
-      if (!owner || (countries && (!owner || !countries.includes(owner)))) {
+      if (!owner || (countries.length > 0 && (!owner || !countries.includes(owner)))) {
         return EMPTY_COLOR;
       }
 
@@ -186,7 +186,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     }: { gradient: Array<SaveColor>, min: number, max: number }, countries) => {
       const owner = getPHistory(province, save).owner;
 
-      if (!owner || (countries && (!owner || !countries.includes(owner)))) {
+      if (!owner || (countries.length > 0 && (!owner || !countries.includes(owner)))) {
         return EMPTY_COLOR;
       }
 
@@ -231,7 +231,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, data, countries) => {
       const history = getPHistory(province, save);
 
-      if (!history.tradeGood || (countries && (!history.owner || !countries.includes(history.owner)))) {
+      if (!history.tradeGood || (countries.length > 0 && (!history.owner || !countries.includes(history.owner)))) {
         return EMPTY_COLOR;
       }
 
@@ -261,7 +261,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, data, countries) => {
       const history = getPHistory(province, save);
 
-      if (countries && (!history.owner || !countries.includes(history.owner))) {
+      if (countries.length > 0 && (!history.owner || !countries.includes(history.owner))) {
         return EMPTY_COLOR;
       }
 
@@ -293,7 +293,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, data, countries) => {
       const owner = getPHistory(province, save).owner;
 
-      if (!owner || (countries && (!owner || !countries.includes(owner)))) {
+      if (!owner || (countries.length > 0 && (!owner || !countries.includes(owner)))) {
         return EMPTY_COLOR;
       }
 

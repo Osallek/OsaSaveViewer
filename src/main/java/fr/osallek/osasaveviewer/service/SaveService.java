@@ -1,6 +1,7 @@
 package fr.osallek.osasaveviewer.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.osallek.osasaveviewer.common.CustomGZIPOutputStream;
 import fr.osallek.osasaveviewer.common.exception.PreviousSaveAfterException;
 import fr.osallek.osasaveviewer.common.exception.PreviousSaveDoesNotExistException;
 import fr.osallek.osasaveviewer.common.exception.UnauthorizedException;
@@ -23,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +35,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Stream;
+import java.util.zip.GZIPInputStream;
 
 @Service
 public class SaveService {
@@ -57,7 +61,7 @@ public class SaveService {
         this.dataService = dataService;
         this.userService = userService;
 
-        FileUtils.forceMkdir(this.properties.getSavesFolder().toFile());
+        FileUtils.forceMkdir(this.properties.getDataSavesFolder().toFile());
         FileUtils.forceMkdir(this.properties.getUsersFolder().toFile());
 
         SortedSet<ServerSaveDTO> serverSaves = new TreeSet<>(Comparator.comparing(ServerSaveDTO::creationDate).reversed());
@@ -89,7 +93,7 @@ public class SaveService {
     }
 
     public Path getSave(String id) {
-        return this.properties.getSavesFolder().resolve(id + ".json");
+        return this.properties.getDataSavesFolder().resolve(id + ".json.gz");
     }
 
     public boolean saveExists(String id) {
@@ -101,20 +105,24 @@ public class SaveService {
             throw new PreviousSaveDoesNotExistException(save.getPreviousSave());
         }
 
-        String id = getId(this.properties.getSavesFolder());
+        String id = getId(this.properties.getDataSavesFolder());
 
         if (StringUtils.isNotBlank(save.getPreviousSave())) {
-            ExtractorSaveDTO previousSave = this.objectMapper.readValue(getSave(save.getPreviousSave()).toFile(), ExtractorSaveDTO.class);
+            try (GZIPInputStream inputStream = new GZIPInputStream(new FileInputStream(getSave(save.getPreviousSave()).toFile()))) {
+                ExtractorSaveDTO previousSave = this.objectMapper.readValue(inputStream, ExtractorSaveDTO.class);
 
-            if (save.getDate().isBefore(previousSave.getDate()) || save.getDate().equals(previousSave.getDate())) {
-                throw new PreviousSaveAfterException(save.getPreviousSave());
+                if (save.getDate().isBefore(previousSave.getDate()) || save.getDate().equals(previousSave.getDate())) {
+                    throw new PreviousSaveAfterException(save.getPreviousSave());
+                }
+
+                processPreviousSave(save, previousSave);
             }
-
-            processPreviousSave(save, previousSave);
         }
 
-        Path dest = this.properties.getSavesFolder().resolve(id + ".json");
-        this.objectMapper.writeValue(dest.toFile(), save);
+        Path dest = getSave(id);
+        try (CustomGZIPOutputStream outputStream = new CustomGZIPOutputStream(new FileOutputStream(dest.toFile()))) {
+            this.objectMapper.writeValue(outputStream, save);
+        }
 
         UserInfo userInfo = this.userService.getOrCreateUserInfo(save.getOwner());
         ServerSaveDTO serverSave = userInfo.addSave(save, id);
@@ -137,7 +145,7 @@ public class SaveService {
             Optional<ServerSaveDTO> save = userInfo.getSaves().stream().filter(serverSave -> id.equals(serverSave.id())).findFirst();
 
             if (save.isPresent()) {
-                Path dest = this.properties.getSavesFolder().resolve(id + ".json");
+                Path dest = this.properties.getDataSavesFolder().resolve(id + ".json");
 
                 if (Files.exists(dest)) {
                     FileUtils.deleteQuietly(dest.toFile());

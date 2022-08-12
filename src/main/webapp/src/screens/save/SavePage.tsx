@@ -1,6 +1,7 @@
-import { BarChart, Home, PhotoCamera } from '@mui/icons-material';
+import { BarChart, Download, Home, PhotoCamera } from '@mui/icons-material';
 import { Backdrop, Button, Chip, CircularProgress, Dialog, Grid, IconButton, Tooltip, Typography, useTheme } from '@mui/material';
-import { api } from 'api';
+import { api, endpoints } from 'api';
+import * as ENV from 'env/env';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
@@ -8,6 +9,7 @@ import ExportModal from 'screens/save/ExportModal';
 import SaveDialog from 'screens/save/SaveDialog';
 import SaveMap from 'screens/save/SaveMap';
 import { MapMode, mapModes, MapSave } from 'types/map.types';
+import { cleanString } from 'utils/format.utils';
 import { convertSave } from 'utils/save.utils';
 
 function SavePage() {
@@ -28,7 +30,21 @@ function SavePage() {
 
   const { id } = params;
 
-  const exportImage = async (mm: MapMode, countries?: Array<string>) => {
+  const download = () => {
+    if (id && save) {
+      const link = document.createElement('a');
+      link.href = ENV.DATA_BASE_URL + endpoints.save.download(id);
+      link.setAttribute('download', `${ cleanString(save.name).replace('.eu4', '') }.eu4`);
+      console.log(link.download);
+
+      if (document.body) {
+        document.body.appendChild(link);
+        link.click();
+      }
+    }
+  }
+
+  const exportImage = async (mm: MapMode, countries: Array<string>) => {
     try {
       setExportingModal(false);
       setExporting(true);
@@ -131,11 +147,30 @@ function SavePage() {
               {
                 save &&
                   <>
+                      <Tooltip title={ intl.formatMessage({ id: 'common.download' }) }>
+                          <IconButton onClick={ download } style={ {
+                            position: 'absolute',
+                            top: 92,
+                            left: 5,
+                            backgroundColor: theme.palette.primary.main,
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '1.2em',
+                            borderRadius: '50%',
+                          } }>
+                              <Download/>
+                          </IconButton>
+                      </Tooltip>
+                  </>
+              }
+              {
+                save &&
+                  <>
                       <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
                           <IconButton onClick={ () => setExportingModal(true) } disabled={ exporting } style={ {
                             position: 'absolute',
                             top: 92,
-                            left: 5,
+                            left: 52,
                             backgroundColor: theme.palette.primary.main,
                             color: 'white',
                             fontWeight: 'bold',

@@ -7,6 +7,7 @@ const endpoints = {
     one: (id: string) => `/saves/${ id }.json`,
     delete: (id: string) => `/saves/${ id }`,
     recent: '/saves',
+    download: (id: string) => `/save/${ id }.eu4`,
   },
   steam: {
     logout: '/steam/logout',

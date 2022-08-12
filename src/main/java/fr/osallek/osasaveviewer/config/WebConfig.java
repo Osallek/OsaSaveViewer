@@ -1,5 +1,6 @@
 package fr.osallek.osasaveviewer.config;
 
+import fr.osallek.osasaveviewer.common.CustomEncodedResourceResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -9,9 +10,9 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.resource.EncodedResourceResolver;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -57,10 +58,16 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResolver(new PathResourceResolver());
 
         registry.addResourceHandler("/data/saves/**")
+                .addResourceLocations("file:" + this.properties.getDataSavesFolder() + "/")
+                .setCacheControl(CacheControl.maxAge(31536000, TimeUnit.SECONDS))
+                .resourceChain(false)
+                .addResolver(new CustomEncodedResourceResolver());
+
+        registry.addResourceHandler("/data/save/**")
                 .addResourceLocations("file:" + this.properties.getSavesFolder() + "/")
                 .setCacheControl(CacheControl.maxAge(31536000, TimeUnit.SECONDS))
                 .resourceChain(false)
-                .addResolver(new PathResourceResolver());
+                .addResolver(new CustomEncodedResourceResolver());
 
         registry.addResourceHandler("/data/**")
                 .addResourceLocations("file:" + this.properties.getDataFolder() + "/")

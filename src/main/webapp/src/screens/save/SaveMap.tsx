@@ -312,7 +312,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady }: SaveMapProps, ref) => {
     }, [gl, zoomLoc, zoom, offsetLoc, offset, provincesTexture]);
 
     useImperativeHandle(ref, () => ({
-      async exportImage(mm: MapMode, countries?: Array<string>) {
+      async exportImage(mm: MapMode, countries: Array<string>) {
         return new Promise((resolve) => {
           if (save && provincesTexture && provincesContext && idColorsContext) {
             const exportCanvas = document.createElement<'canvas'>('canvas');

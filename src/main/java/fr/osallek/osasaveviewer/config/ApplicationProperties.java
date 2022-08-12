@@ -16,6 +16,8 @@ public class ApplicationProperties {
 
     private String steamApiKey;
 
+    private String minExtractorVersion;
+
     public URI getFrontUrl() {
         return frontUrl;
     }
@@ -39,8 +41,12 @@ public class ApplicationProperties {
     public Path getUsersFolder() {
         return this.baseFolder.resolve("users");
     }
-
+    
     public Path getSavesFolder() {
+        return this.baseFolder.resolve("saves");
+    }
+
+    public Path getDataSavesFolder() {
         return getDataFolder().resolve("saves");
     }
 
@@ -54,5 +60,13 @@ public class ApplicationProperties {
 
     public void setSteamApiKey(String steamApiKey) {
         this.steamApiKey = steamApiKey;
+    }
+
+    public String getMinExtractorVersion() {
+        return minExtractorVersion;
+    }
+
+    public void setMinExtractorVersion(String minExtractorVersion) {
+        this.minExtractorVersion = minExtractorVersion;
     }
 }

@@ -1,6 +1,7 @@
 const common = {
   'common.name': 'Osa Save Viewer',
   'common.export': 'Exporter',
+  'common.download': 'Télécharger la sauvegarde',
   'common.viewMore': 'Voir plus',
   'common.provinces': 'Provinces',
   'common.countries': 'Pays',

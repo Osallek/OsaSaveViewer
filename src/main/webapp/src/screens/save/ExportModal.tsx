@@ -13,7 +13,7 @@ interface CompareTableProps {
   save: MapSave;
   open: boolean;
   onClose: () => void;
-  onExport: (mm: MapMode, countries?: Array<string>) => void;
+  onExport: (mm: MapMode, countries: Array<string>) => void;
 }
 
 function ExportModal({ save, open, onClose, onExport }: CompareTableProps) {
@@ -26,7 +26,6 @@ function ExportModal({ save, open, onClose, onExport }: CompareTableProps) {
 
   useEffect(() => {
     setOptions(getCountries(save).sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b))));
-    console.log('save');
   }, [save]);
 
   const doExport = () => {

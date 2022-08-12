@@ -5,19 +5,21 @@ import fr.osallek.osasaveviewer.common.ZipUtils;
 import fr.osallek.osasaveviewer.common.exception.UnauthorizedException;
 import fr.osallek.osasaveviewer.config.ApplicationProperties;
 import fr.osallek.osasaveviewer.controller.dto.AssetsDTO;
-import fr.osallek.osasaveviewer.controller.dto.DataAssetDTO;
+import fr.osallek.osasaveviewer.controller.dto.DataMetaDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.CountryDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.ExtractorSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.IdeaGroupDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.NamedImageLocalisedDTO;
 import fr.osallek.osasaveviewer.service.object.UserInfo;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,25 +43,19 @@ public class DataService {
 
     private final ApplicationProperties properties;
 
-    public DataService(UserService userService, ApplicationProperties properties) {
+    public DataService(UserService userService, ApplicationProperties properties) throws IOException {
         this.userService = userService;
         this.properties = properties;
+
+        FileUtils.forceMkdir(this.properties.getSavesFolder().toFile());
     }
 
-    public void receive(MultipartFile file, DataAssetDTO data) throws IOException {
+    public void receiveAssets(MultipartFile file, DataMetaDTO data) throws IOException {
         if (!"assets.zip".equals(file.getOriginalFilename())) {
             throw new UnauthorizedException();
         }
 
-        if (StringUtils.isBlank(data.userId()) || StringUtils.isBlank(data.saveId())) {
-            throw new UnauthorizedException();
-        }
-
-        Optional<UserInfo> userInfo = this.userService.getUserInfo(data.userId());
-
-        if (userInfo.isEmpty() || userInfo.get().getSaves().stream().noneMatch(save -> save.id().equals(data.saveId()))) {
-            throw new UnauthorizedException();
-        }
+        checkMeta(data);
 
         Path tmpFolder = Path.of(FileUtils.getTempDirectoryPath(), UUID.randomUUID().toString());
         Path tmpPath = tmpFolder.resolve(file.getOriginalFilename());
@@ -204,5 +200,30 @@ public class DataService {
                                .collect(Collectors.toSet()));
 
         return assets;
+    }
+
+    public void receiveSave(MultipartFile file, DataMetaDTO data) throws IOException {
+        if (file == null || file.getOriginalFilename() == null || !Constants.SAVE_NAME_PATTERN.matcher(file.getOriginalFilename()).matches()) {
+            throw new UnauthorizedException();
+        }
+
+        checkMeta(data);
+
+        Path dest = this.properties.getSavesFolder().resolve(file.getOriginalFilename());
+        try (FileOutputStream outputStream = new FileOutputStream(dest.toFile())) {
+            IOUtils.copyLarge(file.getInputStream(), outputStream, new byte[1_000_000]);
+        }
+    }
+
+    private void checkMeta(DataMetaDTO meta) throws IOException {
+        if (StringUtils.isBlank(meta.userId()) || StringUtils.isBlank(meta.saveId())) {
+            throw new UnauthorizedException();
+        }
+
+        Optional<UserInfo> userInfo = this.userService.getUserInfo(meta.userId());
+
+        if (userInfo.isEmpty() || userInfo.get().getSaves().stream().noneMatch(save -> save.id().equals(meta.saveId()))) {
+            throw new UnauthorizedException();
+        }
     }
 }

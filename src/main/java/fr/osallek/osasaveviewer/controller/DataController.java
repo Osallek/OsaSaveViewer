@@ -1,6 +1,6 @@
 package fr.osallek.osasaveviewer.controller;
 
-import fr.osallek.osasaveviewer.controller.dto.DataAssetDTO;
+import fr.osallek.osasaveviewer.controller.dto.DataMetaDTO;
 import fr.osallek.osasaveviewer.service.DataService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +23,15 @@ public class DataController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> edit(@RequestPart("assets") MultipartFile file, @RequestPart("data") DataAssetDTO data) throws IOException {
-        this.dataService.receive(file, data);
+    public ResponseEntity<Void> receiveAssets(@RequestPart("assets") MultipartFile file, @RequestPart("data") DataMetaDTO data) throws IOException {
+        this.dataService.receiveAssets(file, data);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> receiveSave(@RequestPart("save") MultipartFile file, @RequestPart("data") DataMetaDTO data) throws IOException {
+        this.dataService.receiveSave(file, data);
 
         return ResponseEntity.noContent().build();
     }
