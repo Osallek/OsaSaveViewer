@@ -246,7 +246,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, data, countries) => {
       const history = getPHistory(province, save);
 
-      if (!history.culture || (countries && (!history.owner || !countries.includes(history.owner)))) {
+      if (!history.culture || (countries.length > 0 && (!history.owner || !countries.includes(history.owner)))) {
         return EMPTY_COLOR;
       }
 
