@@ -83,7 +83,7 @@ function SaveTable({ saves, currentUser, handleDelete, owner, actionTable }: Sav
                     </TableCell>
                     <TableCell>
                       <Grid container alignItems='center' flexWrap='nowrap' overflow='hidden'>
-                        <Avatar src={ getFlagUrl(save.flag) } variant='square'/>
+                        <Avatar src={ getFlagUrl(save.flag) } variant='square' alt={ getName(save.countryName) }/>
                         <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                           { getName(save.countryName) }
                         </Typography>
@@ -104,7 +104,7 @@ function SaveTable({ saves, currentUser, handleDelete, owner, actionTable }: Sav
                         <TableCell>
                             <Link to={ `/user/${ save.ownerId }` } style={ { textDecoration: 'none' } }>
                                 <Grid container alignItems='center' flexWrap='nowrap' overflow='hidden'>
-                                    <Avatar src={ save.ownerImage } variant='square'/>
+                                    <Avatar src={ save.ownerImage } variant='square' alt={ save.ownerName }/>
                                     <Typography variant='body1' component='span' style={ { marginLeft: 8, color: 'inherit' } }>
                                       { save.ownerName ?? save.ownerId }
                                     </Typography>

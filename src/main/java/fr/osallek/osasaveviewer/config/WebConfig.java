@@ -100,6 +100,24 @@ public class WebConfig implements WebMvcConfigurer {
                     }
                 });
 
+        registry.addResourceHandler("/extractor_*.png")
+                .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/")
+                .setCacheControl(CacheControl.maxAge(1, TimeUnit.MINUTES))
+                .setOptimizeLocations(true)
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver() {
+                    @Override
+                    protected Resource getResource(String resourcePath, Resource location) {
+                        try {
+                            location = location.createRelative(resourcePath);
+
+                            return location.exists() && location.isReadable() ? location : index;
+                        } catch (Exception e) {
+                            return index;
+                        }
+                    }
+                });
+
         registry.addResourceHandler("/**")
                 .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/")
                 .resourceChain(true)
