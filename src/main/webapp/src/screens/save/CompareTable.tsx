@@ -33,11 +33,11 @@ function CompareTable({ save, visible }: CompareTableProps) {
   }, [save]);
 
   useEffect(() => {
-    setTeamA(previousCharts.map(value => getCurrentLine(save, countriesA.map(c => c.tag), value.current)));
+    setTeamA(previousCharts.map(value => getCurrentLine(save, countriesA.map(c => c.tag), value.current, 'a')));
   }, [countriesA, save]);
 
   useEffect(() => {
-    setTeamB(previousCharts.map(value => getCurrentLine(save, countriesB.map(c => c.tag), value.current)));
+    setTeamB(previousCharts.map(value => getCurrentLine(save, countriesB.map(c => c.tag), value.current, 'b')));
   }, [countriesB, save]);
 
   const exportToPng = useCallback(async () => {
@@ -189,12 +189,12 @@ function CompareTable({ save, visible }: CompareTableProps) {
                                   <Grid container alignItems='center' rowGap={ 2 }
                                         style={ { padding: 10, backgroundColor: 'white', border: '1px solid rgb(204, 204, 204)', flexDirection: 'column' } }>
                                     {
-                                      props.payload.sort((a, b) => stringComparator(getCountryName(save, a.name as string), getCountryName(save, b.name as string)))
+                                      props.payload.sort((a, b) => stringComparator(getCountryName(save, (a.name as string).slice(0, 3)), getCountryName(save, (b.name as string).slice(0, 3))))
                                         .map(payload => (
                                           <Grid container item alignItems='center' style={ { width: '100%' } }>
-                                            <Avatar src={ getCountryFlag(save, payload.name as string) } variant='square' style={ { display: 'inline-block' } }/>
+                                            <Avatar src={ getCountryFlag(save, (payload.name as string).slice(0, 3)) } variant='square' style={ { display: 'inline-block' } }/>
                                             <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
-                                              { `${ getCountryName(save, payload.name as string) } : ${ formatNumber(payload.value as number) }` }
+                                              { `${ getCountryName(save, (payload.name as string).slice(0, 3)) } : ${ formatNumber(payload.value as number) }` }
                                             </Typography>
                                           </Grid>
                                         ))
@@ -203,10 +203,10 @@ function CompareTable({ save, visible }: CompareTableProps) {
                                 ) : undefined;
                             } }/>
                             {
-                              Object.keys(teamA[i]).filter(key => key !== 'total').sort((a, b) => -stringComparator(getCountryName(save, a), getCountryName(save, b)))
+                              Object.keys(teamA[i]).filter(key => key !== 'total').sort((a, b) => -stringComparator(getCountryName(save, a.slice(0, 3)), getCountryName(save, b.slice(0, 3))))
                                 .map(tag => (
                                   <Bar dataKey={ tag } stackId='teamA' isAnimationActive={ false }
-                                       fill={ colorToHex(getCountry(save, tag).colors.countryColor) }>
+                                       fill={ colorToHex(getCountry(save, tag.slice(0, 3)).colors.countryColor) }>
                                     <LabelList dataKey={ tag } position='middle'
                                                formatter={ (value: number) => `${ chart.valueMapper(value) } (${ formatNumber(100 * value / teamA[i].total) }%)` }/>
                                     {
@@ -218,10 +218,10 @@ function CompareTable({ save, visible }: CompareTableProps) {
                                 ))
                             }
                             {
-                              Object.keys(teamB[i]).filter(key => key !== 'total').sort((a, b) => -stringComparator(getCountryName(save, a), getCountryName(save, b)))
+                              Object.keys(teamB[i]).filter(key => key !== 'total').sort((a, b) => -stringComparator(getCountryName(save, a.slice(0, 3)), getCountryName(save, b.slice(0, 3))))
                                 .map(tag => (
                                   <Bar dataKey={ tag } stackId='teamB' isAnimationActive={ false }
-                                       fill={ colorToHex(getCountry(save, tag).colors.countryColor) }>
+                                       fill={ colorToHex(getCountry(save, tag.slice(0, 3)).colors.countryColor) }>
                                     <LabelList dataKey={ tag } position='middle'
                                                formatter={ (value: number) => `${ chart.valueMapper(value) } (${ formatNumber(100 * value / teamB[i].total) }%)` }/>
                                     {

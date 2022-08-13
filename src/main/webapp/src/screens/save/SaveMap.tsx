@@ -20,9 +20,10 @@ interface SaveMapProps {
   save?: MapSave;
   mapMode: MapMode;
   setReady: (ready: boolean) => void;
+  dataId: string | null;
 }
 
-const SaveMap = forwardRef(({ save, mapMode, setReady }: SaveMapProps, ref) => {
+const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, ref) => {
     const offsetBounce = 25;
     const [displayable, setDisplayable] = useState<boolean>(false);
     const canvas = useRef<HTMLCanvasElement>(null);

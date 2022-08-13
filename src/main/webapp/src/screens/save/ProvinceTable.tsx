@@ -1,25 +1,7 @@
 import { FilterList } from '@mui/icons-material';
 import {
-  Autocomplete,
-  Avatar,
-  Card,
-  CardContent,
-  ClickAwayListener,
-  Grid,
-  IconButton,
-  Paper,
-  Popper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  TextField,
-  Tooltip,
-  Typography,
-  useTheme
+  Autocomplete, Avatar, Card, CardContent, ClickAwayListener, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  TableSortLabel, TextField, Tooltip, Typography, useTheme
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -30,24 +12,8 @@ import { SaveProvince } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { cleanString, formatNumber, numberComparator, stringComparator } from 'utils/format.utils';
 import {
-  fakeTag,
-  getBuilding,
-  getBuildingName,
-  getBuildingsImage,
-  getBuildingsName,
-  getCountryFlag,
-  getCountryName,
-  getCountrysName,
-  getCultureName,
-  getCulturesName, getPDev,
-  getGoodImage,
-  getGoodName,
-  getGoodsName,
-  getPHistory,
-  getPRealDev,
-  getReligionImage,
-  getReligionName,
-  getReligionsName
+  fakeTag, getBuilding, getBuildingName, getBuildingsImage, getBuildingsName, getCountries, getCountryFlag, getCountryName, getCountrysName, getCultureName,
+  getCulturesName, getGoodImage, getGoodName, getGoodsName, getPDev, getPHistory, getPRealDev, getReligionImage, getReligionName, getReligionsName
 } from 'utils/save.utils';
 
 interface Column {
@@ -182,7 +148,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
         if (h.owner) {
           return (
             <Grid container alignItems='center'>
-              <Avatar src={ getCountryFlag(save, h.owner) } variant='square'/>
+              <Avatar src={ getCountryFlag(save, h.owner) } variant='square' component={ Paper }/>
               <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                 { getCountryName(save, h.owner) }
               </Typography>
@@ -193,8 +159,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
         }
       },
       comparatorValue: province => getCountryName(save, getPHistory(province, save).owner),
-      filterValues: Array.from(
-        new Set<string>(save.countries.filter(c => c.alive).filter(c => c.tag !== fakeTag).map(c => getCountrysName(c)).sort(stringComparator))),
+      filterValues: Array.from(new Set<string>(getCountries(save).filter(c => c.alive).filter(c => c.tag !== fakeTag).map(c => getCountrysName(c)).sort(stringComparator))),
       filter: (province, filter) => filter.includes(getCountryName(save, getPHistory(province, save).owner)),
     },
     {
@@ -276,8 +241,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
               .sort((a, b) => stringComparator(getBuildingsName(a), getBuildingsName(b)))
               .map(value => (
                 <Tooltip title={ getBuildingsName(value) } key={ `tooltip-building-${ value.name }` }>
-                  <Avatar src={ getBuildingsImage(value) } variant='square'
-                          style={ { marginRight: 8, marginBottom: 8 } }/>
+                  <Avatar src={ getBuildingsImage(value) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
                 </Tooltip>
               ))
           }

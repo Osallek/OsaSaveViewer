@@ -63,7 +63,7 @@ export function round100(v: number): number {
   return round(v, 100);
 }
 
-export function round(v: number, radix: number): number {
+export function round(v: number = 0, radix: number): number {
   return (Math.floor(v / radix) * radix) | 0;
 }
 

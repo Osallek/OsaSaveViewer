@@ -39,7 +39,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                     { country.alliances?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `alliance-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
@@ -56,7 +56,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                     { country.atWarWith?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `wars-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
@@ -74,7 +74,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                       .map(dep => (
                         <Tooltip title={ `${ getCountryName(save, dep.second) } : ${ getSubjectTypeName(save, dep.type) } (${ formatDate(dep.date) })` }
                                  key={ `subject-${ country.tag }-${ dep.second }` }>
-                          <Avatar src={ getCountryFlag(save, dep.second) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, dep.second) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
@@ -91,7 +91,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                     { country.royalMarriages?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `royal-marriage-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
@@ -108,7 +108,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                     { country.guarantees?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `guarantee-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
@@ -125,7 +125,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                     { country.guarantedBy?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `guaranteed-by-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
@@ -142,7 +142,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                     { country.warReparations?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `warReparation-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
@@ -157,9 +157,9 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                 <TableCell style={ { minWidth: 150 } }>
                   <Grid container>
                     { country.warReparationsBy &&
-                      <Tooltip title={ getCountryName(save, country.warReparationsBy) } key={ `war-reparation-by-${ country.tag }` }>
-                        <Avatar src={ getCountryFlag(save, country.warReparationsBy) } variant='square' style={ { marginRight: 8 } }/>
-                      </Tooltip>
+                        <Tooltip title={ getCountryName(save, country.warReparationsBy) } key={ `war-reparation-by-${ country.tag }` }>
+                            <Avatar src={ getCountryFlag(save, country.warReparationsBy) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
+                        </Tooltip>
                     }
                   </Grid>
                 </TableCell>
@@ -176,7 +176,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                       Object.entries(country.subsidies).sort(([tagA,], [tagB,]) => stringComparator(getCountryName(save, tagA), getCountryName(save, tagB)))
                         .map(([tag, quantity]) => (
                           <Tooltip title={ `${ getCountryName(save, tag) } : ${ formatNumber(quantity) }` } key={ `subsidies-${ country.tag }-${ tag }` }>
-                            <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                            <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                           </Tooltip>
                         )) }
                   </Grid>
@@ -194,7 +194,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                       Object.entries(country.subsidiesBy).sort(([tagA,], [tagB,]) => stringComparator(getCountryName(save, tagA), getCountryName(save, tagB)))
                         .map(([tag, quantity]) => (
                           <Tooltip title={ `${ getCountryName(save, tag) } : ${ formatNumber(quantity) }` } key={ `subsidies-by-${ country.tag }-${ tag }` }>
-                            <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                            <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                           </Tooltip>
                         )) }
                   </Grid>
@@ -209,9 +209,9 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                 <TableCell style={ { minWidth: 150 } }>
                   <Grid container>
                     { country.knowledgeSharing &&
-                      <Tooltip title={ getCountryName(save, country.knowledgeSharing) } key={ `knowledge-sharing-${ country.tag }` }>
-                        <Avatar src={ getCountryFlag(save, country.knowledgeSharing) } variant='square' style={ { marginRight: 8 } }/>
-                      </Tooltip>
+                        <Tooltip title={ getCountryName(save, country.knowledgeSharing) } key={ `knowledge-sharing-${ country.tag }` }>
+                            <Avatar src={ getCountryFlag(save, country.knowledgeSharing) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
+                        </Tooltip>
                     }
                   </Grid>
                 </TableCell>
@@ -225,9 +225,9 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                 <TableCell style={ { minWidth: 150 } }>
                   <Grid container>
                     { country.knowledgeSharingBy &&
-                      <Tooltip title={ getCountryName(save, country.knowledgeSharingBy) } key={ `knowledge-sharing-by-${ country.tag }` }>
-                        <Avatar src={ getCountryFlag(save, country.knowledgeSharingBy) } variant='square' style={ { marginRight: 8 } }/>
-                      </Tooltip>
+                        <Tooltip title={ getCountryName(save, country.knowledgeSharingBy) } key={ `knowledge-sharing-by-${ country.tag }` }>
+                            <Avatar src={ getCountryFlag(save, country.knowledgeSharingBy) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
+                        </Tooltip>
                     }
                   </Grid>
                 </TableCell>
@@ -243,7 +243,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                     { country.supportIndependence?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `supportIndependence-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
@@ -260,7 +260,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                     { country.supportIndependenceBy?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `supportIndependenceBy-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
@@ -277,7 +277,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                     { country.transferTradePowers?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `transferTradePowers-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
@@ -294,7 +294,7 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                     { country.transferTradePowersBy?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `transferTradePowersBy-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
@@ -311,24 +311,24 @@ function CountryDiplomacyTab({ country, save }: CountryDiplomacyTabProps) {
                     { country.warnings?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `warning-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>
                 </TableCell>
               </TableRow>
               <TableRow key={ `warningsBy-${ country.tag }` }>
-                <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
+                <TableCell style={ { backgroundColor: theme.palette.primary.light, borderBottom: 'none' } }>
                   <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
                     { intl.formatMessage({ id: 'country.warningsBy' }) }
                   </Typography>
                 </TableCell>
-                <TableCell style={ { minWidth: 150 } }>
+                <TableCell style={ { minWidth: 150, borderBottom: 'none' } }>
                   <Grid container>
                     { country.warningsBy?.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b)))
                       .map(tag => (
                         <Tooltip title={ getCountryName(save, tag) } key={ `warningsBy-${ country.tag }-${ tag }` }>
-                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } }/>
+                          <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                         </Tooltip>
                       )) }
                   </Grid>

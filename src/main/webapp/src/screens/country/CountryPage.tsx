@@ -3,7 +3,7 @@ import { AppBar, Avatar, Backdrop, Button, CircularProgress, Grid, Menu, MenuIte
 import { api } from 'api';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import CountryBuildingTab from 'screens/country/CountryBuildingTab';
 import CountryCultureTab from 'screens/country/CountryCultureTab';
 import CountryDiplomacyTab from 'screens/country/CountryDiplomacyTab';
@@ -20,7 +20,7 @@ import CountryMonarchTab from 'screens/country/CountryMonarchTab';
 import CountryReligionTab from 'screens/country/CountryReligionTab';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
-import { MapSave } from 'types/map.types';
+import { MapMode, MapSave } from 'types/map.types';
 import { stringComparator } from 'utils/format.utils';
 import { convertSave, fakeTag, getCountries, getCountry, getCountrysFlag, getCountrysName, getPlayer } from 'utils/save.utils';
 
@@ -38,6 +38,7 @@ function CountryPage() {
   const [countriesAnchorEl, setCountriesAnchorEl] = React.useState<null | HTMLElement>(null);
   const countriesOpen = Boolean(countriesAnchorEl);
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = React.useState<number>(1);
 
   if (saveId !== params.id) {
@@ -46,6 +47,11 @@ function CountryPage() {
 
   if (tag !== params.tag) {
     setTag(params.tag);
+  }
+
+  const handleTab = (index: number) => {
+    searchParams.set('tab', String(index));
+    setSearchParams(searchParams);
   }
 
   useEffect(() => {
@@ -76,9 +82,12 @@ function CountryPage() {
       }
 
       setLoading(false);
-      setActiveTab(1);
     }
   }, [save, tag]);
+
+  useEffect(() => {
+    setActiveTab(Number(searchParams.get('tab') ?? '1'));
+  }, [searchParams]);
 
   return (
     <>
@@ -163,7 +172,7 @@ function CountryPage() {
                 <Grid item alignItems='center' justifyContent='center' xs={ 12 }>
                   <Tabs
                     value={ activeTab }
-                    onChange={ (event, value) => setActiveTab(value) }
+                    onChange={ (event, value) => handleTab(value) }
                     variant='scrollable'
                     scrollButtons='auto'
                     style={ { marginBottom: 8 } }

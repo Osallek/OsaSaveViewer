@@ -4,7 +4,7 @@ import { api, endpoints } from 'api';
 import * as ENV from 'env/env';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import ExportModal from 'screens/save/ExportModal';
 import SaveDialog from 'screens/save/SaveDialog';
 import SaveMap from 'screens/save/SaveMap';
@@ -25,10 +25,15 @@ function SavePage() {
   const [mapReady, setMapReady] = useState<boolean>(false);
   const [statDialog, setStatDialog] = useState<boolean>(false);
   const mapRef = useRef<any>(null);
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const [mapMode, setMapMode] = useState<MapMode>(MapMode.POLITICAL);
 
   const { id } = params;
+
+  const handleMapMode = (mm: MapMode) => {
+    searchParams.set('mapMode', mm);
+    setSearchParams(searchParams);
+  }
 
   const download = () => {
     if (id && save) {
@@ -75,6 +80,10 @@ function SavePage() {
     })()
   }, [id]);
 
+  useEffect(() => {
+    setMapMode(MapMode[searchParams.get('mapMode') as keyof typeof MapMode ?? MapMode.POLITICAL]);
+  }, [searchParams]);
+
   return (
     <>
       <Backdrop open={ loading || !mapReady } style={ { backgroundColor: theme.palette.primary.light } }>
@@ -117,9 +126,10 @@ function SavePage() {
               <div style={ { position: 'fixed', top: 5, left: 45 } }>
                 {
                   Object.values(MapMode)
+                    .filter(mm => mapModes[MapMode[mm]].selectable)
                     .map((mm) => (
                       <Tooltip title={ intl.formatMessage({ id: `map.mod.${ mm }` }) } key={ `tooltip-${ mm }` }>
-                        <Button onClick={ () => setMapMode(MapMode[mm]) } style={ { padding: 0, minWidth: 0 } }
+                        <Button onClick={ () => handleMapMode(MapMode[mm]) } style={ { padding: 0, minWidth: 0 } }
                                 disableRipple key={ `button-${ mm }` }>
                           <img
                             src={ `/eu4/map/map_mods/${ mapModes[MapMode[mm]].image }_${ mm === mapMode ? 'on' : 'off' }.png` }
@@ -185,7 +195,7 @@ function SavePage() {
                       <ExportModal open={ exportingModal } save={ save } onClose={ () => setExportingModal(false) } onExport={ exportImage }/>
                   </>
               }
-              <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady } ref={ mapRef }/>
+              <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady } dataId={ searchParams.get('id') } ref={ mapRef }/>
               {
                 save &&
                 (

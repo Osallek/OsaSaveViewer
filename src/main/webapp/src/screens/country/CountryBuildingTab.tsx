@@ -39,26 +39,29 @@ function CountryBuildingTab({ country, save }: CountryBuildingTabProps) {
 
   return (
     <Grid container justifyContent='center' alignItems='center' style={ { width: '100%', minHeight: '100%' } } key={ `grid-buildings-${ country.tag }` }>
-      <BarChart
-        width={ 1000 }
-        height={ 50 * buildings.length + 75 }
-        data={ buildings }
-        margin={ {
-          top: 20,
-          right: 30,
-          left: 75,
-          bottom: 5,
-        } }
-        layout='vertical'
-      >
-        <CartesianGrid strokeDasharray='3 3'/>
-        <XAxis dataKey='value' type='number'/>
-        <YAxis dataKey='name' type='category'/>
-        <Bar dataKey='value' isAnimationActive={ false } fill={ green[500] }>
-          <LabelList dataKey='value' position='middle' formatter={ (value: number) => formatNumber(value) }
-                     fill='inherit' key='label-middle'/>
-        </Bar>
-      </BarChart>
+      {
+        buildings.length > 0 &&
+          <BarChart
+              width={ 1000 }
+              height={ 50 * buildings.length + 75 }
+              data={ buildings }
+              margin={ {
+                top: 20,
+                right: 30,
+                left: 75,
+                bottom: 5,
+              } }
+              layout='vertical'
+          >
+              <CartesianGrid strokeDasharray='3 3'/>
+              <XAxis dataKey='value' type='number'/>
+              <YAxis dataKey='name' type='category'/>
+              <Bar dataKey='value' isAnimationActive={ false } fill={ green[500] }>
+                  <LabelList dataKey='value' position='middle' formatter={ (value: number) => formatNumber(value) }
+                             fill='inherit' key='label-middle'/>
+              </Bar>
+          </BarChart>
+      }
       <TableContainer component={ Paper } style={ { borderRadius: 0, width: 'auto' } }>
         <Table>
           <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>

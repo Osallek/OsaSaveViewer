@@ -9,6 +9,7 @@ import GraphTable from 'screens/save/GraphTable';
 import ProvinceTable from 'screens/save/ProvinceTable';
 import { MapSave } from 'types/map.types';
 import { formatDate } from 'utils/format.utils';
+import { getCountries } from 'utils/save.utils';
 
 interface SaveDialogProps {
   save: MapSave;
@@ -164,24 +165,30 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
                 ))
               }
             </Menu>
-            <Button
-              key='button-graph'
-              variant='outlined'
-              color='secondary'
-              sx={ { m: 1 } }
-              onClick={ () => handleOtherClick(Views.GRAPH) }
-            >
-              { intl.formatMessage({ id: 'common.rank' }) }
-            </Button>
-            <Button
-              key='button-compare'
-              variant='outlined'
-              color='secondary'
-              sx={ { m: 1 } }
-              onClick={ () => handleOtherClick(Views.COMPARE) }
-            >
-              { intl.formatMessage({ id: 'common.compare' }) }
-            </Button>
+            {
+              save.previousSaves && save.previousSaves.length > 0 &&
+                <Button
+                    key='button-graph'
+                    variant='outlined'
+                    color='secondary'
+                    sx={ { m: 1 } }
+                    onClick={ () => handleOtherClick(Views.GRAPH) }
+                >
+                  { intl.formatMessage({ id: 'common.rank' }) }
+                </Button>
+            }
+            {
+              getCountries(save).filter(value => value.players && value.players.length > 0).length > 1 &&
+                <Button
+                    key='button-compare'
+                    variant='outlined'
+                    color='secondary'
+                    sx={ { m: 1 } }
+                    onClick={ () => handleOtherClick(Views.COMPARE) }
+                >
+                  { intl.formatMessage({ id: 'common.compare' }) }
+                </Button>
+            }
             {
               save.previousSaves && save.previousSaves.length > 0 &&
               (

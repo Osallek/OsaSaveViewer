@@ -5,7 +5,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { SaveCountry } from 'types/api.types';
-import { MapMode, MapSave } from 'types/map.types';
+import { MapMode, mapModes, MapSave } from 'types/map.types';
 import { cleanString, stringComparator } from 'utils/format.utils';
 import { getCountries, getCountrysFlag, getCountrysName } from 'utils/save.utils';
 
@@ -63,7 +63,7 @@ function ExportModal({ save, open, onClose, onExport }: CompareTableProps) {
                   ) }
                 >
                   {
-                    Object.values(MapMode).map(mapMod => (
+                    Object.values(MapMode).filter(mapMod => mapModes[MapMode[mapMod]].selectable).map(mapMod => (
                       <MenuItem value={ mapMod } key={ mapMod }>
                         <Typography variant='body1'>
                           { intl.formatMessage({ id: `map.mod.${ mapMod }` }) }

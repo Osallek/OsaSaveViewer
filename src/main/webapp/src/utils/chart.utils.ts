@@ -585,12 +585,12 @@ export interface CurrentLine {
   total: number;
 }
 
-export function getCurrentLine(save: MapSave, tags: Array<string>, current: (country: SaveCountry) => number): CurrentLine {
+export function getCurrentLine(save: MapSave, tags: Array<string>, current: (country: SaveCountry) => number, team: string): CurrentLine {
   const line: CurrentLine = { total: 0 };
 
   getCountries(save).filter(c => c.players && c.players.length > 0).filter(c => tags.includes(c.tag))
     .forEach(c => {
-      line[c.tag] = current(c);
+      line[c.tag + team] = current(c);
     });
 
   line.total = Object.values(line).reduce((s, n) => s + n, 0);

@@ -2,7 +2,9 @@ import { Save, SaveColor, SaveHeir, SaveLeader, SaveMonarch, SaveProvince, SaveQ
 import {
   DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, getGradient, GREEN_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, PROSPERITY_GRADIENT
 } from 'utils/colors.utils';
-import { getArea, getAreaState, getCHistory, getCountry, getCulture, getEmperor, getGood, getOverlord, getPHistory, getReligion } from 'utils/save.utils';
+import {
+  getArea, getAreaState, getCHistory, getCountries, getCountry, getCulture, getEmperor, getGood, getOverlord, getPHistory, getReligion
+} from 'utils/save.utils';
 
 export enum MapMode {
   POLITICAL = 'POLITICAL',
@@ -15,7 +17,8 @@ export enum MapMode {
   TECHNOLOGY = 'TECHNOLOGY',
   GOOD = 'GOOD',
   CULTURE = 'CULTURE',
-  DEVASTATION = 'DEVASTATION'
+  DEVASTATION = 'DEVASTATION',
+  WAR = 'WAR',
 }
 
 export interface IMapMode {
@@ -23,7 +26,8 @@ export interface IMapMode {
   provinceColor: (province: SaveProvince, save: MapSave, data: any, countries: Array<string>) => SaveColor;
   image: string;
   allowDate: boolean;
-  prepare: (save: MapSave) => any
+  prepare: (save: MapSave) => any;
+  selectable: boolean;
 }
 
 export const mapModes: Record<MapMode, IMapMode> = {
@@ -40,7 +44,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'political',
     allowDate: true,
-    prepare: () => {}
+    prepare: () => {},
+    selectable: true,
   },
   [MapMode.RELIGION]: {
     mapMode: MapMode.RELIGION,
@@ -55,7 +60,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'religion',
     allowDate: true,
-    prepare: () => {}
+    prepare: () => {},
+    selectable: true,
   },
   [MapMode.DEVELOPMENT]: {
     mapMode: MapMode.DEVELOPMENT,
@@ -110,7 +116,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
       });
 
       return toReturn;
-    }
+    },
+    selectable: true,
   },
   [MapMode.HRE]: {
     mapMode: MapMode.HRE,
@@ -135,10 +142,11 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: (save) => {
       return {
-        electors: save.countries.filter(country => country.history).filter(country => getCHistory(country, save).elector).map(value => value.tag),
+        electors: getCountries(save).filter(country => country.history).filter(country => getCHistory(country, save).elector).map(value => value.tag),
         emperor: getEmperor(save.hre, save.date)
       }
-    }
+    },
+    selectable: true,
   },
   [MapMode.GREAT_POWER]: {
     mapMode: MapMode.GREAT_POWER,
@@ -154,7 +162,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'great_power',
     allowDate: false,
-    prepare: () => {}
+    prepare: () => {},
+    selectable: true,
   },
   [MapMode.INSTITUTION]: {
     mapMode: MapMode.INSTITUTION,
@@ -175,7 +184,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return {
         gradient: getGradient(save.institutions.filter(value => value !== undefined && value.origin >= 0).length + 1)
       }
-    }
+    },
+    selectable: true,
   },
   [MapMode.TECHNOLOGY]: {
     mapMode: MapMode.TECHNOLOGY,
@@ -224,7 +234,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
         max,
         gradient: getGradient(max - min)
       }
-    }
+    },
+    selectable: true,
   },
   [MapMode.GOOD]: {
     mapMode: MapMode.GOOD,
@@ -239,7 +250,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'good',
     allowDate: true,
-    prepare: () => {}
+    prepare: () => {},
+    selectable: true,
   },
   [MapMode.CULTURE]: {
     mapMode: MapMode.CULTURE,
@@ -254,7 +266,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'culture',
     allowDate: true,
-    prepare: () => {}
+    prepare: () => {},
+    selectable: true,
   },
   [MapMode.DEVASTATION]: {
     mapMode: MapMode.DEVASTATION,
@@ -286,7 +299,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'devastation',
     allowDate: false,
-    prepare: () => {}
+    prepare: () => {},
+    selectable: true,
   },
   [MapMode.PLAYERS]: {
     mapMode: MapMode.PLAYERS,
@@ -309,7 +323,18 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'players',
     allowDate: true,
-    prepare: () => {}
+    prepare: () => {},
+    selectable: true,
+  },
+  [MapMode.WAR]: {
+    mapMode: MapMode.WAR,
+    provinceColor: (province, save, data, countries) => {
+      return EMPTY_COLOR;
+    },
+    image: 'war',
+    allowDate: false,
+    prepare: () => {},
+    selectable: false,
   },
 }
 
