@@ -69,10 +69,12 @@ public class SaveService {
             stream.forEach(path -> {
                 try {
                     this.userService.getUserInfo(FilenameUtils.removeExtension(path.getFileName().toString())).ifPresent(userInfo -> {
-                        serverSaves.addAll(userInfo.getSaves());
+                        if (CollectionUtils.isNotEmpty(userInfo.getSaves())) {
+                            serverSaves.addAll(userInfo.getSaves());
 
-                        if (serverSaves.size() > MAX_QUEUE_SIZE) {
-                            serverSaves.retainAll(serverSaves.headSet(IterableUtils.get(serverSaves, MAX_QUEUE_SIZE)));
+                            if (serverSaves.size() > MAX_QUEUE_SIZE) {
+                                serverSaves.retainAll(serverSaves.headSet(IterableUtils.get(serverSaves, MAX_QUEUE_SIZE)));
+                            }
                         }
                     });
                 } catch (IOException e) {
@@ -145,7 +147,7 @@ public class SaveService {
             Optional<ServerSaveDTO> save = userInfo.getSaves().stream().filter(serverSave -> id.equals(serverSave.id())).findFirst();
 
             if (save.isPresent()) {
-                Path dest = this.properties.getDataSavesFolder().resolve(id + ".json");
+                Path dest = getSave(id);
 
                 if (Files.exists(dest)) {
                     FileUtils.deleteQuietly(dest.toFile());
@@ -153,8 +155,6 @@ public class SaveService {
 
                 userInfo.getSaves().removeIf(s -> id.equals(s.id()));
                 this.lastSaves.removeIf(s -> id.equals(s.id()));
-            } else {
-                throw new UnauthorizedException();
             }
         }
 

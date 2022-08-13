@@ -1,6 +1,6 @@
 import { Avatar, Grid, Menu, MenuItem, Typography, useTheme } from '@mui/material';
 import { api } from 'api';
-import { UserContext } from 'App';
+import { UserContext, UserContextProps } from 'App';
 import { intl } from 'index';
 import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -10,7 +10,7 @@ function SteamLogin() {
   const theme = useTheme();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser } = useContext<UserContextProps>(UserContext);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -34,11 +34,12 @@ function SteamLogin() {
           :
           <>
             <Menu
-              id="simple-menu"
+              id='simple-menu'
               anchorEl={ anchorEl }
               open={ Boolean(anchorEl) }
               onClose={ handleClose }
               MenuListProps={ { onMouseLeave: handleClose } }
+              disableScrollLock
             >
               <MenuItem onClick={ handleClose } component={ Link } to={ `/user/${ user.id }` }>
                 { intl.formatMessage({ id: 'user.profile' }) }

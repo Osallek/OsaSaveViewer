@@ -10,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.resource.EncodedResourceResolver;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
 import java.util.concurrent.TimeUnit;
@@ -43,6 +42,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/favicon.ico")
                 .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/")
+                .setCacheControl(CacheControl.maxAge(1, TimeUnit.MINUTES))
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
 
@@ -59,19 +59,19 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/data/saves/**")
                 .addResourceLocations("file:" + this.properties.getDataSavesFolder() + "/")
-                .setCacheControl(CacheControl.maxAge(31536000, TimeUnit.SECONDS))
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
                 .resourceChain(false)
                 .addResolver(new CustomEncodedResourceResolver());
 
         registry.addResourceHandler("/data/save/**")
                 .addResourceLocations("file:" + this.properties.getSavesFolder() + "/")
-                .setCacheControl(CacheControl.maxAge(31536000, TimeUnit.SECONDS))
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
                 .resourceChain(false)
                 .addResolver(new CustomEncodedResourceResolver());
 
         registry.addResourceHandler("/data/**")
                 .addResourceLocations("file:" + this.properties.getDataFolder() + "/")
-                .setCacheControl(CacheControl.maxAge(31536000, TimeUnit.SECONDS))
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
                 .resourceChain(false)
                 .addResolver(new PathResourceResolver());
 
@@ -81,6 +81,24 @@ public class WebConfig implements WebMvcConfigurer {
                 .setOptimizeLocations(true)
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
+
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/static/")
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+                .setOptimizeLocations(true)
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
+
+        registry.addResourceHandler("/", "/index.html")
+                .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/")
+                .setCacheControl(CacheControl.maxAge(1, TimeUnit.MINUTES))
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver() {
+                    @Override
+                    protected Resource getResource(String resourcePath, Resource location) {
+                        return index;
+                    }
+                });
 
         registry.addResourceHandler("/**")
                 .addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/viewer/")

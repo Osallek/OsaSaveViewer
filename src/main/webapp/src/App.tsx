@@ -8,7 +8,12 @@ import { UserInfo } from 'types/api.types';
 import { STORAGE_NAME } from 'utils/steam.utils';
 import './App.css';
 
-export const UserContext = createContext<{ user: UserInfo | undefined, setUser: (user: UserInfo | undefined) => void }>({
+export interface UserContextProps {
+  user: UserInfo | undefined;
+  setUser: (user: UserInfo | undefined) => void;
+}
+
+export const UserContext = createContext<UserContextProps>({
   user: undefined,
   setUser: () => {}
 });

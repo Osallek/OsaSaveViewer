@@ -2,7 +2,7 @@ import {
   AppBar, Avatar, Backdrop, Card, CardContent, CardHeader, CardMedia, CircularProgress, Grid, List, ListItem, Toolbar, Typography, useTheme
 } from '@mui/material';
 import { api } from 'api';
-import { UserContext } from 'App';
+import { UserContext, UserContextProps } from 'App';
 import React, { useContext, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import SaveTable from 'screens/components/SaveTable';
@@ -15,10 +15,10 @@ function HomePage() {
 
   const [loadingSaves, setLoadingSaves] = useState<boolean>(true);
   const [saves, setSaves] = useState<Array<ServerSave>>([]);
-  const { user } = useContext(UserContext);
+  const { user } = useContext<UserContextProps>(UserContext);
 
   useEffect(() => {
-    document.title = intl.formatMessage({id: 'common.name'});
+    document.title = intl.formatMessage({ id: 'common.name' });
 
     ;(async () => {
       try {

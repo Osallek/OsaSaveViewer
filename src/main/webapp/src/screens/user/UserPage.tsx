@@ -1,7 +1,7 @@
 import { Home } from '@mui/icons-material';
 import { AppBar, Avatar, Backdrop, CircularProgress, Grid, Toolbar, Typography } from '@mui/material';
 import { api } from 'api';
-import { UserContext } from 'App';
+import { UserContext, UserContextProps } from 'App';
 import React, { useContext, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
@@ -16,8 +16,9 @@ function UserPage() {
 
   const [pageUser, setPageUser] = useState<UserInfo>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [actionTable, setActionTable] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser } = useContext<UserContextProps>(UserContext);
 
   const { id } = params;
 
@@ -48,7 +49,7 @@ function UserPage() {
   const handleDelete = async (saveId: string) => {
     if (id) {
       try {
-        setLoading(true);
+        setActionTable(true);
         await api.save.delete(saveId);
 
         const { data } = await api.user.one(id);
@@ -56,9 +57,8 @@ function UserPage() {
         setPageUser(data);
       } catch (e) {
         console.error(e);
-        setError(true);
       } finally {
-        setLoading(false);
+        setActionTable(false);
       }
     }
   }
@@ -108,7 +108,7 @@ function UserPage() {
                         { pageUser.name ?? pageUser.id }
                       </Typography>
                     </Grid>
-                    <SaveTable saves={ pageUser?.saves } currentUser={ user?.id } handleDelete={ handleDelete } owner={ false }/>
+                    <SaveTable saves={ pageUser?.saves } currentUser={ user?.id } handleDelete={ handleDelete } owner={ false } actionTable={ actionTable }/>
                   </Grid>
                 </Grid>
 
