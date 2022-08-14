@@ -209,7 +209,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
 
     useEffect(() => {
       if (displayable && gl && currentColorsTexture && save) {
-        getTextureFromSave(currentColorsTexture, save, gl, mapMode);
+        getTextureFromSave(currentColorsTexture, save, gl, mapMode, dataId);
 
         gl.bindTexture(gl.TEXTURE_2D, currentColorsTexture.texture);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -326,7 +326,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
 
             const colorsData = idColorsContext.getImageData(0, 0, idColorsContext.canvas.width, idColorsContext.canvas.height).data;
 
-            const modeData = mapModes[mm].prepare(save);
+            const modeData = mapModes[mm].prepare(save, null);
             for (const province of save.provinces) {
               const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
               const value = mapModes[mm].provinceColor(province, save, modeData, countries);

@@ -102,9 +102,9 @@ export function prepareTexture(save: MapSave, gl: WebGL2RenderingContext): Provi
   };
 }
 
-export function getTextureFromSave(provincesTexture: ProvincesTexture, save: MapSave, gl: WebGL2RenderingContext, mapMod: MapMode) {
+export function getTextureFromSave(provincesTexture: ProvincesTexture, save: MapSave, gl: WebGL2RenderingContext, mapMod: MapMode, dataId: string | null) {
   if (provincesTexture.array) {
-    fillMapArray(provincesTexture.array, save, mapMod);
+    fillMapArray(provincesTexture.array, save, mapMod, dataId);
 
     gl.bindTexture(gl.TEXTURE_2D, provincesTexture.texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -118,8 +118,8 @@ export function getTextureFromSave(provincesTexture: ProvincesTexture, save: Map
   }
 }
 
-export function fillMapArray(array: Uint8Array, save: MapSave, mapMod: MapMode) {
-  const data = mapModes[mapMod].prepare(save);
+export function fillMapArray(array: Uint8Array, save: MapSave, mapMod: MapMode, dataId: string | null) {
+  const data = mapModes[mapMod].prepare(save, dataId);
   for (const province of save.provinces) {
     const color = mapModes[mapMod].provinceColor(province, save, data, []);
     array[(province.id - 1) * 4] = color.red;

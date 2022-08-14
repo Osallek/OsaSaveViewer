@@ -1,6 +1,8 @@
 package fr.osallek.osasaveviewer.config;
 
 import fr.osallek.osasaveviewer.common.CustomEncodedResourceResolver;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -54,6 +56,12 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/data/users/**")
                 .addResourceLocations("file:" + this.properties.getUsersFolder() + "/")
                 .setCacheControl(CacheControl.noCache())
+                .resourceChain(false)
+                .addResolver(new PathResourceResolver());
+
+        registry.addResourceHandler("/data/saves/*.png")
+                .addResourceLocations("file:" + this.properties.getDataSavesFolder() + "/")
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
                 .resourceChain(false)
                 .addResolver(new PathResourceResolver());
 
@@ -133,5 +141,15 @@ public class WebConfig implements WebMvcConfigurer {
                         }
                     }
                 });
+    }
+
+    @Bean
+    public FilterRegistrationBean<UserAgentFilter> loggingFilter() {
+        FilterRegistrationBean<UserAgentFilter> registrationBean = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(new UserAgentFilter());
+        registrationBean.addUrlPatterns("/user/*", "/save/*", "/save/*/");
+
+        return registrationBean;
     }
 }

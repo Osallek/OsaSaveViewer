@@ -26,7 +26,7 @@ export interface IMapMode {
   provinceColor: (province: SaveProvince, save: MapSave, data: any, countries: Array<string>) => SaveColor;
   image: string;
   allowDate: boolean;
-  prepare: (save: MapSave) => any;
+  prepare: (save: MapSave, dataId: string | null) => any;
   selectable: boolean;
 }
 

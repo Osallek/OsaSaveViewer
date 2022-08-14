@@ -1,5 +1,7 @@
 package fr.osallek.osasaveviewer.controller.dto.save;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +29,17 @@ public class ProvinceDTO extends SimpleProvinceDTO {
     private Double colonySize;
 
     private List<ProvinceHistoryDTO> history;
+
+    @JsonIgnore
+    public String getCurrentOwner() {
+        for (int i = this.history.size() - 1; i >= 0; i--) {
+            if (this.history.get(i).getOwner() != null) {
+                return this.history.get(i).getOwner();
+            }
+        }
+
+        return null;
+    }
 
     public Double getBaseTax() {
         return baseTax;
