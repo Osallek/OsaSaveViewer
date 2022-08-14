@@ -43,6 +43,7 @@ export type Save = {
   leaderPersonalities: Array<NamedImageLocalised>;
   previousSaves?: Array<PreviousSave>;
   missions: Array<SaveMission>;
+  wars?: Array<SaveWar>;
 };
 
 export type Localised = {
@@ -622,4 +623,56 @@ export type ServerSave = {
 
 export type SaveMission = NamedImageLocalised & {
   required?: Array<string>;
+}
+
+export type SaveWar = {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate?: string;
+  duration?: number;
+  finished: boolean;
+  attackers: Record<string, SaveWarParticipant>;
+  defenders: Record<string, SaveWarParticipant>;
+  defenderScore?: number;
+  outcome?: number;
+  history: Array<SaveWarHistory>;
+}
+
+export type SaveWarParticipant = {
+  value: number;
+  tag: string;
+  promisedLand: boolean;
+  losses: Record<Losses, number>;
+}
+
+export type SaveWarHistory = {
+  date: string;
+  addAttacker: Array<string>;
+  addDefender: Array<string>;
+  remAttacker: Array<string>;
+  remDefender: Array<string>;
+  battles: Array<SaveBattle>;
+}
+
+export type SaveBattle = {
+  date: string;
+  name: string;
+  location: number;
+  result: boolean;
+  attacker: SaveCombatant;
+  defender: SaveCombatant;
+}
+
+export type SaveCombatant = {
+  cavalry: number;
+  artillery: number;
+  infantry: number;
+  galley: number;
+  lightShip: number;
+  heavyShip: number;
+  transport: number;
+  losses: number;
+  country: string;
+  commander: string;
 }

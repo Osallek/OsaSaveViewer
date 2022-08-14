@@ -21,6 +21,7 @@ const common = {
   'common.duration.month': '{months, plural, =0 {}  other {# mois}}',
   'common.quantity': 'Nombre',
   'common.compare': 'Comparaison',
+  'common.wars': 'Guerres',
   'common.teamA': 'Équipe 1',
   'common.teamB': 'Équipe 2',
 }

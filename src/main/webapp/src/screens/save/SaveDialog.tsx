@@ -7,6 +7,7 @@ import CompareTable from 'screens/save/CompareTable';
 import CountryTable from 'screens/save/CountryTable';
 import GraphTable from 'screens/save/GraphTable';
 import ProvinceTable from 'screens/save/ProvinceTable';
+import WarTable from 'screens/save/WarTable';
 import { MapSave } from 'types/map.types';
 import { formatDate } from 'utils/format.utils';
 import { getCountries } from 'utils/save.utils';
@@ -19,6 +20,7 @@ interface SaveDialogProps {
 enum Views {
   PROVINCES,
   COUNTRIES,
+  WARS,
   GRAPH,
   COMPARE,
 }
@@ -166,6 +168,18 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
               }
             </Menu>
             {
+              save.wars && save.wars.length > 0 &&
+                <Button
+                    key='button-graph'
+                    variant='outlined'
+                    color='secondary'
+                    sx={ { m: 1 } }
+                    onClick={ () => handleOtherClick(Views.WARS) }
+                >
+                  { intl.formatMessage({ id: 'common.wars' }) }
+                </Button>
+            }
+            {
               save.previousSaves && save.previousSaves.length > 0 &&
                 <Button
                     key='button-graph'
@@ -234,6 +248,7 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
       </AppBar>
       <CountryTable save={ save } type={ countriesTable } visible={ Views.COUNTRIES === view }/>
       <ProvinceTable save={ save } type={ provincesTable } visible={ Views.PROVINCES === view }/>
+      <WarTable save={ save } visible={ Views.WARS === view }/>
       <GraphTable save={ save } visible={ Views.GRAPH === view }/>
       <CompareTable save={ save } visible={ Views.COMPARE === view }/>
     </>

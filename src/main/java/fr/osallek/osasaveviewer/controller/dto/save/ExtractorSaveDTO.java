@@ -78,6 +78,8 @@ public final class ExtractorSaveDTO {
 
     private List<MissionDTO> missions;
 
+    private List<WarDTO> wars;
+
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -364,5 +366,13 @@ public final class ExtractorSaveDTO {
 
     public void setMissions(List<MissionDTO> missions) {
         this.missions = missions;
+    }
+
+    public List<WarDTO> getWars() {
+        return wars;
+    }
+
+    public void setWars(List<WarDTO> wars) {
+        this.wars = wars;
     }
 }

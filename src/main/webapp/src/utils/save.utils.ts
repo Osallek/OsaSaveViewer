@@ -2,7 +2,7 @@ import { eu4Locale } from 'index';
 import {
   ColorNamedImageLocalised, CountryPreviousSave, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save,
   SaveArea, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMission, SaveMonarch, SaveProvince,
-  SaveProvinceHistory, SaveReligion
+  SaveProvinceHistory, SaveReligion, SaveWar
 } from 'types/api.types';
 import { CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
 import {
@@ -838,4 +838,9 @@ export function getPrevious(country: SaveCountry, index: number, mapper: (previo
       return undefined;
     }
   }
+}
+
+export function getWarLosses(war: SaveWar): number {
+  return Object.values(war.attackers).map(attacker => Object.values(attacker.losses).reduce((s, d) => s + d ?? 0, 0)).reduce((s, d) => s + d ?? 0, 0)
+    + Object.values(war.defenders).map(defender => Object.values(defender.losses).reduce((s, d) => s + d ?? 0, 0)).reduce((s, d) => s + d ?? 0, 0);
 }

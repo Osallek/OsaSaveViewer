@@ -190,6 +190,7 @@ public class SaveService {
 
                 if (saveExists(id)) {
                     FileUtils.deleteQuietly(getSave(id).toFile());
+                    FileUtils.deleteQuietly(getSaveImage(id).toFile());
                 }
             }
         }
