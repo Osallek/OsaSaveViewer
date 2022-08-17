@@ -1,8 +1,8 @@
 import { eu4Locale } from 'index';
 import {
   ColorNamedImageLocalised, CountryPreviousSave, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save,
-  SaveArea, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMission, SaveMonarch, SaveProvince,
-  SaveProvinceHistory, SaveReligion, SaveWar
+  SaveArea, SaveBattle, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMission, SaveMonarch,
+  SaveProvince, SaveProvinceHistory, SaveReligion, SaveSimpleProvince, SaveWar
 } from 'types/api.types';
 import { CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
 import {
@@ -32,8 +32,8 @@ export function getCountries(save: MapSave): Array<SaveCountry> {
   return save.countries.filter(c => c.alive);
 }
 
-export function getPHistory(province: SaveProvince, save: MapSave): ProvinceHistory {
-  return save.currentProvinces.get(province.id) ?? save.currentProvinces.values().next().value;
+export function getPHistory(province: SaveProvince, save: MapSave, date?: string): ProvinceHistory {
+  return (date && save.date !== date) ? getPHistoryInternal(province, date) : save.currentProvinces.get(province.id) ?? save.currentProvinces.values().next().value;
 }
 
 function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHistory {
@@ -91,6 +91,10 @@ function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHist
 
 export function getProvince(save: MapSave, id: number): SaveProvince | null {
   return save.provinces.find(province => id === province.id) ?? null;
+}
+
+export function getOceanLakeProvince(save: MapSave, id: number): SaveSimpleProvince | null {
+  return save.oceansProvinces.find(province => id === province.id) ?? save.lakesProvinces.find(province => id === province.id) ?? null;
 }
 
 export function getPDev(province: SaveProvince): number {
@@ -840,7 +844,19 @@ export function getPrevious(country: SaveCountry, index: number, mapper: (previo
   }
 }
 
+export function getWar(save: MapSave, id: number): SaveWar | undefined {
+  return save.wars && save.wars.find(war => id === war.id);
+}
+
 export function getWarLosses(war: SaveWar): number {
   return Object.values(war.attackers).map(attacker => Object.values(attacker.losses).reduce((s, d) => s + d ?? 0, 0)).reduce((s, d) => s + d ?? 0, 0)
     + Object.values(war.defenders).map(defender => Object.values(defender.losses).reduce((s, d) => s + d ?? 0, 0)).reduce((s, d) => s + d ?? 0, 0);
+}
+
+export function getProvinceLosses(war: SaveWar, id: number): number {
+  return war.history.filter(h => h.battles && h.battles.length > 0).flatMap(h => h.battles ?? []).filter(b => b.location === id).reduce((s, b) => s + getBattleLosses(b), 0);
+}
+
+export function getBattleLosses(battle: SaveBattle): number {
+  return battle.attacker.losses + battle.defender.losses;
 }

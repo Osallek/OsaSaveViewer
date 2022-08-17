@@ -12,6 +12,7 @@ const common = {
   'common.save': 'Session',
   'common.saveNotFound': 'Partie introuvable',
   'common.userNotFound': 'Utilisateur introuvable',
+  'common.warNotFound': 'Guerre introuvable',
   'common.color': 'Couleur',
   'common.type': 'Type',
   'common.value': 'Valeur',

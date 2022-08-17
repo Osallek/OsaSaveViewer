@@ -52,7 +52,7 @@ function CountryIdeaTab({ country, save }: CountryIdeaTabProps) {
                                          <Grid container alignItems='center'>
                                            { `${ getIdeaName(idea) } : ` }
                                            {
-                                             index <= level ?
+                                             (index + 1) <= level ?
                                                <Done color='success' fontSize='small'/>
                                                :
                                                <Close color='error' fontSize='small'/>

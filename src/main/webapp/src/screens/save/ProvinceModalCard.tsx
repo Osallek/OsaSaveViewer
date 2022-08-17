@@ -45,8 +45,7 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
       </DialogTitle>
       <DialogContent>
         <Grid container>
-          <Grid container item xs={ 12 } md={ timeline.length > 0 ? 6 : 12 } flexDirection='column' alignItems='center'
-                rowSpacing={ 1 }>
+          <Grid container item xs={ 12 } md={ timeline.length > 0 ? 6 : 12 } flexDirection='column' alignItems='center' rowSpacing={ 1 }>
             <Grid container item alignItems='center'>
               <Grid item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.owner' }) }:</Typography>

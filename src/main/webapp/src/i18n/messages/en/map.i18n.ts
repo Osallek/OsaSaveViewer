@@ -11,6 +11,8 @@ const map = {
   'map.mod.GOOD': 'Goods',
   'map.mod.CULTURE': 'Cultures',
   'map.mod.DEVASTATION': 'Devastation',
+  'map.mod.WAR': 'Participants',
+  'map.mod.LOSSES': 'Losses',
 }
 
 export default map

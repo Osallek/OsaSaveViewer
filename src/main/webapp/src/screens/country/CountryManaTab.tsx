@@ -6,7 +6,8 @@ import { getRankDisplay } from 'screens/country/CountryMilitaryTab';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { getManaSpentBar, ManaSpentBar, powerSpentToColor } from 'utils/chart.utils';
+import { getManaSpentBar, ManaSpentBar } from 'utils/chart.utils';
+import { powerSpentToColor } from 'utils/colors.utils';
 import { formatNumber } from 'utils/format.utils';
 import { getRank, isAdm, isDip, isMil } from 'utils/save.utils';
 

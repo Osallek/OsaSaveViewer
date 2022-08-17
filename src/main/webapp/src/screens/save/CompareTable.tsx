@@ -59,7 +59,7 @@ function CompareTable({ save, visible }: CompareTableProps) {
           }
         })
         .catch((err) => {
-          console.log(err)
+          console.log(err);
         })
     } finally {
       setExporting(false);
@@ -205,7 +205,7 @@ function CompareTable({ save, visible }: CompareTableProps) {
                             {
                               Object.keys(teamA[i]).filter(key => key !== 'total').sort((a, b) => -stringComparator(getCountryName(save, a.slice(0, 3)), getCountryName(save, b.slice(0, 3))))
                                 .map(tag => (
-                                  <Bar dataKey={ tag } stackId='teamA' isAnimationActive={ false }
+                                  <Bar dataKey={ tag } stackId='team' isAnimationActive={ false }
                                        fill={ colorToHex(getCountry(save, tag.slice(0, 3)).colors.countryColor) }>
                                     <LabelList dataKey={ tag } position='middle'
                                                formatter={ (value: number) => `${ chart.valueMapper(value) } (${ formatNumber(100 * value / teamA[i].total) }%)` }/>
@@ -220,7 +220,7 @@ function CompareTable({ save, visible }: CompareTableProps) {
                             {
                               Object.keys(teamB[i]).filter(key => key !== 'total').sort((a, b) => -stringComparator(getCountryName(save, a.slice(0, 3)), getCountryName(save, b.slice(0, 3))))
                                 .map(tag => (
-                                  <Bar dataKey={ tag } stackId='teamB' isAnimationActive={ false }
+                                  <Bar dataKey={ tag } stackId='team' isAnimationActive={ false }
                                        fill={ colorToHex(getCountry(save, tag.slice(0, 3)).colors.countryColor) }>
                                     <LabelList dataKey={ tag } position='middle'
                                                formatter={ (value: number) => `${ chart.valueMapper(value) } (${ formatNumber(100 * value / teamB[i].total) }%)` }/>

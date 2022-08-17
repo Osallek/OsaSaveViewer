@@ -22,7 +22,7 @@ public class WarDTO {
 
     private Map<String, WarParticipantDTO> defenders;
 
-    private Double defenderScore;
+    private Double score;
 
     private Integer outcome;
 
@@ -92,12 +92,12 @@ public class WarDTO {
         this.defenders = defenders;
     }
 
-    public Double getDefenderScore() {
-        return defenderScore;
+    public Double getScore() {
+        return score;
     }
 
-    public void setDefenderScore(Double defenderScore) {
-        this.defenderScore = defenderScore;
+    public void setScore(Double score) {
+        this.score = score;
     }
 
     public Integer getOutcome() {

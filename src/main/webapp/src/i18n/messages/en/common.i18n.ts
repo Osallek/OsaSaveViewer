@@ -12,6 +12,7 @@ const common = {
   'common.save': 'Session',
   'common.saveNotFound': 'Save not found',
   'common.userNotFound': 'User not found',
+  'common.warNotFound': 'War not found',
   'common.color': 'Color',
   'common.type': 'Type',
   'common.value': 'Value',

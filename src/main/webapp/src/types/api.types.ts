@@ -634,7 +634,7 @@ export type SaveWar = {
   finished: boolean;
   attackers: Record<string, SaveWarParticipant>;
   defenders: Record<string, SaveWarParticipant>;
-  defenderScore?: number;
+  score?: number;
   outcome?: number;
   history: Array<SaveWarHistory>;
 }
@@ -648,11 +648,11 @@ export type SaveWarParticipant = {
 
 export type SaveWarHistory = {
   date: string;
-  addAttacker: Array<string>;
-  addDefender: Array<string>;
-  remAttacker: Array<string>;
-  remDefender: Array<string>;
-  battles: Array<SaveBattle>;
+  addAttacker?: Array<string>;
+  addDefender?: Array<string>;
+  remAttacker?: Array<string>;
+  remDefender?: Array<string>;
+  battles?: Array<SaveBattle>;
 }
 
 export type SaveBattle = {

@@ -1,9 +1,12 @@
-import { Save, SaveColor, SaveHeir, SaveLeader, SaveMonarch, SaveProvince, SaveQueen } from 'types/api.types';
+import { intl } from 'index';
+import { Save, SaveColor, SaveHeir, SaveLeader, SaveMonarch, SaveProvince, SaveQueen, SaveWar } from 'types/api.types';
 import {
-  DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, getGradient, GREEN_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, PROSPERITY_GRADIENT
+  BLUE_COLOR, DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, getGradient, GREEN_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, PROSPERITY_GRADIENT
 } from 'utils/colors.utils';
+import { colorToHex, formatNumber } from 'utils/format.utils';
 import {
-  getArea, getAreaState, getCHistory, getCountries, getCountry, getCulture, getEmperor, getGood, getOverlord, getPHistory, getReligion
+  getArea, getAreaState, getCHistory, getCountries, getCountry, getCountryName, getCulture, getEmperor, getGood, getOverlord, getPHistory, getProvinceLosses,
+  getReligion, getWar
 } from 'utils/save.utils';
 
 export enum MapMode {
@@ -18,6 +21,7 @@ export enum MapMode {
   GOOD = 'GOOD',
   CULTURE = 'CULTURE',
   DEVASTATION = 'DEVASTATION',
+  LOSSES = 'LOSSES',
   WAR = 'WAR',
 }
 
@@ -28,6 +32,7 @@ export interface IMapMode {
   allowDate: boolean;
   prepare: (save: MapSave, dataId: string | null) => any;
   selectable: boolean;
+  tooltip?: (province: SaveProvince, save: MapSave, dataId: string | null) => string;
 }
 
 export const mapModes: Record<MapMode, IMapMode> = {
@@ -326,15 +331,95 @@ export const mapModes: Record<MapMode, IMapMode> = {
     prepare: () => {},
     selectable: true,
   },
+  [MapMode.LOSSES]: {
+    mapMode: MapMode.LOSSES,
+    provinceColor: (province, save, { war, gradient, maxLosses }: { war: SaveWar, gradient: Array<SaveColor>, maxLosses: number }, countries) => {
+      if (!war) {
+        return EMPTY_COLOR;
+      }
+
+      const losses = getProvinceLosses(war, province.id);
+
+      return losses === 0 ? EMPTY_COLOR : gradient[(losses / maxLosses) * 9 | 0];
+    },
+    image: 'manpower',
+    allowDate: false,
+    prepare: (save, dataId) => {
+      const war = getWar(save, Number(dataId));
+      const gradient = getGradient(10, colorToHex(EMPTY_COLOR), '#FF0000');
+      const maxLosses = !war ? 0 : Math.max(...war.history.filter(h => h.battles && h.battles.length > 0).flatMap(h => h.battles ?? []).map(b => b.location).map(loc => getProvinceLosses(war, loc)));
+
+      return { war, gradient, maxLosses };
+    },
+    selectable: false,
+    tooltip: (province, save, dataId) => {
+      const war = getWar(save, Number(dataId));
+
+      if (!war) {
+        return '';
+      }
+
+      return `${ province.name } : ${ formatNumber(getProvinceLosses(war, province.id)) }`;
+    }
+  },
   [MapMode.WAR]: {
     mapMode: MapMode.WAR,
-    provinceColor: (province, save, data, countries) => {
-      return EMPTY_COLOR;
+    provinceColor: (province, save, { war }: { war: SaveWar }, countries) => {
+      if (!war) {
+        return EMPTY_COLOR;
+      }
+
+      const owner = getPHistory(province, save, war.startDate).owner;
+
+      if (!owner) {
+        return EMPTY_COLOR;
+      }
+
+      if (Object.keys(war.attackers).includes(owner)) {
+        return {
+          red: 200,
+          green: 0,
+          blue: 0,
+          alpha: 255
+        };
+      } else if (Object.keys(war.defenders).includes(owner)) {
+        return {
+          red: 0,
+          green: 200,
+          blue: 0,
+          alpha: 255
+        };
+      } else {
+        return EMPTY_COLOR;
+      }
     },
-    image: 'war',
+    image: 'diplomacy',
     allowDate: false,
-    prepare: () => {},
+    prepare: (save, dataId) => {
+      return { war: getWar(save, Number(dataId)) };
+    },
     selectable: false,
+    tooltip: (province, save, dataId) => {
+      const war = getWar(save, Number(dataId));
+
+      if (!war) {
+        return '';
+      }
+
+      const owner = getPHistory(province, save, war.endDate ?? undefined).owner;
+
+      if (!owner) {
+        return '';
+      }
+
+      if (Object.keys(war.attackers).includes(owner)) {
+        return `${ getCountryName(save, owner) } : ${ intl.formatMessage({ id: 'war.attackers' }) }`;
+      } else if (Object.keys(war.defenders).includes(owner)) {
+        return `${ getCountryName(save, owner) } : ${ intl.formatMessage({ id: 'war.defenders' }) }`;
+      } else {
+        return '';
+      }
+    }
   },
 }
 

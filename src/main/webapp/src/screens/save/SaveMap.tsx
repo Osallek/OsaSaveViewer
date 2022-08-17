@@ -1,4 +1,4 @@
-import { Backdrop, Dialog, Fade, Grow, Popper } from '@mui/material';
+import { Backdrop, Dialog, Fade, Grow, Popper, Tooltip } from '@mui/material';
 import { intl } from 'index';
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import mapWorker from 'screens/save/map_worker';
@@ -25,6 +25,7 @@ interface SaveMapProps {
 
 const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, ref) => {
     const offsetBounce = 25;
+    const tooltipBounce = 250;
     const [displayable, setDisplayable] = useState<boolean>(false);
     const canvas = useRef<HTMLCanvasElement>(null);
     const popoverDiv = useRef<HTMLDivElement>(null);
@@ -37,6 +38,8 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
     const [offsetLoc, setOffsetLoc] = useState<WebGLUniformLocation | null>(null);
     const [lastOffset, setLastOffset] = useState<number>(Date.now());
     const [lastMousePos, setLastMousePos] = useState<number[]>([0, 0]);
+
+    const [lastTooltip, setLastTooltip] = useState<number>(Date.now());
 
     const [zoom, setZoom] = useState<number>(1);
     const [zoomLoc, setZoomLoc] = useState<WebGLUniformLocation | null>(null);
@@ -58,6 +61,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
     const [ratioLoc, setRatioLoc] = useState<WebGLUniformLocation | null>(null);
 
     const [clickedProvince, setClickedProvince] = useState<SaveProvince | null>(null);
+    const [hoverProvince, setHoverProvince] = useState<SaveProvince | null>(null);
     const [provinceModalOpen, setProvinceModalOpen] = useState<boolean>(false);
 
     const closeModal = () => {
@@ -147,6 +151,26 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
         }
       }
     }, [clickedProvince, save, gl, idColorsContext, moved, offset, provincesContext, provincesTexture, zoom]);
+
+    const onHoverProvince = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+      if (gl && save && provincesContext && provincesTexture && idColorsContext && canvas.current && Date.now() > lastTooltip + tooltipBounce) {
+        const scaledWidth = gl.canvas.width / zoom;
+        const scaledHeight = gl.canvas.height / zoom;
+
+        const x = (((e.clientX - gl.canvas.getBoundingClientRect().left) / gl.canvas.width * scaledWidth) + (offset[0] - (scaledWidth - provincesTexture.width) / 4) * 2) | 0;
+        const y = (((e.clientY - gl.canvas.getBoundingClientRect().top) / gl.canvas.height * scaledHeight) + (offset[1] - (scaledHeight - provincesTexture.height) / 4) * 2) | 0;
+
+        if (y >= 0 && y <= provincesTexture.height) { //Clicking inside image
+          const provinceId = getProvinceAt(x, y, provincesContext, idColorsContext);
+          const province = getProvince(save, provinceId);
+
+          setHoverProvince(province);
+          setLastTooltip(Date.now);
+        } else {
+          setHoverProvince(null);
+        }
+      }
+    }, [save, gl, idColorsContext, moved, offset, provincesContext, provincesTexture, zoom]);
 
     useEffect(() => {
       if (canvas.current !== null) {
@@ -402,21 +426,41 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
       }
     }));
 
+    const tooltipFunc = mapModes[mapMode].tooltip;
+
     return (
       <>
         {
           save &&
             <>
-                <canvas id='save-map-canvas'
-                        ref={ canvas }
-                        style={ {
-                          width: '100%',
-                          height: '100%',
-                          minHeight: 500,
-                          minWidth: 500,
-                          backgroundColor: '#5e5e5e'
-                        } }
-                        onClick={ e => clickProvince(e) }/>
+              {
+                tooltipFunc !== undefined ?
+                  <Tooltip title={ (hoverProvince) ? tooltipFunc(hoverProvince, save, dataId) : '' } followCursor>
+                    <canvas id='save-map-canvas'
+                            ref={ canvas }
+                            style={ {
+                              width: '100%',
+                              height: '100%',
+                              minHeight: 500,
+                              minWidth: 500,
+                              backgroundColor: '#5e5e5e'
+                            } }
+                            onMouseMove={ onHoverProvince }
+                    />
+                  </Tooltip>
+                  :
+                  <canvas id='save-map-canvas'
+                          ref={ canvas }
+                          style={ {
+                            width: '100%',
+                            height: '100%',
+                            minHeight: 500,
+                            minWidth: 500,
+                            backgroundColor: '#5e5e5e'
+                          } }
+                          onClick={ e => clickProvince(e) }
+                  />
+              }
                 <div ref={ popoverDiv } style={ { position: 'fixed', left: lastMousePos[0], top: lastMousePos[1] } }/>
               {
                 (popoverDiv.current && clickedProvince && !mouseDown && !provinceModalOpen) &&
