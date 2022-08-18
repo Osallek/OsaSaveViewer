@@ -9,6 +9,7 @@ import fr.osallek.osasaveviewer.service.object.stream.Player;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -40,7 +41,7 @@ public class UserInfo {
             this.saves = new TreeSet<>();
         }
 
-        ServerSaveDTO serverSave = new ServerSaveDTO(save.getName(), LocalDateTime.now(), save.getDate(), id, save.getCountry(), save.getCountryName(),
+        ServerSaveDTO serverSave = new ServerSaveDTO(save.getName(), LocalDateTime.now(ZoneId.of("UTC")), save.getDate(), id, save.getCountry(), save.getCountryName(),
                                                      save.getCountries()
                                                          .stream()
                                                          .filter(c -> save.getCountry().equals(c.getTag()))
