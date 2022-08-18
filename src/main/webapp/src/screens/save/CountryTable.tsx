@@ -24,7 +24,7 @@ interface Column {
   id: string;
   label: string;
   minWidth: number;
-  value: (save: MapSave, country: SaveCountry) => React.ReactNode;
+  value: (save: MapSave, country: SaveCountry, width?: number) => React.ReactNode;
   comparatorValue: (save: MapSave, country: SaveCountry) => number | string | undefined;
   filterValues: (save: MapSave) => Array<string | number>;
   filter: ((save: MapSave, country: SaveCountry, filter: (string | number | undefined)[]) => boolean);
@@ -35,10 +35,11 @@ function getNameColumn(): Column {
     id: 'name',
     label: intl.formatMessage({ id: 'country.name' }),
     minWidth: 200,
-    value: (save, country) => (
-      <Grid container alignItems='center' key={ `name-${ country.tag }-info` }>
+    value: (save, country, width) => (
+      <Grid container alignItems='center' flexWrap='nowrap' key={ `name-${ country.tag }-info` } style={ { width } }>
         <Avatar src={ getCountrysFlag(country) } variant='square' component={ Paper }/>
-        <Typography variant='body1' component='span' style={ { marginLeft: 8, maxWidth: 128, overflow: 'hidden' } }>
+        <Typography variant='body1' component='span'
+                    style={ { whiteSpace: 'nowrap', textOverflow: 'ellipsis', marginLeft: 8, overflow: 'hidden' } }>
           { getCountrysName(country) }
         </Typography>
         <Grid item flexGrow={ 1 }/>
@@ -889,7 +890,7 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
                            paddingLeft: cIndex === columns.length - 1 ? 8 : 16,
                            borderBottom: 'none'
                          } }>
-                { column.value(save, country) }
+                { column.value(save, country, columnsRefs.current[cIndex] ? columnsRefs.current[cIndex]?.clientWidth : column.minWidth) }
               </TableCell>
             );
           }) }
@@ -986,7 +987,7 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
             style={ { padding: 8 } }/>
         </Grid>
         <TableContainer component={ Paper } style={ { height: `100%`, borderRadius: 0 } }>
-          <Table stickyHeader style={ { width: '100%', height: `100%` } }>
+          <Table style={ { width: '100%', height: `100%` } }>
             <TableHead ref={ headerRef }>
               <TableRow>
                 { columns.map((column, index) => (
@@ -1022,7 +1023,7 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
               { ({ height, width }) =>
                 <TableBody>
                   <FixedSizeList
-                    height={ height - (headerRef.current ? headerRef.current?.clientHeight : 0) }
+                    height={ height - (headerRef.current ? headerRef.current?.clientHeight : 0) - 1 }
                     itemCount={ countries.length }
                     itemSize={ 72 }
                     width={ Math.max(width, columns.reduce((s, a) => s + a.minWidth, 0)) }

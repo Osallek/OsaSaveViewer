@@ -89,7 +89,7 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
 
   return (
     <>
-      <AppBar sx={ { position: 'relative' } }>
+      <AppBar style={ { position: 'relative' } }>
         <Toolbar>
           <Grid container alignItems='center'>
             <IconButton

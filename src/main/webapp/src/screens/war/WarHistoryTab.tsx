@@ -157,7 +157,7 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
             </Tooltip>
           ),
           display: (
-            <Card style={ { width: 'fit-content' } }>
+            <Card style={ { width: '100%' } }>
               <CardHeader title={ `${ battle.name }` } style={ { backgroundColor: theme.palette.primary.light, color: theme.palette.primary.contrastText } }/>
               <CardContent>
                 <Grid container style={ { width: '100%' } }>

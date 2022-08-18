@@ -147,9 +147,9 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
 
         if (h.owner) {
           return (
-            <Grid container alignItems='center'>
+            <Grid container alignItems='center' flexWrap='nowrap'>
               <Avatar src={ getCountryFlag(save, h.owner) } variant='square' component={ Paper }/>
-              <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
+              <Typography variant='body1' component='span' style={ { marginLeft: 8, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' } }>
                 { getCountryName(save, h.owner) }
               </Typography>
             </Grid>
@@ -171,7 +171,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
 
         if (h.religion) {
           return (
-            <Grid container alignItems='center'>
+            <Grid container alignItems='center' flexWrap='nowrap'>
               <Avatar src={ getReligionImage(save, h.religion) } variant='square'/>
               <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                 { getReligionName(save, h.religion) }
@@ -214,7 +214,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
 
         if (h.tradeGood) {
           return (
-            <Grid container alignItems='center'>
+            <Grid container alignItems='center' flexWrap='nowrap'>
               <Avatar src={ getGoodImage(save, h.tradeGood) } variant='square'/>
               <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                 { getGoodName(save, h.tradeGood) }
@@ -373,7 +373,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
       w = columnsRefs.current[columns.length - 1]?.clientWidth ?? 0;
     }
 
-    return 75 + 48 * Math.floor((48 * (province.buildings ? province.buildings.length : 0)) / (w - 8));
+    return 75 + 48 * Math.floor((48 * (province.buildings ? province.buildings.length : 0)) / w);
   };
 
   return (
@@ -436,8 +436,8 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
             </ClickAwayListener>
           )
         }
-        <TableContainer component={ Paper } style={ { height: `100%`, borderRadius: 0 } }>
-          <Table stickyHeader style={ { width: '100%', height: `100%` } }>
+        <TableContainer component={ Paper } style={ { height: '100%', borderRadius: 0 } }>
+          <Table style={ { width: '100%', height: '100%' } }>
             <TableHead ref={ headerRef }>
               <TableRow>
                 { columns.map((column, index) => (
@@ -472,7 +472,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
               { ({ height, width }) => (
                 <TableBody>
                   <VariableSizeList
-                    height={ height - (headerRef.current ? headerRef.current?.clientHeight : 0) }
+                    height={ height - (headerRef.current ? headerRef.current?.clientHeight : 0) - 1 }
                     itemCount={ provinces.length }
                     estimatedItemSize={ ProvinceTableType.DEV === type ? 52 : 75 }
                     itemSize={ index => rowHeight(index, width, type, provinces) }

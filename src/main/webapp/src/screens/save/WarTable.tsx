@@ -1,7 +1,7 @@
 import { FilterList, Launch } from '@mui/icons-material';
 import {
-  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, TableSortLabel, TextField, Tooltip, Typography, useTheme
+  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, TableSortLabel, TextField, Tooltip, Typography, useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -20,13 +20,13 @@ interface Column {
   id: string;
   label: string;
   minWidth: number;
-  value: (save: MapSave, war: SaveWar) => React.ReactNode;
+  value: (save: MapSave, war: SaveWar, width?: number) => React.ReactNode;
   comparatorValue: (save: MapSave, war: SaveWar) => number | string | undefined;
   filterValues: (save: MapSave) => Array<string | number>;
   filter: ((save: MapSave, war: SaveWar, filter: (string | number | undefined)[]) => boolean);
 }
 
-function getColumns(save: MapSave): Column[] {
+function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Column[] {
   const lossesMax = save.wars ? Math.max(...save.wars.map(war => getWarLosses(war))) : 0;
   const lossesRadix = lossesMax >= 500000 ? 100000 : lossesMax >= 50000 ? 10000 : 1000;
 
@@ -35,9 +35,12 @@ function getColumns(save: MapSave): Column[] {
       id: 'name',
       label: intl.formatMessage({ id: 'war.name' }),
       minWidth: 170,
-      value: (save, war) =>
-        <Grid container alignItems='center' key={ `war-name-${ war.id }` }>
-          <Typography variant='body1'>{ war.name }</Typography>
+      value: (save, war, width) =>
+        <Grid container alignItems='center' justifyContent='space-between' flexWrap='nowrap'
+              style={ { width } } key={ `war-name-${ war.id }` }>
+          <Tooltip title={ war.name }>
+            <Typography variant='body1' style={ { whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' } }>{ war.name }</Typography>
+          </Tooltip>
           <Grid item flexGrow={ 1 }/>
           <Link to={ `war/${ war.id }` } target='_blank' rel='noopener noreferrer'>
             <Launch color='primary'/>
@@ -50,9 +53,9 @@ function getColumns(save: MapSave): Column[] {
     {
       id: 'attackers',
       label: intl.formatMessage({ id: 'war.attackers' }),
-      minWidth: 100,
-      value: (save, war) =>
-        <Grid container alignItems='center'>
+      minWidth: 150,
+      value: (save, war, width) =>
+        <Grid container alignItems='center' style={ { width } }>
           {
             Object.keys(war.attackers).map(tag => getCountry(save, tag))
               .map(value => (
@@ -69,9 +72,9 @@ function getColumns(save: MapSave): Column[] {
     {
       id: 'defenders',
       label: intl.formatMessage({ id: 'war.defenders' }),
-      minWidth: 100,
-      value: (save, war) =>
-        <Grid container alignItems='center'>
+      minWidth: 150,
+      value: (save, war, width) =>
+        <Grid container alignItems='center' style={ { width } }>
           {
             Object.keys(war.defenders).map(tag => getCountry(save, tag))
               .map(value => (
@@ -88,11 +91,13 @@ function getColumns(save: MapSave): Column[] {
     {
       id: 'startDate',
       label: intl.formatMessage({ id: 'war.startDate' }),
-      minWidth: 100,
-      value: (save, war) =>
-        <Typography variant='body1'>
-          { formatDate(war.startDate) }
-        </Typography>,
+      minWidth: 150,
+      value: (save, war, width) =>
+        <Grid style={ { width } }>
+          <Typography variant='body1'>
+            { formatDate(war.startDate) }
+          </Typography>
+        </Grid>,
       comparatorValue: (save, war) => war.startDate,
       filterValues: save => Array.from(new Set<number>(save.wars ? save.wars.map(war => Number(war.startDate.slice(0, 4))).sort(numberComparator) : [])),
       filter: (save, war, filter) => filter.includes(Number(war.startDate.slice(0, 4))),
@@ -100,11 +105,13 @@ function getColumns(save: MapSave): Column[] {
     {
       id: 'endDate',
       label: intl.formatMessage({ id: 'war.endDate' }),
-      minWidth: 100,
-      value: (save, war) =>
-        <Typography variant='body1'>
-          { formatDate(war.endDate) }
-        </Typography>,
+      minWidth: 150,
+      value: (save, war, width) =>
+        <Grid style={ { width } }>
+          <Typography variant='body1'>
+            { formatDate(war.endDate) }
+          </Typography>
+        </Grid>,
       comparatorValue: (save, war) => war.endDate,
       filterValues: save => Array.from(new Set<number>(save.wars ? save.wars.map(war => war.endDate).filter(value => value !== undefined).map(endDate => endDate ? Number(endDate.slice(0, 4)) : 0).sort(numberComparator) : [])),
       filter: (save, war, filter) => war.endDate !== undefined && filter.includes(Number(war.endDate.slice(0, 4))),
@@ -112,11 +119,13 @@ function getColumns(save: MapSave): Column[] {
     {
       id: 'duration',
       label: intl.formatMessage({ id: 'war.duration' }),
-      minWidth: 100,
-      value: (save, war) =>
-        <Typography variant='body1'>
-          { formatDuration(war.duration) }
-        </Typography>,
+      minWidth: 150,
+      value: (save, war, width) =>
+        <Grid style={ { width } }>
+          <Typography variant='body1'>
+            { formatDuration(war.duration) }
+          </Typography>
+        </Grid>,
       comparatorValue: (save, war) => war.duration ?? 0,
       filterValues: save => Array.from(new Set<number>(save.wars ? save.wars.map(war => war.duration).filter(value => value !== undefined).map(duration => duration ?? 0).sort(numberComparator) : [])),
       filter: (save, war, filter) => war.duration !== undefined && filter.includes(war.duration),
@@ -124,8 +133,12 @@ function getColumns(save: MapSave): Column[] {
     {
       id: 'losses',
       label: intl.formatMessage({ id: 'war.losses' }),
-      minWidth: 100,
-      value: (save, war) => <Typography variant='body1'>{ formatNumber(getWarLosses(war)) }</Typography>,
+      minWidth: 150,
+      value: (save, war, width) =>
+        <Grid style={ { width } }>
+          <Typography variant='body1'>{ formatNumber(getWarLosses(war)) }</Typography>
+        </Grid>
+      ,
       comparatorValue: (save, war) => getWarLosses(war),
       filterValues: save => Array.from(new Set<number>(save.wars ? save.wars.map(war => round(getWarLosses(war), lossesRadix)).sort(numberComparator) : [])),
       filter: (save, war, filter) => filter.includes(round(getWarLosses(war), lossesRadix)),
@@ -138,7 +151,7 @@ interface WarTableProps {
   visible: boolean;
 }
 
-function CountryTable({ save, visible }: WarTableProps) {
+function WarTable({ save, visible }: WarTableProps) {
   const intl = useIntl();
   const theme = useTheme();
 
@@ -236,7 +249,7 @@ function CountryTable({ save, visible }: WarTableProps) {
   }, [columns]);
 
   useEffect(() => {
-    setColumns(getColumns(save));
+    setColumns(getColumns(save, columnsRefs.current));
 
     if (listRef.current) {
       listRef.current.scrollToItem(0, 'start');
@@ -256,14 +269,14 @@ function CountryTable({ save, visible }: WarTableProps) {
       attackersWidth = columnsRefs.current[1]?.clientWidth ?? 0;
     }
 
-    const attackersHeight = 75 + 48 * Math.floor((48 * (Object.keys(war.attackers).length)) / (attackersWidth - 8));
+    const attackersHeight = 75 + 48 * Math.floor((48 * (Object.keys(war.attackers).length)) / attackersWidth);
 
     let defendersWidth = 0;
-    if (columnsRefs.current && columnsRefs.current[1]) {
-      defendersWidth = columnsRefs.current[1]?.clientWidth ?? 0;
+    if (columnsRefs.current && columnsRefs.current[2]) {
+      defendersWidth = columnsRefs.current[2]?.clientWidth ?? 0;
     }
 
-    const defendersHeight = 75 + 48 * Math.floor((48 * (Object.keys(war.defenders).length)) / (defendersWidth - 8));
+    const defendersHeight = 75 + 48 * Math.floor((48 * (Object.keys(war.defenders).length)) / defendersWidth);
 
     return Math.max(attackersHeight, defendersHeight);
   };
@@ -272,18 +285,18 @@ function CountryTable({ save, visible }: WarTableProps) {
     const war = wars[index];
 
     return (
-      <TableRow hover role="checkbox" tabIndex={ -1 } key={ cleanString(war.name) }
+      <TableRow tabIndex={ index } key={ war.id }
                 style={ { ...style, backgroundColor: index % 2 === 1 ? 'white' : theme.palette.action.focus } }>
         { columns.map((column, cIndex) => {
           return (
             <TableCell key={ column.id }
                        style={ {
-                         minWidth: columnsRefs.current[cIndex] ? columnsRefs.current[cIndex]?.clientWidth : column.minWidth,
+                         width: columnsRefs.current[cIndex] ? (columnsRefs.current[cIndex]?.clientWidth ?? 0) : column.minWidth,
                          paddingRight: cIndex === columns.length - 1 ? 0 : 16,
                          paddingLeft: cIndex === columns.length - 1 ? 8 : 16,
                          borderBottom: 'none'
                        } }>
-              { column.value(save, war) }
+              { column.value(save, war, columnsRefs.current[cIndex] ? (columnsRefs.current[cIndex]?.clientWidth ?? 0) : column.minWidth) }
             </TableCell>
           );
         }) }
@@ -439,4 +452,4 @@ function CountryTable({ save, visible }: WarTableProps) {
   )
 }
 
-export default CountryTable;
+export default WarTable;
