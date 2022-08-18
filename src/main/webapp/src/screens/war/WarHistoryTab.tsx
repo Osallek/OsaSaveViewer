@@ -10,7 +10,7 @@ import SwordIcon from 'screens/components/SwordIcon';
 import SwordsIcon from 'screens/components/SwordsIcon';
 import { SaveWar } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { cleanString, formatDate, formatNumber } from 'utils/format.utils';
+import { cleanString, formatDate, formatNumber, stringComparator } from 'utils/format.utils';
 import { getCountryFlag, getCountryName, getOceanLakeProvince, getProvince } from 'utils/save.utils';
 
 interface TimelineItemDecoration {
@@ -73,7 +73,7 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
           ),
           display: (
             <Grid container>
-              { h.addAttacker.map(tag => (
+              { h.addAttacker.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b))).map(tag => (
                 <Tooltip title={ getCountryName(save, tag) } key={ `attacker-${ war.id }-${ tag }` }>
                   <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                 </Tooltip>
@@ -93,7 +93,7 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
           ),
           display: (
             <Grid container>
-              { h.addDefender.map(tag => (
+              { h.addDefender.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b))).map(tag => (
                 <Tooltip title={ getCountryName(save, tag) } key={ `defender-${ war.id }-${ tag }` }>
                   <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                 </Tooltip>
@@ -115,7 +115,7 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
           ),
           display: (
             <Grid container>
-              { h.remAttacker.map(tag => (
+              { h.remAttacker.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b))).map(tag => (
                 <Tooltip title={ getCountryName(save, tag) } key={ `attacker-${ war.id }-${ tag }` }>
                   <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                 </Tooltip>
@@ -135,7 +135,7 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
           ),
           display: (
             <Grid container>
-              { h.remDefender.map(tag => (
+              { h.remDefender.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b))).map(tag => (
                 <Tooltip title={ getCountryName(save, tag) } key={ `defender-${ war.id }-${ tag }` }>
                   <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
                 </Tooltip>
@@ -170,6 +170,10 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
                     {
                       getProvince(save, battle.location) &&
                         <>
+                            <Grid container alignItems='center' justifyContent='end' style={ { flexWrap: 'nowrap', textAlign: 'end' } }>
+                              { battle.attacker.commander ?? '-' }
+                                <Avatar src='/eu4/country/general.png' variant='square' style={ { marginLeft: 4, width: 24, height: 24 } }/>
+                            </Grid>
                             <Grid container alignItems='center' justifyContent='end'>
                               { formatNumber(battle.attacker.infantry) }
                                 <Avatar src='/eu4/country/infantry.png' variant='square' style={ { marginLeft: 4, width: 24, height: 24 } }/>
@@ -187,6 +191,10 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
                     {
                       getOceanLakeProvince(save, battle.location) &&
                         <>
+                            <Grid container alignItems='center' justifyContent='end' style={ { flexWrap: 'nowrap', textAlign: 'end' } }>
+                              { battle.attacker.commander ?? '-' }
+                                <Avatar src='/eu4/country/admiral.png' variant='square' style={ { marginLeft: 4, width: 24, height: 24 } }/>
+                            </Grid>
                             <Grid container alignItems='center' justifyContent='end'>
                               { formatNumber(battle.attacker.heavyShip) }
                                 <Avatar src='/eu4/country/heavy_ship.png' variant='square' style={ { marginRight: 3, marginLeft: 4, width: 33, height: 25 } }/>
@@ -218,6 +226,10 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
                     {
                       getProvince(save, battle.location) &&
                         <>
+                            <Grid container alignItems='center' justifyContent='start' style={ { flexWrap: 'nowrap' } }>
+                                <Avatar src='/eu4/country/general.png' variant='square' style={ { marginRight: 4, width: 24, height: 24 } }/>
+                              { battle.defender.commander ?? '-' }
+                            </Grid>
                             <Grid container alignItems='center' justifyContent='start'>
                                 <Avatar src='/eu4/country/infantry.png' variant='square' style={ { marginRight: 4, width: 24, height: 24 } }/>
                               { formatNumber(battle.defender.infantry) }
@@ -235,6 +247,10 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
                     {
                       getOceanLakeProvince(save, battle.location) &&
                         <>
+                            <Grid container alignItems='center' justifyContent='start' style={ { flexWrap: 'nowrap' } }>
+                                <Avatar src='/eu4/country/admiral.png' variant='square' style={ { marginLeft: 4, width: 24, height: 24 } }/>
+                              { battle.defender.commander ?? '-' }
+                            </Grid>
                             <Grid container alignItems='center' justifyContent='start'>
                                 <Avatar src='/eu4/country/heavy_ship.png' variant='square' style={ { marginRight: 3, width: 33, height: 25 } }/>
                               { formatNumber(battle.defender.heavyShip) }
