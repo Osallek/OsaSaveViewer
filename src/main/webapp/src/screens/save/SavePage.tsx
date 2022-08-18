@@ -86,9 +86,6 @@ function SavePage() {
 
   return (
     <>
-      <Backdrop open={ loading || !mapReady } style={ { backgroundColor: theme.palette.primary.light } }>
-        <CircularProgress color='primary'/>
-      </Backdrop>
       {
         error ?
           (
@@ -107,110 +104,115 @@ function SavePage() {
           )
           :
           (
-            <div style={ { height: '100%', visibility: mapReady ? 'visible' : 'hidden', overflow: 'hidden' } }>
-              <Link to='/'>
-                <Home style={ {
-                  position: 'absolute',
-                  top: 5,
-                  left: 5,
-                  backgroundColor: theme.palette.primary.main,
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: '1.2em',
-                  padding: 4,
-                  width: 24,
-                  height: 24,
-                  borderRadius: '50%'
-                } }/>
-              </Link>
-              <div style={ { position: 'fixed', top: 5, left: 45 } }>
+            <>
+              <Backdrop open={ loading || !mapReady } style={ { backgroundColor: theme.palette.primary.light } }>
+                <CircularProgress color='primary'/>
+              </Backdrop>
+              <div style={ { height: '100%', visibility: mapReady ? 'visible' : 'hidden', overflow: 'hidden' } }>
+                <Link to='/'>
+                  <Home style={ {
+                    position: 'absolute',
+                    top: 5,
+                    left: 5,
+                    backgroundColor: theme.palette.primary.main,
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: '1.2em',
+                    padding: 4,
+                    width: 24,
+                    height: 24,
+                    borderRadius: '50%'
+                  } }/>
+                </Link>
+                <div style={ { position: 'fixed', top: 5, left: 45 } }>
+                  {
+                    Object.values(MapMode)
+                      .filter(mm => mapModes[MapMode[mm]].selectable)
+                      .map((mm) => (
+                        <Tooltip title={ intl.formatMessage({ id: `map.mod.${ mm }` }) } key={ `tooltip-${ mm }` }>
+                          <Button onClick={ () => handleMapMode(MapMode[mm]) } style={ { padding: 0, minWidth: 0 } }
+                                  disableRipple key={ `button-${ mm }` }>
+                            <img
+                              src={ `/eu4/map/map_mods/${ mapModes[MapMode[mm]].image }_${ mm === mapMode ? 'on' : 'off' }.png` }
+                              alt={ mm }/>
+                          </Button>
+                        </Tooltip>
+                      ))
+                  }
+                </div>
                 {
-                  Object.values(MapMode)
-                    .filter(mm => mapModes[MapMode[mm]].selectable)
-                    .map((mm) => (
-                      <Tooltip title={ intl.formatMessage({ id: `map.mod.${ mm }` }) } key={ `tooltip-${ mm }` }>
-                        <Button onClick={ () => handleMapMode(MapMode[mm]) } style={ { padding: 0, minWidth: 0 } }
-                                disableRipple key={ `button-${ mm }` }>
-                          <img
-                            src={ `/eu4/map/map_mods/${ mapModes[MapMode[mm]].image }_${ mm === mapMode ? 'on' : 'off' }.png` }
-                            alt={ mm }/>
-                        </Button>
-                      </Tooltip>
-                    ))
-                }
-              </div>
-              {
-                save &&
-                  <Chip label={ intl.formatMessage({ id: 'common.graph' }) }
-                        icon={ <BarChart style={ { color: 'white' } }/> }
-                        onClick={ () => setStatDialog(true) }
-                        style={ {
-                          position: 'absolute',
-                          top: 48,
-                          left: 5,
-                          backgroundColor: theme.palette.primary.main,
-                          color: 'white',
-                          fontWeight: 'bold',
-                          fontSize: '1.2em'
-                        } }/>
-              }
-              {
-                save &&
-                  <>
-                      <Tooltip title={ intl.formatMessage({ id: 'common.download' }) }>
-                          <IconButton onClick={ download } style={ {
+                  save &&
+                    <Chip label={ intl.formatMessage({ id: 'common.graph' }) }
+                          icon={ <BarChart style={ { color: 'white' } }/> }
+                          onClick={ () => setStatDialog(true) }
+                          style={ {
                             position: 'absolute',
-                            top: 92,
+                            top: 48,
                             left: 5,
                             backgroundColor: theme.palette.primary.main,
                             color: 'white',
                             fontWeight: 'bold',
-                            fontSize: '1.2em',
-                            borderRadius: '50%',
-                          } }>
-                              <Download/>
-                          </IconButton>
-                      </Tooltip>
-                  </>
-              }
-              {
-                save &&
-                  <>
-                      <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
-                          <IconButton onClick={ () => setExportingModal(true) } disabled={ exporting } style={ {
-                            position: 'absolute',
-                            top: 92,
-                            left: 52,
-                            backgroundColor: theme.palette.primary.main,
-                            color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: '1.2em',
-                            borderRadius: '50%',
-                          } }>
-                            {
-                              exporting ? <CircularProgress color='secondary' style={ { width: 24, height: 24 } }/> : <PhotoCamera/>
-                            }
-                          </IconButton>
-                      </Tooltip>
-                      <ExportModal open={ exportingModal } save={ save } onClose={ () => setExportingModal(false) } onExport={ exportImage }/>
-                  </>
-              }
-              <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady } dataId={ searchParams.get('id') } ref={ mapRef }/>
-              {
-                save &&
-                (
-                  <Dialog
-                    keepMounted
-                    fullScreen
-                    open={ statDialog }
-                    onClose={ () => setStatDialog(false) }
-                    closeAfterTransition
-                  >
-                    <SaveDialog save={ save } onClose={ () => setStatDialog(false) }/>
-                  </Dialog>
-                )
-              }
-            </div>
+                            fontSize: '1.2em'
+                          } }/>
+                }
+                {
+                  save &&
+                    <>
+                        <Tooltip title={ intl.formatMessage({ id: 'common.download' }) }>
+                            <IconButton onClick={ download } style={ {
+                              position: 'absolute',
+                              top: 92,
+                              left: 5,
+                              backgroundColor: theme.palette.primary.main,
+                              color: 'white',
+                              fontWeight: 'bold',
+                              fontSize: '1.2em',
+                              borderRadius: '50%',
+                            } }>
+                                <Download/>
+                            </IconButton>
+                        </Tooltip>
+                    </>
+                }
+                {
+                  save &&
+                    <>
+                        <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
+                            <IconButton onClick={ () => setExportingModal(true) } disabled={ exporting } style={ {
+                              position: 'absolute',
+                              top: 92,
+                              left: 52,
+                              backgroundColor: theme.palette.primary.main,
+                              color: 'white',
+                              fontWeight: 'bold',
+                              fontSize: '1.2em',
+                              borderRadius: '50%',
+                            } }>
+                              {
+                                exporting ? <CircularProgress color='secondary' style={ { width: 24, height: 24 } }/> : <PhotoCamera/>
+                              }
+                            </IconButton>
+                        </Tooltip>
+                        <ExportModal open={ exportingModal } save={ save } onClose={ () => setExportingModal(false) } onExport={ exportImage }/>
+                    </>
+                }
+                <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady } dataId={ searchParams.get('id') } ref={ mapRef }/>
+                {
+                  save &&
+                  (
+                    <Dialog
+                      keepMounted
+                      fullScreen
+                      open={ statDialog }
+                      onClose={ () => setStatDialog(false) }
+                      closeAfterTransition
+                    >
+                      <SaveDialog save={ save } onClose={ () => setStatDialog(false) }/>
+                    </Dialog>
+                  )
+                }
+              </div>
+            </>
           )
       }
     </>
