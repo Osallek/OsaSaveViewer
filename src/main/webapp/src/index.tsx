@@ -27,6 +27,7 @@ const cache = createIntlCache();
 export const intl = createIntl({
   locale,
   messages,
+  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 }, cache);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
