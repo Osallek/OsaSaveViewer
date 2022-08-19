@@ -148,7 +148,7 @@ public class WebConfig implements WebMvcConfigurer {
         FilterRegistrationBean<UserAgentFilter> registrationBean = new FilterRegistrationBean<>();
 
         registrationBean.setFilter(new UserAgentFilter());
-        registrationBean.addUrlPatterns("/user/*", "/save/*", "/save/*/");
+        registrationBean.addUrlPatterns("/user/*", "/save/*", "/save/*/", "/save/*/war/*");
 
         return registrationBean;
     }

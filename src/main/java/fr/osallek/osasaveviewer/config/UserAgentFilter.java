@@ -17,7 +17,7 @@ public class UserAgentFilter extends OncePerRequestFilter {
         String userAgent = StringUtils.trimToNull(request.getHeader(HttpHeaders.USER_AGENT));
 
         if (userAgent != null && (userAgent.contains("Discordbot/") || userAgent.contains("Googlebot/"))) {
-            response.sendRedirect("/bot" + request.getServletPath());
+            response.sendRedirect("/bot" + request.getServletPath().replace("/war/", "/warfare/")); //Ugly because war is a reserved word for Spring
         } else {
             filterChain.doFilter(request, response);
         }

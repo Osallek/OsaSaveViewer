@@ -3,6 +3,7 @@ package fr.osallek.osasaveviewer.controller;
 import fr.osallek.osasaveviewer.controller.dto.save.CountryDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.Eu4Language;
 import fr.osallek.osasaveviewer.controller.dto.save.ExtractorSaveDTO;
+import fr.osallek.osasaveviewer.controller.dto.save.WarDTO;
 import fr.osallek.osasaveviewer.service.SaveService;
 import fr.osallek.osasaveviewer.service.UserService;
 import fr.osallek.osasaveviewer.service.object.UserInfo;
@@ -82,6 +83,30 @@ public class BotController {
 
         String url = "save/" + id;
         String title = save.getName();
+        String image = "https://eu4.osallek.net/data/saves/" + id + ".png";
+
+        return ResponseEntity.ok(TEMPLATE.replace("{URL}", url).replace("{TITLE}", title).replace("{IMAGE}", image));
+    }
+
+    @GetMapping(value = "/save/{saveId}/warfare/{id}", produces = MediaType.TEXT_HTML_VALUE)
+    public ResponseEntity<String> saveWar(@PathVariable("saveId") String id, @PathVariable("id") int warId) throws IOException {
+        ExtractorSaveDTO save = this.saveService.readSave(id);
+
+        if (save == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Optional<WarDTO> war = save.getWars()
+                                   .stream()
+                                   .filter(w -> w.getId() == warId)
+                                   .findFirst();
+
+        if (war.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String url = "save/" + id + "/war/" + warId;
+        String title = save.getName() + " - " + war.get().getName();
         String image = "https://eu4.osallek.net/data/saves/" + id + ".png";
 
         return ResponseEntity.ok(TEMPLATE.replace("{URL}", url).replace("{TITLE}", title).replace("{IMAGE}", image));
