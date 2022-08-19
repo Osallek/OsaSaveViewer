@@ -170,7 +170,7 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
             {
               save.wars && save.wars.length > 0 &&
                 <Button
-                    key='button-graph'
+                    key='button-wars'
                     variant='outlined'
                     color='secondary'
                     sx={ { m: 1 } }

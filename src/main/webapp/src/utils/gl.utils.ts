@@ -120,6 +120,7 @@ export function getTextureFromSave(provincesTexture: ProvincesTexture, save: Map
 
 export function fillMapArray(array: Uint8Array, save: MapSave, mapMod: MapMode, dataId: string | null) {
   const data = mapModes[mapMod].prepare(save, dataId);
+
   for (const province of save.provinces) {
     const color = mapModes[mapMod].provinceColor(province, save, data, []);
     array[(province.id - 1) * 4] = color.red;

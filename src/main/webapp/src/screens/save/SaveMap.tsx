@@ -8,7 +8,7 @@ import WorkerBuilder from 'screens/save/worker_builder';
 import theme from 'theme';
 import { SaveColor, SaveProvince } from 'types/api.types';
 import { ProvincesTexture, Texture } from 'types/gl.types';
-import { MapMode, mapModes, MapSave } from 'types/map.types';
+import { IMapMode, MapMode, mapModes, MapSave } from 'types/map.types';
 import { getTexture } from 'utils';
 import { IMPASSABLE_COLOR, OCEAN_COLOR } from 'utils/colors.utils';
 import { getColorsUrl, getProvincesUrl } from 'utils/data.utils';
@@ -63,6 +63,8 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
     const [clickedProvince, setClickedProvince] = useState<SaveProvince | null>(null);
     const [hoverProvince, setHoverProvince] = useState<SaveProvince | null>(null);
     const [provinceModalOpen, setProvinceModalOpen] = useState<boolean>(false);
+
+    const [iMapMode, setIMapMode] = useState<IMapMode>(mapModes[mapMode]);
 
     const closeModal = () => {
       setClickedProvince(null);
@@ -153,6 +155,14 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
     }, [clickedProvince, save, gl, idColorsContext, moved, offset, provincesContext, provincesTexture, zoom]);
 
     const onHoverProvince = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+      if (!iMapMode.hasTooltip) {
+        if (hoverProvince != null) {
+          setHoverProvince(null);
+        }
+
+        return;
+      }
+
       if (gl && save && provincesContext && provincesTexture && idColorsContext && canvas.current && Date.now() > lastTooltip + tooltipBounce) {
         const scaledWidth = gl.canvas.width / zoom;
         const scaledHeight = gl.canvas.height / zoom;
@@ -242,7 +252,10 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
       }
     }, [save, currentColorsTexture, gl, mapMode, currentColorsLoc, setReady, displayable]);
 
-    useEffect(() => setClickedProvince(null), [mapMode]);
+    useEffect(() => {
+      setClickedProvince(null);
+      setIMapMode(mapModes[mapMode]);
+    }, [mapMode]);
 
     useEffect(() => {
       if (gl && program && save) {
@@ -426,29 +439,14 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
       }
     }));
 
-    const tooltipFunc = mapModes[mapMode].tooltip;
-
     return (
       <>
         {
           save &&
             <>
               {
-                tooltipFunc !== undefined ?
-                  <Tooltip title={ (hoverProvince) ? tooltipFunc(hoverProvince, save, dataId) : '' } followCursor>
-                    <canvas id='save-map-canvas'
-                            ref={ canvas }
-                            style={ {
-                              width: '100%',
-                              height: '100%',
-                              minHeight: 500,
-                              minWidth: 500,
-                              backgroundColor: '#5e5e5e'
-                            } }
-                            onMouseMove={ onHoverProvince }
-                    />
-                  </Tooltip>
-                  :
+                <Tooltip title={ (hoverProvince && iMapMode.hasTooltip && iMapMode.tooltip !== undefined) ? iMapMode.tooltip(hoverProvince, save, dataId) : '' }
+                         followCursor>
                   <canvas id='save-map-canvas'
                           ref={ canvas }
                           style={ {
@@ -458,8 +456,14 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
                             minWidth: 500,
                             backgroundColor: '#5e5e5e'
                           } }
-                          onClick={ e => clickProvince(e) }
+                          onClick={ e => {
+                            if (!iMapMode.hasTooltip) {
+                              clickProvince(e)
+                            }
+                          } }
+                          onMouseMove={ onHoverProvince }
                   />
+                </Tooltip>
               }
                 <div ref={ popoverDiv } style={ { position: 'fixed', left: lastMousePos[0], top: lastMousePos[1] } }/>
               {

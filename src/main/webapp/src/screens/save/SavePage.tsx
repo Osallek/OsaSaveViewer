@@ -40,7 +40,6 @@ function SavePage() {
       const link = document.createElement('a');
       link.href = ENV.DATA_BASE_URL + endpoints.save.download(id);
       link.setAttribute('download', `${ cleanString(save.name).replace('.eu4', '') }.eu4`);
-      console.log(link.download);
 
       if (document.body) {
         document.body.appendChild(link);
@@ -81,7 +80,7 @@ function SavePage() {
   }, [id]);
 
   useEffect(() => {
-    setMapMode(MapMode[searchParams.get('mapMode') as keyof typeof MapMode ?? MapMode.POLITICAL]);
+    setMapMode(searchParams.get('mapMode') ? MapMode[searchParams.get('mapMode') as keyof typeof MapMode] : MapMode.POLITICAL);
   }, [searchParams]);
 
   return (

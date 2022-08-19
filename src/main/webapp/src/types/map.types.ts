@@ -1,7 +1,7 @@
 import { intl } from 'index';
 import { Save, SaveColor, SaveHeir, SaveLeader, SaveMonarch, SaveProvince, SaveQueen, SaveWar } from 'types/api.types';
 import {
-  BLUE_COLOR, DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, getGradient, GREEN_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, PROSPERITY_GRADIENT
+  DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, getGradient, GREEN_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, PROSPERITY_GRADIENT
 } from 'utils/colors.utils';
 import { colorToHex, formatNumber } from 'utils/format.utils';
 import {
@@ -23,6 +23,7 @@ export enum MapMode {
   DEVASTATION = 'DEVASTATION',
   LOSSES = 'LOSSES',
   WAR = 'WAR',
+  MANUAL_DEV = 'MANUAL_DEV',
 }
 
 export interface IMapMode {
@@ -33,6 +34,7 @@ export interface IMapMode {
   prepare: (save: MapSave, dataId: string | null) => any;
   selectable: boolean;
   tooltip?: (province: SaveProvince, save: MapSave, dataId: string | null) => string;
+  hasTooltip: boolean;
 }
 
 export const mapModes: Record<MapMode, IMapMode> = {
@@ -51,6 +53,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
+    hasTooltip: false,
   },
   [MapMode.RELIGION]: {
     mapMode: MapMode.RELIGION,
@@ -67,6 +70,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
+    hasTooltip: false,
   },
   [MapMode.DEVELOPMENT]: {
     mapMode: MapMode.DEVELOPMENT,
@@ -123,6 +127,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return toReturn;
     },
     selectable: true,
+    hasTooltip: false,
   },
   [MapMode.HRE]: {
     mapMode: MapMode.HRE,
@@ -152,6 +157,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     selectable: true,
+    hasTooltip: false,
   },
   [MapMode.GREAT_POWER]: {
     mapMode: MapMode.GREAT_POWER,
@@ -169,6 +175,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: false,
     prepare: () => {},
     selectable: true,
+    hasTooltip: false,
   },
   [MapMode.INSTITUTION]: {
     mapMode: MapMode.INSTITUTION,
@@ -191,6 +198,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     selectable: true,
+    hasTooltip: false,
   },
   [MapMode.TECHNOLOGY]: {
     mapMode: MapMode.TECHNOLOGY,
@@ -241,6 +249,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     selectable: true,
+    hasTooltip: false,
   },
   [MapMode.GOOD]: {
     mapMode: MapMode.GOOD,
@@ -257,6 +266,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
+    hasTooltip: false,
   },
   [MapMode.CULTURE]: {
     mapMode: MapMode.CULTURE,
@@ -273,6 +283,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
+    hasTooltip: false,
   },
   [MapMode.DEVASTATION]: {
     mapMode: MapMode.DEVASTATION,
@@ -306,6 +317,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: false,
     prepare: () => {},
     selectable: true,
+    hasTooltip: false,
   },
   [MapMode.PLAYERS]: {
     mapMode: MapMode.PLAYERS,
@@ -330,6 +342,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
+    hasTooltip: false,
   },
   [MapMode.LOSSES]: {
     mapMode: MapMode.LOSSES,
@@ -360,7 +373,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
 
       return `${ province.name } : ${ formatNumber(getProvinceLosses(war, province.id)) }`;
-    }
+    },
+    hasTooltip: true,
   },
   [MapMode.WAR]: {
     mapMode: MapMode.WAR,
@@ -419,7 +433,55 @@ export const mapModes: Record<MapMode, IMapMode> = {
       } else {
         return '';
       }
-    }
+    },
+    hasTooltip: true,
+  },
+  [MapMode.MANUAL_DEV]: {
+    mapMode: MapMode.MANUAL_DEV,
+    provinceColor: (province, save, data: Array<SaveColor>, countries) => {
+      if (countries.length > 0) {
+        const history = getPHistory(province, save);
+
+        if (!history.owner || (history.owner && !countries.includes(history.owner))) {
+          return EMPTY_COLOR;
+        }
+      }
+
+      const dev = province.improvements ? Object.values(province.improvements).reduce((s, v) => s + v, 0) : 0;
+
+      if (dev <= 0) {
+        return EMPTY_COLOR;
+      }
+
+      return data[((dev / 3) - 1) | 0];
+    },
+    image: 'development',
+    allowDate: false,
+    prepare: (save) => {
+      let min = Number.MAX_VALUE;
+      let max = 0;
+
+      save.provinces.forEach(province => {
+        const dev = province.improvements ? Object.values(province.improvements).reduce((s, v) => s + v, 0) : 0;
+
+        if (dev < min) {
+          min = dev;
+        }
+
+        if (dev > max) {
+          max = dev;
+        }
+      });
+
+      return getGradient((max / 3) | 0, colorToHex(EMPTY_COLOR), "#00FF00");
+    },
+    selectable: true,
+    tooltip: (province, save, dataId) => {
+      const dev = province.improvements ? Object.values(province.improvements).reduce((s, v) => s + v, 0) : 0;
+
+      return `${ province.name } : ${ dev }`;
+    },
+    hasTooltip: true,
   },
 }
 

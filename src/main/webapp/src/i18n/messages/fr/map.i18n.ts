@@ -13,6 +13,7 @@ const map = {
   'map.mod.DEVASTATION': 'Dévastation',
   'map.mod.WAR': 'Participants',
   'map.mod.LOSSES': 'Pertes',
+  'map.mod.MANUAL_DEV': 'Développement manuel',
 }
 
 export default map
