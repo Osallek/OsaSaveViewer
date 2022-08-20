@@ -14,13 +14,14 @@ import CountryIdeaTab from 'screens/country/CountryIdeaTab';
 import CountryInfoTab from 'screens/country/CountryInfoTab';
 import CountryLeaderTab from 'screens/country/CountryLeaderTab';
 import CountryManaTab from 'screens/country/CountryManaTab';
+import CountryMapTab from 'screens/country/CountryMapTab';
 import CountryMilitaryTab from 'screens/country/CountryMilitaryTab';
 import CountryMissionTab from 'screens/country/CountryMissionTab';
 import CountryMonarchTab from 'screens/country/CountryMonarchTab';
 import CountryReligionTab from 'screens/country/CountryReligionTab';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
-import { MapMode, MapSave } from 'types/map.types';
+import { MapSave } from 'types/map.types';
 import { stringComparator } from 'utils/format.utils';
 import { convertSave, fakeTag, getCountries, getCountry, getCountrysFlag, getCountrysName, getPlayer } from 'utils/save.utils';
 
@@ -34,6 +35,8 @@ function CountryPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [country, setCountry] = useState<SaveCountry | undefined>(undefined);
+
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [countriesAnchorEl, setCountriesAnchorEl] = React.useState<null | HTMLElement>(null);
   const countriesOpen = Boolean(countriesAnchorEl);
@@ -179,6 +182,7 @@ function CountryPage() {
                   >
                     <Grid item style={ { flex: 1 } }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.info' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'country.tab.map' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.eco' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.estates' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.dip' }) }/>
@@ -195,88 +199,94 @@ function CountryPage() {
                     <Grid item style={ { flex: 1 } }/>
                   </Tabs>
                 </Grid>
-                <Grid container alignItems='start' justifyContent='center' style={ { padding: 24 } } key={ `grid-g-${ tag }` }>
+                <Grid container alignItems='start' justifyContent='center' style={ { padding: 24 } } key={ `grid-g-${ tag }` } ref={ containerRef }>
                   {
                     activeTab == 1 &&
-                      <Grid container item display='flex' xs={ 12 } md={ 12 } lg={ 8 } xl={ 6 } key='grid0'>
+                      <Grid container item display='flex' xs={ 12 } md={ 12 } lg={ 8 } xl={ 6 } key='gridInfo'>
                           <CountryInfoTab country={ country } save={ save }/>
                       </Grid>
                   }
                   {
                     activeTab == 2 &&
-                      <Grid container item key='grid1'>
-                          <CountryEcoTab country={ country }/>
+                      <Grid container item key='gridMap'>
+                          <CountryMapTab country={ country } save={ save } containerRef={ containerRef }/>
                       </Grid>
                   }
                   {
                     activeTab == 3 &&
-                      <Grid container key='grid2'>
-                          <CountryEstateTab country={ country } save={ save }/>
+                      <Grid container item key='gridEco'>
+                          <CountryEcoTab country={ country }/>
                       </Grid>
                   }
                   {
                     activeTab == 4 &&
-                      <Grid container key='grid3'>
-                          <CountryDiplomacyTab country={ country } save={ save }/>
+                      <Grid container key='gridEstate'>
+                          <CountryEstateTab country={ country } save={ save }/>
                       </Grid>
                   }
                   {
                     activeTab == 5 &&
-                      <Grid container key='grid4'>
-                          <CountryMilitaryTab country={ country } save={ save }/>
+                      <Grid container key='gridDiplomacy'>
+                          <CountryDiplomacyTab country={ country } save={ save }/>
                       </Grid>
                   }
                   {
                     activeTab == 6 &&
-                      <Grid container key='grid5'>
-                          <CountryIdeaTab country={ country } save={ save }/>
+                      <Grid container key='gridMilitary'>
+                          <CountryMilitaryTab country={ country } save={ save }/>
                       </Grid>
                   }
                   {
                     activeTab == 7 &&
-                      <Grid container key='grid6'>
-                          <CountryMonarchTab country={ country } save={ save }/>
+                      <Grid container key='gridIdea'>
+                          <CountryIdeaTab country={ country } save={ save }/>
                       </Grid>
                   }
                   {
                     activeTab == 8 &&
-                      <Grid container key='grid7'>
-                          <CountryLeaderTab country={ country } save={ save }/>
+                      <Grid container key='gridMonarch'>
+                          <CountryMonarchTab country={ country } save={ save }/>
                       </Grid>
                   }
                   {
                     activeTab == 9 &&
-                      <Grid container key='grid8'>
-                          <CountryManaTab country={ country } save={ save }/>
+                      <Grid container key='gridLeader'>
+                          <CountryLeaderTab country={ country } save={ save }/>
                       </Grid>
                   }
                   {
                     activeTab == 10 &&
-                      <Grid container key='grid9'>
-                          <CountryBuildingTab country={ country } save={ save }/>
+                      <Grid container key='gridMana'>
+                          <CountryManaTab country={ country } save={ save }/>
                       </Grid>
                   }
                   {
                     activeTab == 11 &&
-                      <Grid container style={ { height: '100%' } } key='grid10'>
-                          <CountryMissionTab country={ country } save={ save }/>
+                      <Grid container key='gridBuilding'>
+                          <CountryBuildingTab country={ country } save={ save }/>
                       </Grid>
                   }
                   {
                     activeTab == 12 &&
-                      <Grid container key='grid11'>
+                      <Grid container style={ { height: '100%' } } key='gridMission'>
+                          <CountryMissionTab country={ country } save={ save }/>
+                      </Grid>
+                  }
+                  {
+                    activeTab == 13 &&
+                      <Grid container key='grid1Religion'>
                           <CountryReligionTab country={ country } save={ save }/>
                       </Grid>
                   }
                   {
-                    activeTab === 13 &&
-                      <Grid container key='grid12'>
+                    activeTab === 14 &&
+                      <Grid container key='gridCulture'>
                           <CountryCultureTab country={ country } save={ save }/>
                       </Grid>
                   }
                   {
-                    activeTab === 14 &&
-                      <Grid container key='grid13'>
+                    activeTab === 15 &&
+                      <Grid container key='gridHistory'>
                           <CountryHistoryTab country={ country } save={ save }/>
                       </Grid>
                   }

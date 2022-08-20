@@ -20,6 +20,8 @@ const province = {
   'province.colonySize': 'Colony size',
   'province.buildings': 'Buildings',
   'province.history': 'History',
+  'province.noHre': 'Left the empire',
+  'province.yesHre': 'Joined the empire',
 }
 
 export default province

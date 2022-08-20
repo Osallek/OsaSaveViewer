@@ -1,12 +1,12 @@
 import { intl } from 'index';
-import { Save, SaveColor, SaveHeir, SaveLeader, SaveMonarch, SaveProvince, SaveQueen, SaveWar } from 'types/api.types';
+import { Save, SaveColor, SaveCountry, SaveHeir, SaveLeader, SaveMonarch, SaveProvince, SaveQueen, SaveWar } from 'types/api.types';
 import {
   DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, getGradient, GREEN_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, PROSPERITY_GRADIENT
 } from 'utils/colors.utils';
-import { colorToHex, formatNumber } from 'utils/format.utils';
+import { colorToHex, formatDate, formatNumber } from 'utils/format.utils';
 import {
-  getArea, getAreaState, getCHistory, getCountries, getCountry, getCountryName, getCulture, getEmperor, getGood, getOverlord, getPHistory, getProvinceLosses,
-  getReligion, getWar
+  getArea, getAreaState, getCHistory, getCountries, getCountry, getCountryName, getCountrysName, getCulture, getCultureName, getEmperor, getGood, getGoodName,
+  getInstitName, getOverlord, getPHistory, getProvinceLosses, getReligion, getReligionName, getSubjects, getSubjectTypeName, getWar
 } from 'utils/save.utils';
 
 export enum MapMode {
@@ -24,6 +24,9 @@ export enum MapMode {
   LOSSES = 'LOSSES',
   WAR = 'WAR',
   MANUAL_DEV = 'MANUAL_DEV',
+  DIPLOMACY = 'DIPLOMACY',
+  C_MANUAL_DEV = 'C_MANUAL_DEV',
+  ONCE_WAR = 'ONCE_WAR',
 }
 
 export interface IMapMode {
@@ -53,7 +56,16 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
-    hasTooltip: false,
+    tooltip: (province, save) => {
+      const owner = getPHistory(province, save).owner;
+
+      if (!owner) {
+        return '';
+      }
+
+      return `${ province.name } : ${ getCountryName(save, owner) }`;
+    },
+    hasTooltip: true,
   },
   [MapMode.RELIGION]: {
     mapMode: MapMode.RELIGION,
@@ -70,7 +82,16 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
-    hasTooltip: false,
+    tooltip: (province, save) => {
+      const religion = getPHistory(province, save).religion;
+
+      if (!religion) {
+        return '';
+      }
+
+      return `${ province.name } : ${ getReligionName(save, religion) }`;
+    },
+    hasTooltip: true,
   },
   [MapMode.DEVELOPMENT]: {
     mapMode: MapMode.DEVELOPMENT,
@@ -127,7 +148,10 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return toReturn;
     },
     selectable: true,
-    hasTooltip: false,
+    tooltip: (province, save) => {
+      return `${ province.name } : ${ province.baseTax ?? 0 }/${ province.baseProduction ?? 0 }/${ province.baseManpower ?? 0 } (${ (province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0) })`;
+    },
+    hasTooltip: true,
   },
   [MapMode.HRE]: {
     mapMode: MapMode.HRE,
@@ -157,7 +181,22 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     selectable: true,
-    hasTooltip: false,
+    tooltip: (province, save) => {
+      const history = getPHistory(province, save);
+
+      if (!history.owner) {
+        return '';
+      }
+
+      if (getEmperor(save.hre, save.date) === history.owner) {
+        return `${ getCountryName(save, history.owner) } : ${ intl.formatMessage({ id: 'country.emperor' }) }`;
+      } else if (getCountries(save).filter(country => country.history).filter(country => getCHistory(country, save).elector).map(value => value.tag).includes(history.owner)) {
+        return `${ getCountryName(save, history.owner) } : ${ intl.formatMessage({ id: 'country.elector' }) }`;
+      }
+
+      return history.hre ? `${ getCountryName(save, history.owner) } : ${ intl.formatMessage({ id: 'country.hre' }) }` : '';
+    },
+    hasTooltip: true,
   },
   [MapMode.GREAT_POWER]: {
     mapMode: MapMode.GREAT_POWER,
@@ -175,7 +214,22 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: false,
     prepare: () => {},
     selectable: true,
-    hasTooltip: false,
+    tooltip: (province, save) => {
+      const owner = getPHistory(province, save).owner;
+
+      if (!owner) {
+        return '';
+      }
+
+      const country = getCountry(save, owner);
+
+      if (!country.greatPowerRank) {
+        return '';
+      }
+
+      return `${ getCountrysName(country) } : ${ country.greatPowerRank }`;
+    },
+    hasTooltip: true,
   },
   [MapMode.INSTITUTION]: {
     mapMode: MapMode.INSTITUTION,
@@ -198,7 +252,26 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     selectable: true,
-    hasTooltip: false,
+    tooltip: (province, save) => {
+      if (!province.institutions) {
+        return '';
+      }
+
+      let instit = -1;
+
+      for (let i = 0; i < province.institutions.length; i++) {
+        if (province.institutions[i] >= 100) {
+          instit = i;
+        }
+      }
+
+      if (instit < 0) {
+        return '';
+      }
+
+      return `${ province.name } : ${ getInstitName(save, instit) }`;
+    },
+    hasTooltip: true,
   },
   [MapMode.TECHNOLOGY]: {
     mapMode: MapMode.TECHNOLOGY,
@@ -249,7 +322,18 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     selectable: true,
-    hasTooltip: false,
+    tooltip: (province, save) => {
+      const owner = getPHistory(province, save).owner;
+
+      if (!owner) {
+        return '';
+      }
+
+      const country = getCountry(save, owner);
+
+      return `${ getCountrysName(country) } : ${ country.admTech }/${ country.dipTech }/${ country.milTech }`;
+    },
+    hasTooltip: true,
   },
   [MapMode.GOOD]: {
     mapMode: MapMode.GOOD,
@@ -266,7 +350,16 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
-    hasTooltip: false,
+    tooltip: (province, save) => {
+      const good = getPHistory(province, save).tradeGood;
+
+      if (!good) {
+        return '';
+      }
+
+      return `${ province.name } : ${ getGoodName(save, good) }`;
+    },
+    hasTooltip: true,
   },
   [MapMode.CULTURE]: {
     mapMode: MapMode.CULTURE,
@@ -283,7 +376,16 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
-    hasTooltip: false,
+    tooltip: (province, save) => {
+      const culture = getPHistory(province, save).culture;
+
+      if (!culture) {
+        return '';
+      }
+
+      return `${ province.name } : ${ getCultureName(save, culture) }`;
+    },
+    hasTooltip: true,
   },
   [MapMode.DEVASTATION]: {
     mapMode: MapMode.DEVASTATION,
@@ -317,7 +419,27 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: false,
     prepare: () => {},
     selectable: true,
-    hasTooltip: false,
+    tooltip: (province, save) => {
+      if (province.devastation) {
+        return `${ province.name } : ${ intl.formatMessage({ id: 'province.devastation' }) } : ${ formatNumber(province.devastation) }`;
+      } else {
+        const area = getArea(save, province);
+
+        if (!area) {
+          return '';
+        }
+
+        const owner = getPHistory(province, save).owner;
+        const state = getAreaState(area, owner);
+
+        if (state) {
+          return `${ province.name } : ${ intl.formatMessage({ id: 'province.prosperity' }) } : ${ formatNumber(state.prosperity) }%`;
+        } else {
+          return '';
+        }
+      }
+    },
+    hasTooltip: true,
   },
   [MapMode.PLAYERS]: {
     mapMode: MapMode.PLAYERS,
@@ -342,7 +464,24 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
-    hasTooltip: false,
+    tooltip: (province, save) => {
+      const owner = getPHistory(province, save).owner;
+
+      if (!owner) {
+        return '';
+      }
+
+      const country = getCountry(save, owner);
+
+      if (country.players && country.players.length > 0) {
+        return `${ getCountrysName(country) } : ${ country.players[0] }`;
+      }
+
+      const overlord = getOverlord(country, save);
+
+      return (overlord && overlord.players && overlord.players.length > 0) ? `${ getCountrysName(country) } : ${ overlord.players[0] }` : '';
+    },
+    hasTooltip: true,
   },
   [MapMode.LOSSES]: {
     mapMode: MapMode.LOSSES,
@@ -480,6 +619,255 @@ export const mapModes: Record<MapMode, IMapMode> = {
       const dev = province.improvements ? Object.values(province.improvements).reduce((s, v) => s + v, 0) : 0;
 
       return `${ province.name } : ${ dev }`;
+    },
+    hasTooltip: true,
+  },
+  [MapMode.DIPLOMACY]: {
+    mapMode: MapMode.DIPLOMACY,
+    provinceColor: (province, save, { country }: { country: SaveCountry | undefined }, countries) => {
+      if (!country) {
+        return EMPTY_COLOR;
+      }
+
+      const owner = getPHistory(province, save).owner;
+
+      if (!owner) {
+        return EMPTY_COLOR;
+      }
+
+      if (country.tag === owner) {
+        return {
+          red: 0,
+          green: 255,
+          blue: 0,
+          alpha: 255
+        };
+      }
+
+      if (country.alliances && country.alliances.includes(owner)) {
+        return {
+          red: 97,
+          green: 157,
+          blue: 237,
+          alpha: 255,
+        };
+      }
+
+      if (country.atWarWith && country.atWarWith.includes(owner)) {
+        return {
+          red: 255,
+          green: 0,
+          blue: 0,
+          alpha: 255,
+        };
+      }
+
+      if (getSubjects(country, save).map(value => value.second).includes(owner)) {
+        return {
+          red: 88,
+          green: 176,
+          blue: 148,
+          alpha: 255,
+        };
+      }
+
+      if (country.guarantees && country.guarantees.includes(owner)) {
+        return {
+          red: 156,
+          green: 39,
+          blue: 176,
+          alpha: 255,
+        };
+      }
+
+      if (country.guarantedBy && country.guarantedBy.includes(owner)) {
+        return {
+          red: 121,
+          green: 39,
+          blue: 176,
+          alpha: 255,
+        };
+      }
+
+      if (country.royalMarriages && country.royalMarriages.includes(owner)) {
+        return {
+          red: 74,
+          green: 20,
+          blue: 140,
+          alpha: 255,
+        };
+      }
+
+      return EMPTY_COLOR;
+    },
+    image: 'diplomacy',
+    allowDate: false,
+    prepare: (save, dataId) => {
+      return { country: dataId ? getCountry(save, dataId) : undefined };
+    },
+    selectable: false,
+    tooltip: (province, save, dataId) => {
+      if (!dataId) {
+        return '';
+      }
+
+      const country = getCountry(save, dataId);
+      const owner = getPHistory(province, save).owner;
+
+      if (!owner) {
+        return '';
+      }
+
+      if (country.tag === owner) {
+        return getCountrysName(country);
+      }
+
+      if (country.alliances && country.alliances.includes(owner)) {
+        return `${ getCountryName(save, owner) } : ${ intl.formatMessage({ id: 'country.ally' }) }`;
+      }
+
+      if (country.atWarWith && country.atWarWith.includes(owner)) {
+        return `${ getCountryName(save, owner) } : ${ intl.formatMessage({ id: 'country.atWarWith' }) }`;
+      }
+
+      if (getSubjects(country, save).map(value => value.second).includes(owner)) {
+        return `${ getCountryName(save, owner) } : ${ getSubjectTypeName(save, getSubjects(country, save).find(value => value.second === owner)?.type) }`;
+      }
+
+      if (country.guarantees && country.guarantees.includes(owner)) {
+        return `${ getCountryName(save, owner) } : ${ intl.formatMessage({ id: 'country.guaranty' }) }`;
+      }
+
+      if (country.guarantedBy && country.guarantedBy.includes(owner)) {
+        return `${ getCountryName(save, owner) } : ${ intl.formatMessage({ id: 'country.guaranteedBy' }) }`;
+      }
+
+      if (country.royalMarriages && country.royalMarriages.includes(owner)) {
+        return `${ getCountryName(save, owner) } : ${ intl.formatMessage({ id: 'country.royalMarriage' }) }`;
+      }
+
+      return '';
+    },
+    hasTooltip: true,
+  },
+  [MapMode.C_MANUAL_DEV]: {
+    mapMode: MapMode.C_MANUAL_DEV,
+    provinceColor: (province, save, { data, tag }: { data: Array<SaveColor>, tag: string | null }, countries) => {
+      if (countries.length > 0) {
+        const history = getPHistory(province, save);
+
+        if (!history.owner || (history.owner && !countries.includes(history.owner))) {
+          return EMPTY_COLOR;
+        }
+      }
+
+      if (!tag) {
+        return EMPTY_COLOR;
+      }
+
+      const dev = province.improvements ? province.improvements[tag] ?? 0 : 0;
+
+      if (dev <= 0) {
+        return EMPTY_COLOR;
+      }
+
+      return data[((dev / 3) - 1) | 0];
+    },
+    image: 'development',
+    allowDate: false,
+    prepare: (save, dataId) => {
+      let min = Number.MAX_VALUE;
+      let max = 0;
+
+      save.provinces.forEach(province => {
+        const dev = (province.improvements && dataId) ? province.improvements[dataId] ?? 0 : 0;
+
+        if (dev < min) {
+          min = dev;
+        }
+
+        if (dev > max) {
+          max = dev;
+        }
+      });
+
+      return { tag: dataId, data: getGradient((max / 3) | 0, colorToHex(EMPTY_COLOR), "#00FF00") };
+    },
+    selectable: false,
+    tooltip: (province, save, dataId) => {
+      if (!dataId) {
+        return '';
+      }
+
+      return `${ province.name } : ${ province.improvements ? province.improvements[dataId] ?? 0 : 0 }`;
+    },
+    hasTooltip: true,
+  },
+  [MapMode.ONCE_WAR]: {
+    mapMode: MapMode.ONCE_WAR,
+    provinceColor: (province, save, { tag }: { tag: string | null }, countries) => {
+      if (!tag) {
+        return EMPTY_COLOR;
+      }
+
+      const owner = getPHistory(province, save).owner;
+
+      if (!owner) {
+        return EMPTY_COLOR;
+      }
+
+      if (owner === tag) {
+        return {
+          red: 0,
+          green: 200,
+          blue: 0,
+          alpha: 255
+        };
+      }
+
+      if (save.wars && save.wars.find(war => (Object.keys(war.attackers).includes(tag) && Object.keys(war.defenders).includes(owner))
+        || (Object.keys(war.defenders).includes(tag) && Object.keys(war.attackers).includes(owner))) !== undefined) {
+        return {
+          red: 200,
+          green: 0,
+          blue: 0,
+          alpha: 255
+        };
+      } else {
+        return EMPTY_COLOR;
+      }
+    },
+    image: 'war',
+    allowDate: false,
+    prepare: (save, dataId) => {
+      return { tag: dataId };
+    },
+    selectable: false,
+    tooltip: (province, save, dataId) => {
+      if (!dataId) {
+        return '';
+      }
+
+      const country = getCountry(save, dataId);
+      const owner = getPHistory(province, save).owner;
+
+      if (!owner) {
+        return '';
+      }
+
+      if (owner === country.tag) {
+        return getCountrysName(country);
+      }
+
+      const war = save.wars && save.wars.slice().reverse()
+        .find(war => (Object.keys(war.attackers).includes(country.tag) && Object.keys(war.defenders).includes(owner))
+          || (Object.keys(war.defenders).includes(country.tag) && Object.keys(war.attackers).includes(owner)));
+
+      if (war !== undefined) {
+        return `${ getCountryName(save, owner) }: ${ formatDate(war.startDate) }`;
+      } else {
+        return '';
+      }
     },
     hasTooltip: true,
   },

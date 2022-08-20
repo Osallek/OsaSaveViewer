@@ -82,7 +82,7 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
               </Grid>
               <Grid container item xs={ 6 } alignItems='center'>
                 <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
-                  { `${ formatNumber(getPDev(province)) } (${ province.baseTax ?? 0 } / ${ formatNumber(province.baseProduction?? 0) } / ${ province.baseManpower ?? 0 })` }
+                  { `${ formatNumber(getPDev(province)) } (${ province.baseTax ?? 0 } / ${ formatNumber(province.baseProduction ?? 0) } / ${ province.baseManpower ?? 0 })` }
                 </Typography>
               </Grid>
             </Grid>
@@ -218,6 +218,12 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
                           icon = getBuildingImage(save, key);
                           decoration = value ? undefined : 'line-through';
                         })
+                      } else if (h.hre) {
+                        display = intl.formatMessage({ id: 'province.yesHre' });
+                        icon = '/eu4/province/hre.png';
+                      } else if (h.hre === false) {
+                        display = intl.formatMessage({ id: 'province.noHre' });
+                        icon = '/eu4/province/no_hre.png';
                       }
 
                       return (

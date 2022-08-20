@@ -141,8 +141,8 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
           const scaledWidth = gl.canvas.width / zoom;
           const scaledHeight = gl.canvas.height / zoom;
 
-          const x = ((e.clientX / gl.canvas.width * scaledWidth) + (offset[0] - (scaledWidth - provincesTexture.width) / 4) * 2) | 0;
-          const y = ((e.clientY / gl.canvas.height * scaledHeight) + (offset[1] - (scaledHeight - provincesTexture.height) / 4) * 2) | 0;
+          const x = (((e.clientX - gl.canvas.getBoundingClientRect().left) / gl.canvas.width * scaledWidth) + (offset[0] - (scaledWidth - provincesTexture.width) / 4) * 2) | 0;
+          const y = (((e.clientY - gl.canvas.getBoundingClientRect().top) / gl.canvas.height * scaledHeight) + (offset[1] - (scaledHeight - provincesTexture.height) / 4) * 2) | 0;
 
           if (y >= 0 && y <= provincesTexture.height) { //Clicking inside image
             const provinceId = getProvinceAt(x, y, provincesContext, idColorsContext);
@@ -456,11 +456,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
                             minWidth: 500,
                             backgroundColor: '#5e5e5e'
                           } }
-                          onClick={ e => {
-                            if (!iMapMode.hasTooltip) {
-                              clickProvince(e)
-                            }
-                          } }
+                          onClick={ e => clickProvince(e) }
                           onMouseMove={ onHoverProvince }
                   />
                 </Tooltip>

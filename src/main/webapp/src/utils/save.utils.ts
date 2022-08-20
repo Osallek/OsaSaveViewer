@@ -249,6 +249,10 @@ export function getCulturesName(culture: SaveCulture): string {
   return getName(culture) ?? culture.name;
 }
 
+export function getInstitName(save: MapSave, index: number): string {
+  return getName(save.institutions[index]) ?? '';
+}
+
 export function getBuilding(save: MapSave, name: string): NamedImageLocalised {
   return save.buildings.find(building => name === building.name) ?? save.buildings[0];
 }
