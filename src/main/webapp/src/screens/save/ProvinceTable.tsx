@@ -266,6 +266,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
   const columns: readonly Column[] = ProvinceTableType.INFO === type ? infoColumns : devColumns;
   const [orderBy, setOrderBy] = useState<Column>(columns[0]);
   const [order, setOrder] = React.useState<'asc' | 'desc'>('asc');
+  const [provinces, setProvinces] = useState<SaveProvince[]>([]);
 
   const [filters, setFilters] = useState<Record<string, (string | number)[]>>({});
   const [filterPopoverOpen, setFilterPopoverOpen] = useState<boolean>(false);
@@ -291,38 +292,51 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
     }
   }
 
-  const provinces = save.provinces.filter(province => {
-    if (Object.keys(filters).length === 0) {
-      return true;
+  useEffect(() => {
+    if (orderBy === undefined) {
+      setOrderBy(columns[columns.length - 1]);
+      setOrder('asc');
     }
 
-    for (const [key, value] of Object.entries(filters)) {
-      const column = columns.find(c => c.id === key);
-
-      if (column) {
-        if (!column.filter(province, value)) {
-          return false;
+    setProvinces(save.provinces.filter(province => {
+        if (Object.keys(filters).length === 0) {
+          return true;
         }
-      }
+
+        for (const [key, value] of Object.entries(filters)) {
+          const column = columns.find(c => c.id === key);
+
+          if (column) {
+            if (!column.filter(province, value)) {
+              return false;
+            }
+          }
+        }
+
+        return true;
+      }).sort((a, b) => {
+        const va = orderBy.comparatorValue(a);
+        const vb = orderBy.comparatorValue(b);
+
+        if (typeof va === 'number' && typeof vb === 'number') {
+          return 'asc' === order ? numberComparator(va, vb) : -numberComparator(va, vb);
+        } else if (typeof va === 'string' && typeof vb === 'string') {
+          return 'asc' === order ? stringComparator(va, vb) : -stringComparator(va, vb);
+        } else if (va !== undefined && vb === undefined) {
+          return 'asc' === order ? -1 : 1;
+        } else if (va === undefined && vb !== undefined) {
+          return 'asc' === order ? 1 : -1;
+        }
+
+        return 0;
+      })
+    );
+
+    if (listRef.current) {
+      listRef.current.scrollToItem(0, 'start');
+      listRef.current.resetAfterIndex(0);
     }
-
-    return true;
-  }).sort((a, b) => {
-    const va = orderBy.comparatorValue(a);
-    const vb = orderBy.comparatorValue(b);
-
-    if (typeof va === 'number' && typeof vb === 'number') {
-      return 'asc' === order ? numberComparator(va, vb) : -numberComparator(va, vb);
-    } else if (typeof va === 'string' && typeof vb === 'string') {
-      return 'asc' === order ? stringComparator(va, vb) : -stringComparator(va, vb);
-    } else if (va !== undefined && vb === undefined) {
-      return 'asc' === order ? -1 : 1;
-    } else if (va === undefined && vb !== undefined) {
-      return 'asc' === order ? 1 : -1;
-    }
-
-    return 0;
-  });
+  }, [columns, filters, order, orderBy, save, type]);
 
   useEffect(() => {
     columnsRefs.current = columnsRefs.current.slice(0, columns.length);

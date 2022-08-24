@@ -854,7 +854,11 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
 
         return 0;
       })
-    )
+    );
+
+    if (listRef.current) {
+      listRef.current.scrollToItem(0, 'start');
+    }
   }, [columns, filters, order, orderBy, save, type]);
 
   useEffect(() => {

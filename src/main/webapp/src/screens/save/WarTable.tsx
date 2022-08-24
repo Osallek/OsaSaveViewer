@@ -242,6 +242,11 @@ function WarTable({ save, visible }: WarTableProps) {
         return 0;
       }) : []
     );
+
+    if (listRef.current) {
+      listRef.current.scrollToItem(0, 'start');
+      listRef.current.resetAfterIndex(0);
+    }
   }, [columns, filters, order, orderBy, save]);
 
   useEffect(() => {
@@ -435,7 +440,7 @@ function WarTable({ save, visible }: WarTableProps) {
                     itemSize={ index => rowHeight(index, width, wars) }
                     width={ Math.max(width, columns.reduce((s, a) => s + a.minWidth, 0)) }
                     itemData={ wars }
-                    itemKey={ (index, data) => `${ cleanString(data[index].name) }` }
+                    itemKey={ (index, data) => data[index].id }
                     overscanCount={ 10 }
                     ref={ listRef }
                   >
