@@ -607,14 +607,14 @@ export function getRank(save: MapSave, country: SaveCountry, mapper: (country: S
     .sort((a, b) => -numberComparator(a, b)).indexOf(mapper(country) ?? 0) + 1;
 }
 
-export function getMonarchs(country: SaveCountry): Array<SaveMonarch> {
-  const array = country.history.map(h => h.monarch).filter(m => m !== undefined) as Array<SaveMonarch>;
+export function getMonarchs(save: MapSave, country: SaveCountry): Array<SaveMonarch> {
+  const array = country.history.map(h => h.monarch).filter(m => m !== undefined && (m.deathDate === undefined || m.deathDate > save.startDate)) as Array<SaveMonarch>;
 
   return array.sort((a, b) => stringComparator(a.monarchDate ?? '', b.monarchDate ?? ''));
 }
 
-export function getLeaders(country: SaveCountry): Array<SaveLeader> {
-  const leaders = country.history.map(h => h.leader).filter(m => m !== undefined) as Array<SaveLeader>;
+export function getLeaders(save: MapSave, country: SaveCountry): Array<SaveLeader> {
+  const leaders = country.history.map(h => h.leader).filter(m => m !== undefined && (m.deathDate === undefined || m.deathDate > save.startDate)) as Array<SaveLeader>;
 
   country.history.map(h => h.monarch).forEach(m => {
     if (m !== undefined && m.leader !== undefined) {

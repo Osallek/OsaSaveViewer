@@ -101,7 +101,7 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
               <Close/>
             </IconButton>
             <Typography sx={ { ml: 2, mr: 2 } } variant='h6' component='div'>
-              { save.name }
+              { `${ save.name } (${ formatDate(save.date) })` }
             </Typography>
             <Button
               key='button-countries'
@@ -169,39 +169,39 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
             </Menu>
             {
               save.wars && save.wars.length > 0 &&
-                <Button
-                    key='button-wars'
-                    variant='outlined'
-                    color='secondary'
-                    sx={ { m: 1 } }
-                    onClick={ () => handleOtherClick(Views.WARS) }
-                >
-                  { intl.formatMessage({ id: 'common.wars' }) }
-                </Button>
+              <Button
+                key='button-wars'
+                variant='outlined'
+                color='secondary'
+                sx={ { m: 1 } }
+                onClick={ () => handleOtherClick(Views.WARS) }
+              >
+                { intl.formatMessage({ id: 'common.wars' }) }
+              </Button>
             }
             {
               save.previousSaves && save.previousSaves.length > 0 &&
-                <Button
-                    key='button-graph'
-                    variant='outlined'
-                    color='secondary'
-                    sx={ { m: 1 } }
-                    onClick={ () => handleOtherClick(Views.GRAPH) }
-                >
-                  { intl.formatMessage({ id: 'common.rank' }) }
-                </Button>
+              <Button
+                key='button-graph'
+                variant='outlined'
+                color='secondary'
+                sx={ { m: 1 } }
+                onClick={ () => handleOtherClick(Views.GRAPH) }
+              >
+                { intl.formatMessage({ id: 'common.rank' }) }
+              </Button>
             }
             {
               getCountries(save).filter(value => value.players && value.players.length > 0).length > 1 &&
-                <Button
-                    key='button-compare'
-                    variant='outlined'
-                    color='secondary'
-                    sx={ { m: 1 } }
-                    onClick={ () => handleOtherClick(Views.COMPARE) }
-                >
-                  { intl.formatMessage({ id: 'common.compare' }) }
-                </Button>
+              <Button
+                key='button-compare'
+                variant='outlined'
+                color='secondary'
+                sx={ { m: 1 } }
+                onClick={ () => handleOtherClick(Views.COMPARE) }
+              >
+                { intl.formatMessage({ id: 'common.compare' }) }
+              </Button>
             }
             {
               save.previousSaves && save.previousSaves.length > 0 &&

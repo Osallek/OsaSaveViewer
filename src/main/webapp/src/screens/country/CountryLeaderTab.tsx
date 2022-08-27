@@ -18,7 +18,7 @@ function CountryLeaderTab({ country, save }: CountryLeaderTabProps) {
   const [leaders, setLeaders] = useState<Array<SaveLeader>>([]);
 
   useEffect(() => {
-    setLeaders(getLeaders(country));
+    setLeaders(getLeaders(save, country));
   }, [country]);
 
   return (

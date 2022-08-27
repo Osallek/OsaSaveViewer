@@ -3,6 +3,7 @@ import {
   Autocomplete, Avatar, Card, CardContent, ClickAwayListener, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   TableSortLabel, TextField, Tooltip, Typography, useTheme
 } from '@mui/material';
+import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -26,17 +27,8 @@ interface Column {
   filter: ((province: SaveProvince, filter: (string | number | undefined)[]) => boolean);
 }
 
-interface ProvinceTableProps {
-  save: MapSave;
-  type: ProvinceTableType;
-  visible: boolean;
-}
-
-function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
-  const intl = useIntl();
-  const theme = useTheme();
-
-  const devColumns: readonly Column[] = [
+function getDevColumns(save: MapSave): Column[] {
+  return [
     {
       id: 'id',
       label: intl.formatMessage({ id: 'province.id' }),
@@ -118,8 +110,10 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
       filter: (province, filter) => filter.includes(province.improvements ? Object.values(province.improvements).reduce((s, a) => s + a, 0) : 0),
     }
   ];
+}
 
-  const infoColumns: readonly Column[] = [
+function getInfoColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Column[] {
+  return [
     {
       id: 'id',
       label: intl.formatMessage({ id: 'province.id' }),
@@ -159,7 +153,8 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
         }
       },
       comparatorValue: province => getCountryName(save, getPHistory(province, save).owner),
-      filterValues: Array.from(new Set<string>(getCountries(save).filter(c => c.alive).filter(c => c.tag !== fakeTag).map(c => getCountrysName(c)).sort(stringComparator))),
+      filterValues: Array.from(
+        new Set<string>(getCountries(save).filter(c => c.alive).filter(c => c.tag !== fakeTag).map(c => getCountrysName(c)).sort(stringComparator))),
       filter: (province, filter) => filter.includes(getCountryName(save, getPHistory(province, save).owner)),
     },
     {
@@ -262,24 +257,36 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
       },
     },
   ];
+}
 
-  const columns: readonly Column[] = ProvinceTableType.INFO === type ? infoColumns : devColumns;
-  const [orderBy, setOrderBy] = useState<Column>(columns[0]);
-  const [order, setOrder] = React.useState<'asc' | 'desc'>('asc');
-  const [provinces, setProvinces] = useState<SaveProvince[]>([]);
+interface ProvinceTableProps {
+  save: MapSave;
+  type: ProvinceTableType;
+  visible: boolean;
+}
 
-  const [filters, setFilters] = useState<Record<string, (string | number)[]>>({});
-  const [filterPopoverOpen, setFilterPopoverOpen] = useState<boolean>(false);
-  const [filterPopoverLoc, setFilterPopoverLoc] = useState<number[]>([0, 0]);
-  const [filterPopoverColumn, setFilterPopoverColumn] = useState<Column>(columns[0]);
-  const filterPopoverDiv = useRef<HTMLDivElement>(null);
+function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
+  const intl = useIntl();
+  const theme = useTheme();
 
   const columnsRefs = useRef<Array<HTMLDivElement | null>>([]);
   const listRef = useRef<VariableSizeList<SaveProvince[]>>(null);
   const headerRef = useRef<HTMLTableSectionElement>(null);
 
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [orderBy, setOrderBy] = useState<Column | undefined>(undefined);
+  const [order, setOrder] = React.useState<'asc' | 'desc'>('asc');
+  const [provinces, setProvinces] = useState<SaveProvince[]>([]);
+
+  const [filters, setFilters] = useState<Record<string, (string | number)[]>>({});
+  const filterPopoverDiv = useRef<HTMLDivElement>(null);
+
+  const [filterPopoverOpen, setFilterPopoverOpen] = useState<boolean>(false);
+  const [filterPopoverLoc, setFilterPopoverLoc] = useState<number[]>([0, 0]);
+  const [filterPopoverColumn, setFilterPopoverColumn] = useState<Column>(columns[0]);
+
   const handleSort = (column: Column) => {
-    const isAsc = orderBy.id === column.id && order === 'asc';
+    const isAsc = orderBy === undefined || (orderBy.id === column.id && order === 'asc');
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(column);
   }
@@ -291,6 +298,14 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
       }
     }
   }
+
+  useEffect(() => {
+    setColumns(ProvinceTableType.INFO === type ? getInfoColumns(save, columnsRefs?.current) : getDevColumns(save));
+
+    if (listRef.current) {
+      listRef.current.scrollToItem(0, 'start');
+    }
+  }, [type, save]);
 
   useEffect(() => {
     if (orderBy === undefined) {
@@ -315,8 +330,22 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
 
         return true;
       }).sort((a, b) => {
-        const va = orderBy.comparatorValue(a);
-        const vb = orderBy.comparatorValue(b);
+        let va;
+        let vb;
+
+        if (orderBy !== undefined) {
+          va = orderBy.comparatorValue(a);
+          vb = orderBy.comparatorValue(b);
+        } else {
+          const col = columns[columns.length - 1];
+
+          if (col !== undefined) {
+            va = col.comparatorValue(a);
+            vb = col.comparatorValue(b);
+          } else {
+            return 0;
+          }
+        }
 
         if (typeof va === 'number' && typeof vb === 'number') {
           return 'asc' === order ? numberComparator(va, vb) : -numberComparator(va, vb);
@@ -471,8 +500,8 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
                                     style={ { color: filters[column.id] === undefined ? theme.palette.primary.main : 'black' } }/>
                       </IconButton>
                       <TableSortLabel
-                        active={ orderBy.id === column.id }
-                        direction={ orderBy.id === column.id ? order : 'asc' }
+                        active={ column.id === (orderBy && orderBy.id) }
+                        direction={ column.id === (orderBy && orderBy.id) ? order : 'asc' }
                         onClick={ () => handleSort(column) }
                       >
                         <Typography variant='button' style={ { fontWeight: 'bold' } }>{ column.label }</Typography>

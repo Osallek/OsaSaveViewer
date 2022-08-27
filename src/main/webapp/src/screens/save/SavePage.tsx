@@ -9,7 +9,7 @@ import ExportModal from 'screens/save/ExportModal';
 import SaveDialog from 'screens/save/SaveDialog';
 import SaveMap from 'screens/save/SaveMap';
 import { MapMode, mapModes, MapSave } from 'types/map.types';
-import { cleanString } from 'utils/format.utils';
+import { cleanString, formatDate } from 'utils/format.utils';
 import { convertSave } from 'utils/save.utils';
 
 function SavePage() {
@@ -64,7 +64,7 @@ function SavePage() {
         if (id) {
           const { data } = await api.save.one(id);
 
-          document.title = data.name;
+          document.title = `${ data.name } (${ formatDate(data.date) })`;
 
           setSave(convertSave(data));
         } else {

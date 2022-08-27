@@ -1,7 +1,7 @@
 import { FilterList, Launch } from '@mui/icons-material';
 import {
-  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, TableSortLabel, TextField, Tooltip, Typography, useTheme
+  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell,
+  TableContainer, TableHead, TableRow, TableSortLabel, TextField, Tooltip, Typography, useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -67,7 +67,8 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
         </Grid>,
       comparatorValue: (save, war) => Object.keys(war.attackers).length,
       filterValues: save => Array.from(new Set<string>(getCountries(save).map(c => getCountrysName(c)).sort(stringComparator))),
-      filter: (save, war, filter) => Object.keys(war.attackers).map(attacker => getCountryName(save, attacker)).find(name => filter.includes(name)) !== undefined,
+      filter: (save, war, filter) => Object.keys(war.attackers).map(attacker => getCountryName(save, attacker)).find(
+        name => filter.includes(name)) !== undefined,
     },
     {
       id: 'defenders',
@@ -86,12 +87,13 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
         </Grid>,
       comparatorValue: (save, war) => Object.keys(war.defenders).length,
       filterValues: save => Array.from(new Set<string>(getCountries(save).map(c => getCountrysName(c)).sort(stringComparator))),
-      filter: (save, war, filter) => Object.keys(war.defenders).map(attacker => getCountryName(save, attacker)).find(name => filter.includes(name)) !== undefined,
+      filter: (save, war, filter) => Object.keys(war.defenders).map(attacker => getCountryName(save, attacker)).find(
+        name => filter.includes(name)) !== undefined,
     },
     {
       id: 'startDate',
       label: intl.formatMessage({ id: 'war.startDate' }),
-      minWidth: 150,
+      minWidth: 100,
       value: (save, war, width) =>
         <Grid style={ { width } }>
           <Typography variant='body1'>
@@ -105,7 +107,7 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
     {
       id: 'endDate',
       label: intl.formatMessage({ id: 'war.endDate' }),
-      minWidth: 150,
+      minWidth: 100,
       value: (save, war, width) =>
         <Grid style={ { width } }>
           <Typography variant='body1'>
@@ -113,13 +115,15 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
           </Typography>
         </Grid>,
       comparatorValue: (save, war) => war.endDate,
-      filterValues: save => Array.from(new Set<number>(save.wars ? save.wars.map(war => war.endDate).filter(value => value !== undefined).map(endDate => endDate ? Number(endDate.slice(0, 4)) : 0).sort(numberComparator) : [])),
+      filterValues: save => Array.from(new Set<number>(
+        save.wars ? save.wars.map(war => war.endDate).filter(value => value !== undefined).map(endDate => endDate ? Number(endDate.slice(0, 4)) : 0).sort(
+          numberComparator) : [])),
       filter: (save, war, filter) => war.endDate !== undefined && filter.includes(Number(war.endDate.slice(0, 4))),
     },
     {
       id: 'duration',
       label: intl.formatMessage({ id: 'war.duration' }),
-      minWidth: 150,
+      minWidth: 120,
       value: (save, war, width) =>
         <Grid style={ { width } }>
           <Typography variant='body1'>
@@ -127,13 +131,15 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
           </Typography>
         </Grid>,
       comparatorValue: (save, war) => war.duration ?? 0,
-      filterValues: save => Array.from(new Set<number>(save.wars ? save.wars.map(war => war.duration).filter(value => value !== undefined).map(duration => duration ?? 0).sort(numberComparator) : [])),
-      filter: (save, war, filter) => war.duration !== undefined && filter.includes(war.duration),
+      filterValues: save => Array.from(new Set<number>(
+        save.wars ? save.wars.map(war => war.duration).filter(value => value !== undefined).map(duration => ((duration ?? 0) / 12) | 0).sort(
+          numberComparator) : [])),
+      filter: (save, war, filter) => war.duration !== undefined && filter.includes((war.duration / 12) | 0),
     },
     {
       id: 'losses',
       label: intl.formatMessage({ id: 'war.losses' }),
-      minWidth: 150,
+      minWidth: 120,
       value: (save, war, width) =>
         <Grid style={ { width } }>
           <Typography variant='body1'>{ formatNumber(getWarLosses(war)) }</Typography>
@@ -268,6 +274,10 @@ function WarTable({ save, visible }: WarTableProps) {
 
   const rowHeight = (index: number, width: number, wars: SaveWar[]): number => {
     const war = wars[index];
+
+    if (!war) {
+      return 75;
+    }
 
     let attackersWidth = 0;
     if (columnsRefs.current && columnsRefs.current[1]) {

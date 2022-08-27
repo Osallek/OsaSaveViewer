@@ -16,18 +16,6 @@ import fr.osallek.osasaveviewer.controller.dto.save.CountryPreviousSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.ExtractorSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.PreviousSaveDTO;
 import fr.osallek.osasaveviewer.service.object.UserInfo;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.collections4.queue.CircularFifoQueue;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-
-import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
@@ -44,6 +32,17 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
+import javax.imageio.ImageIO;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SaveService {
@@ -68,15 +67,11 @@ public class SaveService {
 
     private final UserService userService;
 
-    private final AsyncHandler asyncHandler;
-
-    public SaveService(ObjectMapper objectMapper, ApplicationProperties properties, @Lazy DataService dataService, UserService userService,
-                       AsyncHandler asyncHandler) throws IOException {
+    public SaveService(ObjectMapper objectMapper, ApplicationProperties properties, @Lazy DataService dataService, UserService userService) throws IOException {
         this.objectMapper = objectMapper;
         this.properties = properties;
         this.dataService = dataService;
         this.userService = userService;
-        this.asyncHandler = asyncHandler;
 
         FileUtils.forceMkdir(this.properties.getDataSavesFolder().toFile());
         FileUtils.forceMkdir(this.properties.getUsersFolder().toFile());
@@ -162,14 +157,6 @@ public class SaveService {
         UploadResponseDTO response = checkAssets(save, id);
         this.lastSaves.add(serverSave);
 
-        this.asyncHandler.runAsync(() -> {
-            try {
-                processImage(save, id);
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
-        });
-
         return response;
     }
 
@@ -238,7 +225,12 @@ public class SaveService {
         }
     }
 
-    private void processImage(ExtractorSaveDTO save, String id) throws IOException {
+    public void processImage(String id) throws IOException {
+        if (!saveExists(id)) {
+            return;
+        }
+
+        ExtractorSaveDTO save = readSave(id);
         BufferedImage colorImage = ImageIO.read(this.properties.getDataColorsFolder().resolve(save.getColorsImage() + ".png").toFile());
         Map<Integer, Integer> colorsMap = new HashMap<>();
 

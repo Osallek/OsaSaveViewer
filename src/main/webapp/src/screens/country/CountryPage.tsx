@@ -22,7 +22,7 @@ import CountryReligionTab from 'screens/country/CountryReligionTab';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { stringComparator } from 'utils/format.utils';
+import { formatDate, stringComparator } from 'utils/format.utils';
 import { convertSave, fakeTag, getCountries, getCountry, getCountrysFlag, getCountrysName, getPlayer } from 'utils/save.utils';
 
 function CountryPage() {
@@ -127,7 +127,7 @@ function CountryPage() {
                         <Map color='secondary'/>
                       </Link>
                       <Typography sx={ { ml: 2, mr: 2 } } variant='h6' component='div'>
-                        { save.name }
+                        { `${ save.name } (${ formatDate(save.date) })` }
                       </Typography>
                       <Button
                         key='button-countries'

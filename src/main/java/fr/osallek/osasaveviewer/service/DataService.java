@@ -1,5 +1,6 @@
 package fr.osallek.osasaveviewer.service;
 
+import fr.osallek.osasaveviewer.common.AsyncHandler;
 import fr.osallek.osasaveviewer.common.Constants;
 import fr.osallek.osasaveviewer.common.ZipUtils;
 import fr.osallek.osasaveviewer.common.exception.UnauthorizedException;
@@ -11,14 +12,6 @@ import fr.osallek.osasaveviewer.controller.dto.save.ExtractorSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.IdeaGroupDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.NamedImageLocalisedDTO;
 import fr.osallek.osasaveviewer.service.object.UserInfo;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,6 +23,14 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class DataService {
@@ -43,9 +44,15 @@ public class DataService {
 
     private final ApplicationProperties properties;
 
-    public DataService(UserService userService, ApplicationProperties properties) throws IOException {
+    private final AsyncHandler asyncHandler;
+
+    private final SaveService saveService;
+
+    public DataService(UserService userService, ApplicationProperties properties, AsyncHandler asyncHandler, @Lazy SaveService saveService) throws IOException {
         this.userService = userService;
         this.properties = properties;
+        this.asyncHandler = asyncHandler;
+        this.saveService = saveService;
 
         FileUtils.forceMkdir(this.properties.getSavesFolder().toFile());
     }
@@ -94,6 +101,14 @@ public class DataService {
         } finally {
             FileUtils.deleteQuietly(tmpFolder.toFile());
         }
+
+        this.asyncHandler.runAsync(() -> {
+            try {
+                this.saveService.processImage(data.saveId());
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        });
     }
 
     public AssetsDTO dataExists(ExtractorSaveDTO save) {

@@ -18,7 +18,7 @@ function CountryMonarchTab({ country, save }: CountryMonarchTabProps) {
   const [monarchs, setMonarchs] = useState<Array<SaveMonarch>>([]);
 
   useEffect(() => {
-    setMonarchs(getMonarchs(country));
+    setMonarchs(getMonarchs(save, country));
   }, [country]);
 
   return (

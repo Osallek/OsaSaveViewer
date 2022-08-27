@@ -66,6 +66,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
 
   const [data, setData] = useState<Array<ManaSpentBar>>([]);
   const [total, setTotal] = useState<number>(0);
+  const [totals, setTotals] = useState<number[]>([0, 0, 0]);
   const [activeIndex, setActiveIndex] = useState<number[]>([0, 0, 0]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -75,6 +76,9 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
 
   useEffect(() => {
     setTotal(data.reduce((sum, s) => sum + s.total, 0));
+    setTotals([data.reduce((sum, s) => sum + (s.adm ?? 0), 0),
+      data.reduce((sum, s) => sum + (s.dip ?? 0), 0),
+      data.reduce((sum, s) => sum + (s.mil ?? 0), 0)]);
   }, [data]);
 
   useEffect(() => {
@@ -98,7 +102,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
             }/>
             <Pie
               activeIndex={ activeIndex[0] }
-              activeShape={ props => renderActiveShape(props, total) }
+              activeShape={ props => renderActiveShape(props, totals[0]) }
               data={ data }
               innerRadius={ 90 }
               outerRadius={ 110 }
@@ -120,7 +124,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
             }/>
             <Pie
               activeIndex={ activeIndex[1] }
-              activeShape={ props => renderActiveShape(props, total) }
+              activeShape={ props => renderActiveShape(props, totals[1]) }
               data={ data }
               innerRadius={ 90 }
               outerRadius={ 110 }
@@ -142,7 +146,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
             }/>
             <Pie
               activeIndex={ activeIndex[2] }
-              activeShape={ props => renderActiveShape(props, total) }
+              activeShape={ props => renderActiveShape(props, totals[2]) }
               data={ data }
               innerRadius={ 90 }
               outerRadius={ 110 }

@@ -612,7 +612,10 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
                     :
                     (
                       <Typography variant='body1'>
-                        { `${ formatNumber((country.admPowerSpent && country.admPowerSpent[value]) ?? (country.dipPowerSpent && country.dipPowerSpent[value]) ?? (country.milPowerSpent && country.milPowerSpent[value])) }` }
+                        { `${ formatNumber((isAdm(value) && country.admPowerSpent) ? country.admPowerSpent[value] : 
+                          ((isDip(value) && country.dipPowerSpent) ? country.dipPowerSpent[value] : 
+                            ((isMil(value) && country.milPowerSpent) ? country.milPowerSpent[value] :
+                              undefined))) }` }
                       </Typography>
                     )
                 }
@@ -661,7 +664,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
       ];
 
     case CountryTableType.LOSSES_ARMY:
-      col = Object.values(Losses).filter((value, index) => index <= 8).map(value => {
+      col = Object.values(Losses).filter((value, index) => index <= 8 && ((index + 1) % 3) !== 0).map(value => {
         const max = Math.max(...getCountries(save).map(country => getLosses(country, value) | 0));
         const radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 

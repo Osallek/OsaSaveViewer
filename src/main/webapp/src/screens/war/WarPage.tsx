@@ -11,6 +11,7 @@ import WarMapTab from 'screens/war/WarMapTab';
 import theme from 'theme';
 import { SaveWar } from 'types/api.types';
 import { MapSave } from 'types/map.types';
+import { formatDate } from 'utils/format.utils';
 import { convertSave, getWar } from 'utils/save.utils';
 
 function WarPage() {
@@ -114,7 +115,7 @@ function WarPage() {
                         <Map color='secondary'/>
                       </Link>
                       <Typography sx={ { ml: 2, mr: 2 } } variant='h6' component='div'>
-                        { save.name }
+                        { `${ save.name } (${ formatDate(save.date) })` }
                       </Typography>
                     </Grid>
                   </Toolbar>

@@ -62,7 +62,7 @@ function CountryIdeaTab({ country, save }: CountryIdeaTabProps) {
                                 <Avatar src={ getIdeaUrl(idea.image) } variant='square'
                                         style={ {
                                           marginRight: index + 1 === group.ideas.length ? 0 : 8,
-                                          filter: index <= level ? 'none' : 'grayscale(100%)'
+                                          filter: (index + 1) <= level ? 'none' : 'grayscale(100%)'
                                         } }/>
                               </Tooltip>
                             )) }
