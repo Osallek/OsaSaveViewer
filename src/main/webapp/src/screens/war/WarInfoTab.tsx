@@ -74,7 +74,7 @@ function WarInfoTab({ war, save }: WarInfoTabProps) {
                 <Grid container>
                   { Object.keys(war.attackers).map(tag => (
                     <Tooltip title={ getCountryName(save, tag) } key={ `attacker-${ war.id }-${ tag }` }>
-                      <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
+                      <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
                     </Tooltip>
                   )) }
                 </Grid>
@@ -83,7 +83,7 @@ function WarInfoTab({ war, save }: WarInfoTabProps) {
                 <Grid container>
                   { Object.keys(war.defenders).map(tag => (
                     <Tooltip title={ getCountryName(save, tag) } key={ `defender-${ war.id }-${ tag }` }>
-                      <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
+                      <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
                     </Tooltip>
                   )) }
                 </Grid>

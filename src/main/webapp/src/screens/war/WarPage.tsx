@@ -8,6 +8,7 @@ import WarHistoryTab from 'screens/war/WarHistoryTab';
 import WarInfoTab from 'screens/war/WarInfoTab';
 import WarLossesTab from 'screens/war/WarLossesTab';
 import WarMapTab from 'screens/war/WarMapTab';
+import WarParticipantsTab from 'screens/war/WarParticipantsTab';
 import theme from 'theme';
 import { SaveWar } from 'types/api.types';
 import { MapSave } from 'types/map.types';
@@ -138,6 +139,7 @@ function WarPage() {
                     <Grid item style={ { flex: 1 } }/>
                     <Tab label={ intl.formatMessage({ id: 'war.tab.info' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'war.tab.map' }) }/>
+                    <Tab label={ intl.formatMessage({ id: 'war.tab.participants' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'war.tab.losses' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'war.tab.history' }) }/>
                     <Grid item style={ { flex: 1 } }/>
@@ -151,10 +153,13 @@ function WarPage() {
                     activeTab == 2 && <WarMapTab war={ war } save={ save } containerRef={ containerRef }/>
                   }
                   {
-                    activeTab == 3 && <WarLossesTab war={ war } save={ save }/>
+                    activeTab == 3 && <WarParticipantsTab war={ war } save={ save }/>
                   }
                   {
-                    activeTab == 4 && <WarHistoryTab war={ war } save={ save }/>
+                    activeTab == 4 && <WarLossesTab war={ war } save={ save }/>
+                  }
+                  {
+                    activeTab == 5 && <WarHistoryTab war={ war } save={ save }/>
                   }
                 </Grid>
               </>

@@ -75,7 +75,7 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
             <Grid container>
               { h.addAttacker.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b))).map(tag => (
                 <Tooltip title={ getCountryName(save, tag) } key={ `attacker-${ war.id }-${ tag }` }>
-                  <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
+                  <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
                 </Tooltip>
               )) }
             </Grid>
@@ -95,7 +95,7 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
             <Grid container>
               { h.addDefender.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b))).map(tag => (
                 <Tooltip title={ getCountryName(save, tag) } key={ `defender-${ war.id }-${ tag }` }>
-                  <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8 } } component={ Paper }/>
+                  <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
                 </Tooltip>
               )) }
             </Grid>

@@ -864,3 +864,13 @@ export function getProvinceLosses(war: SaveWar, id: number): number {
 export function getBattleLosses(battle: SaveBattle): number {
   return battle.attacker.losses + battle.defender.losses;
 }
+
+export function getWarValue(tag: string, war: SaveWar): number {
+  if (Object.keys(war.attackers).includes(tag)) {
+    return war.attackers[tag].value / Object.values(war.attackers).map(value => value.value).reduce((s, d) => s + d ?? 0, 0);
+  } else if (Object.keys(war.defenders).includes(tag)) {
+    return war.defenders[tag].value / Object.values(war.defenders).map(value => value.value).reduce((s, d) => s + d ?? 0, 0);
+  }
+
+  return 0;
+}

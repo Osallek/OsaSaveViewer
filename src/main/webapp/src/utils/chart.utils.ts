@@ -1,7 +1,7 @@
 import { green, grey, orange, red } from '@mui/material/colors';
 import { intl } from 'index';
 import { AxisDomain } from 'recharts/types/util/types';
-import { CountryPreviousSave, Expense, Income, PowerSpent, SaveCountry, SaveEstate, SaveWar, SaveWarParticipant } from 'types/api.types';
+import { CountryPreviousSave, Expense, Income, PowerSpent, SaveCountry, SaveEstate, SaveWarParticipant } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { saveToColor } from 'utils/colors.utils';
 import { colorToHex, formatNumber, getYear, numberComparator, stringComparator } from 'utils/format.utils';
@@ -538,7 +538,7 @@ export function getLossesChart(participants: Array<SaveWarParticipant>): Current
         line.total += nb;
         line[type] = line[type] ? line[type] + nb : nb;
 
-        if (i <=9) {
+        if (i <= 9) {
           line['land'] = line['land'] ? line['land'] + nb : nb;
         } else {
           line['naval'] = line['naval'] ? line['naval'] + nb : nb;
