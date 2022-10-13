@@ -23,6 +23,7 @@ const common = {
   'common.quantity': 'Nombre',
   'common.compare': 'Comparaison',
   'common.wars': 'Guerres',
+  'common.tradeNodes': 'Nœuds commerciaux',
   'common.teamA': 'Équipe 1',
   'common.teamB': 'Équipe 2',
 }

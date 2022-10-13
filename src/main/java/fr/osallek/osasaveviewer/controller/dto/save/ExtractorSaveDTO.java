@@ -80,6 +80,8 @@ public final class ExtractorSaveDTO {
 
     private List<WarDTO> wars;
 
+    private List<TradeNodeDTO> tradeNodes;
+
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -374,5 +376,13 @@ public final class ExtractorSaveDTO {
 
     public void setWars(List<WarDTO> wars) {
         this.wars = wars;
+    }
+
+    public List<TradeNodeDTO> getTradeNodes() {
+        return tradeNodes;
+    }
+
+    public void setTradeNodes(List<TradeNodeDTO> tradeNodes) {
+        this.tradeNodes = tradeNodes;
     }
 }

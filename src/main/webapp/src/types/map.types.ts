@@ -6,7 +6,9 @@ import {
 import { colorToHex, formatDate, formatNumber } from 'utils/format.utils';
 import {
   getArea, getAreaState, getCHistory, getCountries, getCountry, getCountryName, getCountrysName, getCulture, getCultureName, getEmperor, getGood, getGoodName,
-  getInstitName, getOverlord, getPHistory, getProvinceLosses, getReligion, getReligionName, getSubjects, getSubjectTypeName, getWar
+  getInstitName, getOverlord, getPHistory, getProvinceLosses, getReligion, getReligionName, getSubjects, getSubjectTypeName, getTradeNode, getTradeNodeName,
+  getTradeNodesName,
+  getWar
 } from 'utils/save.utils';
 
 export enum MapMode {
@@ -27,6 +29,7 @@ export enum MapMode {
   DIPLOMACY = 'DIPLOMACY',
   C_MANUAL_DEV = 'C_MANUAL_DEV',
   ONCE_WAR = 'ONCE_WAR',
+  TRADE_NODE = 'TRADE_NODE',
 }
 
 export interface IMapMode {
@@ -868,6 +871,32 @@ export const mapModes: Record<MapMode, IMapMode> = {
       } else {
         return '';
       }
+    },
+    hasTooltip: true,
+  },
+  [MapMode.TRADE_NODE]: {
+    mapMode: MapMode.TRADE_NODE,
+    provinceColor: (province, save, data, countries) => {
+      if (!province.node) {
+        return EMPTY_COLOR;
+      }
+
+      const node = getTradeNode(save, province.node);
+
+      return node ? node.color : EMPTY_COLOR;
+    },
+    image: 'node',
+    allowDate: true,
+    prepare: () => {},
+    selectable: true,
+    tooltip: (province, save) => {
+      const node = getTradeNode(save, province.node);
+
+      if (!node) {
+        return '';
+      }
+
+      return `${ province.name } : ${ getTradeNodesName(node) }`;
     },
     hasTooltip: true,
   },

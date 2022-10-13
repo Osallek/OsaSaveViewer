@@ -2,7 +2,7 @@ import { eu4Locale } from 'index';
 import {
   ColorNamedImageLocalised, CountryPreviousSave, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save,
   SaveArea, SaveBattle, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMission, SaveMonarch,
-  SaveProvince, SaveProvinceHistory, SaveReligion, SaveSimpleProvince, SaveWar
+  SaveProvince, SaveProvinceHistory, SaveReligion, SaveSimpleProvince, SaveTradeNode, SaveWar
 } from 'types/api.types';
 import { CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
 import {
@@ -307,6 +307,22 @@ export function getGoodImage(save: MapSave, name: string | undefined): string {
   }
 
   return getGoodsImage(getGood(save, name));
+}
+
+export function getTradeNode(save: MapSave, name: string | undefined): SaveTradeNode | undefined {
+  return (save.tradeNodes && name) ? save.tradeNodes.find(node => name === node.name) : undefined;
+}
+
+export function getTradeNodeName(save: MapSave, name: string | undefined): string {
+  if (!name) {
+    return '';
+  }
+
+  return getTradeNodesName(getTradeNode(save, name));
+}
+
+export function getTradeNodesName(node: SaveTradeNode | undefined): string {
+  return node ? getName(node) ?? node.name : '';
 }
 
 export function getSubjectType(save: MapSave, name: string): NamedLocalised {
@@ -873,4 +889,26 @@ export function getWarValue(tag: string, war: SaveWar): number {
   }
 
   return 0;
+}
+
+export function getTradeNodeValue(node: SaveTradeNode): number {
+  return node.incoming.map(value => value.value).reduce((s, n) => s + n, 0);
+}
+
+export function getTradeNodeLocalValue(node: SaveTradeNode): number {
+  return node.incoming.filter(value => value.from === undefined).map(value => value.value).reduce((s, n) => s + n, 0);
+}
+
+export function getTradeNodeIncomingValue(node: SaveTradeNode): number {
+  return node.incoming.filter(value => value.from !== undefined).map(value => value.value).reduce((s, n) => s + n, 0);
+}
+
+export function getTradeNodeOutgoingValue(node: SaveTradeNode, save: MapSave): number {
+  if (!save.tradeNodes) {
+    return 0;
+  }
+
+  console.log(node);
+
+  return save.tradeNodes.map(n => n.incoming.map(i => i.from === node.name ? i.value : 0).reduce((s, n) => s + n, 0)).reduce((s, n) => s + n, 0);
 }

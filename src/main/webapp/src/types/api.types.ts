@@ -44,6 +44,7 @@ export type Save = {
   previousSaves?: Array<PreviousSave>;
   missions: Array<SaveMission>;
   wars?: Array<SaveWar>;
+  tradeNodes?: Array<SaveTradeNode>;
 };
 
 export type Localised = {
@@ -80,6 +81,7 @@ export type SaveProvince = SaveSimpleProvince & {
   autonomy?: number;
   institutions?: Array<number>;
   city: boolean;
+  node?: string;
   improvements?: Record<string, number>;
   colonySize?: number;
   buildings?: Array<string>;
@@ -675,4 +677,28 @@ export type SaveCombatant = {
   losses: number;
   country: string;
   commander: string;
+}
+
+export type SaveTradeNodeCountry = {
+  tag: string;
+  value: number;
+  provincePower?: number;
+  hasCapital: boolean;
+  money?: number;
+  shipPower?: number;
+  steerPower?: number;
+  lightShip?: number;
+}
+
+export type SaveTradeNodeIncoming = {
+  from?: string;
+  value: number;
+  added: number;
+}
+
+export type SaveTradeNode = NamedLocalised & {
+  retention: number;
+  color: SaveColor;
+  countries: Array<SaveTradeNodeCountry>;
+  incoming: Array<SaveTradeNodeIncoming>;
 }

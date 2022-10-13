@@ -22,6 +22,8 @@ public class ProvinceDTO extends SimpleProvinceDTO {
 
     private boolean isCity;
 
+    private String node;
+
     private Map<String, Integer> improvements;
 
     private List<String> buildings;
@@ -95,6 +97,14 @@ public class ProvinceDTO extends SimpleProvinceDTO {
 
     public void setCity(boolean city) {
         isCity = city;
+    }
+
+    public String getNode() {
+        return node;
+    }
+
+    public void setNode(String node) {
+        this.node = node;
     }
 
     public Map<String, Integer> getImprovements() {

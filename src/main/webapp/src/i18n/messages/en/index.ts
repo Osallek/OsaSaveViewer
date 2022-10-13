@@ -1,3 +1,4 @@
+import tradeNode from 'i18n/messages/en/trade_node.i18n';
 import { Localization } from 'types/api.types';
 import common from './common.i18n';
 import country from './country.i18n';
@@ -18,6 +19,7 @@ const en = {
     ...user,
     ...home,
     ...war,
+    ...tradeNode,
   },
 }
 

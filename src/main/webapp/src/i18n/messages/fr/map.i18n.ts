@@ -17,6 +17,7 @@ const map = {
   'map.mod.C_MANUAL_DEV': 'Développement manuel',
   'map.mod.DIPLOMACY': 'Diplomacie',
   'map.mod.ONCE_WAR': 'A déjà été en guerre contre',
+  'map.mod.TRADE_NODE': 'Nœuds commerciaux',
 }
 
 export default map
