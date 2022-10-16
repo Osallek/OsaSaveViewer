@@ -172,7 +172,7 @@ public class CountryDTO extends ImageLocalised {
 
     private int nbInstitutions;
 
-    private Map<LocalDate, String> changedTag;
+    private SortedMap<LocalDate, String> changedTag;
 
     private SortedSet<CountryPreviousSaveDTO> previousSaves;
 
@@ -837,11 +837,11 @@ public class CountryDTO extends ImageLocalised {
         this.nbInstitutions = nbInstitutions;
     }
 
-    public Map<LocalDate, String> getChangedTag() {
+    public SortedMap<LocalDate, String> getChangedTag() {
         return changedTag;
     }
 
-    public void setChangedTag(Map<LocalDate, String> changedTag) {
+    public void setChangedTag(SortedMap<LocalDate, String> changedTag) {
         this.changedTag = changedTag;
     }
 

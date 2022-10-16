@@ -6,8 +6,7 @@ import {
 import { colorToHex, formatDate, formatNumber } from 'utils/format.utils';
 import {
   getArea, getAreaState, getCHistory, getCountries, getCountry, getCountryName, getCountrysName, getCulture, getCultureName, getEmperor, getGood, getGoodName,
-  getInstitName, getOverlord, getPHistory, getProvinceLosses, getReligion, getReligionName, getSubjects, getSubjectTypeName, getTradeNode, getTradeNodeName,
-  getTradeNodesName,
+  getInstitName, getOverlord, getPHistory, getProvinceLosses, getReligion, getReligionName, getSubjects, getSubjectTypeName, getTradeNode, getTradeNodesName,
   getWar
 } from 'utils/save.utils';
 
@@ -34,20 +33,21 @@ export enum MapMode {
 
 export interface IMapMode {
   mapMode: MapMode;
-  provinceColor: (province: SaveProvince, save: MapSave, data: any, countries: Array<string>) => SaveColor;
+  provinceColor: (province: SaveProvince, save: MapSave, data: any, countries: Array<string>, date?: string) => SaveColor;
   image: string;
   allowDate: boolean;
-  prepare: (save: MapSave, dataId: string | null) => any;
+  prepare: (save: MapSave, dataId: string | null, date?: string) => any;
   selectable: boolean;
-  tooltip?: (province: SaveProvince, save: MapSave, dataId: string | null) => string;
+  tooltip?: (province: SaveProvince, save: MapSave, dataId: string | null, date?: string) => string;
   hasTooltip: boolean;
+  supportDate: boolean;
 }
 
 export const mapModes: Record<MapMode, IMapMode> = {
   [MapMode.POLITICAL]: {
     mapMode: MapMode.POLITICAL,
-    provinceColor: (province, save, data, countries) => {
-      const owner = getPHistory(province, save).owner;
+    provinceColor: (province, save, data, countries, date) => {
+      const owner = getPHistory(province, save, date).owner;
 
       if (!owner || (countries.length > 0 && !countries.includes(owner))) {
         return EMPTY_COLOR;
@@ -59,8 +59,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
-    tooltip: (province, save) => {
-      const owner = getPHistory(province, save).owner;
+    tooltip: (province, save, dataId, date) => {
+      const owner = getPHistory(province, save, date).owner;
 
       if (!owner) {
         return '';
@@ -69,11 +69,12 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ getCountryName(save, owner) }`;
     },
     hasTooltip: true,
+    supportDate: true,
   },
   [MapMode.RELIGION]: {
     mapMode: MapMode.RELIGION,
-    provinceColor: (province, save, data, countries) => {
-      const history = getPHistory(province, save);
+    provinceColor: (province, save, data, countries, date) => {
+      const history = getPHistory(province, save, date);
 
       if (!history.religion || (countries.length > 0 && (!history.owner || !countries.includes(history.owner)))) {
         return EMPTY_COLOR;
@@ -85,8 +86,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
-    tooltip: (province, save) => {
-      const religion = getPHistory(province, save).religion;
+    tooltip: (province, save, countries, date) => {
+      const religion = getPHistory(province, save, date).religion;
 
       if (!religion) {
         return '';
@@ -95,6 +96,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ getReligionName(save, religion) }`;
     },
     hasTooltip: true,
+    supportDate: true,
   },
   [MapMode.DEVELOPMENT]: {
     mapMode: MapMode.DEVELOPMENT,
@@ -151,15 +153,16 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return toReturn;
     },
     selectable: true,
-    tooltip: (province, save) => {
+    tooltip: (province) => {
       return `${ province.name } : ${ province.baseTax ?? 0 }/${ province.baseProduction ?? 0 }/${ province.baseManpower ?? 0 } (${ (province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0) })`;
     },
     hasTooltip: true,
+    supportDate: false,
   },
   [MapMode.HRE]: {
     mapMode: MapMode.HRE,
-    provinceColor: (province, save, { electors, emperor }: { electors: Array<string>, emperor: string }, countries) => {
-      const history = getPHistory(province, save);
+    provinceColor: (province, save, { electors, emperor }: { electors: Array<string>, emperor: string }, countries, date) => {
+      const history = getPHistory(province, save, date);
 
       if (countries.length > 0 && (!history.owner || !countries.includes(history.owner))) {
         return EMPTY_COLOR;
@@ -177,29 +180,30 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     image: 'hre',
     allowDate: true,
-    prepare: (save) => {
+    prepare: (save, dataId, date) => {
       return {
-        electors: getCountries(save).filter(country => country.history).filter(country => getCHistory(country, save).elector).map(value => value.tag),
-        emperor: getEmperor(save.hre, save.date)
+        electors: getCountries(save).filter(country => country.history).filter(country => getCHistory(country, save, date).elector).map(value => value.tag),
+        emperor: getEmperor(save.hre, date ?? save.date)
       }
     },
     selectable: true,
-    tooltip: (province, save) => {
-      const history = getPHistory(province, save);
+    tooltip: (province, save, dataId, date) => {
+      const history = getPHistory(province, save, date);
 
       if (!history.owner) {
         return '';
       }
 
-      if (getEmperor(save.hre, save.date) === history.owner) {
+      if (getEmperor(save.hre, date ?? save.date) === history.owner) {
         return `${ getCountryName(save, history.owner) } : ${ intl.formatMessage({ id: 'country.emperor' }) }`;
-      } else if (getCountries(save).filter(country => country.history).filter(country => getCHistory(country, save).elector).map(value => value.tag).includes(history.owner)) {
+      } else if (getCountries(save).filter(country => country.history).filter(country => getCHistory(country, save, date).elector).map(value => value.tag).includes(history.owner)) {
         return `${ getCountryName(save, history.owner) } : ${ intl.formatMessage({ id: 'country.elector' }) }`;
       }
 
       return history.hre ? `${ getCountryName(save, history.owner) } : ${ intl.formatMessage({ id: 'country.hre' }) }` : '';
     },
     hasTooltip: true,
+    supportDate: true,
   },
   [MapMode.GREAT_POWER]: {
     mapMode: MapMode.GREAT_POWER,
@@ -217,7 +221,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: false,
     prepare: () => {},
     selectable: true,
-    tooltip: (province, save) => {
+    tooltip: (province, save, dataId,) => {
       const owner = getPHistory(province, save).owner;
 
       if (!owner) {
@@ -233,6 +237,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ getCountrysName(country) } : ${ country.greatPowerRank }`;
     },
     hasTooltip: true,
+    supportDate: false,
   },
   [MapMode.INSTITUTION]: {
     mapMode: MapMode.INSTITUTION,
@@ -275,6 +280,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ getInstitName(save, instit) }`;
     },
     hasTooltip: true,
+    supportDate: false,
   },
   [MapMode.TECHNOLOGY]: {
     mapMode: MapMode.TECHNOLOGY,
@@ -337,11 +343,12 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ getCountrysName(country) } : ${ country.admTech }/${ country.dipTech }/${ country.milTech }`;
     },
     hasTooltip: true,
+    supportDate: false,
   },
   [MapMode.GOOD]: {
     mapMode: MapMode.GOOD,
-    provinceColor: (province, save, data, countries) => {
-      const history = getPHistory(province, save);
+    provinceColor: (province, save, data, countries, date) => {
+      const history = getPHistory(province, save, date);
 
       if (!history.tradeGood || (countries.length > 0 && (!history.owner || !countries.includes(history.owner)))) {
         return EMPTY_COLOR;
@@ -353,8 +360,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
-    tooltip: (province, save) => {
-      const good = getPHistory(province, save).tradeGood;
+    tooltip: (province, save, dataId, date) => {
+      const good = getPHistory(province, save, date).tradeGood;
 
       if (!good) {
         return '';
@@ -363,11 +370,12 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ getGoodName(save, good) }`;
     },
     hasTooltip: true,
+    supportDate: true,
   },
   [MapMode.CULTURE]: {
     mapMode: MapMode.CULTURE,
-    provinceColor: (province, save, data, countries) => {
-      const history = getPHistory(province, save);
+    provinceColor: (province, save, data, countries, date) => {
+      const history = getPHistory(province, save, date);
 
       if (!history.culture || (countries.length > 0 && (!history.owner || !countries.includes(history.owner)))) {
         return EMPTY_COLOR;
@@ -379,8 +387,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
     allowDate: true,
     prepare: () => {},
     selectable: true,
-    tooltip: (province, save) => {
-      const culture = getPHistory(province, save).culture;
+    tooltip: (province, save, dataId, date) => {
+      const culture = getPHistory(province, save, date).culture;
 
       if (!culture) {
         return '';
@@ -389,6 +397,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ getCultureName(save, culture) }`;
     },
     hasTooltip: true,
+    supportDate: true,
   },
   [MapMode.DEVASTATION]: {
     mapMode: MapMode.DEVASTATION,
@@ -443,11 +452,12 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     hasTooltip: true,
+    supportDate: false,
   },
   [MapMode.PLAYERS]: {
     mapMode: MapMode.PLAYERS,
-    provinceColor: (province, save, data, countries) => {
-      const owner = getPHistory(province, save).owner;
+    provinceColor: (province, save, data, countries, date) => {
+      const owner = getPHistory(province, save, date).owner;
 
       if (!owner || (countries.length > 0 && (!owner || !countries.includes(owner)))) {
         return EMPTY_COLOR;
@@ -461,14 +471,22 @@ export const mapModes: Record<MapMode, IMapMode> = {
 
       const overlord = getOverlord(country, save);
 
-      return (overlord && overlord.players && overlord.players.length > 0) ? overlord.colors.mapColor : EMPTY_COLOR;
+      if (overlord && overlord.players && overlord.players.length > 0 && date) {
+        const subject = getSubjects(overlord, save, date).find(value => value.second === owner);
+
+        if (subject) {
+          return subject.date <= date ? overlord.colors.mapColor : EMPTY_COLOR;
+        }
+      }
+
+      return EMPTY_COLOR;
     },
     image: 'players',
     allowDate: true,
     prepare: () => {},
     selectable: true,
-    tooltip: (province, save) => {
-      const owner = getPHistory(province, save).owner;
+    tooltip: (province, save, dataId, date) => {
+      const owner = getPHistory(province, save, date).owner;
 
       if (!owner) {
         return '';
@@ -485,6 +503,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return (overlord && overlord.players && overlord.players.length > 0) ? `${ getCountrysName(country) } : ${ overlord.players[0] }` : '';
     },
     hasTooltip: true,
+    supportDate: true,
   },
   [MapMode.LOSSES]: {
     mapMode: MapMode.LOSSES,
@@ -517,10 +536,11 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ formatNumber(getProvinceLosses(war, province.id)) }`;
     },
     hasTooltip: true,
+    supportDate: false,
   },
   [MapMode.WAR]: {
     mapMode: MapMode.WAR,
-    provinceColor: (province, save, { war }: { war: SaveWar }, countries) => {
+    provinceColor: (province, save, { war }: { war: SaveWar }) => {
       if (!war) {
         return EMPTY_COLOR;
       }
@@ -577,6 +597,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     hasTooltip: true,
+    supportDate: false,
   },
   [MapMode.MANUAL_DEV]: {
     mapMode: MapMode.MANUAL_DEV,
@@ -624,10 +645,11 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ dev }`;
     },
     hasTooltip: true,
+    supportDate: false,
   },
   [MapMode.DIPLOMACY]: {
     mapMode: MapMode.DIPLOMACY,
-    provinceColor: (province, save, { country }: { country: SaveCountry | undefined }, countries) => {
+    provinceColor: (province, save, { country }: { country: SaveCountry | undefined }, countries, date) => {
       if (!country) {
         return EMPTY_COLOR;
       }
@@ -665,7 +687,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
         };
       }
 
-      if (getSubjects(country, save).map(value => value.second).includes(owner)) {
+      if (getSubjects(country, save, date).map(value => value.second).includes(owner)) {
         return {
           red: 88,
           green: 176,
@@ -709,7 +731,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return { country: dataId ? getCountry(save, dataId) : undefined };
     },
     selectable: false,
-    tooltip: (province, save, dataId) => {
+    tooltip: (province, save, dataId, date) => {
       if (!dataId) {
         return '';
       }
@@ -733,8 +755,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
         return `${ getCountryName(save, owner) } : ${ intl.formatMessage({ id: 'country.atWarWith' }) }`;
       }
 
-      if (getSubjects(country, save).map(value => value.second).includes(owner)) {
-        return `${ getCountryName(save, owner) } : ${ getSubjectTypeName(save, getSubjects(country, save).find(value => value.second === owner)?.type) }`;
+      if (getSubjects(country, save, date).map(value => value.second).includes(owner)) {
+        return `${ getCountryName(save, owner) } : ${ getSubjectTypeName(save, getSubjects(country, save, date).find(value => value.second === owner)?.type) }`;
       }
 
       if (country.guarantees && country.guarantees.includes(owner)) {
@@ -752,6 +774,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return '';
     },
     hasTooltip: true,
+    supportDate: false,
   },
   [MapMode.C_MANUAL_DEV]: {
     mapMode: MapMode.C_MANUAL_DEV,
@@ -805,6 +828,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ province.improvements ? province.improvements[dataId] ?? 0 : 0 }`;
     },
     hasTooltip: true,
+    supportDate: false,
   },
   [MapMode.ONCE_WAR]: {
     mapMode: MapMode.ONCE_WAR,
@@ -873,10 +897,11 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     hasTooltip: true,
+    supportDate: false,
   },
   [MapMode.TRADE_NODE]: {
     mapMode: MapMode.TRADE_NODE,
-    provinceColor: (province, save, data, countries) => {
+    provinceColor: (province, save) => {
       if (!province.node) {
         return EMPTY_COLOR;
       }
@@ -899,6 +924,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ getTradeNodesName(node) }`;
     },
     hasTooltip: true,
+    supportDate: true,
   },
 }
 

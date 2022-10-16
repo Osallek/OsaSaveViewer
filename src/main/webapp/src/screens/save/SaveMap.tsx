@@ -21,9 +21,10 @@ interface SaveMapProps {
   mapMode: MapMode;
   setReady: (ready: boolean) => void;
   dataId: string | null;
+  date?: string;
 }
 
-const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, ref) => {
+const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapProps, ref) => {
     const offsetBounce = 25;
     const tooltipBounce = 250;
     const [displayable, setDisplayable] = useState<boolean>(false);
@@ -243,14 +244,14 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
 
     useEffect(() => {
       if (displayable && gl && currentColorsTexture && save) {
-        getTextureFromSave(currentColorsTexture, save, gl, mapMode, dataId);
+        getTextureFromSave(currentColorsTexture, save, gl, mapMode, dataId, date);
 
         gl.bindTexture(gl.TEXTURE_2D, currentColorsTexture.texture);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
 
         setReady(true);
       }
-    }, [save, currentColorsTexture, gl, mapMode, currentColorsLoc, setReady, displayable]);
+    }, [save, currentColorsTexture, gl, mapMode, currentColorsLoc, setReady, displayable, date]);
 
     useEffect(() => {
       setClickedProvince(null);
@@ -445,7 +446,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId }: SaveMapProps, r
           save &&
             <>
               {
-                <Tooltip title={ (hoverProvince && iMapMode.hasTooltip && iMapMode.tooltip !== undefined) ? iMapMode.tooltip(hoverProvince, save, dataId) : '' }
+                <Tooltip title={ (hoverProvince && iMapMode.hasTooltip && iMapMode.tooltip !== undefined) ? iMapMode.tooltip(hoverProvince, save, dataId, date) : '' }
                          followCursor>
                   <canvas id='save-map-canvas'
                           ref={ canvas }

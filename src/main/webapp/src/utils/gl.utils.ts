@@ -102,9 +102,9 @@ export function prepareTexture(save: MapSave, gl: WebGL2RenderingContext): Provi
   };
 }
 
-export function getTextureFromSave(provincesTexture: ProvincesTexture, save: MapSave, gl: WebGL2RenderingContext, mapMod: MapMode, dataId: string | null) {
+export function getTextureFromSave(provincesTexture: ProvincesTexture, save: MapSave, gl: WebGL2RenderingContext, mapMod: MapMode, dataId: string | null, date?: string) {
   if (provincesTexture.array) {
-    fillMapArray(provincesTexture.array, save, mapMod, dataId);
+    fillMapArray(provincesTexture.array, save, mapMod, dataId, date);
 
     gl.bindTexture(gl.TEXTURE_2D, provincesTexture.texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -118,11 +118,11 @@ export function getTextureFromSave(provincesTexture: ProvincesTexture, save: Map
   }
 }
 
-export function fillMapArray(array: Uint8Array, save: MapSave, mapMod: MapMode, dataId: string | null) {
-  const data = mapModes[mapMod].prepare(save, dataId);
+export function fillMapArray(array: Uint8Array, save: MapSave, mapMod: MapMode, dataId: string | null, date?: string) {
+  const data = mapModes[mapMod].prepare(save, dataId, date);
 
   for (const province of save.provinces) {
-    const color = mapModes[mapMod].provinceColor(province, save, data, []);
+    const color = mapModes[mapMod].provinceColor(province, save, data, [], date);
     array[(province.id - 1) * 4] = color.red;
     array[(province.id - 1) * 4 + 1] = color.green;
     array[(province.id - 1) * 4 + 2] = color.blue;

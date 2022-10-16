@@ -571,6 +571,7 @@ export type SaveRelation = {
 
 export type SaveDependency = SaveRelation & {
   type: string;
+  endDate: string;
 }
 
 export type SaveDiplomacy = {

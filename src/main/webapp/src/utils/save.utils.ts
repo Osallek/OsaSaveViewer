@@ -13,6 +13,20 @@ import { capitalize, getYear, numberComparator, stringComparator, toMap } from '
 
 export const fakeTag = "---";
 
+export const DATE_EXP = new RegExp('^-?[0-9]{1,4}-[0-9]{1,2}-[0-9]{1,2}$');
+
+export function isValidDate(date?: string | null, save?: MapSave): boolean {
+  if (date === undefined || date === null || !DATE_EXP.test(date)) {
+    return false;
+  }
+
+  if (save) {
+    return save.date >= date && save.startDate <= date;
+  }
+
+  return true;
+}
+
 export function convertSave(save: Save): MapSave {
   return {
     ...save,
@@ -454,8 +468,8 @@ export function getAreaState(area: SaveArea, tag?: string): SaveCountryState | n
   return (area.states && tag) ? area.states[tag] : null;
 }
 
-export function getCHistory(country: SaveCountry, save: MapSave): CountryHistory {
-  return save.currentCountries.get(country.tag) ?? save.currentCountries.values().next().value;
+export function getCHistory(country: SaveCountry, save: MapSave, date?: string): CountryHistory {
+  return (date && save.date !== date) ? getCHistoryInternal(country, date) : save.currentCountries.get(country.tag) ?? save.currentCountries.values().next().value;
 }
 
 function getCHistoryInternal(country: SaveCountry, date: string): CountryHistory {
@@ -545,8 +559,8 @@ export function getOverlord(country: SaveCountry, save: MapSave): SaveCountry | 
   return overlord ? getCountry(save, overlord.first) : undefined;
 }
 
-export function getSubjects(country: SaveCountry, save: MapSave): Array<SaveDependency> {
-  return save.diplomacy.dependencies.filter(dependency => dependency.first === country.tag);
+export function getSubjects(country: SaveCountry, save: MapSave, date?: string): Array<SaveDependency> {
+  return save.diplomacy.dependencies.filter(dependency => dependency.first === country.tag && dependency.date <= (date ?? save.date) && (dependency.endDate === undefined || dependency.endDate >= (date ?? save.date)));
 }
 
 export function interestingHistory(h: SaveProvinceHistory): boolean {
