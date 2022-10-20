@@ -147,7 +147,6 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
       }
 
       if (h.battles && h.battles.length > 0) {
-        console.log(h.battles[0]);
         decorations.push(...h.battles.map(battle => ({
           icon: (
             <Tooltip title={ intl.formatMessage({ id: 'war.battle' }) }>

@@ -77,10 +77,6 @@ function WarPage() {
     setActiveTab(Number(searchParams.get('tab') ?? '1'));
   }, [searchParams]);
 
-  useEffect(() => {
-    console.log(containerRef.current);
-  }, [containerRef.current]);
-
   return (
     <>
       { (error || (!loading && (war === undefined || save === undefined))) ?

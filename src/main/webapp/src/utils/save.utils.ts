@@ -1,4 +1,6 @@
 import { eu4Locale } from 'index';
+import provinceHistoryWorker from 'screens/save/province_history_worker';
+import WorkerBuilder from 'screens/save/worker_builder';
 import {
   ColorNamedImageLocalised, CountryPreviousSave, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save,
   SaveArea, SaveBattle, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMission, SaveMonarch,
@@ -10,6 +12,11 @@ import {
   getReligionUrl
 } from 'utils/data.utils';
 import { capitalize, getYear, numberComparator, stringComparator, toMap } from 'utils/format.utils';
+
+const workers = [new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker),
+  new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker),
+  new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker),
+  new WorkerBuilder(provinceHistoryWorker)];
 
 export const fakeTag = "---";
 
@@ -28,11 +35,30 @@ export function isValidDate(date?: string | null, save?: MapSave): boolean {
 }
 
 export function convertSave(save: Save): MapSave {
-  return {
+  const newSave = {
     ...save,
     currentProvinces: toMap(save.provinces, p => p.id, p => getPHistoryInternal(p, save.date)),
     currentCountries: toMap(save.countries, c => c.tag, c => getCHistoryInternal(c, save.date)),
   }
+
+  for (let i = 0; i < workers.length; i++) {
+    const worker = workers[i];
+    worker.onmessage = (message) => {
+      if (message && message.data) {
+        newSave.provinces[message.data.i].histories = message.data.histories;
+      }
+    };
+  }
+
+  for (let i = 0; i < newSave.provinces.length; i++) {
+    const province = newSave.provinces[i];
+
+    if (!province.histories) {
+      workers[i % workers.length].postMessage({ i, province });
+    }
+  }
+
+  return newSave;
 }
 
 export function getName(localised: Localised): string | undefined {
@@ -52,6 +78,22 @@ export function getPHistory(province: SaveProvince, save: MapSave, date?: string
 
 function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHistory {
   let history: ProvinceHistory = { date };
+
+  if (province.histories) {
+    for (let i = 0; i < province.histories.length; i++){
+      const h = province.histories[i];
+
+      if (h.date && h.date > date) {
+        if (i === 0) {
+          return h;
+        } else {
+          return province.histories[i - 1];
+        }
+      }
+    }
+
+    return province.histories.length > 0 ? province.histories[province.histories.length - 1] : history;
+  }
 
   for (const h of province.history) {
     if (!h.date || h.date <= date) {
@@ -921,8 +963,6 @@ export function getTradeNodeOutgoingValue(node: SaveTradeNode, save: MapSave): n
   if (!save.tradeNodes) {
     return 0;
   }
-
-  console.log(node);
 
   return save.tradeNodes.map(n => n.incoming.map(i => i.from === node.name ? i.value : 0).reduce((s, n) => s + n, 0)).reduce((s, n) => s + n, 0);
 }

@@ -1,3 +1,5 @@
+import { ProvinceHistory } from 'types/map.types';
+
 export type Pair<K, V> = {
   key?: K;
   value?: V;
@@ -86,6 +88,7 @@ export type SaveProvince = SaveSimpleProvince & {
   colonySize?: number;
   buildings?: Array<string>;
   history: Array<SaveProvinceHistory>;
+  histories: Array<ProvinceHistory>;
 }
 
 export type SaveProvinceHistory = {
