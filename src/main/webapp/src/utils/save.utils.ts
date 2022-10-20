@@ -1,6 +1,4 @@
 import { eu4Locale } from 'index';
-import provinceHistoryWorker from 'screens/save/province_history_worker';
-import WorkerBuilder from 'screens/save/worker_builder';
 import {
   ColorNamedImageLocalised, CountryPreviousSave, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save,
   SaveArea, SaveBattle, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMission, SaveMonarch,
@@ -13,10 +11,11 @@ import {
 } from 'utils/data.utils';
 import { capitalize, getYear, numberComparator, stringComparator, toMap } from 'utils/format.utils';
 
-const workers = [new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker),
-  new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker),
-  new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker), new WorkerBuilder(provinceHistoryWorker),
-  new WorkerBuilder(provinceHistoryWorker)];
+const workers: Array<Worker> = [new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js')];
 
 export const fakeTag = "---";
 
@@ -41,11 +40,19 @@ export function convertSave(save: Save): MapSave {
     currentCountries: toMap(save.countries, c => c.tag, c => getCHistoryInternal(c, save.date)),
   }
 
+  let count = 0;
+  const start = new Date();
+
   for (let i = 0; i < workers.length; i++) {
     const worker = workers[i];
     worker.onmessage = (message) => {
       if (message && message.data) {
         newSave.provinces[message.data.i].histories = message.data.histories;
+        count++;
+
+        if (count === newSave.provinces.length) {
+          console.log('Finished provinces history: ' + (new Date().getTime() - start.getTime()));
+        }
       }
     };
   }
@@ -54,7 +61,7 @@ export function convertSave(save: Save): MapSave {
     const province = newSave.provinces[i];
 
     if (!province.histories) {
-      workers[i % workers.length].postMessage({ i, province });
+      workers[i % workers.length].postMessage({ i, history: province.history ?? [] });
     }
   }
 
@@ -80,7 +87,7 @@ function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHist
   let history: ProvinceHistory = { date };
 
   if (province.histories) {
-    for (let i = 0; i < province.histories.length; i++){
+    for (let i = 0; i < province.histories.length; i++) {
       const h = province.histories[i];
 
       if (h.date && h.date > date) {
