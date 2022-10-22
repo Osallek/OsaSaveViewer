@@ -941,7 +941,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
 
       if (data.dataId) {
-        if (history.buildings.has(data.dataId)) {
+        if (Array.from(history.buildings).includes(data.dataId)) {
           return GREEN_COLOR;
         } else {
           return EMPTY_COLOR;
