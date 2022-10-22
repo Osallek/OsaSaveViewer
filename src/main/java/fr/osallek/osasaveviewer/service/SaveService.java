@@ -1,7 +1,6 @@
 package fr.osallek.osasaveviewer.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.osallek.osasaveviewer.common.AsyncHandler;
 import fr.osallek.osasaveviewer.common.Constants;
 import fr.osallek.osasaveviewer.common.CustomGZIPOutputStream;
 import fr.osallek.osasaveviewer.common.exception.PreviousSaveAfterException;
@@ -16,6 +15,18 @@ import fr.osallek.osasaveviewer.controller.dto.save.CountryPreviousSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.ExtractorSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.PreviousSaveDTO;
 import fr.osallek.osasaveviewer.service.object.UserInfo;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+
+import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
@@ -32,17 +43,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
-import javax.imageio.ImageIO;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.collections4.queue.CircularFifoQueue;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
 
 @Service
 public class SaveService {
@@ -76,7 +76,7 @@ public class SaveService {
         FileUtils.forceMkdir(this.properties.getDataSavesFolder().toFile());
         FileUtils.forceMkdir(this.properties.getUsersFolder().toFile());
 
-        SortedSet<ServerSaveDTO> serverSaves = new TreeSet<>(Comparator.comparing(ServerSaveDTO::creationDate).reversed());
+        SortedSet<ServerSaveDTO> serverSaves = new TreeSet<>(Comparator.comparing(ServerSaveDTO::creationDate));
         try (Stream<Path> stream = Files.walk(this.properties.getUsersFolder())) {
             stream.forEach(path -> {
                 try {
@@ -85,7 +85,7 @@ public class SaveService {
                             serverSaves.addAll(userInfo.getSaves());
 
                             if (serverSaves.size() > MAX_QUEUE_SIZE) {
-                                serverSaves.retainAll(serverSaves.headSet(IterableUtils.get(serverSaves, MAX_QUEUE_SIZE)));
+                                serverSaves.retainAll(serverSaves.tailSet(IterableUtils.get(serverSaves, Math.max(0, serverSaves.size() - MAX_QUEUE_SIZE))));
                             }
                         }
                     });
