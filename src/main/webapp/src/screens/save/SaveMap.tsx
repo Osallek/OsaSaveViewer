@@ -251,7 +251,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
 
         setReady(true);
       }
-    }, [save, currentColorsTexture, gl, mapMode, currentColorsLoc, setReady, displayable, date]);
+    }, [save, currentColorsTexture, gl, mapMode, currentColorsLoc, setReady, displayable, date, dataId]);
 
     useEffect(() => {
       setClickedProvince(null);

@@ -5,9 +5,9 @@ import {
 } from 'utils/colors.utils';
 import { colorToHex, formatDate, formatNumber } from 'utils/format.utils';
 import {
-  getArea, getAreaState, getCHistory, getCountries, getCountry, getCountryName, getCountrysName, getCulture, getCultureName, getEmperor, getGood, getGoodName,
-  getInstitName, getOverlord, getPHistory, getProvinceLosses, getReligion, getReligionName, getSubjects, getSubjectTypeName, getTradeNode, getTradeNodesName,
-  getWar
+  getArea, getAreaState, getBuildingName, getCHistory, getCountries, getCountry, getCountryName, getCountrysName, getCulture, getCultureName, getEmperor,
+  getGood, getGoodName, getInstitName, getOverlord, getPHistory, getProvinceLosses, getReligion, getReligionName, getSubjects, getSubjectTypeName, getTradeNode,
+  getTradeNodesName, getWar
 } from 'utils/save.utils';
 
 export enum MapMode {
@@ -29,6 +29,7 @@ export enum MapMode {
   C_MANUAL_DEV = 'C_MANUAL_DEV',
   ONCE_WAR = 'ONCE_WAR',
   TRADE_NODE = 'TRADE_NODE',
+  BUILDINGS = 'BUILDINGS',
 }
 
 export interface IMapMode {
@@ -926,6 +927,54 @@ export const mapModes: Record<MapMode, IMapMode> = {
     hasTooltip: true,
     supportDate: true,
   },
+  [MapMode.BUILDINGS]: {
+    mapMode: MapMode.BUILDINGS,
+    provinceColor: (province, save, data: { dataId?: string, gradient: Array<SaveColor> }, countries, date) => {
+      const history = getPHistory(province, save, date);
+
+      if (countries.length > 0 && (!history.owner || !countries.includes(history.owner))) {
+        return EMPTY_COLOR;
+      }
+
+      if (!history.buildings || history.buildings.size === 0) {
+        return EMPTY_COLOR;
+      }
+
+      if (data.dataId) {
+        if (history.buildings.has(data.dataId)) {
+          return GREEN_COLOR;
+        } else {
+          return EMPTY_COLOR;
+        }
+      }
+
+      return data.gradient[history.buildings.size - 1];
+    },
+    image: 'building',
+    allowDate: true,
+    prepare: (save, dataId, date) => {
+      let max = 0;
+
+      save.provinces.forEach(province => {
+        const history = getPHistory(province, save, date);
+
+        if (history && history.buildings && history.buildings.size > max) {
+          max = history.buildings.size;
+        }
+      });
+
+      return { dataId, gradient: getGradient(max, colorToHex(EMPTY_COLOR), "#00FF00") };
+    },
+    selectable: true,
+    tooltip: (province, save, dataId, date) => {
+      const history = getPHistory(province, save, date);
+
+      return dataId ? `${ province.name } : ${ history.buildings && history.buildings.has(dataId) ? getBuildingName(save, dataId) : intl.formatMessage({ id: 'common.no' }) }`
+        : `${ province.name } : ${ history.buildings ? history.buildings.size : 0 }`;
+    },
+    hasTooltip: true,
+    supportDate: true,
+  },
 }
 
 export type MapSave = Save & {
@@ -955,7 +1004,7 @@ export type ProvinceHistory = {
   culture?: string;
   religion?: string;
   city?: boolean;
-  buildings?: Array<string>;
+  buildings?: Set<string>;
 }
 
 export type CountryHistory = {

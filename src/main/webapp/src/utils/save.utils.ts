@@ -124,14 +124,14 @@ function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHist
         claims = claims.filter(e => !h.removeClaims?.includes(e))
       }
 
-      let buildings: Array<string> = (history && history.buildings) ?? [];
+      let buildings: Set<string> = (history && history.buildings) ?? new Set();
 
       if (h.buildings) {
         Object.entries(h.buildings).forEach(([key, value]) => {
           if (value) {
-            buildings.concat(key);
+            buildings.add(key);
           } else {
-            buildings.filter(item => item !== key)
+            buildings.delete(key)
           }
         })
       }
@@ -213,7 +213,7 @@ export function getNbImprovements(country: SaveCountry, save: MapSave): number {
 }
 
 export function getCountry(save: MapSave, tag: string): SaveCountry {
-  return save.countries.find(country => tag === country.tag) ?? save.countries[0];
+  return tag ? save.countries.find(country => tag.toUpperCase() === country.tag) ?? save.countries[0] : save.countries[0];
 }
 
 export function getCountryName(save: MapSave, tag: string | undefined): string {
@@ -613,7 +613,7 @@ export function getSubjects(country: SaveCountry, save: MapSave, date?: string):
 }
 
 export function interestingHistory(h: SaveProvinceHistory): boolean {
-  return h.owner !== undefined || h.religion !== undefined || h.culture !== undefined || h.city !== undefined || h.tradeGood !== undefined
+  return h.owner !== undefined || h.religion !== undefined || h.culture !== undefined || h.tradeGood !== undefined
     || h.hre !== undefined || (h.buildings !== undefined && Object.keys(h.buildings).length > 0);
 }
 

@@ -18,6 +18,8 @@ const map = {
   'map.mod.DIPLOMACY': 'Diplomacie',
   'map.mod.ONCE_WAR': 'A déjà été en guerre contre',
   'map.mod.TRADE_NODE': 'Nœuds commerciaux',
+  'map.mod.BUILDINGS': 'Bâtiments',
+  'map.building': 'Bâtiment',
 }
 
 export default map

@@ -29,6 +29,8 @@ const common = {
   'common.tradeNodes': 'Trade nodes',
   'common.teamA': 'Team 1',
   'common.teamB': 'Team 2',
+  'common.yes': 'Yes',
+  'common.no': 'No',
 }
 
 export default common;

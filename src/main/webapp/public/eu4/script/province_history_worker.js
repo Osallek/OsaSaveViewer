@@ -47,20 +47,19 @@ function getPHistoryInternal(history, date) {
                 claims = claims.filter(e => !h.removeClaims?.includes(e))
             }
 
-            let buildings = toReturn.buildings ?? [];
+            let buildings = toReturn.buildings ?? new Set();
 
             if (h.buildings) {
                 Object.entries(h.buildings).forEach(([key, value]) => {
                     if (value) {
-                        buildings.concat(key);
+                        buildings.add(key);
                     } else {
-                        buildings.filter(item => item !== key)
+                        buildings.delete(key);
                     }
                 })
             }
 
             toReturn = {
-                ...(typeof toReturn === 'object' ? toReturn : {}),
                 ...h,
                 owner: '---' === h.owner ? undefined : (h.owner ?? toReturn.owner),
                 cores,
