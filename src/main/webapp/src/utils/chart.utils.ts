@@ -1,13 +1,15 @@
 import { green, grey, orange, red } from '@mui/material/colors';
 import { intl } from 'index';
 import { AxisDomain } from 'recharts/types/util/types';
-import { CountryPreviousSave, Expense, Income, PowerSpent, SaveCountry, SaveEstate, SaveWarParticipant } from 'types/api.types';
+import {
+  CountryPreviousSave, Expense, Income, PowerSpent, SaveCountry, SaveEstate, SaveTradeNode, SaveTradeNodeCountry, SaveTradeNodeIncoming, SaveWarParticipant
+} from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { saveToColor } from 'utils/colors.utils';
 import { colorToHex, formatNumber, getYear, numberComparator, stringComparator } from 'utils/format.utils';
 import {
-  getBuildingsName, getCountries, getCountrysName, getCulture, getCulturesName, getEstate, getEstatesName, getNbBuildings, getPHistory, getPrevious,
-  getProvinces, getRank, getReligion, getReligionsName
+  getBuildingsName, getCountries, getCountry, getCountrysName, getCulture, getCulturesName, getEstate, getEstatesName, getNbBuildings, getPHistory, getPrevious,
+  getProvinces, getRank, getReligion, getReligionsName, getTradeNode, getTradeNodesName
 } from 'utils/save.utils';
 
 export function incomeToColor(income: Income): string {
@@ -549,4 +551,68 @@ export function getLossesChart(participants: Array<SaveWarParticipant>): Current
   }
 
   return line;
+}
+
+export interface NodeCountriesPie {
+  name: string;
+  value: number;
+  color: string;
+  country: SaveCountry;
+  item: SaveTradeNodeCountry;
+}
+
+export function getNodeCountriesPie(node: SaveTradeNode, save: MapSave): Array<NodeCountriesPie> {
+  const array: NodeCountriesPie[] = [];
+
+  if (node.countries) {
+    node.countries.forEach(c => {
+      const country = getCountry(save, c.tag);
+
+      array.push({ name: getCountrysName(country), value: c.value, color: colorToHex(country.colors.mapColor), country, item: c });
+    })
+  }
+
+  return array.sort((a, b) => -numberComparator(a.value, b.value));
+}
+
+export interface NodeIncomingPie {
+  name: string;
+  value: number;
+  color: string;
+  node: SaveTradeNode;
+  item: SaveTradeNodeIncoming;
+}
+
+export function getNodeIncomingPie(node: SaveTradeNode, save: MapSave): Array<NodeIncomingPie> {
+  const array: NodeIncomingPie[] = [];
+
+  if (node.incoming) {
+    node.incoming.filter(value => value.value).forEach(incoming => {
+      const n = getTradeNode(save, incoming.from);
+
+      if (n) {
+        array.push({ name: getTradeNodesName(n), value: incoming.value, color: colorToHex(n.color), node: n, item: incoming });
+      } else {
+        array.push({ name: getTradeNodesName(node), value: incoming.value, color: colorToHex(node.color), node, item: incoming });
+      }
+    })
+  }
+
+  return array.sort((a, b) => -numberComparator(a.value, b.value));
+}
+
+export function getNodeOutgoingPie(node: SaveTradeNode, save: MapSave): Array<NodeIncomingPie> {
+  const array: NodeIncomingPie[] = [];
+
+  if (save.tradeNodes) {
+    save.tradeNodes.filter(n => n.incoming.find(i => i.from === node.name && i.value)).forEach(n => {
+      const incoming = n.incoming.find(i => i.from === node.name);
+
+      if (incoming) {
+        array.push({ name: getTradeNodesName(n), value: incoming.value, color: colorToHex(n.color), node: n, item: incoming });
+      }
+    });
+  }
+
+  return array.sort((a, b) => -numberComparator(a.value, b.value));
 }

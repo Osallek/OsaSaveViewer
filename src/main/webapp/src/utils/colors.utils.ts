@@ -31,6 +31,20 @@ export const GREEN_COLOR: SaveColor = {
   alpha: 255
 }
 
+export const HALF_GREEN_COLOR: SaveColor = {
+  red: 0,
+  green: 200,
+  blue: 0,
+  alpha: 255
+}
+
+export const FULL_GREEN_COLOR: SaveColor = {
+  red: 0,
+  green: 255,
+  blue: 0,
+  alpha: 255
+}
+
 export const BLUE_COLOR: SaveColor = {
   red: 0,
   green: 0,
@@ -54,6 +68,20 @@ export const HRE_ELECTOR_COLOR: SaveColor = {
 
 export const RED_COLOR: SaveColor = {
   red: 127,
+  green: 0,
+  blue: 0,
+  alpha: 255
+}
+
+export const HALF_RED_COLOR: SaveColor = {
+  red: 200,
+  green: 0,
+  blue: 0,
+  alpha: 255
+}
+
+export const FULL_RED_COLOR: SaveColor = {
+  red: 200,
   green: 0,
   blue: 0,
   alpha: 255

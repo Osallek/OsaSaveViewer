@@ -1,7 +1,9 @@
 import { intl } from 'index';
-import { Save, SaveColor, SaveCountry, SaveHeir, SaveLeader, SaveMonarch, SaveProvince, SaveQueen, SaveWar } from 'types/api.types';
+import { Save, SaveColor, SaveCountry, SaveHeir, SaveLeader, SaveMonarch, SaveProvince, SaveQueen, SaveTradeNode, SaveWar } from 'types/api.types';
 import {
-  DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, getGradient, GREEN_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, PROSPERITY_GRADIENT
+  DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, HALF_GREEN_COLOR, HALF_RED_COLOR, getGradient, GREEN_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR,
+  PROSPERITY_GRADIENT,
+  RED_COLOR, FULL_GREEN_COLOR, FULL_RED_COLOR
 } from 'utils/colors.utils';
 import { colorToHex, formatDate, formatNumber } from 'utils/format.utils';
 import {
@@ -553,19 +555,9 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
 
       if (Object.keys(war.attackers).includes(owner)) {
-        return {
-          red: 200,
-          green: 0,
-          blue: 0,
-          alpha: 255
-        };
+        return HALF_RED_COLOR;
       } else if (Object.keys(war.defenders).includes(owner)) {
-        return {
-          red: 0,
-          green: 200,
-          blue: 0,
-          alpha: 255
-        };
+        return HALF_GREEN_COLOR;
       } else {
         return EMPTY_COLOR;
       }
@@ -662,12 +654,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
 
       if (country.tag === owner) {
-        return {
-          red: 0,
-          green: 255,
-          blue: 0,
-          alpha: 255
-        };
+        return FULL_GREEN_COLOR;
       }
 
       if (country.alliances && country.alliances.includes(owner)) {
@@ -680,12 +667,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
 
       if (country.atWarWith && country.atWarWith.includes(owner)) {
-        return {
-          red: 255,
-          green: 0,
-          blue: 0,
-          alpha: 255,
-        };
+        return FULL_RED_COLOR;
       }
 
       if (getSubjects(country, save, date).map(value => value.second).includes(owner)) {
@@ -845,22 +827,12 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
 
       if (owner === tag) {
-        return {
-          red: 0,
-          green: 200,
-          blue: 0,
-          alpha: 255
-        };
+        return HALF_GREEN_COLOR;
       }
 
       if (save.wars && save.wars.find(war => (Object.keys(war.attackers).includes(tag) && Object.keys(war.defenders).includes(owner))
         || (Object.keys(war.defenders).includes(tag) && Object.keys(war.attackers).includes(owner))) !== undefined) {
-        return {
-          red: 200,
-          green: 0,
-          blue: 0,
-          alpha: 255
-        };
+        return HALF_RED_COLOR;
       } else {
         return EMPTY_COLOR;
       }
@@ -902,18 +874,40 @@ export const mapModes: Record<MapMode, IMapMode> = {
   },
   [MapMode.TRADE_NODE]: {
     mapMode: MapMode.TRADE_NODE,
-    provinceColor: (province, save) => {
+    provinceColor: (province, save, data: SaveTradeNode) => {
       if (!province.node) {
         return EMPTY_COLOR;
       }
 
       const node = getTradeNode(save, province.node);
 
-      return node ? node.color : EMPTY_COLOR;
+      if (!node) {
+        return EMPTY_COLOR;
+      }
+
+      if (data) {
+        if (node === data) {
+          return GREEN_COLOR;
+        }
+
+        if (data.incoming && data.incoming.find(value => value.from === node.name)) {
+          return HALF_GREEN_COLOR;
+        }
+
+        if (node.incoming && node.incoming.find(value => value.from === data.name)) {
+          return HALF_RED_COLOR;
+        }
+
+        return EMPTY_COLOR;
+      }
+
+      return node.color;
     },
     image: 'node',
     allowDate: true,
-    prepare: () => {},
+    prepare: (save, dataId, date) => {
+      return dataId ? getTradeNode(save, dataId) : undefined;
+    },
     selectable: true,
     tooltip: (province, save) => {
       const node = getTradeNode(save, province.node);

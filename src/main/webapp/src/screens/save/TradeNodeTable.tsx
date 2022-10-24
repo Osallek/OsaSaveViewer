@@ -60,7 +60,7 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
     },
     {
       id: 'value',
-      label: intl.formatMessage({ id: 'tradeNode.value' }),
+      label: intl.formatMessage({ id: 'tradeNode.totalValue' }),
       minWidth: 120,
       value: (save, node, width) =>
         <Grid style={ { width } }>
