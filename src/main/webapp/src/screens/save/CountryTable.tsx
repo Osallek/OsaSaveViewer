@@ -114,7 +114,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </Typography>
           ),
           comparatorValue: (save, country) => getCRealDev(country, save),
-          filterValues: (save) => Array.from(new Set<number>(getCountries(save).map(country => round(getCRealDev(country, save), realdevRadix)).sort(numberComparator))),
+          filterValues: (save) => Array.from(
+            new Set<number>(getCountries(save).map(country => round(getCRealDev(country, save), realdevRadix)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(getCRealDev(country, save), realdevRadix)),
         },
         {
@@ -126,7 +127,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
               { formatNumber(country.dev / country.nbProvince) }
             </Typography>,
           comparatorValue: (save, country) => country.dev / country.nbProvince,
-          filterValues: (save) => Array.from(new Set<number>(getCountries(save).map(country => round(country.dev / country.nbProvince, 5)).sort(numberComparator))),
+          filterValues: (save) => Array.from(
+            new Set<number>(getCountries(save).map(country => round(country.dev / country.nbProvince, 5)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.dev / country.nbProvince, 5)),
         },
         {
@@ -135,7 +137,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           minWidth: 100,
           value: (save, country) => <Typography variant='body1'>{ formatNumber(getNbImprovements(country, save)) }</Typography>,
           comparatorValue: (save, country) => getNbImprovements(country, save),
-          filterValues: (save) => Array.from(new Set<number>(getCountries(save).map(country => round(getNbImprovements(country, save), manualdevRadix)).sort(numberComparator))),
+          filterValues: (save) => Array.from(
+            new Set<number>(getCountries(save).map(country => round(getNbImprovements(country, save), manualdevRadix)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(getNbImprovements(country, save), manualdevRadix)),
         },
         getPlayerColumn(),
@@ -493,9 +496,9 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
               </Typography>
               {
                 index <= 7 &&
-                  <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
-                    { `(${ formatNumber(getIncome(country, value) * 100 / getStableIncome(country)) }%)` }
-                  </Typography>
+                <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
+                  { `(${ formatNumber(getIncome(country, value) * 100 / getStableIncome(country)) }%)` }
+                </Typography>
               }
             </>
           ),
@@ -602,7 +605,9 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
                     (
                       <>
                         <Typography variant='body1'>
-                          { `${ formatNumber(country.admPowerSpent ? country.admPowerSpent[value] : 0) } / ${ formatNumber(country.dipPowerSpent ? country.dipPowerSpent[value] : 0) } / ${ formatNumber(country.milPowerSpent ? country.milPowerSpent[value] : 0) }` }
+                          { `${ formatNumber(country.admPowerSpent ? country.admPowerSpent[value] : 0) } / ${ formatNumber(
+                            country.dipPowerSpent ? country.dipPowerSpent[value] : 0) } / ${ formatNumber(
+                            country.milPowerSpent ? country.milPowerSpent[value] : 0) }` }
                         </Typography>
                         <Typography variant='body1'>
                           { `(${ formatNumber(getManaSpent(country, value)) })` }
@@ -612,8 +617,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
                     :
                     (
                       <Typography variant='body1'>
-                        { `${ formatNumber((isAdm(value) && country.admPowerSpent) ? country.admPowerSpent[value] : 
-                          ((isDip(value) && country.dipPowerSpent) ? country.dipPowerSpent[value] : 
+                        { `${ formatNumber((isAdm(value) && country.admPowerSpent) ? country.admPowerSpent[value] :
+                          ((isDip(value) && country.dipPowerSpent) ? country.dipPowerSpent[value] :
                             ((isMil(value) && country.milPowerSpent) ? country.milPowerSpent[value] :
                               undefined))) }` }
                       </Typography>
@@ -1012,14 +1017,21 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
                         } }
                         style={ { marginRight: 4, padding: 0 } }>
                         <FilterList fontSize='small'
-                                    style={ { color: filters[column.id] === undefined ? theme.palette.primary.main : 'black' } }/>
+                                    style={ { color: filters[column.id] === undefined ? theme.palette.primary.contrastText : theme.palette.primary.main } }/>
                       </IconButton>
                       <TableSortLabel
                         active={ column.id === (orderBy && orderBy.id) }
                         direction={ column.id === (orderBy && orderBy.id) ? order : 'asc' }
                         onClick={ () => handleSort(column) }
+                        sx={ {
+                          '& .MuiTableSortLabel-icon': {
+                            color: `${ theme.palette.primary.contrastText } !important`,
+                          }
+                        } }
                       >
-                        <Typography variant='button' style={ { fontWeight: 'bold' } }>{ column.label }</Typography>
+                        <Typography variant='button' style={ { fontWeight: 'bold', color: theme.palette.primary.contrastText } }>
+                          { column.label }
+                        </Typography>
                       </TableSortLabel>
                     </Grid>
                   </TableCell>

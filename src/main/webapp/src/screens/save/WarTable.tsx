@@ -426,14 +426,21 @@ function WarTable({ save, visible }: WarTableProps) {
                         } }
                         style={ { marginRight: 4, padding: 0 } }>
                         <FilterList fontSize='small'
-                                    style={ { color: filters[column.id] === undefined ? theme.palette.primary.main : 'black' } }/>
+                                    style={ { color: filters[column.id] === undefined ? theme.palette.primary.contrastText : theme.palette.primary.main } }/>
                       </IconButton>
                       <TableSortLabel
                         active={ column.id === (orderBy && orderBy.id) }
                         direction={ column.id === (orderBy && orderBy.id) ? order : 'asc' }
                         onClick={ () => handleSort(column) }
+                        sx={ {
+                          '& .MuiTableSortLabel-icon': {
+                            color: `${ theme.palette.primary.contrastText } !important`,
+                          }
+                        } }
                       >
-                        <Typography variant='button' style={ { fontWeight: 'bold' } }>{ column.label }</Typography>
+                        <Typography variant='button' style={ { fontWeight: 'bold', color: theme.palette.primary.contrastText } }>
+                          { column.label }
+                        </Typography>
                       </TableSortLabel>
                     </Grid>
                   </TableCell>
