@@ -1,3 +1,4 @@
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { Backdrop, Dialog, Fade, Grow, Popper, Tooltip } from '@mui/material';
 import { intl } from 'index';
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
@@ -10,11 +11,14 @@ import { SaveColor, SaveProvince } from 'types/api.types';
 import { ProvincesTexture, Texture } from 'types/gl.types';
 import { IMapMode, MapMode, mapModes, MapSave } from 'types/map.types';
 import { getTexture } from 'utils';
-import { IMPASSABLE_COLOR, OCEAN_COLOR } from 'utils/colors.utils';
+import {
+  DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, GREEN_COLOR, HALF_GREEN_COLOR, HALF_RED_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, IMPASSABLE_COLOR,
+  OCEAN_COLOR, PROSPERITY_GRADIENT
+} from 'utils/colors.utils';
 import { getColorsUrl, getProvincesUrl } from 'utils/data.utils';
 import { cleanString } from 'utils/format.utils';
 import { getProvinceAt, getTextureFromSave, initShaderProgram, prepareTexture } from 'utils/gl.utils';
-import { getProvince } from 'utils/save.utils';
+import { cleanSave, getProvince } from 'utils/save.utils';
 
 interface SaveMapProps {
   save?: MapSave;
@@ -291,7 +295,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
             provinceCanvas.width = value.width;
             provinceCanvas.height = value.height;
 
-            const context2D = provinceCanvas.getContext("2d")!;
+            const context2D = provinceCanvas.getContext("2d", { willReadFrequently: true })!;
             context2D.imageSmoothingEnabled = false;
             context2D.drawImage(value.image, 0, 0, value.width, value.height);
 
@@ -307,7 +311,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
             idColorsCanvas.width = value.width;
             idColorsCanvas.height = value.height;
 
-            const context2D = idColorsCanvas.getContext("2d")!;
+            const context2D = idColorsCanvas.getContext("2d", { willReadFrequently: true })!;
             context2D.imageSmoothingEnabled = false;
             context2D.drawImage(value.image, 0, 0, value.width, value.height);
 
@@ -352,156 +356,254 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
 
     useImperativeHandle(ref, () => ({
       async exportImage(mm: MapMode, countries: Array<string>) {
-        return new Promise((resolve) => {
-          if (save && provincesTexture && provincesContext && idColorsContext) {
-            const exportCanvas = document.createElement<'canvas'>('canvas');
-            exportCanvas.width = provincesTexture.width;
-            exportCanvas.height = provincesTexture.height;
+        return new Promise((resolve, reject) => {
+          try {
+            if (save && provincesTexture && provincesContext && idColorsContext) {
+              const exportCanvas = document.createElement<'canvas'>('canvas');
+              exportCanvas.width = provincesTexture.width;
+              exportCanvas.height = provincesTexture.height;
 
-            const exportContext = exportCanvas.getContext('2d')!;
-            exportContext.imageSmoothingEnabled = false;
-            const colorMapping = new Map<string, SaveColor>();
+              const exportContext = exportCanvas.getContext('2d')!;
+              exportContext.imageSmoothingEnabled = false;
+              const colorMapping = new Map<string, SaveColor>();
 
-            const colorsData = idColorsContext.getImageData(0, 0, idColorsContext.canvas.width, idColorsContext.canvas.height).data;
+              const colorsData = idColorsContext.getImageData(0, 0, idColorsContext.canvas.width, idColorsContext.canvas.height).data;
 
-            const modeData = mapModes[mm].prepare(save, null);
-            for (const province of save.provinces) {
-              const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
-              const value = mapModes[mm].provinceColor(province, save, modeData, countries);
+              const modeData = mapModes[mm].prepare(save, null, date);
+              for (const province of save.provinces) {
+                const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
+                const value = mapModes[mm].provinceColor(province, save, modeData, countries);
 
-              colorMapping.set(key, value);
-            }
-
-            for (const province of save.impassableProvinces) {
-              const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
-              const value: SaveColor = {
-                red: IMPASSABLE_COLOR.red,
-                green: IMPASSABLE_COLOR.green,
-                blue: IMPASSABLE_COLOR.blue,
-                alpha: IMPASSABLE_COLOR.alpha,
-              };
-
-              colorMapping.set(key, value);
-            }
-
-            for (const province of save.oceansProvinces) {
-              const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
-              const value: SaveColor = {
-                red: OCEAN_COLOR.red,
-                green: OCEAN_COLOR.green,
-                blue: OCEAN_COLOR.blue,
-                alpha: OCEAN_COLOR.alpha,
-              };
-
-              colorMapping.set(key, value);
-            }
-
-            for (const province of save.lakesProvinces) {
-              const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
-              const value: SaveColor = {
-                red: OCEAN_COLOR.red,
-                green: OCEAN_COLOR.green,
-                blue: OCEAN_COLOR.blue,
-                alpha: OCEAN_COLOR.alpha,
-              };
-
-              colorMapping.set(key, value);
-            }
-
-            const workerInstance = new WorkerBuilder(mapWorker);
-            workerInstance.onmessage = (message) => {
-              if (message) {
-                const newData = exportContext.createImageData(provincesTexture.width, provincesTexture.height);
-                newData.data.set(message.data);
-                exportContext.putImageData(newData, 0, 0);
-
-                const url = exportCanvas.toDataURL('image/png', 1);
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", `${ cleanString(`${ save.name.replace(/\.[^/.]+$/, "") }_${ intl.formatMessage({ id: `map.mod.${ mm }` }) }`) }.png`);
-
-                if (document.body) {
-                  document.body.appendChild(link);
-                  link.click();
-                }
-
-                resolve(true);
+                colorMapping.set(key, value);
               }
-            };
 
-            const message = {
-              data: provincesContext.getImageData(0, 0, provincesTexture.width, provincesTexture.height).data,
-              colorMapping,
-              IMPASSABLE_COLOR
+              for (const province of save.impassableProvinces) {
+                const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
+                const value: SaveColor = {
+                  red: IMPASSABLE_COLOR.red,
+                  green: IMPASSABLE_COLOR.green,
+                  blue: IMPASSABLE_COLOR.blue,
+                  alpha: IMPASSABLE_COLOR.alpha,
+                };
+
+                colorMapping.set(key, value);
+              }
+
+              for (const province of save.oceansProvinces) {
+                const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
+                const value: SaveColor = {
+                  red: OCEAN_COLOR.red,
+                  green: OCEAN_COLOR.green,
+                  blue: OCEAN_COLOR.blue,
+                  alpha: OCEAN_COLOR.alpha,
+                };
+
+                colorMapping.set(key, value);
+              }
+
+              for (const province of save.lakesProvinces) {
+                const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
+                const value: SaveColor = {
+                  red: OCEAN_COLOR.red,
+                  green: OCEAN_COLOR.green,
+                  blue: OCEAN_COLOR.blue,
+                  alpha: OCEAN_COLOR.alpha,
+                };
+
+                colorMapping.set(key, value);
+              }
+
+              const workerInstance = new WorkerBuilder(mapWorker);
+              workerInstance.onmessage = (message) => {
+                if (message) {
+                  const newData = exportContext.createImageData(provincesTexture.width, provincesTexture.height);
+                  newData.data.set(message.data);
+                  exportContext.putImageData(newData, 0, 0);
+
+                  const url = exportCanvas.toDataURL('image/png', 1);
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.setAttribute("download",
+                    `${ cleanString(`${ save.name.replace(/\.[^/.]+$/, "") }_${ intl.formatMessage({ id: `map.mod.${ mm }` }) }`) }.png`);
+
+                  if (document.body) {
+                    document.body.appendChild(link);
+                    link.click();
+                  }
+
+                  resolve(true);
+                }
+              };
+
+              const message = {
+                data: provincesContext.getImageData(0, 0, provincesTexture.width, provincesTexture.height).data,
+                colorMapping,
+                IMPASSABLE_COLOR
+              }
+              workerInstance.postMessage(message, [message.data.buffer]);
             }
-            workerInstance.postMessage(message, [message.data.buffer]);
+          } catch (e) {
+            reject(e);
           }
         });
       }
     }));
 
+    useImperativeHandle(ref, () => ({
+        async exportTimelapse(mm: MapMode, countries: Array<string>) {
+          return new Promise((resolve, reject) => {
+            try {
+              if (save && provincesTexture && provincesContext && idColorsContext) {
+                const exportCanvas: HTMLCanvasElement = document.createElement<'canvas'>('canvas');
+                exportCanvas.width = provincesTexture.width;
+                exportCanvas.height = provincesTexture.height;
+
+                const message = {
+                  data: provincesContext.getImageData(0, 0, provincesTexture.width, provincesTexture.height).data,
+                  colorsData: idColorsContext.getImageData(0, 0, idColorsContext.canvas.width, idColorsContext.canvas.height).data,
+                  mm,
+                  save: cleanSave(save),
+                  EMPTY_COLOR,
+                  IMPASSABLE_COLOR,
+                  OCEAN_COLOR,
+                  GREEN_COLOR,
+                  PROSPERITY_GRADIENT,
+                  HRE_EMPEROR_COLOR,
+                  HRE_ELECTOR_COLOR,
+                  DEVASTATION_GRADIENT,
+                  HALF_RED_COLOR,
+                  HALF_GREEN_COLOR,
+                  DEV_GRADIENT,
+                  countries,
+                  width: provincesTexture.width,
+                  height: provincesTexture.height,
+                  // @ts-ignore
+                  canvas: exportCanvas.transferControlToOffscreen(),
+                }
+
+                const worker: Worker = new Worker('/eu4/script/prepare_timelapse_worker.js');
+                worker.onerror = (e) => {
+                  console.error(e.message);
+                  reject(e);
+                  worker.terminate();
+                }
+                worker.onmessageerror = (e) => {
+                  console.error(e);
+                  reject(e);
+                  worker.terminate();
+                }
+                worker.onmessage = async (e) => {
+                  try {
+                    if (e && e.data) {
+                      const ffmpeg = createFFmpeg();
+                      await ffmpeg.load();
+
+                      for (const image of e.data) {
+                        ffmpeg.FS('writeFile', image.name, await fetchFile(image.data));
+                      }
+
+                      await ffmpeg.run('-r', '20', '-i', 'img%04d.jpg', '-c:v', 'libx264', '-s', `${ provincesTexture.width }x${ provincesTexture.height }`,
+                        '-pix_fmt', 'yuv420p', 'out.mp4');
+
+                      const data = ffmpeg.FS('readFile', 'out.mp4');
+                      const link = document.createElement("a");
+                      link.href = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+                      link.setAttribute("download", `${ cleanString(
+                        `${ save.name.replace(/\.[^/.]+$/, "") }_${ intl.formatMessage({ id: `map.mod.${ mm }` }) }_${ intl.formatMessage(
+                          { id: 'common.timelapse' }) }`) }.mp4`);
+
+                      if (document.body) {
+                        document.body.appendChild(link);
+                        link.click();
+                      }
+                    }
+                  } catch (e) {
+                    console.error(e);
+                    reject(e);
+                    worker.terminate();
+                  } finally {
+                    resolve(true);
+                    worker.terminate();
+                  }
+                };
+
+                worker.postMessage(message, [message.data.buffer, message.canvas]);
+              } else {
+                resolve(true);
+              }
+            } catch
+              (e) {
+              reject(e);
+            }
+          });
+        }
+      })
+    )
+    ;
+
     return (
       <>
         {
           save &&
-            <>
-              {
-                <Tooltip title={ (hoverProvince && iMapMode.hasTooltip && iMapMode.tooltip !== undefined) ? iMapMode.tooltip(hoverProvince, save, dataId, date) : '' }
-                         followCursor>
-                  <canvas id='save-map-canvas'
-                          ref={ canvas }
-                          style={ {
-                            width: '100%',
-                            height: '100%',
-                            minHeight: 500,
-                            minWidth: 500,
-                            backgroundColor: '#5e5e5e'
-                          } }
-                          onClick={ e => clickProvince(e) }
-                          onMouseMove={ onHoverProvince }
-                  />
-                </Tooltip>
-              }
-                <div ref={ popoverDiv } style={ { position: 'fixed', left: lastMousePos[0], top: lastMousePos[1] } }/>
-              {
-                (popoverDiv.current && clickedProvince && !mouseDown && !provinceModalOpen) &&
-                  <Popper open anchorEl={ popoverDiv.current } placement='top' transition>
-                    { ({ TransitionProps }) => (
-                      <Grow { ...TransitionProps } timeout={ 350 }>
-                        <div>
-                          <ProvincePopperCard province={ clickedProvince } onClose={ () => setClickedProvince(null) } save={ save }
-                                              viewMore={ () => setProvinceModalOpen(true) }/>
-                        </div>
-                      </Grow>
-                    ) }
-                  </Popper>
-              }
-              {
-                (clickedProvince && provinceModalOpen) &&
-                  <Dialog
-                      open={ provinceModalOpen }
-                      onClose={ () => closeModal() }
-                      scroll='paper'
-                      closeAfterTransition
-                      fullWidth
-                      maxWidth='md'
-                      BackdropComponent={ Backdrop }
-                      BackdropProps={ {
-                        timeout: 500,
-                      } }
-                  >
-                      <Fade in={ provinceModalOpen }>
-                          <div style={ {
-                            backgroundColor: theme.palette.primary.main,
-                            color: 'white',
-                            zIndex: 1
-                          } }>
-                              <ProvinceDialogContent province={ clickedProvince } save={ save }/>
-                          </div>
-                      </Fade>
-                  </Dialog>
-              }
-            </>
+          <>
+            {
+              <Tooltip
+                title={ (hoverProvince && iMapMode.hasTooltip && iMapMode.tooltip !== undefined) ? iMapMode.tooltip(hoverProvince, save, dataId, date) : '' }
+                followCursor>
+                <canvas id='save-map-canvas'
+                        ref={ canvas }
+                        style={ {
+                          width: '100%',
+                          height: '100%',
+                          minHeight: 500,
+                          minWidth: 500,
+                          backgroundColor: '#5e5e5e'
+                        } }
+                        onClick={ e => clickProvince(e) }
+                        onMouseMove={ onHoverProvince }
+                />
+              </Tooltip>
+            }
+            <div ref={ popoverDiv } style={ { position: 'fixed', left: lastMousePos[0], top: lastMousePos[1] } }/>
+            {
+              (popoverDiv.current && clickedProvince && !mouseDown && !provinceModalOpen) &&
+              <Popper open anchorEl={ popoverDiv.current } placement='top' transition>
+                { ({ TransitionProps }) => (
+                  <Grow { ...TransitionProps } timeout={ 350 }>
+                    <div>
+                      <ProvincePopperCard province={ clickedProvince } onClose={ () => setClickedProvince(null) } save={ save }
+                                          viewMore={ () => setProvinceModalOpen(true) }/>
+                    </div>
+                  </Grow>
+                ) }
+              </Popper>
+            }
+            {
+              (clickedProvince && provinceModalOpen) &&
+              <Dialog
+                open={ provinceModalOpen }
+                onClose={ () => closeModal() }
+                scroll='paper'
+                closeAfterTransition
+                fullWidth
+                maxWidth='md'
+                BackdropComponent={ Backdrop }
+                BackdropProps={ {
+                  timeout: 500,
+                } }
+              >
+                <Fade in={ provinceModalOpen }>
+                  <div style={ {
+                    backgroundColor: theme.palette.primary.main,
+                    color: 'white',
+                    zIndex: 1
+                  } }>
+                    <ProvinceDialogContent province={ clickedProvince } save={ save }/>
+                  </div>
+                </Fade>
+              </Dialog>
+            }
+          </>
         }
       </>
     )

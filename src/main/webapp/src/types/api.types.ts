@@ -82,13 +82,13 @@ export type SaveProvince = SaveSimpleProvince & {
   devastation?: number;
   autonomy?: number;
   institutions?: Array<number>;
-  city: boolean;
+  city?: boolean;
   node?: string;
   improvements?: Record<string, number>;
   colonySize?: number;
   buildings?: Array<string>;
-  history: Array<SaveProvinceHistory>;
-  histories: Array<ProvinceHistory>;
+  history?: Array<SaveProvinceHistory>;
+  histories?: Array<ProvinceHistory>;
 }
 
 export type SaveProvinceHistory = {
