@@ -2,11 +2,9 @@ onmessage = function (message) {
   const {
     data,
     colorMapping,
-    colorsData,
     mm,
     save,
     EMPTY_COLOR,
-    IMPASSABLE_COLOR,
     GREEN_COLOR,
     PROSPERITY_GRADIENT,
     HRE_EMPEROR_COLOR,
@@ -25,7 +23,10 @@ onmessage = function (message) {
   const prepare = prepareMm(mm, save, null, date, DEV_GRADIENT, EMPTY_COLOR);
 
   for (const province of save.provinces) {
-    const key = `${colorsData[(province.id - 1) * 4]};${colorsData[(province.id - 1) * 4 + 1]};${colorsData[(province.id - 1) * 4 + 2]};${colorsData[(province.id - 1) * 4 + 3]}`;
+    const b = province.id % 256;
+    const g = Math.floor(province.id / 256);
+    const r = Math.floor(province.id / (256 * 256));
+    const key = `${ r };${ g };${ b }`;
     const value = provinceColor(mm, province, save, prepare, countries, date, EMPTY_COLOR, GREEN_COLOR, PROSPERITY_GRADIENT, HRE_EMPEROR_COLOR, HRE_ELECTOR_COLOR, DEVASTATION_GRADIENT, PROSPERITY_GRADIENT, HALF_RED_COLOR, HALF_GREEN_COLOR);
 
     colorMapping.set(key, value);
@@ -34,7 +35,7 @@ onmessage = function (message) {
   const array = new Uint8Array(data.length);
 
   for (let i = 0; i < data.length; i += 4) {
-    const key = `${data[i]};${data[i + 1]};${data[i + 2]};${data[i + 3]}`;
+    const key = `${data[i]};${data[i + 1]};${data[i + 2]}`;
     const value = colorMapping.get(key);
 
     if (value) {
@@ -43,10 +44,10 @@ onmessage = function (message) {
       array[i + 2] = value.blue;
       array[i + 3] = value.alpha;
     } else {
-      array[i] = IMPASSABLE_COLOR.red;
-      array[i + 1] = IMPASSABLE_COLOR.green;
-      array[i + 2] = IMPASSABLE_COLOR.blue;
-      array[i + 3] = IMPASSABLE_COLOR.alpha;
+      array[i] = 0;
+      array[i + 1] = 0;
+      array[i + 2] = 0;
+      array[i + 3] = 1;
     }
   }
 

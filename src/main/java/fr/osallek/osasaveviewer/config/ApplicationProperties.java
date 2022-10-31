@@ -54,10 +54,6 @@ public class ApplicationProperties {
         return getDataFolder().resolve("provinces");
     }
 
-    public Path getDataColorsFolder() {
-        return getDataFolder().resolve("colors");
-    }
-
     public Path getExtractorPath() {
         return this.baseFolder.resolve("OsaSaveExtractorUpdater.jar");
     }

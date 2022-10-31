@@ -12,12 +12,6 @@ import {
 } from 'utils/data.utils';
 import { capitalize, getYear, numberComparator, stringComparator, toMap } from 'utils/format.utils';
 
-const workers: Array<Worker> = [new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js')];
-
 export const fakeTag = "---";
 
 export const DATE_EXP = new RegExp('^-?[0-9]{1,4}-[0-9]{1,2}-[0-9]{1,2}$');
@@ -34,7 +28,7 @@ export function isValidDate(date?: string | null, save?: MapSave): boolean {
   return true;
 }
 
-export function convertSave(save: Save, dispatch?: Dispatch<SetStateAction<boolean>>): MapSave {
+export function convertSave(save: Save, history: boolean, dispatch?: Dispatch<SetStateAction<boolean>>): MapSave {
   const newSave = {
     ...save,
     currentProvinces: toMap(save.provinces, p => p.id, p => getPHistoryInternal(p, save.date)),
@@ -42,15 +36,20 @@ export function convertSave(save: Save, dispatch?: Dispatch<SetStateAction<boole
     ready: false
   }
 
-  let count = 0;
-  const start = new Date();
+  if (history) {
+    const historyWorkers: Array<Worker> = [new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js')];
+    let count = 0;
+    const start = new Date();
 
-  for (let i = 0; i < workers.length; i++) {
-    const worker = workers[i];
-    worker.onmessage = (message) => {
-      if (message && message.data) {
-        newSave.provinces[message.data.i].histories = message.data.histories;
+    for (let i = 0; i < historyWorkers.length; i++) {
+      const worker = historyWorkers[i];
+      worker.onerror = (event) => {
         count++;
+        console.error(event);
 
         if (count === newSave.provinces.length) {
           console.log('Finished provinces history: ' + (new Date().getTime() - start.getTime()));
@@ -59,16 +58,39 @@ export function convertSave(save: Save, dispatch?: Dispatch<SetStateAction<boole
           if (dispatch) {
             dispatch(true);
           }
+
+          for (let i = 0; i < historyWorkers.length; i++) {
+            historyWorkers[i].terminate();
+          }
         }
       }
-    };
-  }
+      worker.onmessage = (message) => {
+        count++;
+        if (message && message.data) {
+          newSave.provinces[message.data.i].histories = message.data.histories;
 
-  for (let i = 0; i < newSave.provinces.length; i++) {
-    const province = newSave.provinces[i];
+          if (count === newSave.provinces.length) {
+            console.log('Finished provinces history: ' + (new Date().getTime() - start.getTime()));
+            newSave.ready = true;
 
-    if (!province.histories) {
-      workers[i % workers.length].postMessage({ i, history: province.history ?? [] });
+            if (dispatch) {
+              dispatch(true);
+            }
+
+            for (let i = 0; i < historyWorkers.length; i++) {
+              historyWorkers[i].terminate();
+            }
+          }
+        }
+      };
+    }
+
+    for (let i = 0; i < newSave.provinces.length; i++) {
+      const province = newSave.provinces[i];
+
+      if (!province.histories) {
+        historyWorkers[i % historyWorkers.length].postMessage({ i, history: province.history ?? [], startDate: save.startDate });
+      }
     }
   }
 
@@ -989,15 +1011,18 @@ export function getProvinceLosses(war: SaveWar, id: number): number {
     (s, b) => s + getBattleLosses(b), 0);
 }
 
-export function getProvinceAllLosses(save: MapSave, id: number, date?: string): number {
-  if (!save.wars) {
-    return 0;
+export function getProvinceAllLosses(province: SaveProvince, date?: string): number {
+  let losses = 0;
+
+  if (province.losses) {
+    for (const l of province.losses) {
+      if (!date || !l.date || l.date <= date) {
+        losses += l.losses ?? 0;
+      }
+    }
   }
 
-  //Todo move to province history
-
-  return save.wars.map(war => war.history.filter(h => h.battles && h.battles.length > 0).flatMap(h => h.battles ?? [])
-    .filter(b => b.location === id && (!date || b.date <= date)).reduce((s, b) => s + getBattleLosses(b), 0)).reduce((s, b) => s + b, 0);
+  return losses;
 }
 
 export function getBattleLosses(battle: SaveBattle): number {

@@ -17,6 +17,10 @@ export function toMap<T, V, K extends string | number | symbol>(array: T[], keyM
   );
 }
 
+export function formatDateObject(d: Date): string {
+  return `${d.getFullYear().toString().padStart(4, "0")}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
+}
+
 export function cleanString(s: string): string {
   return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }

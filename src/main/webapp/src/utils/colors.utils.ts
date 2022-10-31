@@ -10,10 +10,24 @@ export const OCEAN_COLOR: SaveColor = {
   alpha: 255
 };
 
+export const OCEAN_PROV_COLOR: SaveColor = {
+  red: 227,
+  green: 255,
+  blue: 255,
+  alpha: 255
+};
+
 export const IMPASSABLE_COLOR: SaveColor = {
   red: 94,
   green: 94,
   blue: 94,
+  alpha: 255
+};
+
+export const IMPASSABLE_PROV_COLOR: SaveColor = {
+  red: 200,
+  green: 255,
+  blue: 255,
   alpha: 255
 };
 

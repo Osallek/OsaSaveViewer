@@ -112,7 +112,7 @@ function ExportModal({ save, open, onClose, onExport, ready }: CompareTableProps
                   ))
                 }
               />
-              <FormControlLabel label={ intl.formatMessage({ id: 'common.timelapse' }) }
+{/*              <FormControlLabel label={ intl.formatMessage({ id: 'common.timelapse' }) }
                                 style={ { color: theme.palette.primary.contrastText, marginLeft: -4, marginTop: 0 } }
                                 control={ ready ?
                                   <Checkbox checked={ timelapse }
@@ -125,7 +125,7 @@ function ExportModal({ save, open, onClose, onExport, ready }: CompareTableProps
                                               },
                                             } }/>
                                   :
-                                  <CircularProgress color='secondary' style={ { width: 24, height: 24, padding: 9 } }/> }/>
+                                  <CircularProgress color='secondary' style={ { width: 24, height: 24, padding: 9 } }/> }/>*/}
             </Grid>
           </CardContent>
           <CardActions style={ { justifyContent: 'center' } }>

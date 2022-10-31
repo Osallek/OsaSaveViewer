@@ -1,7 +1,6 @@
 onmessage = function (e) {
   const {
     data,
-    colorsData,
     mm,
     width,
     height,
@@ -9,7 +8,9 @@ onmessage = function (e) {
     save,
     EMPTY_COLOR,
     IMPASSABLE_COLOR,
+    IMPASSABLE_PROV_COLOR,
     OCEAN_COLOR,
+    OCEAN_PROV_COLOR,
     GREEN_COLOR,
     PROSPERITY_GRADIENT,
     HRE_EMPEROR_COLOR,
@@ -23,41 +24,21 @@ onmessage = function (e) {
 
   const colorMapping = new Map();
 
-  for (const province of save.impassableProvinces) {
-    const key = `${colorsData[(province.id - 1) * 4]};${colorsData[(province.id - 1) * 4 + 1]};${colorsData[(province.id - 1) * 4 + 2]};${colorsData[(province.id - 1) * 4 + 3]}`;
-    const value = {
-      red: IMPASSABLE_COLOR.red,
-      green: IMPASSABLE_COLOR.green,
-      blue: IMPASSABLE_COLOR.blue,
-      alpha: IMPASSABLE_COLOR.alpha,
-    };
+  colorMapping.set(`${ IMPASSABLE_PROV_COLOR.red };${ IMPASSABLE_PROV_COLOR.green };${ IMPASSABLE_PROV_COLOR.blue }`,
+      {
+        red: IMPASSABLE_COLOR.red,
+        green: IMPASSABLE_COLOR.green,
+        blue: IMPASSABLE_COLOR.blue,
+        alpha: IMPASSABLE_COLOR.alpha,
+      });
 
-    colorMapping.set(key, value);
-  }
-
-  for (const province of save.oceansProvinces) {
-    const key = `${colorsData[(province.id - 1) * 4]};${colorsData[(province.id - 1) * 4 + 1]};${colorsData[(province.id - 1) * 4 + 2]};${colorsData[(province.id - 1) * 4 + 3]}`;
-    const value = {
-      red: OCEAN_COLOR.red,
-      green: OCEAN_COLOR.green,
-      blue: OCEAN_COLOR.blue,
-      alpha: OCEAN_COLOR.alpha,
-    };
-
-    colorMapping.set(key, value);
-  }
-
-  for (const province of save.lakesProvinces) {
-    const key = `${colorsData[(province.id - 1) * 4]};${colorsData[(province.id - 1) * 4 + 1]};${colorsData[(province.id - 1) * 4 + 2]};${colorsData[(province.id - 1) * 4 + 3]}`;
-    const value = {
-      red: OCEAN_COLOR.red,
-      green: OCEAN_COLOR.green,
-      blue: OCEAN_COLOR.blue,
-      alpha: OCEAN_COLOR.alpha,
-    };
-
-    colorMapping.set(key, value);
-  }
+  colorMapping.set(`${ OCEAN_PROV_COLOR.red };${ OCEAN_PROV_COLOR.green };${ OCEAN_PROV_COLOR.blue }`,
+      {
+        red: OCEAN_COLOR.red,
+        green: OCEAN_COLOR.green,
+        blue: OCEAN_COLOR.blue,
+        alpha: OCEAN_COLOR.alpha,
+      });
 
   const dates = [];
   let timelapseDate = save.startDate;
@@ -82,9 +63,7 @@ onmessage = function (e) {
     mm,
     data,
     colorMapping,
-    colorsData,
     save,
-    IMPASSABLE_COLOR,
     countries,
     GREEN_COLOR,
     EMPTY_COLOR,
@@ -129,7 +108,7 @@ onmessage = function (e) {
               data: array
             });
 
-            if (images.length < (dates.length / 1)) {
+            if (images.length < (dates.length / 100)) {
               worker.postMessage({ ...message, date: dates[++count], count });
             } else {
               console.log('Finished!');

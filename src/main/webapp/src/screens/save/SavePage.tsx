@@ -130,8 +130,7 @@ function SavePage() {
             d = new Date(d.getFullYear() + 1, 0, 1);
           }
 
-          handleDate(`${ d.getFullYear().toString().padStart(4, "0") }-${ (d.getMonth() + 1).toString().padStart(2, "0") }-${ d.getDate().toString().padStart(2,
-            "0") }`);
+          handleDate(`${ d.getFullYear().toString().padStart(4, "0") }-${ (d.getMonth() + 1).toString().padStart(2, "0") }-${ d.getDate().toString().padStart(2, "0") }`);
         }
       }, 400));
     }
@@ -155,7 +154,7 @@ function SavePage() {
 
           document.title = `${ data.name } (${ formatDate(data.date) })`;
 
-          setSave(convertSave(data, setReady));
+          setSave(convertSave(data, true, setReady));
         } else {
           setError(true);
         }

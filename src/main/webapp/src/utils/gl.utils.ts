@@ -130,16 +130,11 @@ export function fillMapArray(array: Uint8Array, save: MapSave, mapMod: MapMode, 
   }
 }
 
-export function getProvinceAt(x: number, y: number, provincesContext: CanvasRenderingContext2D, idColorContext: CanvasRenderingContext2D): number {
-  const provinceColor = provincesContext.getImageData(x, y, 1, 1).data;
+export function getProvinceAt(x: number, y: number, width: number, provincesData: Uint8ClampedArray): number {
+  const i = ((x - 1) + y * width) * 4;
+  const provinceColor = provincesData.slice(i, i + 3);
 
-  for (let i = 0; i < idColorContext.canvas.width; i++) {
-    if (arraysEqual(idColorContext.getImageData(i, 0, 1, 1).data, provinceColor)) {
-      return i + 1;
-    }
-  }
-
-  return -1;
+  return provinceColor[0] * 256 * 256 + provinceColor[1] * 256 + provinceColor[2];
 }
 
 export function isSaveProvinceLeft(x: number, y: number, provincesContext: CanvasRenderingContext2D): boolean {

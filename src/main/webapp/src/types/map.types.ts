@@ -515,7 +515,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
   [MapMode.LOSSES]: {
     mapMode: MapMode.LOSSES,
     provinceColor: (province, save, { war, gradient, maxLosses }: { war: SaveWar, gradient: Array<SaveColor>, maxLosses: number }, countries, date) => {
-      const losses = war ? getProvinceLosses(war, province.id) : getProvinceAllLosses(save, province.id, date);
+      const losses = war ? getProvinceLosses(war, province.id) : getProvinceAllLosses(province, date);
 
       return losses === 0 ? EMPTY_COLOR : gradient[(losses / maxLosses) * 9 | 0];
     },
@@ -532,7 +532,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
         return { war, gradient, maxLosses };
       } else {
         const gradient = getGradient(10, colorToHex(EMPTY_COLOR), '#FF0000');
-        const maxLosses = Math.max(...save.provinces.map(p => getProvinceAllLosses(save, p.id, date)));
+        const maxLosses = Math.max(...save.provinces.map(p => getProvinceAllLosses(p, date)));
 
         return { gradient, maxLosses };
       }
@@ -548,7 +548,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
 
         return `${ province.name } : ${ formatNumber(getProvinceLosses(war, province.id)) }`;
       } else {
-        return `${ province.name } : ${ formatNumber(getProvinceAllLosses(save, province.id)) }`;
+        return `${ province.name } : ${ formatNumber(getProvinceAllLosses(province)) }`;
       }
     },
     hasTooltip: true,
