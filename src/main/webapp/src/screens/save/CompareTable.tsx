@@ -64,7 +64,7 @@ function CompareTable({ save, visible }: CompareTableProps) {
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
         })
     } finally {
       setExporting(false);
@@ -93,7 +93,7 @@ function CompareTable({ save, visible }: CompareTableProps) {
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
         })
     } finally {
       setExporting(false);

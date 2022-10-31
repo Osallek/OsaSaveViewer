@@ -70,7 +70,6 @@ function NodePage() {
       } else {
         document.title = `${ save.name } - ${ getTradeNodesName(node) }`;
         setNode(node);
-        console.log(node);
       }
 
       setLoading(false);

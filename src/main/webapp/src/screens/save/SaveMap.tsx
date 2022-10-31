@@ -150,10 +150,6 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
             const provinceId = getProvinceAt(x, y, provincesTexture.width, provincesData);
             const province = getProvince(save, provinceId);
 
-            if (province && province.id === 767) {
-              console.log(province);
-            }
-
             setClickedProvince((clickedProvince && province && (clickedProvince.id === provinceId)) ? null : province);
           }
         }
@@ -356,12 +352,6 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
         setProvincesData(provincesContext.getImageData(0, 0, provincesTexture.width, provincesTexture.height).data);
       }
     }, [provincesContext, provincesTexture]);
-
-    useEffect(() => {
-      if (gl) {
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-      }
-    }, [gl, adjustOffset]);
 
     useImperativeHandle(ref, () => ({
       exportImage: async (mm: MapMode, countries: Array<string>) => {

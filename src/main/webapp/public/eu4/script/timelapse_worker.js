@@ -428,7 +428,7 @@ function getPHistory(province, date) {
 }
 
 function getCountry(save, tag) {
-  return tag ? save.countries.find(country => tag.toUpperCase() === country.tag) ?? save.countries[0] : save.countries[0];
+  return save.countriesMap.get(tag) ?? save.countries[0];
 }
 
 function getCountries(save) {

@@ -988,6 +988,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
 export type MapSave = Save & {
   currentProvinces: Map<number, ProvinceHistory>;
   currentCountries: Map<string, CountryHistory>;
+  countriesMap: Map<string, SaveCountry>;
+  provincesMap: Map<number, SaveProvince>;
   ready: boolean;
 }
 
@@ -1028,6 +1030,8 @@ export type CleanMapSave = {
   tradeNodes?: Array<SaveTradeNode>;
   currentProvinces?: Map<number, ProvinceHistory>;
   currentCountries?: Map<string, CountryHistory>;
+  countriesMap?: Map<string, SaveCountry>;
+  provincesMap?: Map<number, SaveProvince>;
   ready?: boolean;
 }
 

@@ -29,12 +29,14 @@ export function isValidDate(date?: string | null, save?: MapSave): boolean {
 }
 
 export function convertSave(save: Save, history: boolean, dispatch?: Dispatch<SetStateAction<boolean>>): MapSave {
-  const newSave = {
+  const newSave: MapSave = {
     ...save,
     currentProvinces: toMap(save.provinces, p => p.id, p => getPHistoryInternal(p, save.date)),
     currentCountries: toMap(save.countries, c => c.tag, c => getCHistoryInternal(c, save.date)),
+    countriesMap: toMap(save.countries, c => c.tag, c => c),
+    provincesMap: toMap(save.provinces, p => p.id, p => p),
     ready: false
-  }
+  };
 
   if (history) {
     const historyWorkers: Array<Worker> = [new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
@@ -62,6 +64,8 @@ export function convertSave(save: Save, history: boolean, dispatch?: Dispatch<Se
           for (let i = 0; i < historyWorkers.length; i++) {
             historyWorkers[i].terminate();
           }
+
+          return newSave;
         }
       }
       worker.onmessage = (message) => {
@@ -80,6 +84,8 @@ export function convertSave(save: Save, history: boolean, dispatch?: Dispatch<Se
             for (let i = 0; i < historyWorkers.length; i++) {
               historyWorkers[i].terminate();
             }
+
+            return newSave;
           }
         }
       };
@@ -89,7 +95,7 @@ export function convertSave(save: Save, history: boolean, dispatch?: Dispatch<Se
       const province = newSave.provinces[i];
 
       if (!province.histories) {
-        historyWorkers[i % historyWorkers.length].postMessage({ i, history: province.history ?? [], startDate: save.startDate });
+        historyWorkers[i % historyWorkers.length].postMessage({ i, history: province.history ?? [] });
       }
     }
   }
@@ -117,6 +123,7 @@ export function cleanSave(save: MapSave): CleanMapSave {
   delete newSave.wars;
   delete newSave.currentProvinces;
   delete newSave.currentCountries;
+  delete newSave.countries;
 
   if (newSave.provinces) {
     for (const province of newSave.provinces) {
@@ -143,8 +150,7 @@ export function getCountries(save: MapSave): Array<SaveCountry> {
 }
 
 export function getPHistory(province: SaveProvince, save: MapSave, date?: string): ProvinceHistory {
-  return (date && save.date !== date) ? getPHistoryInternal(province, date) : save.currentProvinces.get(
-    province.id) ?? save.currentProvinces.values().next().value;
+  return (date && save.date !== date) ? getPHistoryInternal(province, date) : save.currentProvinces.get(province.id) ?? save.currentProvinces.values().next().value;
 }
 
 function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHistory {
@@ -219,7 +225,7 @@ function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHist
 }
 
 export function getProvince(save: MapSave, id: number): SaveProvince | null {
-  return save.provinces.find(province => id === province.id) ?? null;
+  return save.provincesMap.get(id) ?? null;
 }
 
 export function getOceanLakeProvince(save: MapSave, id: number): SaveSimpleProvince | null {
@@ -279,7 +285,7 @@ export function getNbImprovements(country: SaveCountry, save: MapSave): number {
 }
 
 export function getCountry(save: MapSave, tag: string): SaveCountry {
-  return tag ? save.countries.find(country => tag.toUpperCase() === country.tag) ?? save.countries[0] : save.countries[0];
+  return save.countriesMap.get(tag) ?? save.countries[0];
 }
 
 export function getCountryName(save: MapSave, tag: string | undefined): string {
