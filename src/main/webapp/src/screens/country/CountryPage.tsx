@@ -63,7 +63,7 @@ function CountryPage() {
         if (saveId) {
           const { data } = await api.save.one(saveId);
 
-          setSave(convertSave(data));
+          setSave(convertSave(data, false));
         } else {
           setError(true);
         }

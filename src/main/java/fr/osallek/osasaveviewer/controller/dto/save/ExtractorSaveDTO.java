@@ -22,8 +22,6 @@ public final class ExtractorSaveDTO {
 
     private String provinceImage;
 
-    private String colorsImage;
-
     private LocalDate date;
 
     private int nbProvinces;
@@ -144,14 +142,6 @@ public final class ExtractorSaveDTO {
 
     public void setProvinceImage(String provinceImage) {
         this.provinceImage = provinceImage;
-    }
-
-    public String getColorsImage() {
-        return colorsImage;
-    }
-
-    public void setColorsImage(String colorsImage) {
-        this.colorsImage = colorsImage;
     }
 
     public LocalDate getDate() {

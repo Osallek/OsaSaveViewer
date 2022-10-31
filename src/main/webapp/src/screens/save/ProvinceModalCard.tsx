@@ -21,7 +21,7 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
   const intl = useIntl();
   const history = getPHistory(province, save);
   const state = getAreaState(getArea(save, province), history.owner);
-  const timeline = province.history.filter((value, index) => index !== 1).filter(h => interestingHistory(h)).sort((a, b) => -stringComparator(a.date, b.date));
+  const timeline = province.history?.filter((value, index) => index !== 1).filter(h => interestingHistory(h)).sort((a, b) => -stringComparator(a.date, b.date));
 
   function LinearProgressWithLabel(props: LinearProgressProps) {
     return (
@@ -45,7 +45,7 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
       </DialogTitle>
       <DialogContent>
         <Grid container>
-          <Grid container item xs={ 12 } md={ timeline.length > 0 ? 6 : 12 } flexDirection='column' alignItems='center' rowSpacing={ 1 }>
+          <Grid container item xs={ 12 } md={ timeline && timeline.length > 0 ? 6 : 12 } flexDirection='column' alignItems='center' rowSpacing={ 1 }>
             <Grid container item alignItems='center'>
               <Grid item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.owner' }) }:</Typography>
@@ -189,7 +189,7 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
             </Grid>
           </Grid>
           {
-            timeline.length > 0 &&
+            timeline && timeline.length > 0 &&
             (
               <Grid container item xs={ 12 } md={ 6 } alignItems='center' flexDirection='column'>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.history' }) }</Typography>

@@ -57,6 +57,10 @@ public class SaveService {
 
     private static final int IMPASSABLE_COLOR = new Color(94, 94, 94, 255).getRGB();
 
+    private static final Color IMPASSABLE_PROV_COLOR = new Color(200, 255, 255);
+
+    private static final Color OCEAN_PROV_COLOR = new Color(227, 255, 255);
+
     private final CircularFifoQueue<ServerSaveDTO> lastSaves = new CircularFifoQueue<>(MAX_QUEUE_SIZE);
 
     private final ObjectMapper objectMapper;
@@ -231,26 +235,26 @@ public class SaveService {
         }
 
         ExtractorSaveDTO save = readSave(id);
-        BufferedImage colorImage = ImageIO.read(this.properties.getDataColorsFolder().resolve(save.getColorsImage() + ".png").toFile());
-        Map<Integer, Integer> colorsMap = new HashMap<>();
+        Map<Color, Integer> colorsMap = new HashMap<>();
 
-        save.getLakesProvinces().forEach(province -> colorsMap.put(colorImage.getRGB(province.getId() - 1, 0), OCEAN_COLOR));
-        save.getOceansProvinces().forEach(province -> colorsMap.put(colorImage.getRGB(province.getId() - 1, 0), OCEAN_COLOR));
+
+        colorsMap.put(OCEAN_PROV_COLOR, OCEAN_COLOR);
+        colorsMap.put(IMPASSABLE_PROV_COLOR, IMPASSABLE_COLOR);
         save.getProvinces().forEach(province -> {
             String owner = province.getCurrentOwner();
 
             if (owner == null) {
-                colorsMap.put(colorImage.getRGB(province.getId() - 1, 0), EMPTY_COLOR);
+                colorsMap.put(new Color(province.getId()), EMPTY_COLOR);
             } else {
-                colorsMap.put(colorImage.getRGB(province.getId() - 1, 0), save.getCountries()
-                                                                              .stream()
-                                                                              .filter(c -> owner.equals(c.getTag()))
-                                                                              .findFirst()
-                                                                              .map(CountryDTO::getColors)
-                                                                              .map(ColorsDTO::mapColor)
-                                                                              .map(color -> new Color(color.red(), color.green(), color.blue(),
-                                                                                                      color.alpha()).getRGB())
-                                                                              .orElse(EMPTY_COLOR));
+                colorsMap.put(new Color(province.getId()), save.getCountries()
+                                                               .stream()
+                                                               .filter(c -> owner.equals(c.getTag()))
+                                                               .findFirst()
+                                                               .map(CountryDTO::getColors)
+                                                               .map(ColorsDTO::mapColor)
+                                                               .map(color -> new Color(color.red(), color.green(), color.blue(),
+                                                                                       color.alpha()).getRGB())
+                                                               .orElse(EMPTY_COLOR));
             }
         });
 
@@ -259,7 +263,7 @@ public class SaveService {
 
         for (int y = 0; y < provincesImage.getHeight(); y++) {
             for (int x = 0; x < provincesImage.getWidth(); x++) {
-                image.setRGB(x, y, colorsMap.getOrDefault(provincesImage.getRGB(x, y), IMPASSABLE_COLOR));
+                image.setRGB(x, y, colorsMap.getOrDefault(new Color(provincesImage.getRGB(x, y)), Color.BLACK.getRGB()));
             }
         }
 

@@ -37,7 +37,7 @@ public class DataService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataService.class);
 
-    public static final List<String> FOLDERS = List.of("advisors", "buildings", "colors", "estates", "flags", "goods", "idea_groups", "institutions",
+    public static final List<String> FOLDERS = List.of("advisors", "buildings", "estates", "flags", "goods", "idea_groups", "institutions",
                                                        "missions", "modifiers", "privileges", "provinces", "religions");
 
     private final UserService userService;
@@ -116,10 +116,6 @@ public class DataService {
 
         if (!Files.exists(this.properties.getDataFolder().resolve("provinces").resolve(save.getProvinceImage() + ".png"))) {
             assets.setProvinces(true);
-        }
-
-        if (!Files.exists(this.properties.getDataFolder().resolve("colors").resolve(save.getColorsImage() + ".png"))) {
-            assets.setColors(true);
         }
 
         assets.setCountries(save.getCountries()

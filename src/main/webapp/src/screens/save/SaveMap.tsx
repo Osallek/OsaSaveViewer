@@ -1,3 +1,4 @@
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { Backdrop, Dialog, Fade, Grow, Popper, Tooltip } from '@mui/material';
 import { intl } from 'index';
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
@@ -10,11 +11,14 @@ import { SaveColor, SaveProvince } from 'types/api.types';
 import { ProvincesTexture, Texture } from 'types/gl.types';
 import { IMapMode, MapMode, mapModes, MapSave } from 'types/map.types';
 import { getTexture } from 'utils';
-import { IMPASSABLE_COLOR, OCEAN_COLOR } from 'utils/colors.utils';
-import { getColorsUrl, getProvincesUrl } from 'utils/data.utils';
+import {
+  DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, GREEN_COLOR, HALF_GREEN_COLOR, HALF_RED_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, IMPASSABLE_COLOR,
+  IMPASSABLE_PROV_COLOR, OCEAN_COLOR, OCEAN_PROV_COLOR, PROSPERITY_GRADIENT
+} from 'utils/colors.utils';
+import { getProvincesUrl } from 'utils/data.utils';
 import { cleanString } from 'utils/format.utils';
 import { getProvinceAt, getTextureFromSave, initShaderProgram, prepareTexture } from 'utils/gl.utils';
-import { getProvince } from 'utils/save.utils';
+import { cleanSave, getProvince } from 'utils/save.utils';
 
 interface SaveMapProps {
   save?: MapSave;
@@ -46,19 +50,16 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
     const [zoomLoc, setZoomLoc] = useState<WebGLUniformLocation | null>(null);
 
     const [provincesContext, setProvincesContext] = useState<CanvasRenderingContext2D | null>(null);
+    const [provincesData, setProvincesData] = useState<Uint8ClampedArray | null>(null);
     const [provincesTexture, setProvincesTexture] = useState<Texture | null>(null);
     const [provincesLoc, setProvincesLoc] = useState<WebGLUniformLocation | null>(null);
-
-    const [nbProvincesLoc, setNbProvincesLoc] = useState<WebGLUniformLocation | null>(null);
-
-    const [idColorsContext, setIdColorsContext] = useState<CanvasRenderingContext2D | null>(null);
-    const [idColorsTexture, setIdColorsTexture] = useState<Texture | null>(null);
-    const [idColorsLoc, setIdColorsLoc] = useState<WebGLUniformLocation | null>(null);
 
     const [currentColorsTexture, setCurrentColorsTexture] = useState<ProvincesTexture | null>(null);
     const [currentColorsLoc, setCurrentColorsLoc] = useState<WebGLUniformLocation | null>(null);
 
-    const [deltaLoc, setDeltaLoc] = useState<WebGLUniformLocation | null>(null);
+    const [borderLoc, setBorderLoc] = useState<WebGLUniformLocation | null>(null);
+    const [oceanLoc, setOceanLoc] = useState<WebGLUniformLocation | null>(null);
+    const [impassableLoc, setImpassableLoc] = useState<WebGLUniformLocation | null>(null);
     const [ratioLoc, setRatioLoc] = useState<WebGLUniformLocation | null>(null);
 
     const [clickedProvince, setClickedProvince] = useState<SaveProvince | null>(null);
@@ -96,9 +97,9 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
 
       if (canvas.current && provincesTexture !== null) {
         let newZoom = zoom - (e.deltaY / 1000);
-        const min = canvas.current.width / provincesTexture.width;
+        const min = Math.max(canvas.current.height / provincesTexture.height, canvas.current.width / provincesTexture.width);
         newZoom = Math.max(newZoom, min);
-        newZoom = Math.min(newZoom, 12 * min);
+        newZoom = Math.min(newZoom, 14 * min);
         adjustOffset(offset[0], offset[1], newZoom);
         setZoom(newZoom);
       }
@@ -138,7 +139,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
 
     const clickProvince = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
       if (gl && save) {
-        if (!moved && provincesContext && provincesTexture && idColorsContext) {
+        if (!moved && provincesContext && provincesTexture && provincesData) {
           const scaledWidth = gl.canvas.width / zoom;
           const scaledHeight = gl.canvas.height / zoom;
 
@@ -146,14 +147,14 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
           const y = (((e.clientY - gl.canvas.getBoundingClientRect().top) / gl.canvas.height * scaledHeight) + (offset[1] - (scaledHeight - provincesTexture.height) / 4) * 2) | 0;
 
           if (y >= 0 && y <= provincesTexture.height) { //Clicking inside image
-            const provinceId = getProvinceAt(x, y, provincesContext, idColorsContext);
+            const provinceId = getProvinceAt(x, y, provincesTexture.width, provincesData);
             const province = getProvince(save, provinceId);
 
             setClickedProvince((clickedProvince && province && (clickedProvince.id === provinceId)) ? null : province);
           }
         }
       }
-    }, [clickedProvince, save, gl, idColorsContext, moved, offset, provincesContext, provincesTexture, zoom]);
+    }, [clickedProvince, save, gl, moved, offset, provincesContext, provincesTexture, zoom, provincesData]);
 
     const onHoverProvince = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
       if (!iMapMode.hasTooltip) {
@@ -164,7 +165,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
         return;
       }
 
-      if (gl && save && provincesContext && provincesTexture && idColorsContext && canvas.current && Date.now() > lastTooltip + tooltipBounce) {
+      if (gl && save && provincesData && provincesTexture && canvas.current && Date.now() > lastTooltip + tooltipBounce) {
         const scaledWidth = gl.canvas.width / zoom;
         const scaledHeight = gl.canvas.height / zoom;
 
@@ -172,7 +173,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
         const y = (((e.clientY - gl.canvas.getBoundingClientRect().top) / gl.canvas.height * scaledHeight) + (offset[1] - (scaledHeight - provincesTexture.height) / 4) * 2) | 0;
 
         if (y >= 0 && y <= provincesTexture.height) { //Clicking inside image
-          const provinceId = getProvinceAt(x, y, provincesContext, idColorsContext);
+          const provinceId = getProvinceAt(x, y, provincesTexture.width, provincesData);
           const province = getProvince(save, provinceId);
 
           setHoverProvince(province);
@@ -181,7 +182,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
           setHoverProvince(null);
         }
       }
-    }, [save, gl, idColorsContext, moved, offset, provincesContext, provincesTexture, zoom]);
+    }, [save, gl, moved, offset, provincesData, provincesTexture, zoom]);
 
     useEffect(() => {
       if (canvas.current !== null) {
@@ -201,7 +202,15 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
 
     useEffect(() => {
       if (canvas.current !== null) {
-        setGl(canvas.current.getContext('webgl2'));
+        setGl(canvas.current.getContext('webgl2', {
+          depth: false,
+          antialias: false,
+          stencil: false,
+          alpha: true,
+          powerPreference: 'high-performance',
+          preserveDrawingBuffer: false,
+          desynchronized: false,
+        }));
         canvas.current.onmousedown = e => {
           setMouseDown(true);
           setLastMousePos([e.clientX | 0, e.clientY | 0]);
@@ -275,10 +284,10 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
         setOffsetLoc(gl.getUniformLocation(program, "u_offset"));
         setZoomLoc(gl.getUniformLocation(program, "u_zoom"));
         setProvincesLoc(gl.getUniformLocation(program, "u_provinces"));
-        setIdColorsLoc(gl.getUniformLocation(program, "u_idColors"));
-        setNbProvincesLoc(gl.getUniformLocation(program, "u_nbProvinces"));
         setCurrentColorsLoc(gl.getUniformLocation(program, "u_currentColors"));
-        setDeltaLoc(gl.getUniformLocation(program, "u_delta"));
+        setBorderLoc(gl.getUniformLocation(program, "u_border"));
+        setOceanLoc(gl.getUniformLocation(program, "u_ocean"));
+        setImpassableLoc(gl.getUniformLocation(program, "u_impassable"));
         setRatioLoc(gl.getUniformLocation(program, "u_ratio"));
 
         gl.clearColor(1.0, 0.0, 1.0, 1.0);
@@ -298,143 +307,210 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
             setProvincesContext(context2D);
           }
         });
-
-        getTexture(getColorsUrl(save.colorsImage), gl).then(value => {
-          setIdColorsTexture(value);
-
-          if (value && value.image) {
-            const idColorsCanvas = document.createElement("canvas");
-            idColorsCanvas.width = value.width;
-            idColorsCanvas.height = value.height;
-
-            const context2D = idColorsCanvas.getContext("2d")!;
-            context2D.imageSmoothingEnabled = false;
-            context2D.drawImage(value.image, 0, 0, value.width, value.height);
-
-            setIdColorsContext(context2D);
-          }
-        });
       }
     }, [program, gl, save]);
 
     useEffect(() => {
-      if (gl && provincesTexture !== null && provincesLoc !== null && idColorsTexture !== null && idColorsLoc !== null
-        && nbProvincesLoc !== null && currentColorsTexture !== null && currentColorsLoc !== null && deltaLoc !== null) {
+      if (gl && provincesTexture !== null && provincesLoc !== null && currentColorsTexture !== null && currentColorsLoc !== null
+        && borderLoc !== null && oceanLoc !== null && impassableLoc !== null) {
         resize(false);
 
-        gl.uniform1i(nbProvincesLoc, idColorsTexture.width);
-        gl.uniform2f(deltaLoc, 1.0 / provincesTexture.width, 1.0 / provincesTexture.height);
+        gl.uniform4f(borderLoc, 0.0, 0.0, 0.0, 1.0);
+        gl.uniform4f(oceanLoc, 227.0 / 255.0, 1.0, 1.0, 1.0);
+        gl.uniform4f(impassableLoc, 200.0 / 255.0, 1.0, 1.0, 1.0);
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, provincesTexture.texture);
         gl.uniform1i(provincesLoc, 0);
 
         gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, idColorsTexture.texture);
-        gl.uniform1i(idColorsLoc, 1);
-
-        gl.activeTexture(gl.TEXTURE2);
         gl.bindTexture(gl.TEXTURE_2D, currentColorsTexture.texture);
-        gl.uniform1i(currentColorsLoc, 2);
+        gl.uniform1i(currentColorsLoc, 1);
 
         setDisplayable(true);
       }
-    }, [idColorsLoc, idColorsTexture, gl, nbProvincesLoc, provincesLoc, provincesTexture, currentColorsTexture, currentColorsLoc, deltaLoc, ratioLoc, resize]);
+    }, [gl, provincesLoc, provincesTexture, currentColorsTexture, currentColorsLoc, borderLoc, oceanLoc, impassableLoc, ratioLoc, resize]);
 
     useEffect(() => {
-      if (gl && zoomLoc && offsetLoc && provincesTexture) {
-        gl.uniform1f(zoomLoc, zoom);
+      if (gl && offsetLoc && provincesTexture) {
         gl.uniform2f(offsetLoc, offset[0] / provincesTexture.width, offset[1] / provincesTexture.height);
 
         gl.drawArrays(gl.TRIANGLES, 0, 6);
       }
-    }, [gl, zoomLoc, zoom, offsetLoc, offset, provincesTexture]);
+    }, [gl, offsetLoc, offset, provincesTexture]);
+
+    useEffect(() => {
+      if (gl && zoomLoc) {
+        gl.uniform1f(zoomLoc, zoom);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+      }
+    }, [gl, zoomLoc, zoom]);
+
+    useEffect(() => {
+      if (provincesContext && provincesTexture) {
+        setProvincesData(provincesContext.getImageData(0, 0, provincesTexture.width, provincesTexture.height).data);
+      }
+    }, [provincesContext, provincesTexture]);
 
     useImperativeHandle(ref, () => ({
-      async exportImage(mm: MapMode, countries: Array<string>) {
-        return new Promise((resolve) => {
-          if (save && provincesTexture && provincesContext && idColorsContext) {
-            const exportCanvas = document.createElement<'canvas'>('canvas');
-            exportCanvas.width = provincesTexture.width;
-            exportCanvas.height = provincesTexture.height;
+      exportImage: async (mm: MapMode, countries: Array<string>) => {
+        return new Promise((resolve, reject) => {
+          try {
+            if (save && provincesTexture && provincesContext) {
+              const exportCanvas = document.createElement<'canvas'>('canvas');
+              exportCanvas.width = provincesTexture.width;
+              exportCanvas.height = provincesTexture.height;
 
-            const exportContext = exportCanvas.getContext('2d')!;
-            exportContext.imageSmoothingEnabled = false;
-            const colorMapping = new Map<string, SaveColor>();
+              const exportContext = exportCanvas.getContext('2d')!;
+              exportContext.imageSmoothingEnabled = false;
+              const colorMapping = new Map<string, SaveColor>();
 
-            const colorsData = idColorsContext.getImageData(0, 0, idColorsContext.canvas.width, idColorsContext.canvas.height).data;
+              const modeData = mapModes[mm].prepare(save, null, date);
+              for (const province of save.provinces) {
+                const b = province.id % 256;
+                const g = Math.floor(province.id / 256);
+                const r = Math.floor(province.id / (256 * 256));
+                const key = `${ r };${ g };${ b }`;
+                const value = mapModes[mm].provinceColor(province, save, modeData, countries);
 
-            const modeData = mapModes[mm].prepare(save, null);
-            for (const province of save.provinces) {
-              const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
-              const value = mapModes[mm].provinceColor(province, save, modeData, countries);
-
-              colorMapping.set(key, value);
-            }
-
-            for (const province of save.impassableProvinces) {
-              const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
-              const value: SaveColor = {
-                red: IMPASSABLE_COLOR.red,
-                green: IMPASSABLE_COLOR.green,
-                blue: IMPASSABLE_COLOR.blue,
-                alpha: IMPASSABLE_COLOR.alpha,
-              };
-
-              colorMapping.set(key, value);
-            }
-
-            for (const province of save.oceansProvinces) {
-              const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
-              const value: SaveColor = {
-                red: OCEAN_COLOR.red,
-                green: OCEAN_COLOR.green,
-                blue: OCEAN_COLOR.blue,
-                alpha: OCEAN_COLOR.alpha,
-              };
-
-              colorMapping.set(key, value);
-            }
-
-            for (const province of save.lakesProvinces) {
-              const key = `${ colorsData[(province.id - 1) * 4] };${ colorsData[(province.id - 1) * 4 + 1] };${ colorsData[(province.id - 1) * 4 + 2] };${ colorsData[(province.id - 1) * 4 + 3] }`;
-              const value: SaveColor = {
-                red: OCEAN_COLOR.red,
-                green: OCEAN_COLOR.green,
-                blue: OCEAN_COLOR.blue,
-                alpha: OCEAN_COLOR.alpha,
-              };
-
-              colorMapping.set(key, value);
-            }
-
-            const workerInstance = new WorkerBuilder(mapWorker);
-            workerInstance.onmessage = (message) => {
-              if (message) {
-                const newData = exportContext.createImageData(provincesTexture.width, provincesTexture.height);
-                newData.data.set(message.data);
-                exportContext.putImageData(newData, 0, 0);
-
-                const url = exportCanvas.toDataURL('image/png', 1);
-                const link = document.createElement("a");
-                link.href = url;
-                link.setAttribute("download", `${ cleanString(`${ save.name.replace(/\.[^/.]+$/, "") }_${ intl.formatMessage({ id: `map.mod.${ mm }` }) }`) }.png`);
-
-                if (document.body) {
-                  document.body.appendChild(link);
-                  link.click();
-                }
-
-                resolve(true);
+                colorMapping.set(key, value);
               }
-            };
 
-            const message = {
-              data: provincesContext.getImageData(0, 0, provincesTexture.width, provincesTexture.height).data,
-              colorMapping,
-              IMPASSABLE_COLOR
+              colorMapping.set(`${ IMPASSABLE_PROV_COLOR.red };${ IMPASSABLE_PROV_COLOR.green };${ IMPASSABLE_PROV_COLOR.blue }`,
+                {
+                  red: IMPASSABLE_COLOR.red,
+                  green: IMPASSABLE_COLOR.green,
+                  blue: IMPASSABLE_COLOR.blue,
+                  alpha: IMPASSABLE_COLOR.alpha,
+                });
+
+              colorMapping.set(`${ OCEAN_PROV_COLOR.red };${ OCEAN_PROV_COLOR.green };${ OCEAN_PROV_COLOR.blue }`,
+                {
+                  red: OCEAN_COLOR.red,
+                  green: OCEAN_COLOR.green,
+                  blue: OCEAN_COLOR.blue,
+                  alpha: OCEAN_COLOR.alpha,
+                });
+
+              const workerInstance = new WorkerBuilder(mapWorker);
+              workerInstance.onmessage = (message) => {
+                if (message) {
+                  const newData = exportContext.createImageData(provincesTexture.width, provincesTexture.height);
+                  newData.data.set(message.data);
+                  exportContext.putImageData(newData, 0, 0);
+
+                  const url = exportCanvas.toDataURL('image/png', 1);
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.setAttribute("download",
+                    `${ cleanString(`${ save.name.replace(/\.[^/.]+$/, "") }_${ intl.formatMessage({ id: `map.mod.${ mm }` }) }`) }.png`);
+
+                  if (document.body) {
+                    document.body.appendChild(link);
+                    link.click();
+                  }
+
+                  resolve(true);
+                }
+              };
+
+              const message = {
+                data: provincesContext.getImageData(0, 0, provincesTexture.width, provincesTexture.height).data,
+                colorMapping
+              }
+              workerInstance.postMessage(message, [message.data.buffer]);
             }
-            workerInstance.postMessage(message, [message.data.buffer]);
+          } catch (e) {
+            reject(e);
+          }
+        });
+      },
+      exportTimelapse: async (mm: MapMode, countries: Array<string>) => {
+        return new Promise((resolve, reject) => {
+          try {
+            if (save && provincesTexture && provincesContext) {
+              const exportCanvas: HTMLCanvasElement = document.createElement<'canvas'>('canvas');
+              exportCanvas.width = provincesTexture.width;
+              exportCanvas.height = provincesTexture.height;
+
+              const message = {
+                data: provincesContext.getImageData(0, 0, provincesTexture.width, provincesTexture.height).data,
+                mm,
+                save: cleanSave(save),
+                EMPTY_COLOR,
+                IMPASSABLE_COLOR,
+                IMPASSABLE_PROV_COLOR,
+                OCEAN_COLOR,
+                OCEAN_PROV_COLOR,
+                GREEN_COLOR,
+                PROSPERITY_GRADIENT,
+                HRE_EMPEROR_COLOR,
+                HRE_ELECTOR_COLOR,
+                DEVASTATION_GRADIENT,
+                HALF_RED_COLOR,
+                HALF_GREEN_COLOR,
+                DEV_GRADIENT,
+                countries,
+                width: provincesTexture.width,
+                height: provincesTexture.height,
+                // @ts-ignore
+                canvas: exportCanvas.transferControlToOffscreen(),
+              }
+
+              const worker: Worker = new Worker('/eu4/script/prepare_timelapse_worker.js');
+              worker.onerror = (e) => {
+                console.error(e.message);
+                reject(e);
+                worker.terminate();
+              }
+              worker.onmessageerror = (e) => {
+                console.error(e);
+                reject(e);
+                worker.terminate();
+              }
+              worker.onmessage = async (e) => {
+                try {
+                  if (e && e.data) {
+                    const ffmpeg = createFFmpeg();
+                    await ffmpeg.load();
+
+                    for (const image of e.data) {
+                      ffmpeg.FS('writeFile', image.name, await fetchFile(image.data));
+                    }
+
+                    await ffmpeg.run('-r', '20', '-i', 'img%04d.jpg', '-c:v', 'libx264', '-s', `${ provincesTexture.width }x${ provincesTexture.height }`,
+                      '-pix_fmt', 'yuv420p', 'out.mp4');
+
+                    const data = ffmpeg.FS('readFile', 'out.mp4');
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+                    link.setAttribute("download", `${ cleanString(
+                      `${ save.name.replace(/\.[^/.]+$/, "") }_${ intl.formatMessage({ id: `map.mod.${ mm }` }) }_${ intl.formatMessage(
+                        { id: 'common.timelapse' }) }`) }.mp4`);
+
+                    if (document.body) {
+                      document.body.appendChild(link);
+                      link.click();
+                    }
+                  }
+                } catch (e) {
+                  console.error(e);
+                  reject(e);
+                  worker.terminate();
+                } finally {
+                  resolve(true);
+                  worker.terminate();
+                }
+              };
+
+              worker.postMessage(message, [message.data.buffer, message.canvas]);
+            } else {
+              resolve(true);
+            }
+          } catch
+            (e) {
+            reject(e);
           }
         });
       }
@@ -446,8 +522,9 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
           save &&
             <>
               {
-                <Tooltip title={ (hoverProvince && iMapMode.hasTooltip && iMapMode.tooltip !== undefined) ? iMapMode.tooltip(hoverProvince, save, dataId, date) : '' }
-                         followCursor>
+                <Tooltip
+                  title={ (hoverProvince && iMapMode.hasTooltip && iMapMode.tooltip !== undefined) ? iMapMode.tooltip(hoverProvince, save, dataId, date) : '' }
+                  followCursor>
                   <canvas id='save-map-canvas'
                           ref={ canvas }
                           style={ {

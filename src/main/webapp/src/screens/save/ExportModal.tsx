@@ -1,6 +1,6 @@
 import {
-  Autocomplete, Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, FormControl, Grid, InputLabel, MenuItem, Modal, Select, TextField, Typography,
-  useTheme
+  Autocomplete, Avatar, Button, Card, CardActions, CardContent, CardHeader, Checkbox, Chip, CircularProgress, FormControl, FormControlLabel, Grid, InputLabel,
+  MenuItem, Modal, Select, TextField, Typography, useTheme
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -13,16 +13,18 @@ interface CompareTableProps {
   save: MapSave;
   open: boolean;
   onClose: () => void;
-  onExport: (mm: MapMode, countries: Array<string>) => void;
+  onExport: (mm: MapMode, countries: Array<string>, timelapse: boolean) => void;
+  ready: boolean;
 }
 
-function ExportModal({ save, open, onClose, onExport }: CompareTableProps) {
+function ExportModal({ save, open, onClose, onExport, ready }: CompareTableProps) {
   const intl = useIntl();
   const theme = useTheme();
 
   const [mm, setMM] = useState<MapMode>(MapMode.POLITICAL);
   const [countries, setCountries] = useState<Array<SaveCountry>>([]);
   const [options, setOptions] = useState<Array<SaveCountry>>([]);
+  const [timelapse, setTimelapse] = useState<boolean>(false);
 
   useEffect(() => {
     setOptions(getCountries(save).sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b))));
@@ -31,7 +33,7 @@ function ExportModal({ save, open, onClose, onExport }: CompareTableProps) {
   const doExport = () => {
     setMM(MapMode.POLITICAL);
     setCountries([]);
-    onExport(mm, countries.map(value => value.tag));
+    onExport(mm, countries.map(value => value.tag), timelapse);
   };
 
   return (
@@ -110,6 +112,20 @@ function ExportModal({ save, open, onClose, onExport }: CompareTableProps) {
                   ))
                 }
               />
+{/*              <FormControlLabel label={ intl.formatMessage({ id: 'common.timelapse' }) }
+                                style={ { color: theme.palette.primary.contrastText, marginLeft: -4, marginTop: 0 } }
+                                control={ ready ?
+                                  <Checkbox checked={ timelapse }
+                                            onChange={ e => setTimelapse(e.target.checked) }
+                                            disabled={ !save.ready }
+                                            sx={ {
+                                              color: theme.palette.primary.main,
+                                              '&.Mui-checked': {
+                                                color: theme.palette.primary.contrastText,
+                                              },
+                                            } }/>
+                                  :
+                                  <CircularProgress color='secondary' style={ { width: 24, height: 24, padding: 9 } }/> }/>*/}
             </Grid>
           </CardContent>
           <CardActions style={ { justifyContent: 'center' } }>

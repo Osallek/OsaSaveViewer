@@ -6,8 +6,6 @@ public final class AssetsDTO {
 
     private boolean provinces;
 
-    private boolean colors;
-
     private Set<String> countries;
 
     private Set<String> advisors;
@@ -40,14 +38,6 @@ public final class AssetsDTO {
 
     public void setProvinces(boolean provinces) {
         this.provinces = provinces;
-    }
-
-    public boolean isColors() {
-        return colors;
-    }
-
-    public void setColors(boolean colors) {
-        this.colors = colors;
     }
 
     public Set<String> getCountries() {

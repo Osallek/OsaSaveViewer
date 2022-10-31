@@ -51,7 +51,7 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
           }
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
         })
     } finally {
       setExporting(false);

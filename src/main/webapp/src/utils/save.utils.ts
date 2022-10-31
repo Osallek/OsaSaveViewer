@@ -1,21 +1,16 @@
 import { eu4Locale } from 'index';
+import { Dispatch, SetStateAction } from 'react';
 import {
   ColorNamedImageLocalised, CountryPreviousSave, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save,
   SaveArea, SaveBattle, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMission, SaveMonarch,
   SaveProvince, SaveProvinceHistory, SaveReligion, SaveSimpleProvince, SaveTradeNode, SaveWar
 } from 'types/api.types';
-import { CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
+import { CleanMapSave, CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
 import {
   getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getLeaderPersonalityUrl, getMissionUrl, getPersonalityUrl, getPrivilegeUrl,
   getReligionUrl
 } from 'utils/data.utils';
 import { capitalize, getYear, numberComparator, stringComparator, toMap } from 'utils/format.utils';
-
-const workers: Array<Worker> = [new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-  new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js')];
 
 export const fakeTag = "---";
 
@@ -33,35 +28,110 @@ export function isValidDate(date?: string | null, save?: MapSave): boolean {
   return true;
 }
 
-export function convertSave(save: Save): MapSave {
-  const newSave = {
+export function convertSave(save: Save, history: boolean, dispatch?: Dispatch<SetStateAction<boolean>>): MapSave {
+  const newSave: MapSave = {
     ...save,
     currentProvinces: toMap(save.provinces, p => p.id, p => getPHistoryInternal(p, save.date)),
     currentCountries: toMap(save.countries, c => c.tag, c => getCHistoryInternal(c, save.date)),
-  }
+    countriesMap: toMap(save.countries, c => c.tag, c => c),
+    provincesMap: toMap(save.provinces, p => p.id, p => p),
+    ready: false
+  };
 
-  let count = 0;
-  const start = new Date();
+  if (history) {
+    const historyWorkers: Array<Worker> = [new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js')];
+    let count = 0;
+    const start = new Date();
 
-  for (let i = 0; i < workers.length; i++) {
-    const worker = workers[i];
-    worker.onmessage = (message) => {
-      if (message && message.data) {
-        newSave.provinces[message.data.i].histories = message.data.histories;
+    for (let i = 0; i < historyWorkers.length; i++) {
+      const worker = historyWorkers[i];
+      worker.onerror = (event) => {
         count++;
+        console.error(event);
 
         if (count === newSave.provinces.length) {
           console.log('Finished provinces history: ' + (new Date().getTime() - start.getTime()));
+          newSave.ready = true;
+
+          if (dispatch) {
+            dispatch(true);
+          }
+
+          for (let i = 0; i < historyWorkers.length; i++) {
+            historyWorkers[i].terminate();
+          }
+
+          return newSave;
         }
       }
-    };
+      worker.onmessage = (message) => {
+        count++;
+        if (message && message.data) {
+          newSave.provinces[message.data.i].histories = message.data.histories;
+
+          if (count === newSave.provinces.length) {
+            console.log('Finished provinces history: ' + (new Date().getTime() - start.getTime()));
+            newSave.ready = true;
+
+            if (dispatch) {
+              dispatch(true);
+            }
+
+            for (let i = 0; i < historyWorkers.length; i++) {
+              historyWorkers[i].terminate();
+            }
+
+            return newSave;
+          }
+        }
+      };
+    }
+
+    for (let i = 0; i < newSave.provinces.length; i++) {
+      const province = newSave.provinces[i];
+
+      if (!province.histories) {
+        historyWorkers[i % historyWorkers.length].postMessage({ i, history: province.history ?? [] });
+      }
+    }
   }
 
-  for (let i = 0; i < newSave.provinces.length; i++) {
-    const province = newSave.provinces[i];
+  return newSave;
+}
 
-    if (!province.histories) {
-      workers[i % workers.length].postMessage({ i, history: province.history ?? [] });
+export function cleanSave(save: MapSave): CleanMapSave {
+  const newSave: CleanMapSave = JSON.parse(JSON.stringify(save));
+
+  delete newSave.id;
+  delete newSave.name;
+  delete newSave.provinceImage;
+  delete newSave.colorsImage;
+  delete newSave.teams;
+  delete newSave.advisors;
+  delete newSave.advisorTypes;
+  delete newSave.estates;
+  delete newSave.estatePrivileges;
+  delete newSave.ideaGroups;
+  delete newSave.personalities;
+  delete newSave.leaderPersonalities;
+  delete newSave.previousSaves;
+  delete newSave.missions;
+  delete newSave.wars;
+  delete newSave.currentProvinces;
+  delete newSave.currentCountries;
+  delete newSave.countries;
+
+  if (newSave.provinces) {
+    for (const province of newSave.provinces) {
+      delete province.history;
+      delete province.buildings;
+      delete province.colonySize;
+      delete province.city;
+      delete province.institutions;
     }
   }
 
@@ -102,50 +172,52 @@ function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHist
     return province.histories.length > 0 ? province.histories[province.histories.length - 1] : history;
   }
 
-  for (const h of province.history) {
-    if (!h.date || h.date <= date) {
-      let cores: Array<string> = (history && history.cores) ?? [];
+  if (province.history) {
+    for (const h of province.history) {
+      if (!h.date || h.date <= date) {
+        let cores: Array<string> = (history && history.cores) ?? [];
 
-      if (h.addCores) {
-        cores = cores.concat(h.addCores);
+        if (h.addCores) {
+          cores = cores.concat(h.addCores);
+        }
+
+        if (h.removeCores) {
+          cores = cores.filter(e => !h.removeCores?.includes(e))
+        }
+
+        let claims: Array<string> = (history && history.claims) ?? [];
+
+        if (h.addClaims) {
+          claims = claims.concat(h.addClaims);
+        }
+
+        if (h.removeClaims) {
+          claims = claims.filter(e => !h.removeClaims?.includes(e))
+        }
+
+        let buildings: Set<string> = (history && history.buildings) ?? new Set();
+
+        if (h.buildings) {
+          Object.entries(h.buildings).forEach(([key, value]) => {
+            if (value) {
+              buildings.add(key);
+            } else {
+              buildings.delete(key)
+            }
+          })
+        }
+
+        history = {
+          ...(typeof history === 'object' ? history : {}),
+          ...h,
+          owner: fakeTag === h.owner ? undefined : (h.owner ?? history.owner),
+          cores,
+          claims,
+          buildings
+        };
+      } else {
+        break;
       }
-
-      if (h.removeCores) {
-        cores = cores.filter(e => !h.removeCores?.includes(e))
-      }
-
-      let claims: Array<string> = (history && history.claims) ?? [];
-
-      if (h.addClaims) {
-        claims = claims.concat(h.addClaims);
-      }
-
-      if (h.removeClaims) {
-        claims = claims.filter(e => !h.removeClaims?.includes(e))
-      }
-
-      let buildings: Set<string> = (history && history.buildings) ?? new Set();
-
-      if (h.buildings) {
-        Object.entries(h.buildings).forEach(([key, value]) => {
-          if (value) {
-            buildings.add(key);
-          } else {
-            buildings.delete(key)
-          }
-        })
-      }
-
-      history = {
-        ...(typeof history === 'object' ? history : {}),
-        ...h,
-        owner: fakeTag === h.owner ? undefined : (h.owner ?? history.owner),
-        cores,
-        claims,
-        buildings
-      };
-    } else {
-      break;
     }
   }
 
@@ -153,7 +225,7 @@ function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHist
 }
 
 export function getProvince(save: MapSave, id: number): SaveProvince | null {
-  return save.provinces.find(province => id === province.id) ?? null;
+  return save.provincesMap.get(id) ?? null;
 }
 
 export function getOceanLakeProvince(save: MapSave, id: number): SaveSimpleProvince | null {
@@ -213,7 +285,7 @@ export function getNbImprovements(country: SaveCountry, save: MapSave): number {
 }
 
 export function getCountry(save: MapSave, tag: string): SaveCountry {
-  return tag ? save.countries.find(country => tag.toUpperCase() === country.tag) ?? save.countries[0] : save.countries[0];
+  return save.countriesMap.get(tag) ?? save.countries[0];
 }
 
 export function getCountryName(save: MapSave, tag: string | undefined): string {
@@ -518,7 +590,8 @@ export function getAreaState(area: SaveArea, tag?: string): SaveCountryState | n
 }
 
 export function getCHistory(country: SaveCountry, save: MapSave, date?: string): CountryHistory {
-  return (date && save.date !== date) ? getCHistoryInternal(country, date) : save.currentCountries.get(country.tag) ?? save.currentCountries.values().next().value;
+  return (date && save.date !== date) ? getCHistoryInternal(country, date) : save.currentCountries.get(
+    country.tag) ?? save.currentCountries.values().next().value;
 }
 
 function getCHistoryInternal(country: SaveCountry, date: string): CountryHistory {
@@ -609,7 +682,8 @@ export function getOverlord(country: SaveCountry, save: MapSave): SaveCountry | 
 }
 
 export function getSubjects(country: SaveCountry, save: MapSave, date?: string): Array<SaveDependency> {
-  return save.diplomacy.dependencies.filter(dependency => dependency.first === country.tag && dependency.date <= (date ?? save.date) && (dependency.endDate === undefined || dependency.endDate >= (date ?? save.date)));
+  return save.diplomacy.dependencies.filter(
+    dependency => dependency.first === country.tag && dependency.date <= (date ?? save.date) && (dependency.endDate === undefined || dependency.endDate >= (date ?? save.date)));
 }
 
 export function interestingHistory(h: SaveProvinceHistory): boolean {
@@ -687,13 +761,15 @@ export function getRank(save: MapSave, country: SaveCountry, mapper: (country: S
 }
 
 export function getMonarchs(save: MapSave, country: SaveCountry): Array<SaveMonarch> {
-  const array = country.history.map(h => h.monarch).filter(m => m !== undefined && (m.deathDate === undefined || m.deathDate > save.startDate)) as Array<SaveMonarch>;
+  const array = country.history.map(h => h.monarch).filter(
+    m => m !== undefined && (m.deathDate === undefined || m.deathDate > save.startDate)) as Array<SaveMonarch>;
 
   return array.sort((a, b) => stringComparator(a.monarchDate ?? '', b.monarchDate ?? ''));
 }
 
 export function getLeaders(save: MapSave, country: SaveCountry): Array<SaveLeader> {
-  const leaders = country.history.map(h => h.leader).filter(m => m !== undefined && (m.deathDate === undefined || m.deathDate > save.startDate)) as Array<SaveLeader>;
+  const leaders = country.history.map(h => h.leader).filter(
+    m => m !== undefined && (m.deathDate === undefined || m.deathDate > save.startDate)) as Array<SaveLeader>;
 
   country.history.map(h => h.monarch).forEach(m => {
     if (m !== undefined && m.leader !== undefined) {
@@ -937,7 +1013,22 @@ export function getWarLosses(war: SaveWar): number {
 }
 
 export function getProvinceLosses(war: SaveWar, id: number): number {
-  return war.history.filter(h => h.battles && h.battles.length > 0).flatMap(h => h.battles ?? []).filter(b => b.location === id).reduce((s, b) => s + getBattleLosses(b), 0);
+  return war.history.filter(h => h.battles && h.battles.length > 0).flatMap(h => h.battles ?? []).filter(b => b.location === id).reduce(
+    (s, b) => s + getBattleLosses(b), 0);
+}
+
+export function getProvinceAllLosses(province: SaveProvince, date?: string): number {
+  let losses = 0;
+
+  if (province.losses) {
+    for (const l of province.losses) {
+      if (!date || !l.date || l.date <= date) {
+        losses += l.losses ?? 0;
+      }
+    }
+  }
+
+  return losses;
 }
 
 export function getBattleLosses(battle: SaveBattle): number {

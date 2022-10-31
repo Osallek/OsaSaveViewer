@@ -18,7 +18,6 @@ export type Save = {
   id: string;
   name: string;
   provinceImage: string;
-  colorsImage: string;
   nbProvinces: number;
   teams: Array<SaveTeam>;
   provinces: Array<SaveProvince>;
@@ -82,13 +81,14 @@ export type SaveProvince = SaveSimpleProvince & {
   devastation?: number;
   autonomy?: number;
   institutions?: Array<number>;
-  city: boolean;
+  city?: boolean;
   node?: string;
   improvements?: Record<string, number>;
   colonySize?: number;
   buildings?: Array<string>;
-  history: Array<SaveProvinceHistory>;
-  histories: Array<ProvinceHistory>;
+  history?: Array<SaveProvinceHistory>;
+  histories?: Array<ProvinceHistory>;
+  losses?: Array<ProvinceLosses>;
 }
 
 export type SaveProvinceHistory = {
@@ -116,6 +116,11 @@ export type SaveProvinceHistory = {
   religion?: string;
   city?: boolean;
   buildings?: Record<string, boolean>;
+}
+
+export type ProvinceLosses = {
+  date: string;
+  losses: number;
 }
 
 export type SaveCountry = ImageLocalised & {

@@ -32,6 +32,8 @@ public class ProvinceDTO extends SimpleProvinceDTO {
 
     private List<ProvinceHistoryDTO> history;
 
+    private List<ProvinceLossesDTO> losses;
+
     @JsonIgnore
     public String getCurrentOwner() {
         for (int i = this.history.size() - 1; i >= 0; i--) {
@@ -137,5 +139,13 @@ public class ProvinceDTO extends SimpleProvinceDTO {
 
     public void setHistory(List<ProvinceHistoryDTO> history) {
         this.history = history;
+    }
+
+    public List<ProvinceLossesDTO> getLosses() {
+        return losses;
+    }
+
+    public void setLosses(List<ProvinceLossesDTO> losses) {
+        this.losses = losses;
     }
 }

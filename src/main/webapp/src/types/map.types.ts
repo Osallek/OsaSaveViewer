@@ -1,15 +1,18 @@
 import { intl } from 'index';
-import { Save, SaveColor, SaveCountry, SaveHeir, SaveLeader, SaveMonarch, SaveProvince, SaveQueen, SaveTradeNode, SaveWar } from 'types/api.types';
 import {
-  DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, HALF_GREEN_COLOR, HALF_RED_COLOR, getGradient, GREEN_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR,
-  PROSPERITY_GRADIENT,
-  RED_COLOR, FULL_GREEN_COLOR, FULL_RED_COLOR
+  ColorNamedImageLocalised, NamedImageLocalised, NamedLocalised, PreviousSave, Save, SaveAdvisor, SaveArea, SaveCelestialEmpire, SaveColor, SaveCountry,
+  SaveCulture, SaveDiplomacy, SaveEmpire, SaveHeir, SaveIdeaGroup, SaveInstitution, SaveLeader, SaveMission, SaveMonarch, SaveProvince, SaveQueen, SaveReligion,
+  SaveSimpleProvince, SaveTeam, SaveTradeNode, SaveWar
+} from 'types/api.types';
+import {
+  DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, FULL_GREEN_COLOR, FULL_RED_COLOR, getGradient, GREEN_COLOR, HALF_GREEN_COLOR, HALF_RED_COLOR,
+  HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, PROSPERITY_GRADIENT
 } from 'utils/colors.utils';
 import { colorToHex, formatDate, formatNumber } from 'utils/format.utils';
 import {
   getArea, getAreaState, getBuildingName, getCHistory, getCountries, getCountry, getCountryName, getCountrysName, getCulture, getCultureName, getEmperor,
-  getGood, getGoodName, getInstitName, getOverlord, getPHistory, getProvinceLosses, getReligion, getReligionName, getSubjects, getSubjectTypeName, getTradeNode,
-  getTradeNodesName, getWar
+  getGood, getGoodName, getInstitName, getOverlord, getPHistory, getProvinceAllLosses, getProvinceLosses, getReligion, getReligionName, getSubjects,
+  getSubjectTypeName, getTradeNode, getTradeNodesName, getWar
 } from 'utils/save.utils';
 
 export enum MapMode {
@@ -199,7 +202,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
 
       if (getEmperor(save.hre, date ?? save.date) === history.owner) {
         return `${ getCountryName(save, history.owner) } : ${ intl.formatMessage({ id: 'country.emperor' }) }`;
-      } else if (getCountries(save).filter(country => country.history).filter(country => getCHistory(country, save, date).elector).map(value => value.tag).includes(history.owner)) {
+      } else if (getCountries(save).filter(country => country.history).filter(country => getCHistory(country, save, date).elector).map(
+        value => value.tag).includes(history.owner)) {
         return `${ getCountryName(save, history.owner) } : ${ intl.formatMessage({ id: 'country.elector' }) }`;
       }
 
@@ -510,36 +514,45 @@ export const mapModes: Record<MapMode, IMapMode> = {
   },
   [MapMode.LOSSES]: {
     mapMode: MapMode.LOSSES,
-    provinceColor: (province, save, { war, gradient, maxLosses }: { war: SaveWar, gradient: Array<SaveColor>, maxLosses: number }, countries) => {
-      if (!war) {
-        return EMPTY_COLOR;
-      }
-
-      const losses = getProvinceLosses(war, province.id);
+    provinceColor: (province, save, { war, gradient, maxLosses }: { war: SaveWar, gradient: Array<SaveColor>, maxLosses: number }, countries, date) => {
+      const losses = war ? getProvinceLosses(war, province.id) : getProvinceAllLosses(province, date);
 
       return losses === 0 ? EMPTY_COLOR : gradient[(losses / maxLosses) * 9 | 0];
     },
     image: 'manpower',
-    allowDate: false,
-    prepare: (save, dataId) => {
-      const war = getWar(save, Number(dataId));
-      const gradient = getGradient(10, colorToHex(EMPTY_COLOR), '#FF0000');
-      const maxLosses = !war ? 0 : Math.max(...war.history.filter(h => h.battles && h.battles.length > 0).flatMap(h => h.battles ?? []).map(b => b.location).map(loc => getProvinceLosses(war, loc)));
+    allowDate: true,
+    prepare: (save, dataId, date) => {
+      if (dataId) {
+        const war = getWar(save, Number(dataId));
+        const gradient = getGradient(10, colorToHex(EMPTY_COLOR), '#FF0000');
+        const maxLosses = !war ? 0 : Math.max(
+          ...war.history.filter(h => h.battles && h.battles.length > 0).flatMap(h => h.battles ?? []).map(b => b.location)
+            .map(loc => getProvinceLosses(war, loc)));
 
-      return { war, gradient, maxLosses };
-    },
-    selectable: false,
-    tooltip: (province, save, dataId) => {
-      const war = getWar(save, Number(dataId));
+        return { war, gradient, maxLosses };
+      } else {
+        const gradient = getGradient(10, colorToHex(EMPTY_COLOR), '#FF0000');
+        const maxLosses = Math.max(...save.provinces.map(p => getProvinceAllLosses(p, date)));
 
-      if (!war) {
-        return '';
+        return { gradient, maxLosses };
       }
+    },
+    selectable: true,
+    tooltip: (province, save, dataId) => {
+      if (dataId) {
+        const war = getWar(save, Number(dataId));
 
-      return `${ province.name } : ${ formatNumber(getProvinceLosses(war, province.id)) }`;
+        if (!war) {
+          return '';
+        }
+
+        return `${ province.name } : ${ formatNumber(getProvinceLosses(war, province.id)) }`;
+      } else {
+        return `${ province.name } : ${ formatNumber(getProvinceAllLosses(province)) }`;
+      }
     },
     hasTooltip: true,
-    supportDate: false,
+    supportDate: true,
   },
   [MapMode.WAR]: {
     mapMode: MapMode.WAR,
@@ -963,7 +976,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
     tooltip: (province, save, dataId, date) => {
       const history = getPHistory(province, save, date);
 
-      return dataId ? `${ province.name } : ${ history.buildings && history.buildings.has(dataId) ? getBuildingName(save, dataId) : intl.formatMessage({ id: 'common.no' }) }`
+      return dataId ? `${ province.name } : ${ history.buildings && history.buildings.has(dataId) ? getBuildingName(save, dataId) : intl.formatMessage(
+          { id: 'common.no' }) }`
         : `${ province.name } : ${ history.buildings ? history.buildings.size : 0 }`;
     },
     hasTooltip: true,
@@ -974,6 +988,51 @@ export const mapModes: Record<MapMode, IMapMode> = {
 export type MapSave = Save & {
   currentProvinces: Map<number, ProvinceHistory>;
   currentCountries: Map<string, CountryHistory>;
+  countriesMap: Map<string, SaveCountry>;
+  provincesMap: Map<number, SaveProvince>;
+  ready: boolean;
+}
+
+export type CleanMapSave = {
+  startDate?: string;
+  date?: string;
+  id?: string;
+  name?: string;
+  provinceImage?: string;
+  colorsImage?: string;
+  nbProvinces?: number;
+  teams?: Array<SaveTeam>;
+  provinces?: Array<SaveProvince>;
+  oceansProvinces?: Array<SaveSimpleProvince>;
+  lakesProvinces?: Array<SaveSimpleProvince>;
+  impassableProvinces?: Array<SaveSimpleProvince>;
+  countries?: Array<SaveCountry>;
+  areas?: Array<SaveArea>;
+  advisors?: Array<SaveAdvisor>;
+  cultures?: Array<SaveCulture>;
+  religions?: Array<SaveReligion>;
+  hre?: SaveEmpire;
+  celestialEmpire?: SaveCelestialEmpire;
+  institutions?: Array<SaveInstitution>;
+  diplomacy?: SaveDiplomacy;
+  buildings?: Array<NamedImageLocalised>;
+  advisorTypes?: Array<NamedImageLocalised>;
+  tradeGoods?: Array<ColorNamedImageLocalised>;
+  estates?: Array<ColorNamedImageLocalised>;
+  estatePrivileges?: Array<NamedImageLocalised>;
+  subjectTypes?: Array<NamedLocalised>;
+  ideaGroups?: Array<SaveIdeaGroup>;
+  personalities?: Array<NamedImageLocalised>;
+  leaderPersonalities?: Array<NamedImageLocalised>;
+  previousSaves?: Array<PreviousSave>;
+  missions?: Array<SaveMission>;
+  wars?: Array<SaveWar>;
+  tradeNodes?: Array<SaveTradeNode>;
+  currentProvinces?: Map<number, ProvinceHistory>;
+  currentCountries?: Map<string, CountryHistory>;
+  countriesMap?: Map<string, SaveCountry>;
+  provincesMap?: Map<number, SaveProvince>;
+  ready?: boolean;
 }
 
 export type ProvinceHistory = {
