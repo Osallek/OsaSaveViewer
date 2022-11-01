@@ -1,4 +1,3 @@
-import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import { Backdrop, Dialog, Fade, Grow, Popper, Tooltip } from '@mui/material';
 import { intl } from 'index';
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
@@ -11,14 +10,11 @@ import { SaveColor, SaveProvince } from 'types/api.types';
 import { ProvincesTexture, Texture } from 'types/gl.types';
 import { IMapMode, MapMode, mapModes, MapSave } from 'types/map.types';
 import { getTexture } from 'utils';
-import {
-  DEV_GRADIENT, DEVASTATION_GRADIENT, EMPTY_COLOR, GREEN_COLOR, HALF_GREEN_COLOR, HALF_RED_COLOR, HRE_ELECTOR_COLOR, HRE_EMPEROR_COLOR, IMPASSABLE_COLOR,
-  IMPASSABLE_PROV_COLOR, OCEAN_COLOR, OCEAN_PROV_COLOR, PROSPERITY_GRADIENT
-} from 'utils/colors.utils';
+import { IMPASSABLE_COLOR, IMPASSABLE_PROV_COLOR, OCEAN_COLOR, OCEAN_PROV_COLOR } from 'utils/colors.utils';
 import { getProvincesUrl } from 'utils/data.utils';
 import { cleanString } from 'utils/format.utils';
 import { getProvinceAt, getTextureFromSave, initShaderProgram, prepareTexture } from 'utils/gl.utils';
-import { cleanSave, getProvince } from 'utils/save.utils';
+import { getProvince } from 'utils/save.utils';
 
 interface SaveMapProps {
   save?: MapSave;
@@ -393,6 +389,14 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
                   alpha: OCEAN_COLOR.alpha,
                 });
 
+              colorMapping.set('0;0;0',
+                {
+                  red: 0,
+                  green: 0,
+                  blue: 0,
+                  alpha: 255,
+                });
+
               const workerInstance = new WorkerBuilder(mapWorker);
               workerInstance.onmessage = (message) => {
                 if (message) {
@@ -416,104 +420,16 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
               };
 
               const message = {
-                data: provincesContext.getImageData(0, 0, provincesTexture.width, provincesTexture.height).data,
+                data: provincesData,
                 colorMapping
               }
-              workerInstance.postMessage(message, [message.data.buffer]);
+              workerInstance.postMessage(message);
             }
           } catch (e) {
             reject(e);
           }
         });
       },
-      exportTimelapse: async (mm: MapMode, countries: Array<string>) => {
-        return new Promise((resolve, reject) => {
-          try {
-            if (save && provincesTexture && provincesContext) {
-              const exportCanvas: HTMLCanvasElement = document.createElement<'canvas'>('canvas');
-              exportCanvas.width = provincesTexture.width;
-              exportCanvas.height = provincesTexture.height;
-
-              const message = {
-                data: provincesContext.getImageData(0, 0, provincesTexture.width, provincesTexture.height).data,
-                mm,
-                save: cleanSave(save),
-                EMPTY_COLOR,
-                IMPASSABLE_COLOR,
-                IMPASSABLE_PROV_COLOR,
-                OCEAN_COLOR,
-                OCEAN_PROV_COLOR,
-                GREEN_COLOR,
-                PROSPERITY_GRADIENT,
-                HRE_EMPEROR_COLOR,
-                HRE_ELECTOR_COLOR,
-                DEVASTATION_GRADIENT,
-                HALF_RED_COLOR,
-                HALF_GREEN_COLOR,
-                DEV_GRADIENT,
-                countries,
-                width: provincesTexture.width,
-                height: provincesTexture.height,
-                // @ts-ignore
-                canvas: exportCanvas.transferControlToOffscreen(),
-              }
-
-              const worker: Worker = new Worker('/eu4/script/prepare_timelapse_worker.js');
-              worker.onerror = (e) => {
-                console.error(e.message);
-                reject(e);
-                worker.terminate();
-              }
-              worker.onmessageerror = (e) => {
-                console.error(e);
-                reject(e);
-                worker.terminate();
-              }
-              worker.onmessage = async (e) => {
-                try {
-                  if (e && e.data) {
-                    const ffmpeg = createFFmpeg();
-                    await ffmpeg.load();
-
-                    for (const image of e.data) {
-                      ffmpeg.FS('writeFile', image.name, await fetchFile(image.data));
-                    }
-
-                    await ffmpeg.run('-r', '20', '-i', 'img%04d.jpg', '-c:v', 'libx264', '-s', `${ provincesTexture.width }x${ provincesTexture.height }`,
-                      '-pix_fmt', 'yuv420p', 'out.mp4');
-
-                    const data = ffmpeg.FS('readFile', 'out.mp4');
-                    const link = document.createElement("a");
-                    link.href = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
-                    link.setAttribute("download", `${ cleanString(
-                      `${ save.name.replace(/\.[^/.]+$/, "") }_${ intl.formatMessage({ id: `map.mod.${ mm }` }) }_${ intl.formatMessage(
-                        { id: 'common.timelapse' }) }`) }.mp4`);
-
-                    if (document.body) {
-                      document.body.appendChild(link);
-                      link.click();
-                    }
-                  }
-                } catch (e) {
-                  console.error(e);
-                  reject(e);
-                  worker.terminate();
-                } finally {
-                  resolve(true);
-                  worker.terminate();
-                }
-              };
-
-              worker.postMessage(message, [message.data.buffer, message.canvas]);
-            } else {
-              resolve(true);
-            }
-          } catch
-            (e) {
-            reject(e);
-          }
-        });
-      }
     }));
 
     return (

@@ -1038,8 +1038,8 @@ export type CleanMapSave = {
 export type ProvinceHistory = {
   date: string;
   capital?: string;
-  cores?: Array<string>;
-  claims?: Array<string>;
+  cores?: Set<string>;
+  claims?: Set<string>;
   hre?: boolean;
   baseTax?: number;
   baseProduction?: number;

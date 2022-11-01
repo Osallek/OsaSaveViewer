@@ -1,9 +1,12 @@
 package fr.osallek.osasaveviewer.controller.dto.save;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.SortedSet;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public final class ExtractorSaveDTO {
 
     private LocalDate startDate;

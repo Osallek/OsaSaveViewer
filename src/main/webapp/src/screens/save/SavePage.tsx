@@ -89,16 +89,12 @@ function SavePage() {
     }
   }
 
-  const exportImage = async (mm: MapMode, countries: Array<string>, timelapse: boolean) => {
+  const exportImage = async (mm: MapMode, countries: Array<string>) => {
     try {
       setExportingModal(false);
       setExporting(true);
 
-      if (timelapse) {
-        await mapRef.current.exportTimelapse(mm, countries);
-      } else {
         await mapRef.current.exportImage(mm, countries);
-      }
     } finally {
       setExporting(false);
     }
@@ -154,7 +150,7 @@ function SavePage() {
 
           document.title = `${ data.name } (${ formatDate(data.date) })`;
 
-          setSave(convertSave(data, true, setReady));
+          setSave(convertSave(data, true));
         } else {
           setError(true);
         }
@@ -249,7 +245,7 @@ function SavePage() {
                       .map((mm) => (
                         <Tooltip title={ intl.formatMessage({ id: `map.mod.${ mm }` }) } key={ `tooltip-${ mm }` }>
                           <Button onClick={ () => handleMapMode(MapMode[mm]) } style={ { padding: 0, minWidth: 0 } }
-                                  disableRipple key={ `button-${ mm }` }>
+                                  disableRipple key={ `button-${ mm }` } disabled={ timelapse }>
                             <img
                               src={ `/eu4/map/map_mods/${ mapModes[MapMode[mm]].image }_${ mm === mapMode ? 'on' : 'off' }.png` }
                               alt={ mm }/>
@@ -260,189 +256,190 @@ function SavePage() {
                 </div>
                 {
                   save &&
-                  <Chip label={ intl.formatMessage({ id: 'common.graph' }) }
-                        icon={ <BarChart style={ { color: 'white' } }/> }
-                        onClick={ () => setStatDialog(true) }
-                        style={ {
-                          position: 'absolute',
-                          top: 48,
-                          left: 5,
-                          backgroundColor: theme.palette.primary.main,
-                          color: 'white',
-                          fontWeight: 'bold',
-                          fontSize: '1.2em'
-                        } }/>
+                    <Chip label={ intl.formatMessage({ id: 'common.graph' }) }
+                          icon={ <BarChart style={ { color: 'white' } }/> }
+                          onClick={ () => setStatDialog(true) }
+                          style={ {
+                            position: 'absolute',
+                            top: 48,
+                            left: 5,
+                            backgroundColor: theme.palette.primary.main,
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '1.2em'
+                          } }/>
                 }
                 {
                   save &&
-                  <div style={ {
-                    position: 'absolute',
-                    top: 48,
-                    left: 230,
-                    backgroundColor: theme.palette.primary.main,
-                    borderRadius: '16px',
-                  } }>
-                    <LocalizationProvider dateAdapter={ AdapterMoment } adapterLocale={ intl.locale }>
-                      <DatePicker
-                        openTo='year'
-                        views={ ['year', 'month', 'day'] }
-                        minDate={ moment(save.startDate, 'YYYY-MM-DD') }
-                        maxDate={ moment(save.date, 'YYYY-MM-DD') }
-                        value={ date }
-                        onChange={ value => handleDate(value?.format('YYYY-MM-DD')) }
-                        OpenPickerButtonProps={ { style: { left: '-16px' } } }
-                        renderInput={ (params) => <Badge color='error' variant='dot' invisible={ mapModes[MapMode[mapMode]].supportDate }
-                                                         anchorOrigin={ { horizontal: 'right', vertical: 'bottom' } }>
-                          <Tooltip title={ intl.formatMessage({ id: mapModes[MapMode[mapMode]].supportDate ? 'common.date' : 'common.date.error' }) }>
-                            <TextField { ...params }
-                                       disabled
-                                       variant='standard'
-                                       InputProps={ {
-                                         ...params.InputProps,
-                                         disableUnderline: true,
-                                       } }
-                                       sx={ {
-                                         svg: {
-                                           color: 'white',
-                                         },
-                                         input: {
-                                           color: 'white',
-                                           fontWeight: 'bold',
-                                           fontSize: '1.0em',
-                                           paddingTop: '5px',
-                                           paddingBottom: '5px',
-                                           paddingLeft: 2,
-                                           borderRadius: '16px',
-                                           width: '100px'
-                                         },
-                                         '& .MuiInputBase-input.Mui-disabled': {
-                                           WebkitTextFillColor: 'white',
-                                         },
-                                       } }/>
-                          </Tooltip>
-                        </Badge> }
-                      />
-                    </LocalizationProvider>
-                  </div>
+                    <div style={ {
+                      position: 'absolute',
+                      top: 48,
+                      left: 230,
+                      backgroundColor: theme.palette.primary.main,
+                      borderRadius: '16px',
+                    } }>
+                        <LocalizationProvider dateAdapter={ AdapterMoment } adapterLocale={ intl.locale }>
+                            <DatePicker
+                                openTo='year'
+                                views={ ['year', 'month', 'day'] }
+                                minDate={ moment(save.startDate, 'YYYY-MM-DD') }
+                                maxDate={ moment(save.date, 'YYYY-MM-DD') }
+                                value={ date }
+                                disabled={ timelapse }
+                                onChange={ value => handleDate(value?.format('YYYY-MM-DD')) }
+                                OpenPickerButtonProps={ { style: { left: '-16px' } } }
+                                renderInput={ (params) => <Badge color='error' variant='dot' invisible={ mapModes[MapMode[mapMode]].supportDate }
+                                                                 anchorOrigin={ { horizontal: 'right', vertical: 'bottom' } }>
+                                  <Tooltip title={ intl.formatMessage({ id: mapModes[MapMode[mapMode]].supportDate ? 'common.date' : 'common.date.error' }) }>
+                                    <TextField { ...params }
+                                               disabled
+                                               variant='standard'
+                                               InputProps={ {
+                                                 ...params.InputProps,
+                                                 disableUnderline: true,
+                                               } }
+                                               sx={ {
+                                                 svg: {
+                                                   color: 'white',
+                                                 },
+                                                 input: {
+                                                   color: 'white',
+                                                   fontWeight: 'bold',
+                                                   fontSize: '1.0em',
+                                                   paddingTop: '5px',
+                                                   paddingBottom: '5px',
+                                                   paddingLeft: 2,
+                                                   borderRadius: '16px',
+                                                   width: '100px'
+                                                 },
+                                                 '& .MuiInputBase-input.Mui-disabled': {
+                                                   WebkitTextFillColor: 'white',
+                                                 },
+                                               } }/>
+                                  </Tooltip>
+                                </Badge> }
+                            />
+                        </LocalizationProvider>
+                    </div>
                 }
                 {
                   save && MapMode.BUILDINGS === mapMode &&
-                  <div style={ {
-                    position: 'absolute',
-                    top: 48,
-                    left: 389,
-                    backgroundColor: theme.palette.primary.main,
-                    borderRadius: '16px',
-                  } }>
-                    <Select
-                      id='building-select'
-                      value={ building ?? '' }
-                      variant='standard'
-                      onChange={ event => handleBuilding(event.target.value as string) }
-                      disableUnderline
-                      displayEmpty
-                      renderValue={ value => (
-                        value ?
-                          <Grid container item alignItems='center'>
-                            <Avatar src={ getBuildingImage(save, value) } variant='square' style={ { display: 'inline-block', width: 24, height: 24 } }/>
-                            <Typography variant='body1' style={ { color: theme.palette.primary.contrastText, fontWeight: 'bold', marginLeft: 8 } }>
-                              { value && getBuildingName(save, value) }
-                            </Typography>
-                          </Grid>
-                          :
-                          <Typography variant='body1' style={ { color: theme.palette.primary.contrastText, fontWeight: 'bold', marginLeft: 8 } }>
-                            { intl.formatMessage({ id: 'common.quantity' }) }
-                          </Typography>
-                      ) }
-                      sx={ {
-                        "& .MuiSelect-iconStandard": { display: building ? 'none' : '' },
-                        fontSize: '1.0em',
-                        paddingTop: '1px',
-                        paddingLeft: 2,
-                        borderRadius: '16px',
-                        minWidth: 120,
-                      } }
-                      endAdornment={
-                        <IconButton onClick={ clearBuilding } style={ { display: building ? '' : 'none', width: 16, height: 16, marginRight: 8 } }>
-                          <Clear/>
-                        </IconButton>
-                      }
-                    >
-                      {
-                        save.buildings.sort((a, b) => stringComparator(getBuildingsName(a), getBuildingsName(b)))
-                          .map(building => (
-                            <MenuItem value={ building.name } key={ building.name }>
-                              <Avatar src={ getBuildingsImage(building) } variant='square' style={ { display: 'inline-block' } }/>
-                              <Typography variant='body1' style={ { marginLeft: 8 } }>
-                                { getBuildingsName(building) }
-                              </Typography>
-                            </MenuItem>
-                          ))
-                      }
-                    </Select>
-                  </div>
+                    <div style={ {
+                      position: 'absolute',
+                      top: 48,
+                      left: 389,
+                      backgroundColor: theme.palette.primary.main,
+                      borderRadius: '16px',
+                    } }>
+                        <Select
+                            id='building-select'
+                            value={ building ?? '' }
+                            variant='standard'
+                            onChange={ event => handleBuilding(event.target.value as string) }
+                            disableUnderline
+                            displayEmpty
+                            renderValue={ value => (
+                              value ?
+                                <Grid container item alignItems='center'>
+                                  <Avatar src={ getBuildingImage(save, value) } variant='square' style={ { display: 'inline-block', width: 24, height: 24 } }/>
+                                  <Typography variant='body1' style={ { color: theme.palette.primary.contrastText, fontWeight: 'bold', marginLeft: 8 } }>
+                                    { value && getBuildingName(save, value) }
+                                  </Typography>
+                                </Grid>
+                                :
+                                <Typography variant='body1' style={ { color: theme.palette.primary.contrastText, fontWeight: 'bold', marginLeft: 8 } }>
+                                  { intl.formatMessage({ id: 'common.quantity' }) }
+                                </Typography>
+                            ) }
+                            sx={ {
+                              "& .MuiSelect-iconStandard": { display: building ? 'none' : '' },
+                              fontSize: '1.0em',
+                              paddingTop: '1px',
+                              paddingLeft: 2,
+                              borderRadius: '16px',
+                              minWidth: 120,
+                            } }
+                            endAdornment={
+                              <IconButton onClick={ clearBuilding } style={ { display: building ? '' : 'none', width: 16, height: 16, marginRight: 8 } }>
+                                <Clear/>
+                              </IconButton>
+                            }
+                        >
+                          {
+                            save.buildings.sort((a, b) => stringComparator(getBuildingsName(a), getBuildingsName(b)))
+                              .map(building => (
+                                <MenuItem value={ building.name } key={ building.name }>
+                                  <Avatar src={ getBuildingsImage(building) } variant='square' style={ { display: 'inline-block' } }/>
+                                  <Typography variant='body1' style={ { marginLeft: 8 } }>
+                                    { getBuildingsName(building) }
+                                  </Typography>
+                                </MenuItem>
+                              ))
+                          }
+                        </Select>
+                    </div>
                 }
                 {
                   save &&
-                  <>
-                    <Tooltip title={ intl.formatMessage({ id: 'common.download' }) }>
-                      <IconButton onClick={ download } style={ {
-                        position: 'absolute',
-                        top: 92,
-                        left: 5,
-                        backgroundColor: theme.palette.primary.main,
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                        borderRadius: '50%',
-                      } }>
-                        <Download/>
-                      </IconButton>
-                    </Tooltip>
-                  </>
+                    <>
+                        <Tooltip title={ intl.formatMessage({ id: 'common.download' }) }>
+                            <IconButton onClick={ download } style={ {
+                              position: 'absolute',
+                              top: 92,
+                              left: 5,
+                              backgroundColor: theme.palette.primary.main,
+                              color: 'white',
+                              fontWeight: 'bold',
+                              fontSize: '1.2em',
+                              borderRadius: '50%',
+                            } }>
+                                <Download/>
+                            </IconButton>
+                        </Tooltip>
+                    </>
                 }
                 {
                   save &&
-                  <>
-                    <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
-                      <IconButton onClick={ () => setExportingModal(true) } disabled={ exporting } style={ {
-                        position: 'absolute',
-                        top: 92,
-                        left: 52,
-                        backgroundColor: theme.palette.primary.main,
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                        borderRadius: '50%',
-                      } }>
-                        {
-                          (exporting || timelapse) ? <CircularProgress color='secondary' style={ { width: 24, height: 24 } }/> : <PhotoCamera/>
-                        }
-                      </IconButton>
-                    </Tooltip>
-                    <ExportModal open={ exportingModal } save={ save } onClose={ () => setExportingModal(false) } onExport={ exportImage } ready={ ready }/>
-                  </>
+                    <>
+                        <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
+                            <IconButton onClick={ () => setExportingModal(true) } disabled={ exporting } style={ {
+                              position: 'absolute',
+                              top: 92,
+                              left: 52,
+                              backgroundColor: theme.palette.primary.main,
+                              color: 'white',
+                              fontWeight: 'bold',
+                              fontSize: '1.2em',
+                              borderRadius: '50%',
+                            } }>
+                              {
+                                (exporting || timelapse) ? <CircularProgress color='secondary' style={ { width: 24, height: 24 } }/> : <PhotoCamera/>
+                              }
+                            </IconButton>
+                        </Tooltip>
+                        <ExportModal open={ exportingModal } save={ save } onClose={ () => setExportingModal(false) } onExport={ exportImage } />
+                    </>
                 }
                 {
                   save &&
-                  <>
-                    <Tooltip title={ intl.formatMessage({ id: 'common.timelapse' }) }>
-                      <IconButton onClick={ runTimelapse } style={ {
-                        position: 'absolute',
-                        top: 92,
-                        left: 99,
-                        backgroundColor: theme.palette.primary.main,
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                        borderRadius: '50%',
-                      } }>
-                        {
-                          timelapse ? <Stop/> : <PlayArrow/>
-                        }
-                      </IconButton>
-                    </Tooltip>
-                  </>
+                    <>
+                        <Tooltip title={ intl.formatMessage({ id: 'common.timelapse' }) }>
+                            <IconButton onClick={ runTimelapse } style={ {
+                              position: 'absolute',
+                              top: 92,
+                              left: 99,
+                              backgroundColor: theme.palette.primary.main,
+                              color: 'white',
+                              fontWeight: 'bold',
+                              fontSize: '1.2em',
+                              borderRadius: '50%',
+                            } }>
+                              {
+                                timelapse ? <Stop/> : <PlayArrow/>
+                              }
+                            </IconButton>
+                        </Tooltip>
+                    </>
                 }
                 <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady } dataId={ searchParams.get('id') }
                          date={ date } ref={ mapRef }/>

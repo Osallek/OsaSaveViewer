@@ -27,24 +27,24 @@ function getPHistoryInternal(history, date) {
 
     for (const h of history) {
         if (!h.date || h.date <= date) {
-            let cores = toReturn.cores ?? [];
+            let cores = (history && history.cores) ?? new Set();
 
             if (h.addCores) {
-                cores = cores.concat(h.addCores);
+                h.addCores.forEach(e => cores.add(e));
             }
 
             if (h.removeCores) {
-                cores = cores.filter(e => !h.removeCores?.includes(e))
+                h.removeCores.forEach(e => cores.delete(e));
             }
 
-            let claims = toReturn.claims ?? [];
+            let claims = (history && history.claims) ?? new Set();
 
             if (h.addClaims) {
-                claims = claims.concat(h.addClaims);
+                h.addClaims.forEach(e => claims.add(e));
             }
 
             if (h.removeClaims) {
-                claims = claims.filter(e => !h.removeClaims?.includes(e))
+                h.removeClaims.forEach(e => claims.delete(e));
             }
 
             let buildings = toReturn.buildings ?? new Set();
@@ -60,6 +60,7 @@ function getPHistoryInternal(history, date) {
             }
 
             toReturn = {
+                ...(typeof toReturn === 'object' ? toReturn : {}),
                 ...h,
                 owner: '---' === h.owner ? undefined : (h.owner ?? toReturn.owner),
                 cores,

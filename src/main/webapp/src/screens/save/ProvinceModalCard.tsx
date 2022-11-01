@@ -93,7 +93,7 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
               <Grid container item xs={ 6 } alignItems='center'>
                 {
                   history.cores &&
-                  history.cores.map(value => getCountry(save, value))
+                  Array.from(history.cores).map(value => getCountry(save, value))
                     .sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b)))
                     .map(value => (
                       <Tooltip title={ getCountrysName(value) } key={ `tooltip-core-${ value.tag }` }>

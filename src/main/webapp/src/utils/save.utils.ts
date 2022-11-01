@@ -28,7 +28,7 @@ export function isValidDate(date?: string | null, save?: MapSave): boolean {
   return true;
 }
 
-export function convertSave(save: Save, history: boolean, dispatch?: Dispatch<SetStateAction<boolean>>): MapSave {
+export function convertSave(save: Save, history: boolean): MapSave {
   const newSave: MapSave = {
     ...save,
     currentProvinces: toMap(save.provinces, p => p.id, p => getPHistoryInternal(p, save.date)),
@@ -57,10 +57,6 @@ export function convertSave(save: Save, history: boolean, dispatch?: Dispatch<Se
           console.log('Finished provinces history: ' + (new Date().getTime() - start.getTime()));
           newSave.ready = true;
 
-          if (dispatch) {
-            dispatch(true);
-          }
-
           for (let i = 0; i < historyWorkers.length; i++) {
             historyWorkers[i].terminate();
           }
@@ -76,10 +72,6 @@ export function convertSave(save: Save, history: boolean, dispatch?: Dispatch<Se
           if (count === newSave.provinces.length) {
             console.log('Finished provinces history: ' + (new Date().getTime() - start.getTime()));
             newSave.ready = true;
-
-            if (dispatch) {
-              dispatch(true);
-            }
 
             for (let i = 0; i < historyWorkers.length; i++) {
               historyWorkers[i].terminate();
@@ -175,24 +167,24 @@ function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHist
   if (province.history) {
     for (const h of province.history) {
       if (!h.date || h.date <= date) {
-        let cores: Array<string> = (history && history.cores) ?? [];
+        let cores: Set<string> = (history && history.cores) ?? new Set();
 
         if (h.addCores) {
-          cores = cores.concat(h.addCores);
+          h.addCores.forEach(e => cores.add(e));
         }
 
         if (h.removeCores) {
-          cores = cores.filter(e => !h.removeCores?.includes(e))
+          h.removeCores.forEach(e => cores.delete(e));
         }
 
-        let claims: Array<string> = (history && history.claims) ?? [];
+        let claims: Set<string> = (history && history.claims) ?? new Set();
 
         if (h.addClaims) {
-          claims = claims.concat(h.addClaims);
+          h.addClaims.forEach(e => claims.add(e));
         }
 
         if (h.removeClaims) {
-          claims = claims.filter(e => !h.removeClaims?.includes(e))
+          h.removeClaims.forEach(e => claims.delete(e));
         }
 
         let buildings: Set<string> = (history && history.buildings) ?? new Set();
