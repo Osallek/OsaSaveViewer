@@ -95,7 +95,7 @@ export const HALF_RED_COLOR: SaveColor = {
 }
 
 export const FULL_RED_COLOR: SaveColor = {
-  red: 200,
+  red: 255,
   green: 0,
   blue: 0,
   alpha: 255

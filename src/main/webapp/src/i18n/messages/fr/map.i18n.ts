@@ -19,6 +19,7 @@ const map = {
   'map.mod.ONCE_WAR': 'A déjà été en guerre contre',
   'map.mod.TRADE_NODE': 'Nœuds commerciaux',
   'map.mod.BUILDINGS': 'Bâtiments',
+  'map.mod.GREAT_PROJECTS': 'Grands projets',
   'map.building': 'Bâtiment',
 }
 

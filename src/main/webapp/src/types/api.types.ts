@@ -89,6 +89,7 @@ export type SaveProvince = SaveSimpleProvince & {
   history?: Array<SaveProvinceHistory>;
   histories?: Array<ProvinceHistory>;
   losses?: Array<ProvinceLosses>;
+  greatProjects?: Array<SaveGreatProject>;
 }
 
 export type SaveProvinceHistory = {
@@ -710,4 +711,10 @@ export type SaveTradeNode = NamedLocalised & {
   color: SaveColor;
   countries: Array<SaveTradeNodeCountry>;
   incoming: Array<SaveTradeNodeIncoming>;
+}
+
+export type SaveGreatProject = Localised & {
+  name: string;
+  level: number;
+  maxLevel: number;
 }

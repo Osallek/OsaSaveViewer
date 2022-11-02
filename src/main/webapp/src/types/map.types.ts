@@ -35,6 +35,7 @@ export enum MapMode {
   ONCE_WAR = 'ONCE_WAR',
   TRADE_NODE = 'TRADE_NODE',
   BUILDINGS = 'BUILDINGS',
+  GREAT_PROJECTS = 'GREAT_PROJECTS',
 }
 
 export interface IMapMode {
@@ -680,7 +681,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
 
       if (country.atWarWith && country.atWarWith.includes(owner)) {
-        return FULL_RED_COLOR;
+        return HALF_RED_COLOR;
       }
 
       if (getSubjects(country, save, date).map(value => value.second).includes(owner)) {
@@ -982,6 +983,37 @@ export const mapModes: Record<MapMode, IMapMode> = {
     },
     hasTooltip: true,
     supportDate: true,
+  },
+  [MapMode.GREAT_PROJECTS]: {
+    mapMode: MapMode.GREAT_PROJECTS,
+    provinceColor: (province, save, data, countries, date) => {
+      if (!province.greatProjects || province.greatProjects.length === 0) {
+        return EMPTY_COLOR;
+      }
+
+      if (countries.length > 0) {
+        const history = getPHistory(province, save, date);
+
+        if (!history.owner || !countries.includes(history.owner)) {
+          return EMPTY_COLOR;
+        }
+      }
+
+      return getGradient(province.greatProjects.reduce((s, v) => s + v.maxLevel, 0) + 1, colorToHex(FULL_RED_COLOR), colorToHex(FULL_GREEN_COLOR))[province.greatProjects.reduce((s, v) => s + v.level, 0)];
+    },
+    image: 'great_project',
+    allowDate: false,
+    prepare: () => {},
+    selectable: true,
+    tooltip: (province, save, dataId, date) => {
+      if (!province.greatProjects || province.greatProjects.length === 0) {
+        return province.name;
+      }
+
+      return `${ province.name } : ${province.greatProjects.reduce((s, v) => s + v.level, 0)}/${province.greatProjects.reduce((s, v) => s + v.maxLevel, 0)}`;
+    },
+    hasTooltip: true,
+    supportDate: false,
   },
 }
 

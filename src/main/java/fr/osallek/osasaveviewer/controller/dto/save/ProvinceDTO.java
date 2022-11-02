@@ -2,6 +2,7 @@ package fr.osallek.osasaveviewer.controller.dto.save;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,8 @@ public class ProvinceDTO extends SimpleProvinceDTO {
     private List<ProvinceHistoryDTO> history;
 
     private List<ProvinceLossesDTO> losses;
+
+    private List<GreatProjectDTO> greatProjects;
 
     @JsonIgnore
     public String getCurrentOwner() {
@@ -147,5 +150,13 @@ public class ProvinceDTO extends SimpleProvinceDTO {
 
     public void setLosses(List<ProvinceLossesDTO> losses) {
         this.losses = losses;
+    }
+
+    public List<GreatProjectDTO> getGreatProjects() {
+        return greatProjects;
+    }
+
+    public void setGreatProjects(List<GreatProjectDTO> greatProjects) {
+        this.greatProjects = greatProjects;
     }
 }

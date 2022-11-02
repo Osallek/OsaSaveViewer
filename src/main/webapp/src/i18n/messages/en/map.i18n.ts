@@ -19,6 +19,7 @@ const map = {
   'map.mod.ONCE_WAR': 'Was once at war with',
   'map.mod.TRADE_NODE': 'Trade nodes',
   'map.mod.BUILDINGS': 'Buildings',
+  'map.mod.GREAT_PROJECTS': 'Great projects',
   'map.building': 'Building',
 }
 
