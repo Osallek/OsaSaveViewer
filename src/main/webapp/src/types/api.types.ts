@@ -136,7 +136,7 @@ export type SaveCountry = ImageLocalised & {
   admTech: number;
   dipTech: number;
   estates?: Array<SaveEstate>;
-  hegemony?: Pair<string, number>;
+  hegemony?: Record<string, number>;
   rivals: Array<string>;
   powerProjection: number;
   loans?: Array<SaveLoan>;

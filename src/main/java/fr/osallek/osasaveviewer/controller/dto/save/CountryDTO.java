@@ -41,7 +41,7 @@ public class CountryDTO extends ImageLocalised {
 
     private List<EstateDTO> estates;
 
-    private Pair<String, Double> hegemony;
+    private Map<String, Double> hegemony;
 
     private List<String> rivals;
 
@@ -309,11 +309,11 @@ public class CountryDTO extends ImageLocalised {
         this.estates = estates;
     }
 
-    public Pair<String, Double> getHegemony() {
+    public Map<String, Double> getHegemony() {
         return hegemony;
     }
 
-    public void setHegemony(Pair<String, Double> hegemony) {
+    public void setHegemony(Map<String, Double> hegemony) {
         this.hegemony = hegemony;
     }
 
