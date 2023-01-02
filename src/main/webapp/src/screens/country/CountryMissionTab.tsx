@@ -17,14 +17,14 @@ const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
     normalItemsInterval: 10,
     dotItemsInterval: 10,
     lineItemsInterval: 10,
-    minimumVisibleLevels: country.missions ? country.missions.length : 0,
+    minimumVisibleLevels: country.missions2 ? country.missions2.length : 0,
     arrowsDirection: GroupByType.Children,
     elbowType: ElbowType.Round,
     showExtraArrows: false,
     navigationMode: NavigationMode.Inactive,
     showFrame: true,
     items:
-        country.missions?.map(mission => {
+        country.missions2?.map(mission => {
             return ({
                 id: mission.name,
                 title: getMissionsName(mission),
@@ -103,7 +103,7 @@ function CountryMissionTab({ country, save }: CountryMissionTabProps) {
     const mainGrid = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (country && country.missions && country.missions.length > 0) {
+        if (country && country.missions2 && country.missions2.length > 0) {
             setConfig(getConfig(country, save));
         }
     }, [country, save]);

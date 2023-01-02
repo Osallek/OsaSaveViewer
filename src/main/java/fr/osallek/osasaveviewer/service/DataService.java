@@ -205,7 +205,7 @@ public class DataService {
                                           .collect(Collectors.toSet()));
 
         assets.setMissions(save.getCountries()
-                               .stream().map(CountryDTO::getMissions)
+                               .stream().map(CountryDTO::getMissions2)
                                .flatMap(Collection::stream)
                                .filter(mission -> mission.getImage() != null)
                                .filter(mission -> !Files.exists(this.properties.getDataFolder().resolve("missions").resolve(mission.getImage() + ".png")))

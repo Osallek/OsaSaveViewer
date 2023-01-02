@@ -61,7 +61,7 @@ public class CountryDTO extends ImageLocalised {
 
     private List<CustomNationalIdeaDTO> customNationalIdeas;
 
-    private List<MissionDTO> missions;
+    private List<MissionDTO> missions2;
 
     private SortedMap<Integer, Integer> incomeStatistics;
 
@@ -394,12 +394,12 @@ public class CountryDTO extends ImageLocalised {
         this.customNationalIdeas = customNationalIdeas;
     }
 
-    public List<MissionDTO> getMissions() {
-        return missions;
+    public List<MissionDTO> getMissions2() {
+        return missions2;
     }
 
-    public void setMissions(List<MissionDTO> missions) {
-        this.missions = missions;
+    public void setMissions2(List<MissionDTO> missions2) {
+        this.missions2 = missions2;
     }
 
     public SortedMap<Integer, Integer> getIncomeStatistics() {

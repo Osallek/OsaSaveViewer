@@ -205,7 +205,7 @@ export type SaveCountry = ImageLocalised & {
   nbProvince: number;
   dev: number;
   previousSaves: Array<CountryPreviousSave>;
-  missions?: Array<SaveMission>;
+  missions2?: Array<SaveMission>;
 }
 
 export enum Losses {

@@ -50,6 +50,7 @@ public class OsaSaveViewerConfig {
                          .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                          .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES)
                          .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                          .defaultTimeZone(TimeZone.getTimeZone("UTC"))
                          .build()
                          .setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY);
