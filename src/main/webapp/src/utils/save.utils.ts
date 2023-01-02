@@ -111,7 +111,6 @@ export function cleanSave(save: MapSave): CleanMapSave {
   delete newSave.personalities;
   delete newSave.leaderPersonalities;
   delete newSave.previousSaves;
-  delete newSave.missions;
   delete newSave.wars;
   delete newSave.currentProvinces;
   delete newSave.currentCountries;
@@ -131,10 +130,16 @@ export function cleanSave(save: MapSave): CleanMapSave {
 }
 
 export function getName(localised: Localised): string | undefined {
-  return (localised.localisations !== undefined && localised.localisations[eu4Locale] !== undefined) ?
+  let name = (localised.localisations !== undefined && localised.localisations[eu4Locale] !== undefined) ?
     capitalize(localised.localisations[eu4Locale]) :
     (localised.localisations !== undefined && localised.localisations[Localization.ENGLISH] !== undefined) ?
       localised.localisations[Localization.ENGLISH] : undefined;
+
+  if (name) {
+    name = name.replaceAll('\\n', '');
+  }
+
+  return name;
 }
 
 export function getCountries(save: MapSave): Array<SaveCountry> {
@@ -308,28 +313,12 @@ export function getCountryFlag(save: MapSave, tag: string | undefined): string {
   return getCountrysFlag(getCountry(save, tag));
 }
 
-export function getMission(save: MapSave, name: string): SaveMission {
-  return save.missions.find(mission => name === mission.name) ?? save.missions[0];
-}
-
-export function getMissionName(save: MapSave, name: string | undefined): string {
-  if (!name) {
-    return '';
-  }
-
-  return getMissionsName(getMission(save, name));
-}
-
 export function getMissionsName(mission: SaveMission): string {
   return getName(mission) ?? mission.name;
 }
 
 export function getMissionsImage(mission: SaveMission): string {
   return getMissionUrl(mission.image);
-}
-
-export function getMissionFlag(save: MapSave, name: string): string {
-  return getMissionsImage(getMission(save, name));
 }
 
 export function getReligion(save: MapSave, name: string): SaveReligion {

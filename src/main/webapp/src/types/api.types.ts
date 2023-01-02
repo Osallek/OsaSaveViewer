@@ -43,7 +43,6 @@ export type Save = {
   personalities: Array<NamedImageLocalised>;
   leaderPersonalities: Array<NamedImageLocalised>;
   previousSaves?: Array<PreviousSave>;
-  missions: Array<SaveMission>;
   wars?: Array<SaveWar>;
   tradeNodes?: Array<SaveTradeNode>;
 };
@@ -206,8 +205,7 @@ export type SaveCountry = ImageLocalised & {
   nbProvince: number;
   dev: number;
   previousSaves: Array<CountryPreviousSave>;
-  missions?: Array<string>;
-  completedMissions?: Array<string>;
+  missions?: Array<SaveMission>;
 }
 
 export enum Losses {
@@ -635,6 +633,8 @@ export type ServerSave = {
 
 export type SaveMission = NamedImageLocalised & {
   required?: Array<string>;
+  completed: boolean;
+  description?: Localised;
 }
 
 export type SaveWar = {
@@ -709,7 +709,7 @@ export type SaveTradeNodeIncoming = {
 export type SaveTradeNode = NamedLocalised & {
   retention: number;
   color: SaveColor;
-  countries: Array<SaveTradeNodeCountry>;
+  countries?: Array<SaveTradeNodeCountry>;
   incoming: Array<SaveTradeNodeIncoming>;
 }
 

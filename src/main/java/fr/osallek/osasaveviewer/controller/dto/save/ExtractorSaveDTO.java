@@ -77,8 +77,6 @@ public final class ExtractorSaveDTO {
 
     private SortedSet<PreviousSaveDTO> previousSaves;
 
-    private List<MissionDTO> missions;
-
     private List<WarDTO> wars;
 
     private List<TradeNodeDTO> tradeNodes;
@@ -353,14 +351,6 @@ public final class ExtractorSaveDTO {
 
     public void setPreviousSaves(SortedSet<PreviousSaveDTO> previousSaves) {
         this.previousSaves = previousSaves;
-    }
-
-    public List<MissionDTO> getMissions() {
-        return missions;
-    }
-
-    public void setMissions(List<MissionDTO> missions) {
-        this.missions = missions;
     }
 
     public List<WarDTO> getWars() {

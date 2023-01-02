@@ -129,12 +129,12 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       minWidth: 120,
       value: (save, node, width) =>
         <Grid style={ { width } }>
-          <Typography variant='body1'>{ node.countries.length }</Typography>
+          <Typography variant='body1'>{ node.countries ? node.countries.length : 0 }</Typography>
         </Grid>
       ,
-      comparatorValue: (save, node) => node.countries.length,
-      filterValues: save => Array.from(new Set<number>(save.tradeNodes ? save.tradeNodes.map(node => node.countries.length).sort(numberComparator) : [])),
-      filter: (save, node, filter) => filter.includes(node.countries.length),
+      comparatorValue: (save, node) => node.countries ? node.countries.length : 0,
+      filterValues: save => Array.from(new Set<number>(save.tradeNodes ? save.tradeNodes.map(node => node.countries ? node.countries.length : 0).sort(numberComparator) : [])),
+      filter: (save, node, filter) => node.countries !== undefined && filter.includes(node.countries.length),
     },
   ];
 }

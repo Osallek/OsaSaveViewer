@@ -3,7 +3,6 @@ package fr.osallek.osasaveviewer.controller.dto.save;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -62,9 +61,7 @@ public class CountryDTO extends ImageLocalised {
 
     private List<CustomNationalIdeaDTO> customNationalIdeas;
 
-    private List<String> missions;
-
-    private List<String> completedMissions;
+    private List<MissionDTO> missions;
 
     private SortedMap<Integer, Integer> incomeStatistics;
 
@@ -397,20 +394,12 @@ public class CountryDTO extends ImageLocalised {
         this.customNationalIdeas = customNationalIdeas;
     }
 
-    public List<String> getMissions() {
+    public List<MissionDTO> getMissions() {
         return missions;
     }
 
-    public void setMissions(List<String> missions) {
+    public void setMissions(List<MissionDTO> missions) {
         this.missions = missions;
-    }
-
-    public List<String> getCompletedMissions() {
-        return completedMissions;
-    }
-
-    public void setCompletedMissions(List<String> completedMissions) {
-        this.completedMissions = completedMissions;
     }
 
     public SortedMap<Integer, Integer> getIncomeStatistics() {

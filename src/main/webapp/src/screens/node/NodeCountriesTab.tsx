@@ -54,7 +54,7 @@ function NodeCountriesTab({ node, save }: NodeCountriesTabProps) {
 
   useEffect(() => {
     setCountries(getNodeCountriesPie(node, save));
-    setTotal(node.countries.reduce((s, d) => s + (d.value ?? 0), 0));
+    setTotal(node.countries ? node.countries.reduce((s, d) => s + (d.value ?? 0), 0) : 0);
   }, [node, save]);
 
   return (

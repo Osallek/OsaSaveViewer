@@ -12,6 +12,15 @@ import fr.osallek.osasaveviewer.controller.dto.save.ExtractorSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.IdeaGroupDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.NamedImageLocalisedDTO;
 import fr.osallek.osasaveviewer.service.object.UserInfo;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -23,14 +32,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class DataService {
@@ -203,8 +204,9 @@ public class DataService {
                                           .map(NamedImageLocalisedDTO::getName)
                                           .collect(Collectors.toSet()));
 
-        assets.setMissions(save.getMissions()
-                               .stream()
+        assets.setMissions(save.getCountries()
+                               .stream().map(CountryDTO::getMissions)
+                               .flatMap(Collection::stream)
                                .filter(mission -> mission.getImage() != null)
                                .filter(mission -> !Files.exists(this.properties.getDataFolder().resolve("missions").resolve(mission.getImage() + ".png")))
                                .map(NamedImageLocalisedDTO::getName)
