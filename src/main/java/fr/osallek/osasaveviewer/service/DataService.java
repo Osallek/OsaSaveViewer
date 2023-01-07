@@ -12,6 +12,7 @@ import fr.osallek.osasaveviewer.controller.dto.save.ExtractorSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.IdeaGroupDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.NamedImageLocalisedDTO;
 import fr.osallek.osasaveviewer.service.object.UserInfo;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -119,98 +121,132 @@ public class DataService {
             assets.setProvinces(true);
         }
 
-        assets.setCountries(save.getCountries()
-                                .stream()
-                                .filter(country -> !Files.exists(this.properties.getDataFolder().resolve("flags").resolve(country.getImage() + ".png")))
-                                .map(CountryDTO::getTag)
-                                .collect(Collectors.toSet()));
+        if (CollectionUtils.isNotEmpty(save.getCountries())) {
+            assets.setCountries(save.getCountries()
+                                    .stream()
+                                    .filter(country -> !Files.exists(this.properties.getDataFolder().resolve("flags").resolve(country.getImage() + ".png")))
+                                    .map(CountryDTO::getTag)
+                                    .collect(Collectors.toSet()));
+        }
 
-        assets.setAdvisors(save.getAdvisorTypes()
-                               .stream()
-                               .filter(advisor -> !Files.exists(this.properties.getDataFolder().resolve("advisors").resolve(advisor.getImage() + ".png")))
-                               .map(NamedImageLocalisedDTO::getName)
-                               .collect(Collectors.toSet()));
-
-        assets.setInstitutions(save.getInstitutions()
+        if (CollectionUtils.isNotEmpty(save.getAdvisorTypes())) {
+            assets.setAdvisors(save.getAdvisorTypes()
                                    .stream()
-                                   .filter(institution -> !Files.exists(this.properties.getDataFolder()
-                                                                                       .resolve("institutions")
-                                                                                       .resolve(institution.getImage() + ".png")))
+                                   .filter(advisor -> !Files.exists(this.properties.getDataFolder().resolve("advisors").resolve(advisor.getImage() + ".png")))
                                    .map(NamedImageLocalisedDTO::getName)
                                    .collect(Collectors.toSet()));
+        }
 
-        assets.setBuildings(save.getBuildings()
-                                .stream()
-                                .filter(building -> !Files.exists(this.properties.getDataFolder().resolve("buildings").resolve(building.getImage() + ".png")))
-                                .map(NamedImageLocalisedDTO::getName)
-                                .collect(Collectors.toSet()));
+        if (CollectionUtils.isNotEmpty(save.getInstitutions())) {
+            assets.setInstitutions(save.getInstitutions()
+                                       .stream()
+                                       .filter(institution -> !Files.exists(this.properties.getDataFolder()
+                                                                                           .resolve("institutions")
+                                                                                           .resolve(institution.getImage() + ".png")))
+                                       .map(NamedImageLocalisedDTO::getName)
+                                       .collect(Collectors.toSet()));
+        }
 
-        assets.setReligions(save.getReligions()
-                                .stream()
-                                .filter(religion -> !Files.exists(this.properties.getDataFolder().resolve("religions").resolve(religion.getImage() + ".png")))
-                                .map(NamedImageLocalisedDTO::getName)
-                                .collect(Collectors.toSet()));
-
-        assets.setTradeGoods(save.getTradeGoods()
-                                 .stream()
-                                 .filter(good -> !Files.exists(this.properties.getDataFolder().resolve("goods").resolve(good.getImage() + ".png")))
-                                 .map(NamedImageLocalisedDTO::getName)
-                                 .collect(Collectors.toSet()));
-
-        assets.setEstates(save.getEstates()
-                              .stream()
-                              .filter(estate -> !Files.exists(this.properties.getDataFolder().resolve("estates").resolve(estate.getImage() + ".png")))
-                              .map(NamedImageLocalisedDTO::getName)
-                              .collect(Collectors.toSet()));
-
-        assets.setPrivileges(save.getEstatePrivileges()
-                                 .stream()
-                                 .filter(privilege -> privilege.getImage() != null)
-                                 .filter(privilege -> !Files.exists(this.properties.getDataFolder()
-                                                                                   .resolve("privileges")
-                                                                                   .resolve(privilege.getImage() + ".png")))
-                                 .map(NamedImageLocalisedDTO::getName)
-                                 .collect(Collectors.toSet()));
-
-        assets.setIdeaGroups(save.getIdeaGroups()
-                                 .stream()
-                                 .filter(group -> group.getImage() != null)
-                                 .filter(group -> !Files.exists(this.properties.getDataFolder().resolve("idea_groups").resolve(group.getImage() + ".png")))
-                                 .map(NamedImageLocalisedDTO::getName)
-                                 .collect(Collectors.toSet()));
-
-        assets.setIdeas(save.getIdeaGroups()
-                            .stream()
-                            .map(IdeaGroupDTO::getIdeas)
-                            .flatMap(Collection::stream)
-                            .filter(idea -> idea.getImage() != null)
-                            .filter(idea -> !Files.exists(this.properties.getDataFolder().resolve("modifiers").resolve(idea.getImage() + ".png")))
-                            .map(NamedImageLocalisedDTO::getName)
-                            .collect(Collectors.toSet()));
-
-        assets.setPersonalities(save.getPersonalities()
+        if (CollectionUtils.isNotEmpty(save.getBuildings())) {
+            assets.setBuildings(save.getBuildings()
                                     .stream()
-                                    .filter(personality -> personality.getImage() != null)
-                                    .filter(p -> !Files.exists(this.properties.getDataFolder().resolve("modifiers").resolve(p.getImage() + ".png")))
+                                    .filter(building -> !Files.exists(
+                                            this.properties.getDataFolder().resolve("buildings").resolve(building.getImage() + ".png")))
                                     .map(NamedImageLocalisedDTO::getName)
                                     .collect(Collectors.toSet()));
+        }
 
-        assets.setLeaderPersonalities(save.getLeaderPersonalities()
-                                          .stream()
-                                          .filter(personality -> personality.getImage() != null)
-                                          .filter(p -> !Files.exists(this.properties.getDataFolder()
-                                                                                    .resolve("modifiers")
-                                                                                    .resolve(p.getImage() + ".png")))
-                                          .map(NamedImageLocalisedDTO::getName)
-                                          .collect(Collectors.toSet()));
+        if (CollectionUtils.isNotEmpty(save.getReligions())) {
+            assets.setReligions(save.getReligions()
+                                    .stream()
+                                    .filter(religion -> !Files.exists(
+                                            this.properties.getDataFolder().resolve("religions").resolve(religion.getImage() + ".png")))
+                                    .map(NamedImageLocalisedDTO::getName)
+                                    .collect(Collectors.toSet()));
+        }
 
-        assets.setMissions(save.getCountries()
-                               .stream().map(CountryDTO::getMissions2)
-                               .flatMap(Collection::stream)
-                               .filter(mission -> mission.getImage() != null)
-                               .filter(mission -> !Files.exists(this.properties.getDataFolder().resolve("missions").resolve(mission.getImage() + ".png")))
-                               .map(NamedImageLocalisedDTO::getName)
-                               .collect(Collectors.toSet()));
+        if (CollectionUtils.isNotEmpty(save.getTradeGoods())) {
+            assets.setTradeGoods(save.getTradeGoods()
+                                     .stream()
+                                     .filter(good -> !Files.exists(this.properties.getDataFolder().resolve("goods").resolve(good.getImage() + ".png")))
+                                     .map(NamedImageLocalisedDTO::getName)
+                                     .collect(Collectors.toSet()));
+        }
+
+        if (CollectionUtils.isNotEmpty(save.getEstates())) {
+            assets.setEstates(save.getEstates()
+                                  .stream()
+                                  .filter(estate -> !Files.exists(this.properties.getDataFolder().resolve("estates").resolve(estate.getImage() + ".png")))
+                                  .map(NamedImageLocalisedDTO::getName)
+                                  .collect(Collectors.toSet()));
+        }
+
+        if (CollectionUtils.isNotEmpty(save.getEstatePrivileges())) {
+            assets.setPrivileges(save.getEstatePrivileges()
+                                     .stream()
+                                     .filter(privilege -> privilege.getImage() != null)
+                                     .filter(privilege -> !Files.exists(this.properties.getDataFolder()
+                                                                                       .resolve("privileges")
+                                                                                       .resolve(privilege.getImage() + ".png")))
+                                     .map(NamedImageLocalisedDTO::getName)
+                                     .collect(Collectors.toSet()));
+        }
+
+        if (CollectionUtils.isNotEmpty(save.getIdeaGroups())) {
+            assets.setIdeaGroups(save.getIdeaGroups()
+                                     .stream()
+                                     .filter(group -> group.getImage() != null)
+                                     .filter(group -> !Files.exists(
+                                             this.properties.getDataFolder().resolve("idea_groups").resolve(group.getImage() + ".png")))
+                                     .map(NamedImageLocalisedDTO::getName)
+                                     .collect(Collectors.toSet()));
+
+            assets.setIdeas(save.getIdeaGroups()
+                                .stream()
+                                .map(IdeaGroupDTO::getIdeas)
+                                .flatMap(Collection::stream)
+                                .filter(idea -> idea.getImage() != null)
+                                .filter(idea -> !Files.exists(
+                                        this.properties.getDataFolder().resolve("modifiers").resolve(idea.getImage() + ".png")))
+                                .map(NamedImageLocalisedDTO::getName)
+                                .collect(Collectors.toSet()));
+        }
+
+        if (CollectionUtils.isNotEmpty(save.getPersonalities())) {
+            assets.setPersonalities(save.getPersonalities()
+                                        .stream()
+                                        .filter(personality -> personality.getImage() != null)
+                                        .filter(p -> !Files.exists(
+                                                this.properties.getDataFolder().resolve("modifiers").resolve(p.getImage() + ".png")))
+                                        .map(NamedImageLocalisedDTO::getName)
+                                        .collect(Collectors.toSet()));
+        }
+
+        if (CollectionUtils.isNotEmpty(save.getLeaderPersonalities())) {
+            assets.setLeaderPersonalities(save.getLeaderPersonalities()
+                                              .stream()
+                                              .filter(personality -> personality.getImage() != null)
+                                              .filter(p -> !Files.exists(this.properties.getDataFolder()
+                                                                                        .resolve("modifiers")
+                                                                                        .resolve(p.getImage() + ".png")))
+                                              .map(NamedImageLocalisedDTO::getName)
+                                              .collect(Collectors.toSet()));
+        }
+
+        if (CollectionUtils.isNotEmpty(save.getCountries())) {
+            assets.setMissions(save.getCountries()
+                                   .stream()
+                                   .map(CountryDTO::getMissions2)
+                                   .filter(Objects::nonNull)
+                                   .flatMap(Collection::stream)
+                                   .filter(Objects::nonNull)
+                                   .filter(mission -> mission.getImage() != null)
+                                   .filter(mission -> !Files.exists(this.properties.getDataFolder()
+                                                                                   .resolve("missions")
+                                                                                   .resolve(mission.getImage() + ".png")))
+                                   .map(NamedImageLocalisedDTO::getName)
+                                   .collect(Collectors.toSet()));
+        }
 
         return assets;
     }

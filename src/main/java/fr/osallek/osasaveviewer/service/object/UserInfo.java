@@ -41,7 +41,8 @@ public class UserInfo {
             this.saves = new TreeSet<>();
         }
 
-        ServerSaveDTO serverSave = new ServerSaveDTO(save.getName(), LocalDateTime.now(ZoneId.of("UTC")), save.getDate(), id, save.getCountry(), save.getCountryName(),
+        ServerSaveDTO serverSave = new ServerSaveDTO(save.getName(), LocalDateTime.now(ZoneId.of("UTC")), save.getDate(), id, save.isHideAll(),
+                                                     save.getCountry(), save.getCountryName(),
                                                      save.getCountries()
                                                          .stream()
                                                          .filter(c -> save.getCountry().equals(c.getTag()))

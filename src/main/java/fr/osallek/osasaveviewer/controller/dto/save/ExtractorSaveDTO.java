@@ -11,6 +11,8 @@ public final class ExtractorSaveDTO {
 
     private LocalDate startDate;
 
+    private boolean hideAll;
+
     private String owner;
 
     private String country;
@@ -87,6 +89,14 @@ public final class ExtractorSaveDTO {
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public boolean isHideAll() {
+        return hideAll;
+    }
+
+    public void setHideAll(boolean hideAll) {
+        this.hideAll = hideAll;
     }
 
     public String getOwner() {

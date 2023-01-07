@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 
@@ -86,7 +87,7 @@ public class SaveService {
                 try {
                     this.userService.getUserInfo(FilenameUtils.removeExtension(path.getFileName().toString())).ifPresent(userInfo -> {
                         if (CollectionUtils.isNotEmpty(userInfo.getSaves())) {
-                            serverSaves.addAll(userInfo.getSaves());
+                            serverSaves.addAll(userInfo.getSaves().stream().filter(Predicate.not(ServerSaveDTO::hideAll)).toList());
 
                             if (serverSaves.size() > MAX_QUEUE_SIZE) {
                                 serverSaves.retainAll(serverSaves.tailSet(IterableUtils.get(serverSaves, Math.max(0, serverSaves.size() - MAX_QUEUE_SIZE))));
@@ -159,7 +160,10 @@ public class SaveService {
         this.userService.saveUserInfo(userInfo);
 
         UploadResponseDTO response = checkAssets(save, id);
-        this.lastSaves.add(serverSave);
+
+        if (!serverSave.hideAll()) {
+            this.lastSaves.add(serverSave);
+        }
 
         return response;
     }
