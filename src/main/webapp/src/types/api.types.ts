@@ -619,6 +619,7 @@ export type UserInfo = {
 export type ServerSave = {
   name: string;
   creationDate: string;
+  hideAll?: boolean;
   date: string;
   id: string;
   country: string;

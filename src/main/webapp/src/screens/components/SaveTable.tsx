@@ -64,7 +64,7 @@ function SaveTable({ saves, currentUser, handleDelete, owner, actionTable }: Sav
               </TableRow>
               :
               (saves && saves.length > 0) ?
-                saves.map(save => (
+                saves.filter(save => !save.hideAll || save.ownerId === currentUser).map(save => (
                   <TableRow hover key={ save.id }>
                     <TableCell>
                       <Typography variant='body1' component='span'>
