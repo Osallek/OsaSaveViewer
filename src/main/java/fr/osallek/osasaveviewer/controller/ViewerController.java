@@ -19,9 +19,9 @@ public class ViewerController {
 
     public ViewerController(ApplicationProperties properties) {
         HttpHeaders extractorHeaders = new HttpHeaders();
-        extractorHeaders.set(HttpHeaders.CONTENT_TYPE, "application/java-archive");
+        extractorHeaders.set(HttpHeaders.CONTENT_TYPE, "application/vnd.microsoft.portable-executable");
         extractorHeaders.set(HttpHeaders.CONTENT_DISPOSITION,
-                             ContentDisposition.builder("attachment").filename("OsaSaveExtractorUpdater.jar").build().toString());
+                             ContentDisposition.builder("attachment").filename("OsaSaveExtractorUpdater.exe").build().toString());
         FileSystemResource resource = new FileSystemResource(properties.getExtractorPath());
 
         this.extractorResponse = new ResponseEntity<>(resource, extractorHeaders, HttpStatus.OK);

@@ -74,14 +74,6 @@ function HomePage() {
                           </ListItem>
                           <ListItem style={ { display: 'list-item' } }>
                             <Typography variant='body1'>
-                              { `${ intl.formatMessage({ id: 'home.java' }) } ` }
-                              <a href='https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html' target='_blank' rel='noreferrer'>
-                                { intl.formatMessage({ id: 'home.java.download' }) }
-                              </a>
-                            </Typography>
-                          </ListItem>
-                          <ListItem style={ { display: 'list-item' } }>
-                            <Typography variant='body1'>
                               { `${ intl.formatMessage({ id: 'home.extractor' }) } ` }
                               <a href='/download-extractor'>
                                 { intl.formatMessage({ id: 'home.extractor.download' }) }

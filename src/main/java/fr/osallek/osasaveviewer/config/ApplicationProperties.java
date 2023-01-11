@@ -55,7 +55,7 @@ public class ApplicationProperties {
     }
 
     public Path getExtractorPath() {
-        return this.baseFolder.resolve("OsaSaveExtractorUpdater.jar");
+        return this.baseFolder.resolve("OsaSaveExtractorUpdater.exe");
     }
 
     public String getSteamApiKey() {
