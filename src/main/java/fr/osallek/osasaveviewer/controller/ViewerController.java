@@ -15,6 +15,8 @@ public class ViewerController {
 
     private final ResponseEntity<FileSystemResource> extractorResponse;
 
+    private final ResponseEntity<FileSystemResource> editorResponse;
+
     private final ResponseEntity<String> versionResponse;
 
     public ViewerController(ApplicationProperties properties) {
@@ -22,9 +24,17 @@ public class ViewerController {
         extractorHeaders.set(HttpHeaders.CONTENT_TYPE, "application/vnd.microsoft.portable-executable");
         extractorHeaders.set(HttpHeaders.CONTENT_DISPOSITION,
                              ContentDisposition.builder("attachment").filename("OsaSaveExtractorUpdater.exe").build().toString());
-        FileSystemResource resource = new FileSystemResource(properties.getExtractorPath());
+        FileSystemResource extractorResource = new FileSystemResource(properties.getExtractorPath());
 
-        this.extractorResponse = new ResponseEntity<>(resource, extractorHeaders, HttpStatus.OK);
+        this.extractorResponse = new ResponseEntity<>(extractorResource, extractorHeaders, HttpStatus.OK);
+
+        HttpHeaders editorHeaders = new HttpHeaders();
+        editorHeaders.set(HttpHeaders.CONTENT_TYPE, "application/vnd.microsoft.portable-executable");
+        editorHeaders.set(HttpHeaders.CONTENT_DISPOSITION,
+                          ContentDisposition.builder("attachment").filename("OsaSaveEditorUpdater.exe").build().toString());
+        FileSystemResource editorResource = new FileSystemResource(properties.getEditorPath());
+
+        this.editorResponse = new ResponseEntity<>(editorResource, editorHeaders, HttpStatus.OK);
 
         HttpHeaders versionHeaders = new HttpHeaders();
         versionHeaders.setContentType(MediaType.TEXT_PLAIN);
@@ -33,8 +43,13 @@ public class ViewerController {
     }
 
     @GetMapping("/download-extractor")
-    public ResponseEntity<FileSystemResource> getFile() {
+    public ResponseEntity<FileSystemResource> getExtractor() {
         return this.extractorResponse;
+    }
+
+    @GetMapping("/download-editor")
+    public ResponseEntity<FileSystemResource> getEditor() {
+        return this.editorResponse;
     }
 
     @GetMapping("/api/version")

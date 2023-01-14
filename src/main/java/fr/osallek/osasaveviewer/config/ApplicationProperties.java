@@ -58,6 +58,10 @@ public class ApplicationProperties {
         return this.baseFolder.resolve("OsaSaveExtractorUpdater.exe");
     }
 
+    public Path getEditorPath() {
+        return this.baseFolder.resolve("OsaSaveEditorUpdater.exe");
+    }
+
     public String getSteamApiKey() {
         return steamApiKey;
     }

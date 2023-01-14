@@ -9,6 +9,10 @@ const home = {
   'home.extractor.download': 'Osa Save Extractor',
   'home.start.1': 'You only need to choose the save to analyse!',
   'home.start.2': 'To keep track of your game, don\'t forget to indicate that it is a sequel.',
+  'home.edit': 'Need to edit your save ?',
+  'home.editor': 'Download and start',
+  'home.editor.download': 'Osa Save Editor',
+  'home.editor.1': 'You only need to choose the save to edit!',
 }
 
 export default home;

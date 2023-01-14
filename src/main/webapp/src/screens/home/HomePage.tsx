@@ -1,5 +1,18 @@
 import {
-  AppBar, Avatar, Backdrop, Card, CardContent, CardHeader, CardMedia, CircularProgress, Grid, List, ListItem, Toolbar, Typography, useTheme
+  AppBar,
+  Avatar,
+  Backdrop,
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  CircularProgress,
+  Grid,
+  List,
+  ListItem,
+  Toolbar,
+  Typography,
+  useTheme
 } from '@mui/material';
 import { api } from 'api';
 import { UserContext, UserContextProps } from 'App';
@@ -58,8 +71,12 @@ function HomePage() {
             <Grid container item xs={ 12 } xl={ 10 }>
               <Grid container item style={ { marginBottom: 16 } }>
                 <Card style={ { width: '100%' } }>
-                  <CardHeader title={ intl.formatMessage({ id: 'home.howTo' }) } titleTypographyProps={ { variant: 'h4' } }
-                              style={ { backgroundColor: theme.palette.primary.light, color: theme.palette.primary.contrastText } }/>
+                  <CardHeader title={ intl.formatMessage({ id: 'home.howTo' }) }
+                              titleTypographyProps={ { variant: 'h4' } }
+                              style={ {
+                                backgroundColor: theme.palette.primary.light,
+                                color: theme.palette.primary.contrastText
+                              } }/>
                   <CardContent>
                     <Grid container>
                       <Grid container item flexDirection='column' xs={ 12 } lg={ 6 }>
@@ -75,7 +92,7 @@ function HomePage() {
                           <ListItem style={ { display: 'list-item' } }>
                             <Typography variant='body1'>
                               { `${ intl.formatMessage({ id: 'home.extractor' }) } ` }
-                              <a href='/download-extractor'>
+                              <a href='/download-extractor' target='_blank'>
                                 { intl.formatMessage({ id: 'home.extractor.download' }) }
                               </a>
                             </Typography>
@@ -87,9 +104,27 @@ function HomePage() {
                         <Typography gutterBottom variant='body1' component='div'>
                           { intl.formatMessage({ id: 'home.start.2' }) }
                         </Typography>
+                        <div style={ { height: 32 } }/>
+                        <Typography gutterBottom variant='h5' component='div'>
+                          { intl.formatMessage({ id: 'home.edit' }) }
+                        </Typography>
+                        <List style={ { listStyleType: 'disc', paddingTop: 0, marginLeft: 32 } }>
+                          <ListItem style={ { display: 'list-item' } }>
+                            <Typography variant='body1'>
+                              { `${ intl.formatMessage({ id: 'home.editor' }) } ` }
+                              <a href='/download-editor' target='_blank'>
+                                { intl.formatMessage({ id: 'home.editor.download' }) }
+                              </a>
+                            </Typography>
+                          </ListItem>
+                        </List>
+                        <Typography gutterBottom variant='body1' component='div'>
+                          { intl.formatMessage({ id: 'home.editor.1' }) }
+                        </Typography>
                       </Grid>
                       <Grid container item justifyContent='center' xs={ 12 } lg={ 6 }>
-                        <CardMedia component='img' image={ `/extractor_${ intl.locale }.png` } alt='Extractor' style={ { maxWidth: 600 } }/>
+                        <CardMedia component='img' image={ `/extractor_${ intl.locale }.png` } alt='Extractor'
+                                   style={ { maxWidth: 600 } }/>
                       </Grid>
                     </Grid>
                   </CardContent>

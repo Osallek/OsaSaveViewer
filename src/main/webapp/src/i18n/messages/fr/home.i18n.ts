@@ -9,6 +9,10 @@ const home = {
   'home.extractor.download': 'Osa Save Extractor',
   'home.start.1': 'Vous n\'avez plus qu\'a choisir la partie à analysée !',
   'home.start.2': 'Pour avoir un suivi tout au long de votre partie, n\'ouliez pas d\'indiquer qu\'il s\'agit d\'une suite.',
+  'home.edit': 'Besoin d\'éditer votre sauvegarde ?',
+  'home.editor': 'Téléchargez et lancez',
+  'home.editor.download': 'Osa Save Editor',
+  'home.editor.1': 'Vous n\'avez plus qu\'a choisir la partie à éditer !',
 }
 
 export default home;
