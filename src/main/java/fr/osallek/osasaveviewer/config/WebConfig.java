@@ -141,6 +141,18 @@ public class WebConfig implements WebMvcConfigurer {
                         }
                     }
                 });
+
+        registry.addResourceHandler("/wiki/images/**")
+                .addResourceLocations("file:" + this.properties.getWikiImagesFolder() + "/")
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
+
+        registry.addResourceHandler("/wiki/**")
+                .addResourceLocations("file:" + this.properties.getWikiFolder() + "/")
+                .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
+                .resourceChain(false)
+                .addResolver(new CustomEncodedResourceResolver());
     }
 
     @Bean

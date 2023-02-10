@@ -62,6 +62,14 @@ public class ApplicationProperties {
         return this.baseFolder.resolve("OsaSaveEditorUpdater.exe");
     }
 
+    public Path getWikiFolder() {
+        return this.baseFolder.resolve("wiki");
+    }
+
+    public Path getWikiImagesFolder() {
+        return getWikiFolder().resolve("images");
+    }
+
     public String getSteamApiKey() {
         return steamApiKey;
     }
