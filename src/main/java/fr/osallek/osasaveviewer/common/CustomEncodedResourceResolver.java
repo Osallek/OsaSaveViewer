@@ -15,26 +15,44 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class CustomEncodedResourceResolver extends EncodedResourceResolver {
 
-    public CustomEncodedResourceResolver() {
-        setContentCodings(List.of("gzip"));
-    }
-
     @Override
     protected Resource resolveResourceInternal(HttpServletRequest request, String requestPath, List<? extends Resource> locations, ResourceResolverChain chain) {
-        Resource resource = chain.resolveResource(request, requestPath + ".gz", locations);
+        Resource resource = super.resolveResourceInternal(request, requestPath, locations, chain);
 
-        if (resource == null) {
-            return null;
+        if (resource != null) {
+            return resource;
         }
 
+        String acceptEncoding = getAcceptEncoding(request);
+        if (acceptEncoding == null) {
+            return resource;
+        }
+
+
         try {
-            return new EncodedResource(resource, "gzip", "");
+            for (Map.Entry<String, String> entry : getExtensions().entrySet()) {
+                if (acceptEncoding.contains(entry.getKey())) {
+                    resource = chain.resolveResource(request, requestPath + entry.getValue(), locations);
+
+                    if (resource != null) {
+                        return new EncodedResource(resource, entry.getKey(), "");
+                    }
+                }
+            }
         } catch (IOException e) {
             return null;
         }
+
+        return null;
+    }
+
+    private String getAcceptEncoding(HttpServletRequest request) {
+        return Optional.ofNullable(request.getHeader(HttpHeaders.ACCEPT_ENCODING)).map(String::toLowerCase).orElse(null);
     }
 
     static final class EncodedResource extends AbstractResource implements HttpResource {
@@ -121,13 +139,16 @@ public class CustomEncodedResourceResolver extends EncodedResourceResolver {
         @Override
         public HttpHeaders getResponseHeaders() {
             HttpHeaders headers;
-            if (this.original instanceof HttpResource) {
-                headers = ((HttpResource) this.original).getResponseHeaders();
+
+            if (this.original instanceof HttpResource resource) {
+                headers = resource.getResponseHeaders();
             } else {
                 headers = new HttpHeaders();
             }
+
             headers.add(HttpHeaders.CONTENT_ENCODING, this.coding);
             headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT_ENCODING);
+
             return headers;
         }
     }

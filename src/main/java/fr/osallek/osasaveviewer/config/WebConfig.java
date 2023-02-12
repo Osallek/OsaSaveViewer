@@ -151,7 +151,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/wiki/**")
                 .addResourceLocations("file:" + this.properties.getWikiFolder() + "/")
                 .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
-                .resourceChain(false)
+                .setOptimizeLocations(true)
+                .resourceChain(true)
                 .addResolver(new CustomEncodedResourceResolver());
     }
 
