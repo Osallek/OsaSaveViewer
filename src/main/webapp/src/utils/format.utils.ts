@@ -1,5 +1,6 @@
 import { intl } from 'index';
-import { SaveColor } from 'types/api.types';
+import { Localised, SaveColor } from 'types/api.types';
+import { getName } from './data.utils';
 
 export function getYear(date: string): number {
   return parseInt(date.substring(0, date.indexOf('-')));
@@ -37,6 +38,10 @@ export function numberComparator(a: number, b: number): number {
 
 export function stringComparator(a: string, b: string): number {
   return a.localeCompare(b);
+}
+
+export function stringLocalisedComparator(a: Localised, b: Localised): number {
+  return stringComparator(getName(a) ?? '', getName(b) ?? '');
 }
 
 export function capitalize(s: string): string {

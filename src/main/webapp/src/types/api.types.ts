@@ -51,8 +51,16 @@ export type Localised = {
   localisations: Record<Localization, string>;
 }
 
+export type IdLocalised = Localised & {
+  id: string;
+}
+
 export type ImageLocalised = Localised & {
   image?: string;
+}
+
+export type IdImageLocalised = ImageLocalised & {
+  id: string;
 }
 
 export type NamedImageLocalised = ImageLocalised & {
@@ -718,4 +726,30 @@ export type SaveGreatProject = Localised & {
   name: string;
   level: number;
   maxLevel: number;
+}
+
+export type Condition = {
+  [key: string]: Array<string> | Array<Condition>;
+  and: Array<Condition>;
+  not: Array<Condition>;
+  or: Array<Condition>;
+}
+
+export type Modifiers = {
+  enables: Array<string>;
+  modifiers: Record<string, number>;
+}
+
+export type Decision = IdLocalised & {
+  localisationsExample?: Localised;
+  description: Localised;
+  descriptionExample?: Localised;
+  major: boolean;
+  aiImportance?: number;
+  doNotCore?: number;
+  doNotIntegrate?: string;
+  potential: Condition;
+  provincesToHighlight: Condition;
+  allow: Condition;
+  effects: Modifiers;
 }

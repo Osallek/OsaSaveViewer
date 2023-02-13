@@ -38,3 +38,5 @@ build/
 /src/main/webapp/build/
 
 logs/
+
+src/main/webapp/.env

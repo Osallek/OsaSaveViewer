@@ -1,13 +1,25 @@
 import { Delete, Visibility } from '@mui/icons-material';
-import { Avatar, CircularProgress, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+  Avatar,
+  CircularProgress,
+  Grid,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import theme from 'theme';
 import { ServerSave } from 'types/api.types';
-import { getFlagUrl } from 'utils/data.utils';
+import { getFlagUrl, getName } from 'utils/data.utils';
 import { formatDate, formatDateTime, formatNumber } from 'utils/format.utils';
-import { getName } from 'utils/save.utils';
 
 export interface SaveTableProps {
   saves?: Array<ServerSave>;
@@ -45,9 +57,9 @@ function SaveTable({ saves, currentUser, handleDelete, owner, actionTable }: Sav
             </TableCell>
             {
               owner &&
-                <TableCell style={ { color: theme.palette.primary.contrastText } }>
-                  { intl.formatMessage({ id: 'user.owner' }) }
-                </TableCell>
+              <TableCell style={ { color: theme.palette.primary.contrastText } }>
+                { intl.formatMessage({ id: 'user.owner' }) }
+              </TableCell>
             }
             <TableCell style={ { color: theme.palette.primary.contrastText } }>
               { intl.formatMessage({ id: 'user.actions' }) }
@@ -101,16 +113,16 @@ function SaveTable({ saves, currentUser, handleDelete, owner, actionTable }: Sav
                     </TableCell>
                     {
                       owner &&
-                        <TableCell>
-                            <Link to={ `/user/${ save.ownerId }` } style={ { textDecoration: 'none' } }>
-                                <Grid container alignItems='center' flexWrap='nowrap' overflow='hidden'>
-                                    <Avatar src={ save.ownerImage } variant='square' alt={ save.ownerName }/>
-                                    <Typography variant='body1' component='span' style={ { marginLeft: 8, color: 'inherit' } }>
-                                      { save.ownerName ?? save.ownerId }
-                                    </Typography>
-                                </Grid>
-                            </Link>
-                        </TableCell>
+                      <TableCell>
+                        <Link to={ `/user/${ save.ownerId }` } style={ { textDecoration: 'none' } }>
+                          <Grid container alignItems='center' flexWrap='nowrap' overflow='hidden'>
+                            <Avatar src={ save.ownerImage } variant='square' alt={ save.ownerName }/>
+                            <Typography variant='body1' component='span' style={ { marginLeft: 8, color: 'inherit' } }>
+                              { save.ownerName ?? save.ownerId }
+                            </Typography>
+                          </Grid>
+                        </Link>
+                      </TableCell>
                     }
                     <TableCell>
                       <Grid container alignItems='center' flexWrap='nowrap' overflow='hidden'>
@@ -119,9 +131,9 @@ function SaveTable({ saves, currentUser, handleDelete, owner, actionTable }: Sav
                         </IconButton>
                         {
                           handleDelete && currentUser && save.ownerId === currentUser &&
-                            <IconButton color="error" onClick={ () => handleDelete(save.id) }>
-                                <Delete/>
-                            </IconButton>
+                          <IconButton color="error" onClick={ () => handleDelete(save.id) }>
+                            <Delete/>
+                          </IconButton>
                         }
                       </Grid>
                     </TableCell>

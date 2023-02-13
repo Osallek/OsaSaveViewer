@@ -1,7 +1,8 @@
 import { endpoints } from 'api/index';
 import axios, { AxiosPromise } from 'axios';
 import * as ENV from 'env/env';
-import { Save, ServerSave, UserInfo } from 'types/api.types';
+import { Decision, Save, ServerSave, UserInfo } from 'types/api.types';
+import { getDecisions } from 'utils/data.utils';
 
 const apiWs = axios.create({
   baseURL: ENV.API_BASE_URL,
@@ -12,6 +13,12 @@ const apiWs = axios.create({
 
 const dataWs = axios.create({
   baseURL: ENV.DATA_BASE_URL,
+  timeout: 600000,
+  maxRedirects: 0,
+});
+
+const wikiWs = axios.create({
+  baseURL: ENV.WIKI_BASE_URL,
   timeout: 600000,
   maxRedirects: 0,
 });
@@ -28,7 +35,10 @@ const api = {
   },
   steam: {
     logout: (): AxiosPromise<VoidFunction> => apiWs.post(endpoints.steam.logout),
-  }
+  },
+  wiki: {
+    decisions: (version: string): AxiosPromise<Record<string, Decision>> => wikiWs.get(getDecisions(version)),
+  },
 };
 
 export default api;

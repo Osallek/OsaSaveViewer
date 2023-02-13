@@ -1,16 +1,46 @@
-import { eu4Locale } from 'index';
-import { Dispatch, SetStateAction } from 'react';
 import {
-  ColorNamedImageLocalised, CountryPreviousSave, Expense, Income, Localised, Localization, Losses, NamedImageLocalised, NamedLocalised, PowerSpent, Save,
-  SaveArea, SaveBattle, SaveCountry, SaveCountryState, SaveCulture, SaveDependency, SaveEmpire, SaveIdeaGroup, SaveLeader, SaveMission, SaveMonarch,
-  SaveProvince, SaveProvinceHistory, SaveReligion, SaveSimpleProvince, SaveTradeNode, SaveWar
+  ColorNamedImageLocalised,
+  CountryPreviousSave,
+  Expense,
+  Income,
+  Losses,
+  NamedImageLocalised,
+  NamedLocalised,
+  PowerSpent,
+  Save,
+  SaveArea,
+  SaveBattle,
+  SaveCountry,
+  SaveCountryState,
+  SaveCulture,
+  SaveDependency,
+  SaveEmpire,
+  SaveIdeaGroup,
+  SaveLeader,
+  SaveMission,
+  SaveMonarch,
+  SaveProvince,
+  SaveProvinceHistory,
+  SaveReligion,
+  SaveSimpleProvince,
+  SaveTradeNode,
+  SaveWar
 } from 'types/api.types';
 import { CleanMapSave, CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
 import {
-  getBuildingUrl, getEstateUrl, getFlagUrl, getGoodUrl, getIdeaGroupUrl, getLeaderPersonalityUrl, getMissionUrl, getPersonalityUrl, getPrivilegeUrl,
+  getBuildingUrl,
+  getEstateUrl,
+  getFlagUrl,
+  getGoodUrl,
+  getIdeaGroupUrl,
+  getLeaderPersonalityUrl,
+  getMissionUrl,
+  getName,
+  getPersonalityUrl,
+  getPrivilegeUrl,
   getReligionUrl
 } from 'utils/data.utils';
-import { capitalize, getYear, numberComparator, stringComparator, toMap } from 'utils/format.utils';
+import { getYear, numberComparator, stringComparator, toMap } from 'utils/format.utils';
 
 export const fakeTag = "---";
 
@@ -39,7 +69,8 @@ export function convertSave(save: Save, history: boolean): MapSave {
   };
 
   if (history) {
-    const historyWorkers: Array<Worker> = [new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
+    const historyWorkers: Array<Worker> = [new Worker('/eu4/script/province_history_worker.js'), new Worker(
+      '/eu4/script/province_history_worker.js'),
       new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
       new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
       new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
@@ -47,8 +78,7 @@ export function convertSave(save: Save, history: boolean): MapSave {
     let count = 0;
     const start = new Date();
 
-    for (let i = 0; i < historyWorkers.length; i++) {
-      const worker = historyWorkers[i];
+    for (const worker of historyWorkers) {
       worker.onerror = (event) => {
         count++;
         console.error(event);
@@ -57,8 +87,8 @@ export function convertSave(save: Save, history: boolean): MapSave {
           console.log('Finished provinces history: ' + (new Date().getTime() - start.getTime()));
           newSave.ready = true;
 
-          for (let i = 0; i < historyWorkers.length; i++) {
-            historyWorkers[i].terminate();
+          for (const worker of historyWorkers) {
+            worker.terminate();
           }
 
           return newSave;
@@ -73,8 +103,8 @@ export function convertSave(save: Save, history: boolean): MapSave {
             console.log('Finished provinces history: ' + (new Date().getTime() - start.getTime()));
             newSave.ready = true;
 
-            for (let i = 0; i < historyWorkers.length; i++) {
-              historyWorkers[i].terminate();
+            for (const worker of historyWorkers) {
+              worker.terminate();
             }
 
             return newSave;
@@ -129,25 +159,13 @@ export function cleanSave(save: MapSave): CleanMapSave {
   return newSave;
 }
 
-export function getName(localised: Localised): string | undefined {
-  let name = (localised.localisations !== undefined && localised.localisations[eu4Locale] !== undefined) ?
-    capitalize(localised.localisations[eu4Locale]) :
-    (localised.localisations !== undefined && localised.localisations[Localization.ENGLISH] !== undefined) ?
-      localised.localisations[Localization.ENGLISH] : undefined;
-
-  if (name) {
-    name = name.replaceAll('\\n', '');
-  }
-
-  return name;
-}
-
 export function getCountries(save: MapSave): Array<SaveCountry> {
   return save.countries.filter(c => c.alive);
 }
 
 export function getPHistory(province: SaveProvince, save: MapSave, date?: string): ProvinceHistory {
-  return (date && save.date !== date) ? getPHistoryInternal(province, date) : save.currentProvinces.get(province.id) ?? save.currentProvinces.values().next().value;
+  return (date && save.date !== date) ? getPHistoryInternal(province, date) : save.currentProvinces.get(
+    province.id) ?? save.currentProvinces.values().next().value;
 }
 
 function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHistory {
@@ -226,7 +244,8 @@ export function getProvince(save: MapSave, id: number): SaveProvince | null {
 }
 
 export function getOceanLakeProvince(save: MapSave, id: number): SaveSimpleProvince | null {
-  return save.oceansProvinces.find(province => id === province.id) ?? save.lakesProvinces.find(province => id === province.id) ?? null;
+  return save.oceansProvinces.find(province => id === province.id) ?? save.lakesProvinces.find(
+    province => id === province.id) ?? null;
 }
 
 export function getPDev(province: SaveProvince): number {
@@ -543,7 +562,8 @@ export function getPersonalitysImage(personality: NamedImageLocalised): string {
 }
 
 export function getLeaderPersonality(save: MapSave, name: string): NamedImageLocalised {
-  return save.leaderPersonalities.find(leaderPersonality => name === leaderPersonality.name) ?? save.leaderPersonalities[0];
+  return save.leaderPersonalities.find(
+    leaderPersonality => name === leaderPersonality.name) ?? save.leaderPersonalities[0];
 }
 
 export function getLeaderPersonalityName(save: MapSave, name: string): string {
@@ -721,7 +741,8 @@ export function getTotalIncome(country: SaveCountry): number {
 }
 
 export function getTotalStableIncome(country: SaveCountry): number {
-  return Object.values(Income).filter((value, index) => index <= 7).map(value => getIncome(country, value)).reduce((s, d) => s + d ?? 0, 0);
+  return Object.values(Income).filter((value, index) => index <= 7).map(value => getIncome(country, value)).reduce(
+    (s, d) => s + d ?? 0, 0);
 }
 
 export function getTotalExpense(country: SaveCountry): number {
@@ -729,7 +750,8 @@ export function getTotalExpense(country: SaveCountry): number {
 }
 
 export function getTotalStableExpense(country: SaveCountry): number {
-  return Object.values(Expense).filter((value, index) => index <= 8).map(value => getExpense(country, value)).reduce((s, d) => s + d ?? 0, 0);
+  return Object.values(Expense).filter((value, index) => index <= 8).map(value => getExpense(country, value)).reduce(
+    (s, d) => s + d ?? 0, 0);
 }
 
 export function getTotalTotalExpenses(country: SaveCountry): number {
@@ -737,7 +759,8 @@ export function getTotalTotalExpenses(country: SaveCountry): number {
 }
 
 export function getRank(save: MapSave, country: SaveCountry, mapper: (country: SaveCountry) => number | undefined, onlyPlayer: boolean = false): number {
-  return Array.from(new Set<number>(getCountries(save).filter(c => !onlyPlayer || (c.players && c.players.length > 0)).map(c => mapper(c) ?? 0)))
+  return Array.from(new Set<number>(
+    getCountries(save).filter(c => !onlyPlayer || (c.players && c.players.length > 0)).map(c => mapper(c) ?? 0)))
     .sort((a, b) => -numberComparator(a, b)).indexOf(mapper(country) ?? 0) + 1;
 }
 
@@ -762,7 +785,8 @@ export function getLeaders(save: MapSave, country: SaveCountry): Array<SaveLeade
 }
 
 export function getNbBuildings(country: SaveCountry, save: MapSave, building: string): number {
-  return getProvinces(country, save).flatMap(province => province.buildings ?? []).filter(value => building === value).length;
+  return getProvinces(country, save).flatMap(province => province.buildings ?? []).filter(
+    value => building === value).length;
 }
 
 export function getNbReligion(country: SaveCountry, save: MapSave, religion: string): number {
@@ -770,7 +794,8 @@ export function getNbReligion(country: SaveCountry, save: MapSave, religion: str
 }
 
 export function getDevReligion(country: SaveCountry, save: MapSave, religion: string): number {
-  return mapProvinces(country, save, history => religion === history.religion, (p) => (p.baseTax ?? 0) + (p.baseProduction ?? 0) + (p.baseManpower ?? 0));
+  return mapProvinces(country, save, history => religion === history.religion,
+    (p) => (p.baseTax ?? 0) + (p.baseProduction ?? 0) + (p.baseManpower ?? 0));
 }
 
 export function getNbCulture(country: SaveCountry, save: MapSave, culture: string): number {
@@ -778,7 +803,8 @@ export function getNbCulture(country: SaveCountry, save: MapSave, culture: strin
 }
 
 export function getDevCulture(country: SaveCountry, save: MapSave, culture: string): number {
-  return mapProvinces(country, save, history => culture === history.culture, (p) => (p.baseTax ?? 0) + (p.baseProduction ?? 0) + (p.baseManpower ?? 0));
+  return mapProvinces(country, save, history => culture === history.culture,
+    (p) => (p.baseTax ?? 0) + (p.baseProduction ?? 0) + (p.baseManpower ?? 0));
 }
 
 export function isAdm(powerSpent: PowerSpent): boolean {
@@ -989,12 +1015,15 @@ export function getWar(save: MapSave, id: number): SaveWar | undefined {
 }
 
 export function getWarLosses(war: SaveWar): number {
-  return Object.values(war.attackers).map(attacker => Object.values(attacker.losses).reduce((s, d) => s + d ?? 0, 0)).reduce((s, d) => s + d ?? 0, 0)
-    + Object.values(war.defenders).map(defender => Object.values(defender.losses).reduce((s, d) => s + d ?? 0, 0)).reduce((s, d) => s + d ?? 0, 0);
+  return Object.values(war.attackers).map(
+      attacker => Object.values(attacker.losses).reduce((s, d) => s + d ?? 0, 0)).reduce((s, d) => s + d ?? 0, 0)
+    + Object.values(war.defenders).map(
+      defender => Object.values(defender.losses).reduce((s, d) => s + d ?? 0, 0)).reduce((s, d) => s + d ?? 0, 0);
 }
 
 export function getProvinceLosses(war: SaveWar, id: number): number {
-  return war.history.filter(h => h.battles && h.battles.length > 0).flatMap(h => h.battles ?? []).filter(b => b.location === id).reduce(
+  return war.history.filter(h => h.battles && h.battles.length > 0).flatMap(h => h.battles ?? []).filter(
+    b => b.location === id).reduce(
     (s, b) => s + getBattleLosses(b), 0);
 }
 
@@ -1018,9 +1047,11 @@ export function getBattleLosses(battle: SaveBattle): number {
 
 export function getWarValue(tag: string, war: SaveWar): number {
   if (Object.keys(war.attackers).includes(tag)) {
-    return war.attackers[tag].value / Object.values(war.attackers).map(value => value.value).reduce((s, d) => s + d ?? 0, 0);
+    return war.attackers[tag].value / Object.values(war.attackers).map(value => value.value).reduce(
+      (s, d) => s + d ?? 0, 0);
   } else if (Object.keys(war.defenders).includes(tag)) {
-    return war.defenders[tag].value / Object.values(war.defenders).map(value => value.value).reduce((s, d) => s + d ?? 0, 0);
+    return war.defenders[tag].value / Object.values(war.defenders).map(value => value.value).reduce(
+      (s, d) => s + d ?? 0, 0);
   }
 
   return 0;
@@ -1043,5 +1074,6 @@ export function getTradeNodeOutgoingValue(node: SaveTradeNode, save: MapSave): n
     return 0;
   }
 
-  return save.tradeNodes.map(n => n.incoming.map(i => i.from === node.name ? i.value : 0).reduce((s, n) => s + n, 0)).reduce((s, n) => s + n, 0);
+  return save.tradeNodes.map(
+    n => n.incoming.map(i => i.from === node.name ? i.value : 0).reduce((s, n) => s + n, 0)).reduce((s, n) => s + n, 0);
 }
