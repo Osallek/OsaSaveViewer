@@ -1,13 +1,34 @@
 import * as ENV from 'env/env';
 import { eu4Locale } from '../index';
 import { Localised, Localization } from '../types/api.types';
+import { MapSave } from '../types/map.types';
 import { capitalize } from './format.utils';
 
-export function getName(localised: Localised): string | undefined {
-  let name = (localised.localisations !== undefined && localised.localisations[eu4Locale] !== undefined) ?
-    capitalize(localised.localisations[eu4Locale]) :
-    (localised.localisations !== undefined && localised.localisations[Localization.ENGLISH] !== undefined) ?
-      localised.localisations[Localization.ENGLISH] : undefined;
+export const fakeTag = "---";
+
+export const DATE_EXP = new RegExp('^-?[0-9]{1,4}-[0-9]{1,2}-[0-9]{1,2}$');
+
+export function isValidDate(date?: string | null, save?: MapSave): boolean {
+  if (date === undefined || date === null || !DATE_EXP.test(date)) {
+    return false;
+  }
+
+  if (save) {
+    return save.date >= date && save.startDate <= date;
+  }
+
+  return true;
+}
+
+export function getLName(localised: Localised): string | undefined {
+  return getName(localised.localisations);
+}
+
+export function getName(localisations: Record<Localization, string>): string | undefined {
+  let name = (localisations !== undefined && localisations[eu4Locale] !== undefined) ?
+    capitalize(localisations[eu4Locale]) :
+    (localisations !== undefined && localisations[Localization.ENGLISH] !== undefined) ?
+      localisations[Localization.ENGLISH] : undefined;
 
   if (name) {
     name = name.replaceAll('\\n', '');

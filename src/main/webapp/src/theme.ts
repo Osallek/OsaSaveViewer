@@ -23,6 +23,18 @@ let theme = createTheme({
           fontWeight: 'bold'
         }
       }
+    },
+    MuiTypography: {
+      variants: [
+        {
+          props: {
+            variant: 'h4'
+          },
+          style: {
+            fontWeight: 'bold',
+          },
+        }
+      ]
     }
   }
 });

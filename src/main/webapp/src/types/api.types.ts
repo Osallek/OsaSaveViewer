@@ -51,6 +51,14 @@ export type Localised = {
   localisations: Record<Localization, string>;
 }
 
+export type ExampleLocalised = Localised & {
+  localisationsExample: Record<Localization, string>;
+}
+
+export type IdExampleLocalised = ExampleLocalised & {
+  id: string;
+}
+
 export type IdLocalised = Localised & {
   id: string;
 }
@@ -728,28 +736,212 @@ export type SaveGreatProject = Localised & {
   maxLevel: number;
 }
 
+export type Color = {
+  red: number;
+  green: number;
+  blue: number;
+  rgb: Array<number>;
+  hex: string;
+}
+
+export type Wiki = {
+  decisions: Record<string, Decision>;
+  countries: Record<string, Country>;
+  idExampleLocalised: Record<string, IdExampleLocalised>;
+  idLocalised: Record<string, IdLocalised>;
+  modifiers: Record<string, Modifier>;
+}
+
 export type Condition = {
-  [key: string]: Array<string> | Array<Condition>;
-  and: Array<Condition>;
-  not: Array<Condition>;
-  or: Array<Condition>;
+  conditions?: Record<string, Array<string>>;
+  scopes?: Record<string, Array<Condition>>
+  clauses?: Record<string, Array<Condition>>
 }
 
-export type Modifiers = {
-  enables: Array<string>;
-  modifiers: Record<string, number>;
+export type Effects = {
+  limit?: Condition;
+  ifEffect?: Effects;
+  elseIfEffect?: Array<Effects>;
+  elseEffect?: Effects;
+  effects?: Record<string, Array<Effects>>;
+  regions?: Record<string, Array<Effects>>;
+  areas?: Record<string, Array<Effects>>;
+  countries?: Record<string, Array<Effects>>;
+  provinces?: Record<string, Array<Effects>>;
+  units?: Record<string, Array<Effects>>;
+  countryEvents?: Array<Event>;
+  addCountryModifiers?: Array<AddModifier>;
 }
 
-export type Decision = IdLocalised & {
-  localisationsExample?: Localised;
-  description: Localised;
-  descriptionExample?: Localised;
+export type Decision = IdExampleLocalised & {
+  description: ExampleLocalised;
   major: boolean;
   aiImportance?: number;
   doNotCore?: number;
   doNotIntegrate?: string;
   potential: Condition;
-  provincesToHighlight: Condition;
+  provincesToHighlight?: Condition;
   allow: Condition;
-  effects: Modifiers;
+  effects: Effects;
+}
+
+export type Event = {
+  id: string;
+  days?: number;
+  random?: number;
+  tooltip?: string;
+}
+
+export type AddModifier = {
+  name: string;
+  duration?: number;
+  isHidden?: boolean;
+  desc?: string;
+}
+
+export type Country = IdImageLocalised & {
+  graphicalCulture?: string;
+  historicalCouncil?: string;
+  historicalScore?: number;
+  historicalIdeaGroups?: Array<string>;
+  monarchNames?: Record<string, number>;
+  historicalUnits?: Array<string>;
+  leaderNames?: Array<string>;
+  shipNames?: Array<string>;
+  armyNames?: Array<string>;
+  fleetNames?: Array<string>;
+  color?: Color;
+  revolutionaryColors?: Array<Color>;
+  ideasGroup?: string;
+  decisions?: Array<string>;
+  possibleMissions: Array<MissionTreesCondition>;
+  historyItems: Record<string, CountryHistoryItem>;
+}
+
+export type MissionTreesCondition = {
+  condition: Record<string, Condition>;
+  trees: Record<number, Array<string>>;
+}
+
+export type CountryHistoryItem = {
+  technologyGroup?: string;
+  unitType?: string;
+
+  mercantilism?: number;
+
+  capital?: number;
+
+  changedTagFrom?: string;
+
+  fixedCapital?: number;
+
+  government?: string;
+
+  religiousSchool?: string;
+
+  nationalFocus?: string;
+
+  governmentLevel?: number;
+
+  primaryCulture?: string;
+
+  religion?: string;
+
+  joinLeague?: string;
+
+  addArmyProfessionalism?: number;
+
+  addAcceptedCultures?: Array<string>;
+
+  removeAcceptedCultures?: Array<string>;
+
+  historicalFriends?: Array<string>;
+
+  historicalEnemies?: Array<string>;
+
+  elector?: boolean;
+
+  revolutionTarget?: boolean;
+
+  clearScriptedPersonalities?: boolean;
+
+  changeEstateLandShares?: Record<string, number>;
+
+  addHeirPersonalities?: Array<string>;
+
+  addRulerPersonalities?: Array<string>;
+
+  addQueenPersonalities?: Array<string>;
+
+  setEstatePrivilege?: Array<string>;
+
+  addGovernmentReform?: Array<string>;
+
+  setCountryFlag?: Array<string>;
+
+  monarch: Monarch;
+
+  queen: Queen;
+
+  heir: Heir;
+
+  leaders: Array<Leader>;
+}
+
+export type Monarch = {
+  name?: string;
+
+  monarchName?: string;
+
+  dynasty?: string;
+
+  birthDate?: string;
+
+  deathDate?: string;
+
+  adm?: number;
+
+  dip?: number;
+
+  mil?: number;
+
+  female?: boolean;
+
+  regent?: boolean;
+
+  culture?: string;
+
+  religion?: string;
+
+  personalities: Array<string>;
+
+  leader: Leader;
+}
+
+export type Queen = Monarch & {
+  countryOfOrigin?: string;
+  consort: boolean;
+}
+
+export type Heir = Monarch & {
+  countryOfOrigin?: number;
+}
+
+export type Leader = {
+  name: string;
+  manuever: number;
+  fire: number;
+  shock: number;
+  siege: number;
+  personality: string;
+  deathDate: string;
+}
+
+export type Modifiers = {
+  enables?: Array<string>;
+  modifiers?: Record<string, number>;
+}
+
+export type Modifier = IdLocalised & {
+  modifiers?: Modifiers;
 }

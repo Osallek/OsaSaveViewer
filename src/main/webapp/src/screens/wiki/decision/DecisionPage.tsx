@@ -4,23 +4,25 @@ import { api } from 'api';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
+import ConditionsList from 'screens/wiki/condition/ConditionsList';
+import ExampleIcon from 'screens/wiki/ExampleIcon';
+import LocalisedExample from 'screens/wiki/LocalisedExample';
+import WikiBar from 'screens/wiki/WikiBar';
 import theme from 'theme';
-import { Decision } from 'types/api.types';
-import { getName } from 'utils/data.utils';
+import { Decision, Wiki } from 'types/api.types';
+import { getLName } from 'utils/data.utils';
 import { stringLocalisedComparator } from 'utils/format.utils';
-import ExampleIcon from '../ExampleIcon';
-import ExampleLocalised from '../ExampleLocalised';
-import WikiBar from '../WikiBar';
 
 function DecisionPage() {
   const params = useParams();
   const intl = useIntl();
 
+  const [wiki, setWiki] = useState<Wiki>();
   const [decision, setDecision] = useState<Decision>();
   const [decisions, setDecisions] = useState<Array<Decision>>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
-  const [showExample, setShowExample] = useState<boolean>(false);
+  const [useExample, setUseExample] = useState<boolean>(false);
 
   const { id, version } = params;
 
@@ -28,12 +30,20 @@ function DecisionPage() {
     ;(async () => {
       try {
         if (id && version) {
-          const { data } = await api.wiki.decisions(version);
+          const { data: versionsData } = await api.wiki.versions();
 
-          if (data && data[id]) {
-            setDecision(data[id]);
-            setDecisions(Object.values(data).sort(stringLocalisedComparator));
-            document.title = intl.formatMessage({ id: 'wiki.decision' }) + ' - ' + getName(data[id]) ?? id;
+          if (versionsData && versionsData[version]) {
+            const { data } = await api.wiki.data(version, versionsData[version]);
+
+            if (data && data.decisions[id]) {
+              setWiki(data);
+              const decision = data.decisions[id];
+              setDecision(decision);
+              setDecisions(Object.values(data.decisions).sort(stringLocalisedComparator));
+              document.title = intl.formatMessage({ id: 'wiki.decision' }) + ' - ' + getLName(decision) ?? id;
+
+              console.log(decision)
+            }
           }
         } else {
           setError(true);
@@ -50,7 +60,7 @@ function DecisionPage() {
   return (
     <>
       {
-        (error || (!loading && (!decision || !version))) ?
+        (error || (!loading && (!decision || !version || !wiki))) ?
           <Grid container alignItems='center' justifyContent='center' flexDirection='column'
                 style={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
             <Typography variant='h2' color={ theme.palette.primary.contrastText }>
@@ -71,8 +81,8 @@ function DecisionPage() {
                 (
                   <Toolbar style={ { justifyContent: 'center', backgroundColor: theme.palette.primary.dark } }>
                     <Grid container item alignItems='center' xs={ 12 } xl={ 10 }>
-                      <ExampleLocalised main={ decision } example={ decision.localisationsExample }
-                                        useExample={ showExample } suffix={ ` (${ decision.id })` }
+                      <LocalisedExample example={ decision }
+                                        useExample={ useExample } suffix={ ` (${ decision.id })` }
                                         variant='h6' color={ theme.palette.primary.contrastText }/>
                       {
                         decision.major &&
@@ -82,27 +92,44 @@ function DecisionPage() {
                           </IconButton>
                         </Tooltip>
                       }
-                      <ExampleIcon onClick={ () => setShowExample(!showExample) } color='secondary'/>
+                      <ExampleIcon onClick={ () => setUseExample(!useExample) } color='secondary'/>
                     </Grid>
                   </Toolbar>
                 )
               }
             </WikiBar>
             {
-              (loading || !decision) ?
+              (loading || !decision || !wiki) ?
                 <Backdrop open style={ { backgroundColor: theme.palette.primary.light } }>
                   <CircularProgress color='primary'/>
                 </Backdrop>
                 :
                 <Grid container justifyContent='center' style={ { padding: 24 } }>
-                  <Grid container item xs={ 12 } xl={ 10 } flexDirection='column'>
-                    <Grid container alignItems='center'>
-                      <Typography variant='h6'>
-                        { intl.formatMessage({ id: 'wiki.decision.description' }) }
-                      </Typography>
+                  <Grid container item xs={ 12 } xl={ 10 } rowSpacing={ 3 }>
+                    <Grid container item flexDirection='column'>
+                      <Grid container alignItems='center'>
+                        <Typography variant='h4'>
+                          { intl.formatMessage({ id: 'wiki.decision.description' }) }
+                        </Typography>
+                      </Grid>
+                      <LocalisedExample example={ decision.description } useExample={ useExample }/>
                     </Grid>
-                    <ExampleLocalised main={ decision.description } example={ decision.descriptionExample }
-                                      useExample={ showExample }/>
+                    <Grid container item flexDirection='column'>
+                      <Grid container alignItems='center'>
+                        <Typography variant='h4'>
+                          { intl.formatMessage({ id: 'wiki.decision.potential' }) }
+                        </Typography>
+                      </Grid>
+                      <ConditionsList condition={ decision.potential } wiki={ wiki } useExample={ useExample } />
+                    </Grid>
+                    <Grid container item flexDirection='column'>
+                      <Grid container alignItems='center'>
+                        <Typography variant='h4'>
+                          { intl.formatMessage({ id: 'wiki.decision.allow' }) }
+                        </Typography>
+                      </Grid>
+                      <ConditionsList condition={ decision.allow } wiki={ wiki } useExample={ useExample } />
+                    </Grid>
                   </Grid>
                 </Grid>
             }

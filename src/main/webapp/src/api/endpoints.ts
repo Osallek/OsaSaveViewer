@@ -12,6 +12,9 @@ const endpoints = {
   steam: {
     logout: '/steam/logout',
   },
+  wiki: {
+    versions: '/wiki',
+  },
 };
 
 export default endpoints;

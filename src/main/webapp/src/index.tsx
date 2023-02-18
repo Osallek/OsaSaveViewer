@@ -28,6 +28,7 @@ export const intl = createIntl({
   locale,
   messages,
   timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  onError: err => {}
 }, cache);
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);

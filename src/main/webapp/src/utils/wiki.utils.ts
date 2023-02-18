@@ -1,229 +1,37 @@
-import {
-  ColorNamedImageLocalised,
-  CountryPreviousSave,
-  Expense,
-  Income,
-  Losses,
-  NamedImageLocalised,
-  NamedLocalised,
-  PowerSpent,
-  Save,
-  SaveArea,
-  SaveBattle,
-  SaveCountry,
-  SaveCountryState,
-  SaveCulture,
-  SaveDependency,
-  SaveEmpire,
-  SaveIdeaGroup,
-  SaveLeader,
-  SaveMission,
-  SaveMonarch,
-  SaveProvince,
-  SaveProvinceHistory,
-  SaveReligion,
-  SaveSimpleProvince,
-  SaveTradeNode,
-  SaveWar
-} from 'types/api.types';
-import { CleanMapSave, CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
-import {
-  fakeTag,
-  getBuildingUrl,
-  getEstateUrl,
-  getFlagUrl,
-  getGoodUrl,
-  getIdeaGroupUrl,
-  getLeaderPersonalityUrl,
-  getMissionUrl,
-  getLName,
-  getPersonalityUrl,
-  getPrivilegeUrl,
-  getReligionUrl
-} from 'utils/data.utils';
-import { getYear, numberComparator, stringComparator, toMap } from 'utils/format.utils';
+import * as ENV from 'env/env';
+import { Country, Wiki } from 'types/api.types';
 
-export function convertSave(save: Save, history: boolean): MapSave {
-  const newSave: MapSave = {
-    ...save,
-    currentProvinces: toMap(save.provinces, p => p.id, p => getPHistoryInternal(p, save.date)),
-    currentCountries: toMap(save.countries, c => c.tag, c => getCHistoryInternal(c, save.date)),
-    countriesMap: toMap(save.countries, c => c.tag, c => c),
-    provincesMap: toMap(save.provinces, p => p.id, p => p),
-    ready: false
-  };
+export function getWikiDataUrl(version: string, path: string): string {
+  return `${ ENV.WIKI_BASE_URL }/${ version }/${ path }`;
+}
 
-  if (history) {
-    const historyWorkers: Array<Worker> = [new Worker('/eu4/script/province_history_worker.js'), new Worker(
-      '/eu4/script/province_history_worker.js'),
-      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js')];
-    let count = 0;
-    const start = new Date();
+export function getWikiImageUrl(path: string): string {
+  return `${ ENV.WIKI_BASE_URL }/images/${ path }`;
+}
 
-    for (const worker of historyWorkers) {
-      worker.onerror = (event) => {
-        count++;
-        console.error(event);
+export function getFlagUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`flags/${ key }.png`) : getFlagUrl('noFlag');
+}
 
-        if (count === newSave.provinces.length) {
-          console.log('Finished provinces history: ' + (new Date().getTime() - start.getTime()));
-          newSave.ready = true;
+export function getCountry(wiki: Wiki, tag: string): Country | null {
+  return wiki.countries[tag] ?? null;
+}
 
-          for (const worker of historyWorkers) {
-            worker.terminate();
-          }
+export function getCountrysFlag(country: Country): string {
+  return getFlagUrl(country.image);
+}
 
-          return newSave;
-        }
-      }
-      worker.onmessage = (message) => {
-        count++;
-        if (message && message.data) {
-          newSave.provinces[message.data.i].histories = message.data.histories;
+export function getCountryFlag(wiki: Wiki, tag: string): string | null {
+  const country = getCountry(wiki, tag);
 
-          if (count === newSave.provinces.length) {
-            console.log('Finished provinces history: ' + (new Date().getTime() - start.getTime()));
-            newSave.ready = true;
-
-            for (const worker of historyWorkers) {
-              worker.terminate();
-            }
-
-            return newSave;
-          }
-        }
-      };
-    }
-
-    for (let i = 0; i < newSave.provinces.length; i++) {
-      const province = newSave.provinces[i];
-
-      if (!province.histories) {
-        historyWorkers[i % historyWorkers.length].postMessage({ i, history: province.history ?? [] });
-      }
-    }
+  if (country) {
+    return getCountrysFlag(country);
   }
 
-  return newSave;
+  return null;
 }
 
-export function cleanSave(save: MapSave): CleanMapSave {
-  const newSave: CleanMapSave = JSON.parse(JSON.stringify(save));
-
-  delete newSave.id;
-  delete newSave.name;
-  delete newSave.provinceImage;
-  delete newSave.colorsImage;
-  delete newSave.teams;
-  delete newSave.advisors;
-  delete newSave.advisorTypes;
-  delete newSave.estates;
-  delete newSave.estatePrivileges;
-  delete newSave.ideaGroups;
-  delete newSave.personalities;
-  delete newSave.leaderPersonalities;
-  delete newSave.previousSaves;
-  delete newSave.wars;
-  delete newSave.currentProvinces;
-  delete newSave.currentCountries;
-  delete newSave.countries;
-
-  if (newSave.provinces) {
-    for (const province of newSave.provinces) {
-      delete province.history;
-      delete province.buildings;
-      delete province.colonySize;
-      delete province.city;
-      delete province.institutions;
-    }
-  }
-
-  return newSave;
-}
-
-export function getCountries(save: MapSave): Array<SaveCountry> {
-  return save.countries.filter(c => c.alive);
-}
-
-export function getPHistory(province: SaveProvince, save: MapSave, date?: string): ProvinceHistory {
-  return (date && save.date !== date) ? getPHistoryInternal(province, date) : save.currentProvinces.get(
-    province.id) ?? save.currentProvinces.values().next().value;
-}
-
-function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHistory {
-  let history: ProvinceHistory = { date };
-
-  if (province.histories) {
-    for (let i = 0; i < province.histories.length; i++) {
-      const h = province.histories[i];
-
-      if (h.date && h.date > date) {
-        if (i === 0) {
-          return h;
-        } else {
-          return province.histories[i - 1];
-        }
-      }
-    }
-
-    return province.histories.length > 0 ? province.histories[province.histories.length - 1] : history;
-  }
-
-  if (province.history) {
-    for (const h of province.history) {
-      if (!h.date || h.date <= date) {
-        let cores: Set<string> = (history && history.cores) ?? new Set();
-
-        if (h.addCores) {
-          h.addCores.forEach(e => cores.add(e));
-        }
-
-        if (h.removeCores) {
-          h.removeCores.forEach(e => cores.delete(e));
-        }
-
-        let claims: Set<string> = (history && history.claims) ?? new Set();
-
-        if (h.addClaims) {
-          h.addClaims.forEach(e => claims.add(e));
-        }
-
-        if (h.removeClaims) {
-          h.removeClaims.forEach(e => claims.delete(e));
-        }
-
-        let buildings: Set<string> = (history && history.buildings) ?? new Set();
-
-        if (h.buildings) {
-          Object.entries(h.buildings).forEach(([key, value]) => {
-            if (value) {
-              buildings.add(key);
-            } else {
-              buildings.delete(key)
-            }
-          })
-        }
-
-        history = {
-          ...(typeof history === 'object' ? history : {}),
-          ...h,
-          owner: fakeTag === h.owner ? undefined : (h.owner ?? history.owner),
-          cores,
-          claims,
-          buildings
-        };
-      } else {
-        break;
-      }
-    }
-  }
-
-  return history;
-}
-
+/*
 export function getProvince(save: MapSave, id: number): SaveProvince | null {
   return save.provincesMap.get(id) ?? null;
 }
@@ -301,7 +109,7 @@ export function getCountrysName(country: SaveCountry): string {
   if (country.customName) {
     return country.customName;
   } else {
-    return getLName(country) ?? country.tag;
+    return getName(country) ?? country.tag;
   }
 }
 
@@ -318,7 +126,7 @@ export function getCountryFlag(save: MapSave, tag: string | undefined): string {
 }
 
 export function getMissionsName(mission: SaveMission): string {
-  return getLName(mission) ?? mission.name;
+  return getName(mission) ?? mission.name;
 }
 
 export function getMissionsImage(mission: SaveMission): string {
@@ -338,7 +146,7 @@ export function getReligionName(save: MapSave, name: string | undefined): string
 }
 
 export function getReligionsName(religion: SaveReligion): string {
-  return getLName(religion) ?? religion.name;
+  return getName(religion) ?? religion.name;
 }
 
 export function getReligionsImage(religion: SaveReligion): string {
@@ -366,11 +174,11 @@ export function getCultureName(save: MapSave, name: string | undefined): string 
 }
 
 export function getCulturesName(culture: SaveCulture): string {
-  return getLName(culture) ?? culture.name;
+  return getName(culture) ?? culture.name;
 }
 
 export function getInstitName(save: MapSave, index: number): string {
-  return getLName(save.institutions[index]) ?? '';
+  return getName(save.institutions[index]) ?? '';
 }
 
 export function getBuilding(save: MapSave, name: string): NamedImageLocalised {
@@ -386,7 +194,7 @@ export function getBuildingName(save: MapSave, name: string | undefined): string
 }
 
 export function getBuildingsName(building: NamedImageLocalised): string {
-  return getLName(building) ?? building.name;
+  return getName(building) ?? building.name;
 }
 
 export function getBuildingsImage(building: NamedImageLocalised): string {
@@ -414,7 +222,7 @@ export function getGoodName(save: MapSave, name: string | undefined): string {
 }
 
 export function getGoodsName(good: ColorNamedImageLocalised): string {
-  return getLName(good) ?? good.name;
+  return getName(good) ?? good.name;
 }
 
 export function getGoodsImage(good: ColorNamedImageLocalised): string {
@@ -442,7 +250,7 @@ export function getTradeNodeName(save: MapSave, name: string | undefined): strin
 }
 
 export function getTradeNodesName(node: SaveTradeNode | undefined): string {
-  return node ? getLName(node) ?? node.name : '';
+  return node ? getName(node) ?? node.name : '';
 }
 
 export function getSubjectType(save: MapSave, name: string): NamedLocalised {
@@ -458,7 +266,7 @@ export function getSubjectTypeName(save: MapSave, name: string | undefined): str
 }
 
 export function getSubjectTypesName(subjectType: NamedLocalised): string {
-  return getLName(subjectType) ?? subjectType.name;
+  return getName(subjectType) ?? subjectType.name;
 }
 
 export function getEstate(save: MapSave, name: string): ColorNamedImageLocalised {
@@ -474,7 +282,7 @@ export function getEstateName(save: MapSave, name: string | undefined): string {
 }
 
 export function getEstatesName(estate: ColorNamedImageLocalised): string {
-  return getLName(estate) ?? estate.name;
+  return getName(estate) ?? estate.name;
 }
 
 export function getEstatesImage(estate: ColorNamedImageLocalised): string {
@@ -494,7 +302,7 @@ export function getPrivilege(save: MapSave, name: string): NamedImageLocalised {
 }
 
 export function getPrivilegesName(privilege: NamedImageLocalised, estate: ColorNamedImageLocalised): string {
-  let name = getLName(privilege);
+  let name = getName(privilege);
 
   if (!name) {
     return privilege.name;
@@ -519,7 +327,7 @@ export function getIdeaGroupName(save: MapSave, name: string): string {
 }
 
 export function getIdeaGroupsName(ideaGroup: SaveIdeaGroup): string {
-  return getLName(ideaGroup) ?? ideaGroup.name;
+  return getName(ideaGroup) ?? ideaGroup.name;
 }
 
 export function getIdeaGroupsImage(ideaGroup: SaveIdeaGroup): string {
@@ -527,7 +335,7 @@ export function getIdeaGroupsImage(ideaGroup: SaveIdeaGroup): string {
 }
 
 export function getIdeaName(idea: NamedImageLocalised): string {
-  return getLName(idea) ?? idea.name;
+  return getName(idea) ?? idea.name;
 }
 
 export function getPersonality(save: MapSave, name: string): NamedImageLocalised {
@@ -539,7 +347,7 @@ export function getPersonalityName(save: MapSave, name: string): string {
 }
 
 export function getPersonalitysName(personality: NamedImageLocalised): string {
-  return getLName(personality) ?? personality.name;
+  return getName(personality) ?? personality.name;
 }
 
 export function getPersonalitysImage(personality: NamedImageLocalised): string {
@@ -556,7 +364,7 @@ export function getLeaderPersonalityName(save: MapSave, name: string): string {
 }
 
 export function getLeaderPersonalitysName(leaderPersonality: NamedImageLocalised): string {
-  return getLName(leaderPersonality) ?? leaderPersonality.name;
+  return getName(leaderPersonality) ?? leaderPersonality.name;
 }
 
 export function getLeaderPersonalityImage(save: MapSave, name: string): string {
@@ -1062,3 +870,4 @@ export function getTradeNodeOutgoingValue(node: SaveTradeNode, save: MapSave): n
   return save.tradeNodes.map(
     n => n.incoming.map(i => i.from === node.name ? i.value : 0).reduce((s, n) => s + n, 0)).reduce((s, n) => s + n, 0);
 }
+*/

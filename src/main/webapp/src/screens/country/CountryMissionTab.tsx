@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { getName } from 'utils/data.utils';
+import { getLName } from 'utils/data.utils';
 import { getMissionsImage, getMissionsName } from 'utils/save.utils';
 
 const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
@@ -44,7 +44,7 @@ const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
       cursorPadding: { top: 3, bottom: 3, right: 10, left: 10 },
       minimizedItemSize: { width: 3, height: 3 },
       onItemRender: ({ context }: any) => (
-        <Tooltip title={ context.description ? getName(context.description) ?? '' : '' }
+        <Tooltip title={ context.description ? getLName(context.description) ?? '' : '' }
                  key={ `tooltip-${ context.name }` }>
           <Grid container alignItems='center' justifyContent='center' flexDirection='column'
                 style={ { minHeight: '100%' } }>
@@ -70,7 +70,7 @@ const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
       itemSize: { width: 175, height: 100 },
       minimizedItemSize: { width: 3, height: 3 },
       onItemRender: ({ context }: any) => (
-        <Tooltip title={ context.description ? getName(context.description) ?? '' : '' }
+        <Tooltip title={ context.description ? getLName(context.description) ?? '' : '' }
                  key={ `tooltip-${ context.name }` }>
           <Grid container alignItems='center' justifyContent='center' flexDirection='column'
                 style={ { minHeight: '100%' } }>

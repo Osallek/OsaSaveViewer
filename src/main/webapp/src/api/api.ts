@@ -1,8 +1,8 @@
 import { endpoints } from 'api/index';
 import axios, { AxiosPromise } from 'axios';
 import * as ENV from 'env/env';
-import { Decision, Save, ServerSave, UserInfo } from 'types/api.types';
-import { getDecisions } from 'utils/data.utils';
+import { Save, ServerSave, UserInfo, Wiki } from 'types/api.types';
+import { getWikiDataUrl } from 'utils/data.utils';
 
 const apiWs = axios.create({
   baseURL: ENV.API_BASE_URL,
@@ -37,7 +37,8 @@ const api = {
     logout: (): AxiosPromise<VoidFunction> => apiWs.post(endpoints.steam.logout),
   },
   wiki: {
-    decisions: (version: string): AxiosPromise<Record<string, Decision>> => wikiWs.get(getDecisions(version)),
+    versions: (): AxiosPromise<Record<string, string>> => apiWs.get(endpoints.wiki.versions),
+    data: (version: string, id: string): AxiosPromise<Wiki> => wikiWs.get(getWikiDataUrl(version, id)),
   },
 };
 

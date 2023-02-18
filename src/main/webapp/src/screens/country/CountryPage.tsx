@@ -23,7 +23,8 @@ import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { formatDate, stringComparator } from 'utils/format.utils';
-import { convertSave, fakeTag, getCountries, getCountry, getCountrysFlag, getCountrysName, getPlayer } from 'utils/save.utils';
+import { convertSave, getCountries, getCountry, getCountrysFlag, getCountrysName, getPlayer } from 'utils/save.utils';
+import { fakeTag } from 'utils/data.utils';
 
 function CountryPage() {
   const params = useParams();

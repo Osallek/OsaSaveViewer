@@ -1,7 +1,25 @@
 import { FilterList } from '@mui/icons-material';
 import {
-  Autocomplete, Avatar, Card, CardContent, ClickAwayListener, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  TableSortLabel, TextField, Tooltip, Typography, useTheme
+  Autocomplete,
+  Avatar,
+  Card,
+  CardContent,
+  ClickAwayListener,
+  Grid,
+  IconButton,
+  Paper,
+  Popper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TextField,
+  Tooltip,
+  Typography,
+  useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -11,10 +29,28 @@ import { ListChildComponentProps, VariableSizeList } from 'react-window';
 import { ProvinceTableType } from 'screens/save/SaveDialog';
 import { SaveProvince } from 'types/api.types';
 import { MapSave } from 'types/map.types';
+import { fakeTag } from 'utils/data.utils';
 import { cleanString, formatNumber, numberComparator, stringComparator } from 'utils/format.utils';
 import {
-  fakeTag, getBuilding, getBuildingName, getBuildingsImage, getBuildingsName, getCountries, getCountryFlag, getCountryName, getCountrysName, getCultureName,
-  getCulturesName, getGoodImage, getGoodName, getGoodsName, getPDev, getPHistory, getPRealDev, getReligionImage, getReligionName, getReligionsName
+  getBuilding,
+  getBuildingName,
+  getBuildingsImage,
+  getBuildingsName,
+  getCountries,
+  getCountryFlag,
+  getCountryName,
+  getCountrysName,
+  getCultureName,
+  getCulturesName,
+  getGoodImage,
+  getGoodName,
+  getGoodsName,
+  getPDev,
+  getPHistory,
+  getPRealDev,
+  getReligionImage,
+  getReligionName,
+  getReligionsName
 } from 'utils/save.utils';
 
 interface Column {
@@ -60,9 +96,11 @@ function getDevColumns(save: MapSave): Column[] {
       id: 'dipdev',
       label: intl.formatMessage({ id: 'province.baseProduction' }),
       minWidth: 100,
-      value: province => <Typography variant='body1' align='center'>{ formatNumber(province.baseProduction ?? 0) }</Typography>,
+      value: province => <Typography variant='body1' align='center'>{ formatNumber(
+        province.baseProduction ?? 0) }</Typography>,
       comparatorValue: province => province.baseProduction ?? 0,
-      filterValues: Array.from(new Set<number>(save.provinces.map(p => (p.baseProduction ?? 0) | 0).sort(numberComparator))),
+      filterValues: Array.from(
+        new Set<number>(save.provinces.map(p => (p.baseProduction ?? 0) | 0).sort(numberComparator))),
       filter: (province, filter) => filter.includes((province.baseProduction ?? 0) | 0),
     },
     {
@@ -82,7 +120,8 @@ function getDevColumns(save: MapSave): Column[] {
         { formatNumber(getPDev(province)) }
       </Typography>,
       comparatorValue: province => getPDev(province),
-      filterValues: Array.from(new Set<number>(save.provinces.map(province => getPDev(province) | 0).sort(numberComparator))),
+      filterValues: Array.from(
+        new Set<number>(save.provinces.map(province => getPDev(province) | 0).sort(numberComparator))),
       filter: (province, filter) => filter.includes(getPDev(province) | 0),
     },
     {
@@ -93,7 +132,8 @@ function getDevColumns(save: MapSave): Column[] {
         { formatNumber(getPRealDev(province)) }
       </Typography>,
       comparatorValue: province => getPRealDev(province),
-      filterValues: Array.from(new Set<number>(save.provinces.map(province => getPRealDev(province) | 0).sort(numberComparator))),
+      filterValues: Array.from(
+        new Set<number>(save.provinces.map(province => getPRealDev(province) | 0).sort(numberComparator))),
       filter: (province, filter) => filter.includes(getPRealDev(province) | 0),
     },
     {
@@ -103,11 +143,13 @@ function getDevColumns(save: MapSave): Column[] {
       value: province => <Typography variant='body1' align='center'>
         { province.improvements ? Object.values(province.improvements).reduce((s, a) => s + a, 0) : 0 }
       </Typography>,
-      comparatorValue: province => province.improvements ? Object.values(province.improvements).reduce((s, a) => s + a, 0) : 0,
+      comparatorValue: province => province.improvements ? Object.values(province.improvements).reduce((s, a) => s + a,
+        0) : 0,
       filterValues: Array.from(new Set<number>(save.provinces
         .map(p => (p.improvements ? Object.values(p.improvements).reduce((s, a) => s + a, 0) : 0))
         .sort(numberComparator))),
-      filter: (province, filter) => filter.includes(province.improvements ? Object.values(province.improvements).reduce((s, a) => s + a, 0) : 0),
+      filter: (province, filter) => filter.includes(
+        province.improvements ? Object.values(province.improvements).reduce((s, a) => s + a, 0) : 0),
     }
   ];
 }
@@ -143,7 +185,12 @@ function getInfoColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): 
           return (
             <Grid container alignItems='center' flexWrap='nowrap'>
               <Avatar src={ getCountryFlag(save, h.owner) } variant='square' component={ Paper }/>
-              <Typography variant='body1' component='span' style={ { marginLeft: 8, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' } }>
+              <Typography variant='body1' component='span' style={ {
+                marginLeft: 8,
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden'
+              } }>
                 { getCountryName(save, h.owner) }
               </Typography>
             </Grid>
@@ -154,7 +201,9 @@ function getInfoColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): 
       },
       comparatorValue: province => getCountryName(save, getPHistory(province, save).owner),
       filterValues: Array.from(
-        new Set<string>(getCountries(save).filter(c => c.alive).filter(c => c.tag !== fakeTag).map(c => getCountrysName(c)).sort(stringComparator))),
+        new Set<string>(
+          getCountries(save).filter(c => c.alive).filter(c => c.tag !== fakeTag).map(c => getCountrysName(c)).sort(
+            stringComparator))),
       filter: (province, filter) => filter.includes(getCountryName(save, getPHistory(province, save).owner)),
     },
     {
@@ -236,14 +285,16 @@ function getInfoColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): 
               .sort((a, b) => stringComparator(getBuildingsName(a), getBuildingsName(b)))
               .map(value => (
                 <Tooltip title={ getBuildingsName(value) } key={ `tooltip-building-${ value.name }` }>
-                  <Avatar src={ getBuildingsImage(value) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
+                  <Avatar src={ getBuildingsImage(value) } variant='square'
+                          style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
                 </Tooltip>
               ))
           }
         </Grid>
       ),
       comparatorValue: province => province.buildings ? province.buildings.length : 0,
-      filterValues: Array.from(new Set<string>(save.buildings.filter(b => b.localisations).map(b => getBuildingsName(b)).sort(stringComparator))),
+      filterValues: Array.from(new Set<string>(
+        save.buildings.filter(b => b.localisations).map(b => getBuildingsName(b)).sort(stringComparator))),
       filter: (province, filter) => {
         if (filter === undefined || filter.length === 0) {
           return true;
@@ -253,7 +304,9 @@ function getInfoColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): 
           return false;
         }
 
-        return filter.find(value => typeof value === 'string' && province.buildings?.map(b => getBuildingName(save, b)).includes(value)) !== undefined;
+        return filter.find(
+          value => typeof value === 'string' && province.buildings?.map(b => getBuildingName(save, b)).includes(
+            value)) !== undefined;
       },
     },
   ];
@@ -445,7 +498,8 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
                       disablePortal
                       options={ filterPopoverColumn.filterValues }
                       getOptionLabel={ option => option.toString() }
-                      groupBy={ (option) => typeof option === 'string' ? cleanString(option.slice(0, 1)).toUpperCase() : '' }
+                      groupBy={ (option) => typeof option === 'string' ? cleanString(
+                        option.slice(0, 1)).toUpperCase() : '' }
                       renderInput={ (params) =>
                         <TextField { ...params }
                                    label={ filterPopoverColumn.label }
@@ -510,7 +564,8 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
                           }
                         } }
                       >
-                        <Typography variant='button' style={ { fontWeight: 'bold', color: theme.palette.primary.contrastText } }>
+                        <Typography variant='button'
+                                    style={ { fontWeight: 'bold', color: theme.palette.primary.contrastText } }>
                           { column.label }
                         </Typography>
                       </TableSortLabel>

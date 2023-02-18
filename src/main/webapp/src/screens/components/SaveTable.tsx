@@ -18,7 +18,7 @@ import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import theme from 'theme';
 import { ServerSave } from 'types/api.types';
-import { getFlagUrl, getName } from 'utils/data.utils';
+import { getFlagUrl, getLName } from 'utils/data.utils';
 import { formatDate, formatDateTime, formatNumber } from 'utils/format.utils';
 
 export interface SaveTableProps {
@@ -95,9 +95,9 @@ function SaveTable({ saves, currentUser, handleDelete, owner, actionTable }: Sav
                     </TableCell>
                     <TableCell>
                       <Grid container alignItems='center' flexWrap='nowrap' overflow='hidden'>
-                        <Avatar src={ getFlagUrl(save.flag) } variant='square' alt={ getName(save.countryName) }/>
+                        <Avatar src={ getFlagUrl(save.flag) } variant='square' alt={ getLName(save.countryName) }/>
                         <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
-                          { getName(save.countryName) }
+                          { getLName(save.countryName) }
                         </Typography>
                       </Grid>
                     </TableCell>

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.SortedSet;
+import java.util.SortedMap;
 
 @RestController
 @RequestMapping("/api/wiki")
@@ -20,7 +20,7 @@ public class WikiController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SortedSet<String>> get() {
+    public ResponseEntity<SortedMap<String, String>> get() {
         return ResponseEntity.ok(this.wikiService.getVersions());
     }
 }

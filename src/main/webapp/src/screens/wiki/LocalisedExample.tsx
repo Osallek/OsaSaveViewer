@@ -1,22 +1,21 @@
 import { Typography } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
-import { Localised } from 'types/api.types';
+import { ExampleLocalised } from 'types/api.types';
 import { getName } from 'utils/data.utils';
 
 interface ExampleLocalisedProps extends TypographyProps {
-  main: Localised;
-  example?: Localised;
+  example: ExampleLocalised;
   suffix?: string;
   useExample: boolean;
 }
 
-function ExampleLocalised({ main, example, suffix, useExample, ...others }: ExampleLocalisedProps) {
+function LocalisedExample({ example, suffix, useExample, ...others }: ExampleLocalisedProps) {
   return (
     <Typography variant='body1' { ...others }>
-      { `${ getName((useExample && example) ? example : main) }${ suffix ?? '' }` }
+      { `${ getName(useExample ? example.localisationsExample : example.localisations) }${ suffix ?? '' }` }
     </Typography>
   )
 }
 
-export default ExampleLocalised;
+export default LocalisedExample;
