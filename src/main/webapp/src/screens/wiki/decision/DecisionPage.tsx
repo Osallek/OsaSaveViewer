@@ -1,5 +1,16 @@
-import { Home, PriorityHigh } from '@mui/icons-material';
-import { Backdrop, CircularProgress, Grid, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
+import { ExpandMore, Home, PriorityHigh } from '@mui/icons-material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Backdrop,
+  CircularProgress,
+  Grid,
+  IconButton,
+  Toolbar,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import { api } from 'api';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -23,6 +34,8 @@ function DecisionPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [useExample, setUseExample] = useState<boolean>(false);
+  const [expandedPotential, setExpandedPotential] = useState<boolean>(true);
+  const [expandedAllow, setExpandedAllow] = useState<boolean>(true);
 
   const { id, version } = params;
 
@@ -77,25 +90,27 @@ function DecisionPage() {
           <>
             <WikiBar version={ version } type={ 'decisions' } objects={ decisions }>
               {
-                decision &&
-                (
-                  <Toolbar style={ { justifyContent: 'center', backgroundColor: theme.palette.primary.dark } }>
-                    <Grid container item alignItems='center' xs={ 12 } xl={ 10 }>
-                      <LocalisedExample example={ decision }
-                                        useExample={ useExample } suffix={ ` (${ decision.id })` }
-                                        variant='h6' color={ theme.palette.primary.contrastText }/>
-                      {
-                        decision.major &&
-                        <Tooltip title={ intl.formatMessage({ id: 'wiki.decision.isMajor' }) }>
-                          <IconButton color='success' style={ { marginLeft: 8 } }>
-                            <PriorityHigh style={ { width: 24, height: 24 } }/>
-                          </IconButton>
-                        </Tooltip>
-                      }
-                      <ExampleIcon onClick={ () => setUseExample(!useExample) } color='secondary'/>
-                    </Grid>
-                  </Toolbar>
-                )
+                decision ?
+                  (
+                    <Toolbar style={ { justifyContent: 'center', backgroundColor: theme.palette.primary.dark } }>
+                      <Grid container item alignItems='center' xs={ 12 } xl={ 10 }>
+                        <LocalisedExample example={ decision }
+                                          useExample={ useExample } suffix={ ` (${ decision.id })` }
+                                          variant='h6' color={ theme.palette.primary.contrastText }/>
+                        {
+                          decision.major &&
+                          <Tooltip title={ intl.formatMessage({ id: 'wiki.decision.isMajor' }) }>
+                            <IconButton color='success' style={ { marginLeft: 8 } }>
+                              <PriorityHigh style={ { width: 24, height: 24 } }/>
+                            </IconButton>
+                          </Tooltip>
+                        }
+                        <ExampleIcon onClick={ () => setUseExample(!useExample) } color='secondary'/>
+                      </Grid>
+                    </Toolbar>
+                  )
+                  :
+                  <></>
               }
             </WikiBar>
             {
@@ -104,7 +119,7 @@ function DecisionPage() {
                   <CircularProgress color='primary'/>
                 </Backdrop>
                 :
-                <Grid container justifyContent='center' style={ { padding: 24 } }>
+                <Grid container justifyContent='center' sx={ { p: 3 } }>
                   <Grid container item xs={ 12 } xl={ 10 } rowSpacing={ 3 }>
                     <Grid container item flexDirection='column'>
                       <Grid container alignItems='center'>
@@ -114,21 +129,37 @@ function DecisionPage() {
                       </Grid>
                       <LocalisedExample example={ decision.description } useExample={ useExample }/>
                     </Grid>
-                    <Grid container item flexDirection='column'>
-                      <Grid container alignItems='center'>
-                        <Typography variant='h4'>
-                          { intl.formatMessage({ id: 'wiki.decision.potential' }) }
-                        </Typography>
-                      </Grid>
-                      <ConditionsList condition={ decision.potential } wiki={ wiki } useExample={ useExample } />
+                    <Grid container item flexDirection='column' xs={ 12 } lg={ 6 }>
+                      <Accordion expanded={ expandedPotential }
+                                 onChange={ () => setExpandedPotential(!expandedPotential) }
+                                 disableGutters elevation={ 0 } sx={ { width: 'fit-content' } }>
+                        <AccordionSummary expandIcon={ <ExpandMore color='primary'/> } sx={ { pl: 0, pr: 0 } }>
+                          <Grid container alignItems='center'>
+                            <Typography variant='h4'>
+                              { intl.formatMessage({ id: 'wiki.decision.potential' }) }
+                            </Typography>
+                          </Grid>
+                        </AccordionSummary>
+                        <AccordionDetails sx={ { p: 0 } }>
+                          <ConditionsList condition={ decision.potential } wiki={ wiki } useExample={ useExample }/>
+                        </AccordionDetails>
+                      </Accordion>
                     </Grid>
-                    <Grid container item flexDirection='column'>
-                      <Grid container alignItems='center'>
-                        <Typography variant='h4'>
-                          { intl.formatMessage({ id: 'wiki.decision.allow' }) }
-                        </Typography>
-                      </Grid>
-                      <ConditionsList condition={ decision.allow } wiki={ wiki } useExample={ useExample } />
+                    <Grid container item flexDirection='column' xs={ 12 } lg={ 6 }>
+                      <Accordion expanded={ expandedAllow }
+                                 onChange={ () => setExpandedAllow(!expandedAllow) }
+                                 disableGutters elevation={ 0 } sx={ { width: 'fit-content' } }>
+                        <AccordionSummary expandIcon={ <ExpandMore color='primary'/> } sx={ { pl: 0, pr: 0 } }>
+                          <Grid container alignItems='center'>
+                            <Typography variant='h4'>
+                              { intl.formatMessage({ id: 'wiki.decision.allow' }) }
+                            </Typography>
+                          </Grid>
+                        </AccordionSummary>
+                        <AccordionDetails sx={ { p: 0 } }>
+                          <ConditionsList condition={ decision.allow } wiki={ wiki } useExample={ useExample }/>
+                        </AccordionDetails>
+                      </Accordion>
                     </Grid>
                   </Grid>
                 </Grid>

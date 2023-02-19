@@ -1,4 +1,5 @@
-import { Box, List, ListItem, ListItemText, Paper, useTheme } from '@mui/material';
+import { Circle } from '@mui/icons-material';
+import { Box, List, ListItem, ListItemIcon, ListItemText, Paper, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
 import { Condition, Wiki } from 'types/api.types';
@@ -34,19 +35,12 @@ function ConditionsList({ wiki, condition, useExample, level = 0, ...others }: C
               return values.map((value, i) => {
                 return (
                   <ListItem key={ `${ key }-${ value }-${ i }` } sx={ { pl: 0, pr: 0 } }>
-                    <ListItemText primary={ <ConditionLocalised condition={ key } value={ value } wiki={ wiki }/> }/>
-                  </ListItem>
-                )
-                /*
-                                return (
-                  <ListItem key={ `${ key }-${ value }-${ i }` } sx={ { pl: 2 * (level + 1), pr: 2 } }>
                     <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
-                      <Circle sx={ { fontSize: 8, color: theme.palette.primary.dark } }/>
+                      <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
                     </ListItemIcon>
                     <ListItemText primary={ <ConditionLocalised condition={ key } value={ value } wiki={ wiki }/> }/>
                   </ListItem>
                 )
-                 */
               })
             })
           }
