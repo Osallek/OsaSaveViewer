@@ -6,6 +6,7 @@ const wikiCondition = {
   'wiki.condition.not': 'Aucune des conditions suivantes',
   'wiki.condition.or': 'N\'importe quelle condition suivante est validée',
   'wiki.condition.tag': 'Est',
+  'wiki.condition.tag.not': 'N\'est pas',
   'wiki.condition.has_dlc': 'Utilise le DLC',
   'wiki.condition.has_country_modifier': 'Possède le modificateur',
   'wiki.condition.is_playing_custom_nation': 'Joue un pays personnalisé',

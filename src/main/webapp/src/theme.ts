@@ -7,7 +7,8 @@ let theme = createTheme({
       light: '#62727F',
       main: blueGrey[800],
       dark: '#102027',
-      contrastText: '#FFFFFF'
+      contrastText: '#FFFFFF',
+      50: '#CAF7E2',
     },
     secondary: {
       main: '#FFFFFF',

@@ -10,10 +10,11 @@ interface ConditionsListProps extends TypographyProps {
   wiki: Wiki;
   condition: Condition;
   useExample: boolean;
+  wikiVersion: string;
   level?: number;
 }
 
-function ConditionsList({ wiki, condition, useExample, level = 0, ...others }: ConditionsListProps) {
+function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion }: ConditionsListProps) {
   const theme = useTheme();
 
   return (
@@ -38,7 +39,8 @@ function ConditionsList({ wiki, condition, useExample, level = 0, ...others }: C
                     <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
                       <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
                     </ListItemIcon>
-                    <ListItemText primary={ <ConditionLocalised condition={ key } value={ value } wiki={ wiki }/> }/>
+                    <ListItemText primary={ <ConditionLocalised condition={ key } value={ value } wiki={ wiki }
+                                                                wikiVersion={ wikiVersion }/> }/>
                   </ListItem>
                 )
               })
@@ -51,13 +53,14 @@ function ConditionsList({ wiki, condition, useExample, level = 0, ...others }: C
                 return (
                   <Box key={ `${ key }-conditions-box-${ i }` } sx={ { pt: 1 } }>
                     <>
-                      <ConditionLocalised condition={ key } wiki={ wiki } sx={ {
+                      <ConditionLocalised condition={ key } wiki={ wiki } wikiVersion={ wikiVersion } sx={ {
                         pl: 0,
                         color: theme.palette.primary.contrastText,
                         fontWeight: 'bold'
                       } }/>
                       <ConditionsList condition={ condition } level={ level + 1 } wiki={ wiki }
-                                      useExample={ useExample } key={ `${ key }-condition-list-${ i }` }/>
+                                      wikiVersion={ wikiVersion } useExample={ useExample }
+                                      key={ `${ key }-condition-list-${ i }` }/>
                     </>
                   </Box>
                 )
@@ -69,7 +72,8 @@ function ConditionsList({ wiki, condition, useExample, level = 0, ...others }: C
             Object.entries(condition.clauses).map(([key, clauses]) => {
               return clauses.map((clause, i) => {
                 return <ConditionsClause name={ key } clause={ clause } level={ level } i={ i } wiki={ wiki }
-                                         useExample={ useExample } key={ `${ key }-clause-${ i }` }/>
+                                         useExample={ useExample } wikiVersion={ wikiVersion }
+                                         key={ `${ key }-clause-${ i }` }/>
               })
             })
           }

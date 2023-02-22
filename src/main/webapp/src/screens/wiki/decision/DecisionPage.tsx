@@ -1,16 +1,5 @@
-import { ExpandMore, Home, PriorityHigh } from '@mui/icons-material';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Backdrop,
-  CircularProgress,
-  Grid,
-  IconButton,
-  Toolbar,
-  Tooltip,
-  Typography
-} from '@mui/material';
+import { Home, PriorityHigh } from '@mui/icons-material';
+import { Backdrop, CircularProgress, Grid, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
 import { api } from 'api';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -23,6 +12,7 @@ import theme from 'theme';
 import { Decision, Wiki } from 'types/api.types';
 import { getLName } from 'utils/data.utils';
 import { stringLocalisedComparator } from 'utils/format.utils';
+import WikiAccordion from '../WikiAccordion';
 
 function DecisionPage() {
   const params = useParams();
@@ -114,7 +104,7 @@ function DecisionPage() {
               }
             </WikiBar>
             {
-              (loading || !decision || !wiki) ?
+              (loading || !decision || !wiki || !version) ?
                 <Backdrop open style={ { backgroundColor: theme.palette.primary.light } }>
                   <CircularProgress color='primary'/>
                 </Backdrop>
@@ -130,36 +120,36 @@ function DecisionPage() {
                       <LocalisedExample example={ decision.description } useExample={ useExample }/>
                     </Grid>
                     <Grid container item flexDirection='column' xs={ 12 } lg={ 6 }>
-                      <Accordion expanded={ expandedPotential }
-                                 onChange={ () => setExpandedPotential(!expandedPotential) }
-                                 disableGutters elevation={ 0 } sx={ { width: 'fit-content' } }>
-                        <AccordionSummary expandIcon={ <ExpandMore color='primary'/> } sx={ { pl: 0, pr: 0 } }>
-                          <Grid container alignItems='center'>
-                            <Typography variant='h4'>
-                              { intl.formatMessage({ id: 'wiki.decision.potential' }) }
-                            </Typography>
-                          </Grid>
-                        </AccordionSummary>
-                        <AccordionDetails sx={ { p: 0 } }>
-                          <ConditionsList condition={ decision.potential } wiki={ wiki } useExample={ useExample }/>
-                        </AccordionDetails>
-                      </Accordion>
+                      <WikiAccordion expanded={ expandedPotential }
+                                     onChange={ () => setExpandedPotential(!expandedPotential) }
+                                     summary={
+                                       <Grid container alignItems='center'>
+                                         <Typography variant='h4'>
+                                           { intl.formatMessage({ id: 'wiki.decision.potential' }) }
+                                         </Typography>
+                                       </Grid>
+                                     }
+                                     details={
+                                       <ConditionsList condition={ decision.potential } wiki={ wiki }
+                                                       useExample={ useExample } wikiVersion={ version }/>
+                                     }
+                      />
                     </Grid>
                     <Grid container item flexDirection='column' xs={ 12 } lg={ 6 }>
-                      <Accordion expanded={ expandedAllow }
-                                 onChange={ () => setExpandedAllow(!expandedAllow) }
-                                 disableGutters elevation={ 0 } sx={ { width: 'fit-content' } }>
-                        <AccordionSummary expandIcon={ <ExpandMore color='primary'/> } sx={ { pl: 0, pr: 0 } }>
-                          <Grid container alignItems='center'>
-                            <Typography variant='h4'>
-                              { intl.formatMessage({ id: 'wiki.decision.allow' }) }
-                            </Typography>
-                          </Grid>
-                        </AccordionSummary>
-                        <AccordionDetails sx={ { p: 0 } }>
-                          <ConditionsList condition={ decision.allow } wiki={ wiki } useExample={ useExample }/>
-                        </AccordionDetails>
-                      </Accordion>
+                      <WikiAccordion expanded={ expandedAllow }
+                                     onChange={ () => setExpandedAllow(!expandedAllow) }
+                                     summary={
+                                       <Grid container alignItems='center'>
+                                         <Typography variant='h4'>
+                                           { intl.formatMessage({ id: 'wiki.decision.allow' }) }
+                                         </Typography>
+                                       </Grid>
+                                     }
+                                     details={
+                                       <ConditionsList condition={ decision.allow } wiki={ wiki }
+                                                       useExample={ useExample } wikiVersion={ version }/>
+                                     }
+                      />
                     </Grid>
                   </Grid>
                 </Grid>

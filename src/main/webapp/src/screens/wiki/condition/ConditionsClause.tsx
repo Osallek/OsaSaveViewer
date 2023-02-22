@@ -13,9 +13,10 @@ interface ConditionClauseProps extends TypographyProps {
   level: number;
   i: number;
   useExample: boolean;
+  wikiVersion: string;
 }
 
-function ConditionClause({ wiki, name, clause, level, i, useExample, ...others }: ConditionClauseProps) {
+function ConditionClause({ wiki, name, clause, level, i, useExample, wikiVersion }: ConditionClauseProps) {
   const theme = useTheme();
 
   switch (name) {
@@ -30,13 +31,13 @@ function ConditionClause({ wiki, name, clause, level, i, useExample, ...others }
       return (
         <Box key={ `${ name }-clause-box-${ i }` } sx={ { pt: 1 } }>
           <>
-            <ConditionLocalised condition={ name } wiki={ wiki } sx={ {
+            <ConditionLocalised condition={ name } wiki={ wiki } wikiVersion={ wikiVersion } sx={ {
               pl: 2,
               pr: 2,
               color: theme.palette.primary.contrastText,
               fontWeight: 'bold'
             } }/>
-            <ConditionsList condition={ clause } level={ level + 1 } wiki={ wiki }
+            <ConditionsList condition={ clause } level={ level + 1 } wiki={ wiki } wikiVersion={ wikiVersion }
                             useExample={ useExample } key={ `${ name }-condition-list-${ i }` }/>
           </>
         </Box>
