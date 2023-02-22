@@ -1,10 +1,15 @@
-import { Circle } from '@mui/icons-material';
-import { Box, List, ListItem, ListItemIcon, ListItemText, Paper, useTheme } from '@mui/material';
+import { Box, List, Paper, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
 import { Condition, Wiki } from 'types/api.types';
 import ConditionLocalised from './ConditionLocalised';
 import ConditionsClause from './ConditionsClause';
+import ConditionsItems from './ConditionsItems';
+
+const negateCondition = (key: string, condition: Condition): boolean => {
+  return 'not' === key && (condition.scopes === undefined || Object.keys(condition.scopes).length === 0)
+    && (condition.clauses === undefined || Object.keys(condition.clauses).length === 0);
+}
 
 interface ConditionsListProps extends TypographyProps {
   wiki: Wiki;
@@ -12,9 +17,10 @@ interface ConditionsListProps extends TypographyProps {
   useExample: boolean;
   wikiVersion: string;
   level?: number;
+  negate?: boolean;
 }
 
-function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion }: ConditionsListProps) {
+function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, negate = false }: ConditionsListProps) {
   const theme = useTheme();
 
   return (
@@ -30,39 +36,31 @@ function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion }:
            } }>
       <List key='condition-list' sx={ { pb: 0, pt: 0 } }>
         <>
-          {
-            condition.conditions &&
-            Object.entries(condition.conditions).map(([key, values]) => {
-              return values.map((value, i) => {
-                return (
-                  <ListItem key={ `${ key }-${ value }-${ i }` } sx={ { pl: 0, pr: 0 } }>
-                    <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
-                      <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
-                    </ListItemIcon>
-                    <ListItemText primary={ <ConditionLocalised condition={ key } value={ value } wiki={ wiki }
-                                                                wikiVersion={ wikiVersion }/> }/>
-                  </ListItem>
-                )
-              })
-            })
-          }
+          <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ negate }/>
           {
             condition.scopes &&
             Object.entries(condition.scopes).map(([key, conditions]) => {
               return conditions.map((condition, i) => {
                 return (
-                  <Box key={ `${ key }-conditions-box-${ i }` } sx={ { pt: 1 } }>
-                    <>
-                      <ConditionLocalised condition={ key } wiki={ wiki } wikiVersion={ wikiVersion } sx={ {
-                        pl: 0,
-                        color: theme.palette.primary.contrastText,
-                        fontWeight: 'bold'
-                      } }/>
-                      <ConditionsList condition={ condition } level={ level + 1 } wiki={ wiki }
-                                      wikiVersion={ wikiVersion } useExample={ useExample }
-                                      key={ `${ key }-condition-list-${ i }` }/>
-                    </>
-                  </Box>
+                  negateCondition(key, condition) ? (
+                      <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ true }/>
+                    )
+                    :
+                    (
+                      <Box key={ `${ key }-conditions-box-${ i }` } sx={ { pt: 1 } }>
+                        <>
+                          <ConditionLocalised condition={ key } wiki={ wiki } wikiVersion={ wikiVersion } sx={ {
+                            pl: 0,
+                            color: theme.palette.primary.contrastText,
+                            fontWeight: 'bold'
+                          } }/>
+                          <ConditionsList condition={ condition } level={ level + 1 } wiki={ wiki }
+                                          wikiVersion={ wikiVersion } useExample={ useExample }
+                                          negate={ false }
+                                          key={ `${ key }-condition-list-${ i }` }/>
+                        </>
+                      </Box>
+                    )
                 )
               })
             })
