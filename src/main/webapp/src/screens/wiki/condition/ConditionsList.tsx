@@ -23,6 +23,10 @@ interface ConditionsListProps extends TypographyProps {
 function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, negate = false }: ConditionsListProps) {
   const theme = useTheme();
 
+  if (level == 0) {
+    console.log(condition);
+  }
+
   return (
     <Paper elevation={ level === 0 ? 1 : 0 }
            sx={ {
@@ -43,7 +47,8 @@ function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, n
               return conditions.map((condition, i) => {
                 return (
                   negateCondition(key, condition) ? (
-                      <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ true }/>
+                      <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ true }
+                                       key={ `${ key }-condition-items-${ i }` }/>
                     )
                     :
                     (
@@ -71,7 +76,7 @@ function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, n
               return clauses.map((clause, i) => {
                 return <ConditionsClause name={ key } clause={ clause } level={ level } i={ i } wiki={ wiki }
                                          useExample={ useExample } wikiVersion={ wikiVersion }
-                                         key={ `${ key }-clause-${ i }` }/>
+                                         key={ `${ key }-clause-${ i }` } />
               })
             })
           }

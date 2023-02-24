@@ -8,10 +8,11 @@ import tradeNode from 'i18n/messages/fr/trade_node.i18n';
 import user from 'i18n/messages/fr/user.i18n';
 import war from 'i18n/messages/fr/war.i18n';
 import wikiAdvisor from 'i18n/messages/fr/wiki/advisor.i18n';
+import wikiCondition from 'i18n/messages/fr/wiki/condition.i18n';
 import wikiCountry from 'i18n/messages/fr/wiki/country.i18n';
 import wikiDecision from 'i18n/messages/fr/wiki/decision.i18n';
 import { Localization } from 'types/api.types';
-import wikiCondition from 'i18n/messages/fr/wiki/condition.i18n';
+import wikiModifier from './wiki/modifier.i18n';
 
 const fr = {
   locale: 'fr',
@@ -30,6 +31,7 @@ const fr = {
     ...wikiAdvisor,
     ...wikiCommon,
     ...wikiCondition,
+    ...wikiModifier,
   },
 }
 

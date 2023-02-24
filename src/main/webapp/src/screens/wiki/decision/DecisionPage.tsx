@@ -44,8 +44,6 @@ function DecisionPage() {
               setDecision(decision);
               setDecisions(Object.values(data.decisions).sort(stringLocalisedComparator));
               document.title = intl.formatMessage({ id: 'wiki.decision' }) + ' - ' + getLName(decision) ?? id;
-
-              console.log(decision)
             }
           }
         } else {
@@ -78,7 +76,7 @@ function DecisionPage() {
           </Grid>
           :
           <>
-            <WikiBar version={ version } type={ 'decisions' } objects={ decisions }>
+            <WikiBar version={ version } type={ 'decisions' } objects={ decisions } value={ decision }>
               {
                 decision ?
                   (

@@ -6,6 +6,8 @@ import { cleanString } from 'utils/format.utils';
 
 interface MenuMenuProps {
   title: string;
+  value?: IdLocalised | null;
+  imagedValue?: IdImageLocalised | null;
   objects?: Array<IdLocalised>;
   imagedObjects?: Array<IdImageLocalised>;
   onChange: (value: IdLocalised | IdImageLocalised | null) => void;
@@ -15,7 +17,7 @@ const MenuMenuPopper = function (props: PopperProps) {
   return <Popper { ...props } style={ { maxWidth: 'fit-content' } } placement="bottom-start"/>;
 };
 
-function MenuMenu({ title, objects, imagedObjects, onChange }: MenuMenuProps) {
+function MenuMenu({ title, value, imagedValue, objects, imagedObjects, onChange }: MenuMenuProps) {
   const theme = useTheme();
 
   return (
@@ -25,6 +27,7 @@ function MenuMenu({ title, objects, imagedObjects, onChange }: MenuMenuProps) {
           <Autocomplete
             fullWidth
             disablePortal
+            value={ value }
             PopperComponent={ MenuMenuPopper }
             options={ objects }
             getOptionLabel={ option => `${ getLName(option) } (${ option.id })` }
@@ -58,6 +61,7 @@ function MenuMenu({ title, objects, imagedObjects, onChange }: MenuMenuProps) {
             <Autocomplete
               fullWidth
               disablePortal
+              value={ imagedValue }
               options={ imagedObjects }
               getOptionLabel={ option => `${ getLName(option) } (${ option.id })` }
               isOptionEqualToValue={ (option, value) => option.id === value.id }

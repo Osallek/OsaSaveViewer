@@ -750,6 +750,9 @@ export type Wiki = {
   idExampleLocalised: Record<string, IdExampleLocalised>;
   idLocalised: Record<string, IdLocalised>;
   modifiers: Record<string, Modifier>;
+  ages: Record<string, Localised>;
+  ideaGroups: Record<string, Localised>;
+  religions: Record<string, Localised>;
 }
 
 export type Condition = {

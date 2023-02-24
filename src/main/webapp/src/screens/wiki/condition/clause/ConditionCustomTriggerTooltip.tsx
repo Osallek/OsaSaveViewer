@@ -1,22 +1,17 @@
 import { useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
+import LocalisedExample from 'screens/wiki/LocalisedExample';
 import { Condition, Wiki } from 'types/api.types';
-import LocalisedExample from '../LocalisedExample';
 
 interface ConditionCustomTriggerTooltipProps extends TypographyProps {
   wiki: Wiki;
   condition: Condition;
   useExample: boolean;
-  value?: string;
 }
 
 function ConditionCustomTriggerTooltip({
-                                         wiki,
-                                         condition,
-                                         useExample,
-                                         value,
-                                         ...others
+                                         wiki, condition, useExample, ...others
                                        }: ConditionCustomTriggerTooltipProps): JSX.Element {
   const theme = useTheme();
 
