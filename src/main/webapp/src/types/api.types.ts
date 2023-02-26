@@ -747,12 +747,23 @@ export type Color = {
 export type Wiki = {
   decisions: Record<string, Decision>;
   countries: Record<string, Country>;
+  advisors: Record<string, Advisor>;
   idExampleLocalised: Record<string, IdExampleLocalised>;
   idLocalised: Record<string, IdLocalised>;
   modifiers: Record<string, Modifier>;
-  ages: Record<string, Localised>;
-  ideaGroups: Record<string, Localised>;
-  religions: Record<string, Localised>;
+  ages: Record<string, IdLocalised>;
+  ideaGroups: Record<string, IdeaGroup>;
+  religions: Record<string, Religion>;
+  estatePrivileges: Record<string, IdLocalised>;
+  provinces: Record<string, IdLocalised>;
+  cultures: Record<string, IdLocalised>;
+  cultureGroups: Record<string, IdLocalised>;
+  religionGroups: Record<string, ReligionGroup>;
+  greatProjects: Record<string, IdImageLocalised>;
+  regions: Record<string, Region>;
+  superRegions: Record<string, SuperRegion>;
+  areas: Record<string, Area>;
+  governmentReforms: Record<string, IdLocalised>;
 }
 
 export type Condition = {
@@ -947,4 +958,119 @@ export type Modifiers = {
 
 export type Modifier = IdLocalised & {
   modifiers?: Modifiers;
+}
+
+export type Advisor = IdImageLocalised & {
+  power: Power;
+  allowOnlyMale: boolean;
+  allowOnlyFemale: boolean;
+  skillScaledModifier?: Modifiers;
+  modifiers?: Modifiers;
+}
+
+export type Religion = IdImageLocalised & {
+  color: Color;
+  hreReligion: boolean;
+  hreHereticReligion: boolean;
+  useAuthority: boolean;
+  useReligiousReforms: boolean;
+  usesAnglicanPower: boolean;
+  usesHussitePower: boolean;
+  usesChurchPower: boolean;
+  useFervor: boolean;
+  hasPatriarchs: boolean;
+  misguidedHeretic: boolean;
+  useFetishistCult: boolean;
+  useDoom: boolean;
+  usePersonalDeity: boolean;
+  usesIsolationism: boolean;
+  usesKarma: boolean;
+  usesPiety: boolean;
+  usesHarmony: boolean;
+  canHaveSecondaryReligion: boolean;
+  allowedCenterConversion?: Array<string>;
+  aspects?: Array<string>;
+  blessings?: Array<string>;
+  heretic?: Array<string>;
+  holySites?: Array<string>;
+  date?: string;
+  papacy?: ReligionPapacy;
+  icons: Array<ReligionIcon>;
+  religionGroup: string;
+  countryModifiers?: Modifiers;
+  countryModifiersAsSecondary?: Modifiers;
+  willGetCenter?: Condition;
+  harmonizedModifier?: string;
+}
+
+export type ReligionIcon = IdLocalised & {
+  modifiers?: Modifiers;
+  allow?: Condition;
+}
+
+export type ReligionPapacy = {
+  tag?: string;
+  electionCost?: number;
+  harshModifiers?: Modifiers;
+  neutralModifiers?: Modifiers;
+  concilatoryModifiers?: Modifiers;
+  concessions: Array<ReligionPapacyConcession>;
+}
+
+export type ReligionPapacyConcession = IdLocalised & {
+  harshModifiers?: Modifiers;
+  concilatoryModifiers?: Modifiers;
+}
+
+export type Area = IdLocalised & {
+  region: string;
+  provinces: Array<number>;
+  color: Color;
+}
+
+export type Region = IdLocalised & {
+  superRegion: string;
+  areas: Array<string>;
+  provinces: Array<number>;
+  color: Color;
+}
+
+export type SuperRegion = IdLocalised & {
+  regions: Array<string>;
+  provinces: Array<number>;
+  color: Color;
+}
+
+export type ReligionGroup = IdLocalised & {
+  religions: Array<string>;
+  defenderOfFaith: boolean;
+  canFormPersonalUnions: boolean;
+  centerOfReligion?: number;
+  flagsWithEmblemPercentage?: number;
+  flagEmblemIndexRange?: Record<number, number>;
+  harmonizedModifier?: string;
+  crusadeName?: string;
+  religiousSchools?: Record<string, ReligiousSchool>;
+}
+
+export type ReligiousSchool = IdImageLocalised & {
+  potentialInviteScholar?: Condition;
+  canInviteScholar?: Condition;
+  onInviteScholar?: Effects;
+  inviteScholarModifierDisplay?: string;
+  modifiers?: Modifiers;
+}
+
+export type IdeaGroup = IdImageLocalised & {
+  category: Power;
+  isFree: boolean;
+  trigger?: Condition;
+  start?: Modifiers;
+  bonus?: Modifiers;
+  ideas?: Record<string, Idea>;
+}
+
+export type Idea = IdImageLocalised & {
+  modifiers?: Modifiers;
+  description?: Localised;
 }

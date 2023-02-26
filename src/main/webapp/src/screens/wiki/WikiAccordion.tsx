@@ -24,7 +24,7 @@ function WikiAccordion({ summary, details, expanded, onChange }: WikiAccordionPr
   return (
     <Accordion expanded={ expanded }
                onChange={ (event, expanded) => onChange(expanded) }
-               disableGutters elevation={ 0 } sx={ { width: 'fit-content' } }>
+               disableGutters elevation={ 0 } sx={ { width: '100%' } }>
       <StyledAccordionSummary expandIcon={ <ExpandMore color='primary'/> }>
         { summary }
       </StyledAccordionSummary>

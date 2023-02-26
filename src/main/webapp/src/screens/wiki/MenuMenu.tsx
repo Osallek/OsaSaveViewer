@@ -27,6 +27,9 @@ function MenuMenu({ title, value, imagedValue, objects, imagedObjects, onChange 
           <Autocomplete
             fullWidth
             disablePortal
+            clearOnBlur
+            selectOnFocus
+            handleHomeEndKeys
             value={ value }
             PopperComponent={ MenuMenuPopper }
             options={ objects }

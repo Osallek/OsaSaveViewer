@@ -1,12 +1,11 @@
-import { SupportAgent } from '@mui/icons-material';
 import React from 'react';
 import AdvisorMenu from 'screens/wiki/icons/AdvisorMenu';
-import FlagMenu from 'screens/wiki/icons/FlagMenu';
+import AgeMenu from 'screens/wiki/icons/AgeMenu';
+import CountryMenu from 'screens/wiki/icons/CountryMenu';
 import DecisionMenu from 'screens/wiki/icons/DecisionMenu';
-import ModifierMenu from 'screens/wiki/icons/ModifierMenu';
 import IdeaGroupMenu from 'screens/wiki/icons/IdeaGroupMenu';
+import ModifierMenu from 'screens/wiki/icons/ModifierMenu';
 import ReligionMenu from 'screens/wiki/icons/ReligionMenu';
-import AgeMenu from '../screens/wiki/icons/AgeMenu';
 
 export type WikiType = {
   path: string;
@@ -16,7 +15,7 @@ export type WikiType = {
 export const wikiTypes: Record<string, WikiType> = {
   countries: {
     path: 'countries',
-    icon: FlagMenu
+    icon: CountryMenu
   },
   decisions: {
     path: 'decisions',
@@ -38,8 +37,40 @@ export const wikiTypes: Record<string, WikiType> = {
     path: 'idea-groups',
     icon: IdeaGroupMenu
   },
+  religionGroups: {
+    path: 'religion-groups',
+    icon: ReligionMenu
+  },
   religions: {
     path: 'religions',
+    icon: ReligionMenu
+  },
+  provinces: {
+    path: 'provinces',
+    icon: ReligionMenu
+  },
+  cultureGroups: {
+    path: 'culture-groups',
+    icon: ReligionMenu
+  },
+  cultures: {
+    path: 'cultures',
+    icon: ReligionMenu
+  },
+  estatePrivileges: {
+    path: 'estate-privileges',
+    icon: ReligionMenu
+  },
+  greatProjects: {
+    path: 'great-projects',
+    icon: ReligionMenu
+  },
+  regions: {
+    path: 'regions',
+    icon: ReligionMenu
+  },
+  governmentReforms: {
+    path: 'government-reforms',
     icon: ReligionMenu
   },
 }

@@ -8,7 +8,7 @@ import { WikiType, wikiTypes } from '../../types/wiki.types';
 import MenuMenu from './MenuMenu';
 
 interface WikiBarProps {
-  type: string;
+  type: WikiType;
   version?: string;
   value?: IdLocalised | null;
   imagedValue?: IdImageLocalised | null;
@@ -20,11 +20,10 @@ interface WikiBarProps {
 function WikiBar({ version, value, imagedValue, type, objects, imagedObjects, children }: WikiBarProps) {
   const intl = useIntl();
   const navigate = useNavigate();
-  const wikiType: WikiType = wikiTypes[type];
 
   const handleMenuChange = (value: IdLocalised | IdImageLocalised | null) => {
     if (value) {
-      navigate(`/wiki/${ version }/${ wikiType.path }/${ value.id }`)
+      navigate(`/wiki/${ version }/${ type.path }/${ value.id }`)
     }
   }
 
@@ -38,20 +37,20 @@ function WikiBar({ version, value, imagedValue, type, objects, imagedObjects, ch
             </Link>
             {
               objects ?
-                <MenuMenu title={ intl.formatMessage({ id: `wiki.${ wikiType.path }` }) }
+                <MenuMenu title={ intl.formatMessage({ id: `wiki.${ type.path }` }) }
                           objects={ Object.values(objects) } value={ value }
                           onChange={ handleMenuChange }
                 />
                 :
                 imagedObjects &&
-                <MenuMenu title={ intl.formatMessage({ id: `wiki.${ wikiType.path }` }) }
+                <MenuMenu title={ intl.formatMessage({ id: `wiki.${ type.path }` }) }
                           objects={ Object.values(imagedObjects) } imagedValue={ imagedValue }
                           onChange={ handleMenuChange }
                 />
             }
             {
-              Object.values(wikiTypes).filter(value => value !== wikiType).map(value => (
-                <Tooltip title={ intl.formatMessage({ id: `wiki.${ value.path }` }) }>
+              Object.values(wikiTypes).filter(value => value !== type).map(value => (
+                <Tooltip title={ intl.formatMessage({ id: `wiki.${ value.path }` }) } key={ `tooltip-${ value.path }` }>
                   <Link to={ `/wiki/${ version }/${ value.path }` } key={ value.path } style={ { marginLeft: 8 } }>
                     <Icon component={ value.icon } color='secondary' sx={ { width: 24, height: 24 } }/>
                   </Link>

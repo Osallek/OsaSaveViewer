@@ -1,8 +1,9 @@
-import { Box, List, Paper, useTheme } from '@mui/material';
+import { List, Paper, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { Condition, Wiki } from 'types/api.types';
-import ConditionLocalised from './ConditionLocalised';
+import ConditionsBlock from './ConditionsBlock';
 import ConditionsClause from './ConditionsClause';
 import ConditionsItems from './ConditionsItems';
 
@@ -22,6 +23,7 @@ interface ConditionsListProps extends TypographyProps {
 
 function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, negate = false }: ConditionsListProps) {
   const theme = useTheme();
+  const intl = useIntl();
 
   if (level == 0) {
     console.log(condition);
@@ -30,13 +32,13 @@ function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, n
   return (
     <Paper elevation={ level === 0 ? 1 : 0 }
            sx={ {
-             width: 'fit-content',
+             width: 'auto',
              backgroundColor: theme.palette.primary.light,
              mt: level === 0 ? 2 : 0,
              pt: level === 0 ? 2 : 0,
              pb: level === 0 ? 2 : 0,
-             pl: 2,
-             pr: 2
+             pl: level === 0 ? 2 : 1,
+             pr: level === 0 ? 2 : 1
            } }>
       <List key='condition-list' sx={ { pb: 0, pt: 0 } }>
         <>
@@ -52,19 +54,13 @@ function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, n
                     )
                     :
                     (
-                      <Box key={ `${ key }-conditions-box-${ i }` } sx={ { pt: 1 } }>
-                        <>
-                          <ConditionLocalised condition={ key } wiki={ wiki } wikiVersion={ wikiVersion } sx={ {
-                            pl: 0,
-                            color: theme.palette.primary.contrastText,
-                            fontWeight: 'bold'
-                          } }/>
-                          <ConditionsList condition={ condition } level={ level + 1 } wiki={ wiki }
-                                          wikiVersion={ wikiVersion } useExample={ useExample }
-                                          negate={ false }
-                                          key={ `${ key }-condition-list-${ i }` }/>
-                        </>
-                      </Box>
+                      <ConditionsBlock wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } level={ level }
+                                       useExample={ useExample } key={ `${ key }-condition-block-${ i }` }
+                                       title={ `${ intl.formatMessage({
+                                         id: `wiki.condition.${ key }`,
+                                         defaultMessage: key
+                                       }) }`
+                                       }/>
                     )
                 )
               })
@@ -76,7 +72,7 @@ function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, n
               return clauses.map((clause, i) => {
                 return <ConditionsClause name={ key } clause={ clause } level={ level } i={ i } wiki={ wiki }
                                          useExample={ useExample } wikiVersion={ wikiVersion }
-                                         key={ `${ key }-clause-${ i }` } />
+                                         key={ `${ key }-clause-${ i }` }/>
               })
             })
           }

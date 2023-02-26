@@ -1,12 +1,19 @@
 import { Circle } from '@mui/icons-material';
-import { Box, ListItem, ListItemIcon, useTheme } from '@mui/material';
+import { ListItem, ListItemIcon, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
+import { useIntl } from 'react-intl';
+import ConditionCustomTriggerTooltip from 'screens/wiki/condition/clause/ConditionCustomTriggerTooltip';
+import ConditionNumOfProvinces from 'screens/wiki/condition/clause/ConditionNumOfProvinces';
+import ConditionReverseOpinion from 'screens/wiki/condition/clause/ConditionReverseOpinion';
+import ConditionLocalisedLink from 'screens/wiki/condition/ConditionLocalisedLink';
+import ConditionsBlock from 'screens/wiki/condition/ConditionsBlock';
 import { Condition, Wiki } from 'types/api.types';
-import ConditionCustomTriggerTooltip from './clause/ConditionCustomTriggerTooltip';
-import ConditionReverseOpinion from './clause/ConditionReverseOpinion';
-import ConditionLocalised from './ConditionLocalised';
-import ConditionsList from './ConditionsList';
+import { wikiTypes } from 'types/wiki.types';
+import { getLName } from 'utils/data.utils';
+import { getCountry, getCountrysFlag, getProvince } from 'utils/wiki.utils';
+import ConditionGreatProject from './clause/ConditionGreatProject';
+import ConditionReligiousSchool from './clause/ConditionReligiousSchool';
 
 interface ConditionClauseProps extends TypographyProps {
   wiki: Wiki;
@@ -20,6 +27,42 @@ interface ConditionClauseProps extends TypographyProps {
 
 function ConditionClause({ wiki, name, clause, level, i, useExample, wikiVersion }: ConditionClauseProps) {
   const theme = useTheme();
+  const intl = useIntl();
+
+  const country = getCountry(wiki, name);
+
+  if (country !== null) {
+    return (
+      <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } level={ level }
+                       useExample={ useExample } sx={ { p: 0 } }
+                       title={
+                         <ConditionLocalisedLink link={ false }
+                                                 wikiVersion={ wikiVersion } negate={ false } record={ wiki.countries }
+                                                 value={ getLName(country) }
+                                                 type={ wikiTypes.countries } avatar={ getCountrysFlag(country) }
+                                                 colons={ false }
+                                                 sx={ {
+                                                   color: theme.palette.primary.contrastText,
+                                                   backgroundColor: theme.palette.primary.dark,
+                                                   fontWeight: 'bold'
+                                                 } }/>
+                       }>
+      </ConditionsBlock>
+    )
+  }
+
+  let province = null;
+
+  if (!isNaN(Number(name))) {
+    province = getProvince(wiki, Number(name));
+  }
+
+  if (province !== null) {
+    return (
+      <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } level={ level }
+                       useExample={ useExample } title={ getLName(province) }/>
+    )
+  }
 
   switch (name) {
     case 'custom_trigger_tooltip': {
@@ -42,20 +85,27 @@ function ConditionClause({ wiki, name, clause, level, i, useExample, wikiVersion
         </ListItem>
       )
     }
+    case 'num_of_owned_provinces_with': {
+      return (
+        <ConditionNumOfProvinces condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } level={ level }
+                                 useExample={ useExample }/>
+      )
+    }
+    case 'has_great_project': {
+      return (
+        <ConditionGreatProject condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion }/>
+      )
+    }
+    case 'religious_school': {
+      return (
+        <ConditionReligiousSchool condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion }/>
+      )
+    }
     default: {
       return (
-        <Box key={ `${ name }-clause-box-${ i }` } sx={ { pt: 1 } }>
-          <>
-            <ConditionLocalised condition={ name } wiki={ wiki } wikiVersion={ wikiVersion }
-                                sx={ {
-                                  pr: 2,
-                                  color: theme.palette.primary.contrastText,
-                                  fontWeight: 'bold'
-                                } }/>
-            <ConditionsList condition={ clause } level={ level + 1 } wiki={ wiki } wikiVersion={ wikiVersion }
-                            useExample={ useExample } key={ `${ name }-condition-list-${ i }` }/>
-          </>
-        </Box>
+        <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } level={ level }
+                         useExample={ useExample }
+                         title={ `${ intl.formatMessage({ id: `wiki.condition.${ name }`, defaultMessage: name }) }` }/>
       )
     }
   }
