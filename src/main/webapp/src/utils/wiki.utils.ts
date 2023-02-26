@@ -1,5 +1,7 @@
 import * as ENV from 'env/env';
-import { Advisor, Country, Idea, IdImageLocalised, IdLocalised, Localised, Religion, Wiki } from 'types/api.types';
+import {
+  Advisor, Country, Idea, IdeaGroup, IdImageLocalised, IdLocalised, Localised, Religion, Wiki
+} from 'types/api.types';
 
 export function getWikiImageUrl(path: string): string {
   return `${ ENV.WIKI_BASE_URL }/images/${ path }`;
@@ -19,6 +21,10 @@ export function getReligionUrl(key: string | undefined): string {
 
 export function getGreatProjectUrl(key: string | undefined): string {
   return key ? getWikiImageUrl(`great-projects/${ key }.png`) : getGreatProjectUrl('noGreatProject');
+}
+
+export function getIdeaGroupUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`idea-groups/${ key }.png`) : getGreatProjectUrl('noIdeaGroup');
 }
 
 export function getCountry(wiki: Wiki, tag: string): Country | null {
@@ -83,4 +89,8 @@ export function getIdea(wiki: Wiki, name: string): Idea | null {
   }
 
   return null;
+}
+
+export function getIdeaGroupImage(group: IdeaGroup): string {
+  return getIdeaGroupUrl(group.image);
 }

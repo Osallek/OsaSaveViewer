@@ -1,13 +1,13 @@
-import { Box, Typography, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
 import { useIntl } from 'react-intl';
-import ConditionsList from 'screens/wiki/condition/ConditionsList';
+import ConditionsBlock from 'screens/wiki/condition/ConditionsBlock';
 import { Condition, Wiki } from 'types/api.types';
 
 interface ConditionNumOfProvincesProps extends TypographyProps {
   wiki: Wiki;
   wikiVersion: string;
+  negate?: boolean;
   level: number;
   condition: Condition;
   useExample: boolean;
@@ -15,9 +15,8 @@ interface ConditionNumOfProvincesProps extends TypographyProps {
 }
 
 function ConditionNumOfProvinces({
-                                   wiki, wikiVersion, condition, level, useExample
+                                   wiki, wikiVersion, condition, level, useExample, negate = false,
                                  }: ConditionNumOfProvincesProps): JSX.Element {
-  const theme = useTheme();
   const intl = useIntl();
 
   let nb = undefined;
@@ -29,20 +28,10 @@ function ConditionNumOfProvinces({
     const copy = JSON.parse(JSON.stringify(condition));
     delete copy.conditions?.value;
     return (
-      <Box sx={ { pt: 1 } }>
-        <>
-          <Typography variant='body1'
-                      sx={ {
-                        color: theme.palette.primary.contrastText,
-                        fontWeight: 'bold',
-                        display: 'inline'
-                      } }>
-            { intl.formatMessage({ id: 'wiki.condition.num_of_owned_provinces_with' }, { nb }) }
-          </Typography>
-          <ConditionsList condition={ copy } level={ level + 1 } wiki={ wiki } wikiVersion={ wikiVersion }
-                          useExample={ useExample }/>
-        </>
-      </Box>
+      <ConditionsBlock wiki={ wiki } condition={ copy } wikiVersion={ wikiVersion } level={ level }
+                       useExample={ useExample }
+                       title={ intl.formatMessage(
+                         { id: `wiki.condition.num_of_owned_provinces_with${ negate ? '.not' : '' }` }, { nb }) }/>
     )
   } else {
     return <></>

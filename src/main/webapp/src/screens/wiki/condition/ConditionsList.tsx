@@ -42,6 +42,16 @@ function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, n
            } }>
       <List key='condition-list' sx={ { pb: 0, pt: 0 } }>
         <>
+          {
+            condition.clauses && condition.clauses['limit'] &&
+            (
+              condition.clauses['limit'].map((clause, i) => {
+                return <ConditionsClause name={ 'limit' } clause={ clause } level={ level } i={ i } wiki={ wiki }
+                                         useExample={ useExample } wikiVersion={ wikiVersion }
+                                         key={ `limit-clause-${ i }` }/>
+              })
+            )
+          }
           <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ negate }/>
           {
             condition.scopes &&
@@ -68,13 +78,15 @@ function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, n
           }
           {
             condition.clauses &&
-            Object.entries(condition.clauses).map(([key, clauses]) => {
-              return clauses.map((clause, i) => {
-                return <ConditionsClause name={ key } clause={ clause } level={ level } i={ i } wiki={ wiki }
-                                         useExample={ useExample } wikiVersion={ wikiVersion }
-                                         key={ `${ key }-clause-${ i }` }/>
+            Object.entries(condition.clauses)
+              .filter(([key, clauses]) => 'limit' !== key)
+              .map(([key, clauses]) => {
+                return clauses.map((clause, i) => {
+                  return <ConditionsClause name={ key } clause={ clause } level={ level } i={ i } wiki={ wiki }
+                                           useExample={ useExample } wikiVersion={ wikiVersion }
+                                           key={ `${ key }-clause-${ i }` }/>
+                })
               })
-            })
           }
         </>
       </List>
