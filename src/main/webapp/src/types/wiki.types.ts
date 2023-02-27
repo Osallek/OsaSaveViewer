@@ -73,5 +73,13 @@ export const wikiTypes: Record<string, WikiType> = {
     path: 'government-reforms',
     icon: ReligionMenu
   },
+  techGroups: {
+    path: 'tech-groups',
+    icon: ReligionMenu
+  },
+  tradeGoods: {
+    path: 'trade-goods',
+    icon: ReligionMenu
+  },
 }
 

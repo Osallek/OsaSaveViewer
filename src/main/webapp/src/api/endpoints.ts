@@ -14,6 +14,7 @@ const endpoints = {
   },
   wiki: {
     versions: '/wiki',
+    data: (version: string, id: string) => `/${ version }/${ id }`,
   },
 };
 

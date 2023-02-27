@@ -8,7 +8,8 @@ import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
 import { formatNumber } from 'utils/format.utils';
 import {
-  getAdvisor, getAdvisorImage, getCountry, getCountrysFlag, getIdea, getIdeaGroupImage, getReligion, getReligionImage
+  getAdvisor, getAdvisorImage, getCountry, getCountrysFlag, getIdea, getIdeaGroupImage, getReligion, getReligionImage,
+  getTradeGoodImage
 } from 'utils/wiki.utils';
 import ConditionLocalisedLink from './ConditionLocalisedLink';
 
@@ -37,7 +38,7 @@ const defaultNode = ({
 
   //Todo has_estate, government, is_religion_reformed, has_institution, is_former_colonial_nation, is_nomad,
   // num_of_cities,num_of_ports, has_factions, statesman (check advisors), slaves (check goods), faction_in_power,
-  // num_of_merchants, technology_group, trade_goods
+  // num_of_merchants, trade_goods
 
   if (lower) {
     cond = cond.toLowerCase();
@@ -141,6 +142,20 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
         <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
                                 record={ wiki.ideaGroups } value={ value } type={ wikiTypes.ideaGroups }
                                 avatar={ group ? getIdeaGroupImage(group) : undefined }/>
+      )
+    }
+    case 'trade_goods': {
+      const good = value && wiki.tradeGoods[value];
+      return (
+        <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                record={ wiki.tradeGoods } value={ value } type={ wikiTypes.tradeGoods }
+                                avatar={ good ? getTradeGoodImage(good) : undefined }/>
+      )
+    }
+    case 'technology_group': {
+      return (
+        <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                record={ wiki.techGroups } value={ value } type={ wikiTypes.techGroups }/>
       )
     }
     case 'has_reform': {

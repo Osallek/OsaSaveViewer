@@ -753,6 +753,7 @@ export type Wiki = {
   modifiers: Record<string, Modifier>;
   ages: Record<string, IdLocalised>;
   ideaGroups: Record<string, IdeaGroup>;
+  tradeGoods: Record<string, TradeGood>;
   religions: Record<string, Religion>;
   estatePrivileges: Record<string, IdLocalised>;
   provinces: Record<string, IdLocalised>;
@@ -764,6 +765,8 @@ export type Wiki = {
   superRegions: Record<string, SuperRegion>;
   areas: Record<string, Area>;
   governmentReforms: Record<string, IdLocalised>;
+  techGroups: Record<string, TechGroup>;
+  centersOfTrade: Record<string, CenterOfTrade>;
 }
 
 export type Condition = {
@@ -1073,4 +1076,35 @@ export type IdeaGroup = IdImageLocalised & {
 export type Idea = IdImageLocalised & {
   modifiers?: Modifiers;
   description?: Localised;
+}
+
+export type TradeGood = IdImageLocalised & {
+  color: Color;
+  tradeModifiers?: Modifiers;
+  provinceModifiers?: Modifiers;
+  basePrice?: number;
+  goldType: boolean;
+}
+
+export type TechGroup = IdLocalised & {
+  startLevel: number;
+  startCostModifier: number;
+  primitive: boolean;
+  unitType?: string;
+  nationDesignerCost?: NationDesignerCost;
+  nationDesignerTrigger?: Condition;
+}
+
+export type NationDesignerCost = {
+  trigger?: Condition;
+  value: number;
+}
+
+export type CenterOfTrade = {
+  level: number;
+  cost?: number;
+  type: 'INLAND' | 'COASTAL';
+  provinceModifiers?: Modifiers;
+  stateModifiers?: Modifiers;
+  globalModifiers?: Modifiers;
 }

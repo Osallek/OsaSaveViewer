@@ -1,6 +1,6 @@
 import * as ENV from 'env/env';
 import {
-  Advisor, Country, Idea, IdeaGroup, IdImageLocalised, IdLocalised, Localised, Religion, Wiki
+  Advisor, Country, Idea, IdeaGroup, IdImageLocalised, IdLocalised, Localised, Religion, TradeGood, Wiki
 } from 'types/api.types';
 
 export function getWikiImageUrl(path: string): string {
@@ -24,7 +24,11 @@ export function getGreatProjectUrl(key: string | undefined): string {
 }
 
 export function getIdeaGroupUrl(key: string | undefined): string {
-  return key ? getWikiImageUrl(`idea-groups/${ key }.png`) : getGreatProjectUrl('noIdeaGroup');
+  return key ? getWikiImageUrl(`idea-groups/${ key }.png`) : getIdeaGroupUrl('noIdeaGroup');
+}
+
+export function getTradeGoodUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`trade-goods/${ key }.png`) : getTradeGoodUrl('noTradeGood');
 }
 
 export function getCountry(wiki: Wiki, tag: string): Country | null {
@@ -93,4 +97,8 @@ export function getIdea(wiki: Wiki, name: string): Idea | null {
 
 export function getIdeaGroupImage(group: IdeaGroup): string {
   return getIdeaGroupUrl(group.image);
+}
+
+export function getTradeGoodImage(good: TradeGood): string {
+  return getTradeGoodUrl(good.image);
 }

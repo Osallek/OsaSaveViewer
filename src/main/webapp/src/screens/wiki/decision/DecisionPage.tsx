@@ -37,6 +37,7 @@ function DecisionPage() {
           const { data: versionsData } = await api.wiki.versions();
 
           if (versionsData && versionsData[version]) {
+            console.log(version);
             const { data } = await api.wiki.data(version, versionsData[version]);
 
             if (data && data.decisions[id]) {

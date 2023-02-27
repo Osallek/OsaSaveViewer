@@ -251,6 +251,8 @@ const wikiCondition = {
   'wiki.condition.dynasty.not': 'La dynastie régnante n\'est pas',
   'wiki.condition.technology_group': 'Est du groupe technologique',
   'wiki.condition.technology_group.not': 'N\'est pas du groupe technologique',
+  'wiki.condition.trade_goods': 'Produit',
+  'wiki.condition.trade_goods.not': 'Ne produit pas',
 }
 
 export default wikiCondition;

@@ -38,7 +38,7 @@ const api = {
   },
   wiki: {
     versions: (): AxiosPromise<Record<string, string>> => apiWs.get(endpoints.wiki.versions),
-    data: (version: string, id: string): AxiosPromise<Wiki> => wikiWs.get(getWikiDataUrl(version, id)),
+    data: (version: string, id: string): AxiosPromise<Wiki> => wikiWs.get(endpoints.wiki.data(version, id)),
   },
 };
 

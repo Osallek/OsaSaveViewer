@@ -148,7 +148,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
 
-        registry.addResourceHandler("/wiki/**")
+        registry.addResourceHandler("/wiki/*/*.json")
                 .addResourceLocations("file:" + this.properties.getWikiFolder() + "/")
                 .setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS))
                 .setOptimizeLocations(true)
