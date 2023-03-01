@@ -1,6 +1,7 @@
 import * as ENV from 'env/env';
 import {
-  Advisor, Country, Dlc, Idea, IdeaGroup, IdImageLocalised, IdLocalised, Localised, Religion, TradeGood, Wiki
+  Advisor, Area, Country, Dlc, Idea, IdeaGroup, IdImageLocalised, IdLocalised, Localised, Region, Religion, SuperRegion,
+  TradeGood, Wiki
 } from 'types/api.types';
 
 export function getWikiImageUrl(path: string): string {
@@ -32,15 +33,15 @@ export function getTradeGoodUrl(key: string | undefined): string {
 }
 
 export function getEstateUrl(key: string | undefined): string {
-  return key ? getWikiImageUrl(`estate/${ key }.png`) : getEstateUrl('noEstate');
+  return key ? getWikiImageUrl(`estates/${ key }.png`) : getEstateUrl('noEstate');
 }
 
 export function getInstitutionUrl(key: string | undefined): string {
-  return key ? getWikiImageUrl(`institution/${ key }.png`) : getInstitutionUrl('noInstitution');
+  return key ? getWikiImageUrl(`institutions/${ key }.png`) : getInstitutionUrl('noInstitution');
 }
 
 export function getFactionUrl(key: string | undefined): string {
-  return key ? getWikiImageUrl(`faction/${ key }.png`) : getFactionUrl('noFaction');
+  return key ? getWikiImageUrl(`factions/${ key }.png`) : getFactionUrl('noFaction');
 }
 
 export function getDlcUrl(key: string | undefined): string {
@@ -57,6 +58,18 @@ export function getCountrysFlag(country: Country): string {
 
 export function getProvince(wiki: Wiki, id: number): Localised | null {
   return (wiki.provinces && wiki.provinces[id]) ?? null;
+}
+
+export function getRegion(wiki: Wiki, name: string): Region | null {
+  return (wiki.regions && wiki.regions[name]) ?? null;
+}
+
+export function getSuperRegion(wiki: Wiki, name: string): SuperRegion | null {
+  return (wiki.superRegions && wiki.superRegions[name]) ?? null;
+}
+
+export function getArea(wiki: Wiki, name: string): Area | null {
+  return (wiki.areas && wiki.areas[name]) ?? null;
 }
 
 export function getAdvisor(wiki: Wiki, name: string): Advisor | null {
@@ -125,6 +138,10 @@ export function getEstateImage(estate: IdImageLocalised): string {
 
 export function getInstitutionImage(institution: IdImageLocalised): string {
   return getInstitutionUrl(institution.image);
+}
+
+export function getFaction(wiki: Wiki, name: string): IdImageLocalised | null {
+  return (wiki.factions && wiki.factions[name]) ?? null;
 }
 
 export function getFactionImage(faction: IdImageLocalised): string {

@@ -6,14 +6,14 @@ import { Condition, Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';
 import { getCountry, getCountrysFlag } from 'utils/wiki.utils';
 
-interface ConditionReverseOpinionProps extends TypographyProps {
+interface ConditionOpinionProps extends TypographyProps {
   wiki: Wiki;
   wikiVersion: string;
   clause: string;
   condition: Condition;
 }
 
-function ConditionReverseOpinion({ wiki, wikiVersion, condition, clause }: ConditionReverseOpinionProps): JSX.Element {
+function ConditionOpinion({ wiki, wikiVersion, condition, clause }: ConditionOpinionProps): JSX.Element {
   let tag = undefined;
   if (condition.conditions && condition.conditions.who && condition.conditions.who.length > 0) {
     tag = condition.conditions.who[0];
@@ -33,13 +33,13 @@ function ConditionReverseOpinion({ wiki, wikiVersion, condition, clause }: Condi
 
   let country = opinion !== undefined && tag !== undefined && getCountry(wiki, tag);
   return (
-    <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ false } value={ tag } record={ wiki.countries }
-                            colons={ false } avatar={ country ? getCountrysFlag(country) : undefined }
-                            type={ wikiTypes.countries } sx={ { pl: -1 } }
-                            suffix={ <ConditionLocalised condition={ `${ clause }.country` } value={ opinion }
-                                                         sx={ { display: 'contents' } } wiki={ wiki }
+    <ConditionLocalisedLink condition='has_opinion.country' wikiVersion={ wikiVersion } negate={ false } value={ tag }
+                            record={ wiki.countries } colons={ false } sx={ { pl: -1 } }
+                            avatar={ country ? getCountrysFlag(country) : undefined } type={ wikiTypes.countries }
+                            suffix={ <ConditionLocalised condition={ `${ clause }.country.2` } value={ opinion }
+                                                         wiki={ wiki } grid={ false }
                                                          wikiVersion={ wikiVersion }/> }/>
   )
 }
 
-export default ConditionReverseOpinion;
+export default ConditionOpinion;

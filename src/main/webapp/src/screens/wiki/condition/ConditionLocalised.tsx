@@ -6,14 +6,12 @@ import { IntlShape } from 'react-intl/src/types';
 import { Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
-import { formatNumber } from 'utils/format.utils';
 import {
   getAdvisor, getAdvisorImage, getCountry, getCountrysFlag, getDlc, getDlcImage, getEstateImage, getFactionImage,
-  getIdea,
-  getIdeaGroupImage,
-  getInstitutionImage, getReligion, getReligionImage, getTradeGoodImage
+  getIdea, getIdeaGroupImage, getInstitutionImage, getReligion, getReligionImage, getTradeGoodImage
 } from 'utils/wiki.utils';
 import ConditionLocalisedLink from './ConditionLocalisedLink';
+import ConditionsNumber from './ConditionsNumber';
 
 interface ConditionLocalisedProps extends TypographyProps {
   wiki: Wiki;
@@ -22,12 +20,12 @@ interface ConditionLocalisedProps extends TypographyProps {
   value?: string;
   negate?: boolean;
   lower?: boolean;
+  grid?: boolean;
 }
 
 interface DefaultNodeProps extends ConditionLocalisedProps {
   intl: IntlShape;
   theme: Theme;
-  grid?: boolean;
 }
 
 const innerDefaultNode = ({
@@ -255,52 +253,13 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     case 'num_of_cities':
     case 'years_of_income': {
       return (
-        <Grid container item>
-          <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } }
-                      key={ `title-${ condition }-${ value }` }>
-            { intl.formatMessage({ id: `wiki.condition.${ condition }${ negate ? '.not' : '' }` }) }
-          </Typography>
-          <Typography variant='body1'
-                      sx={ {
-                        color: theme.palette.primary.contrastText,
-                        fontWeight: 'bold',
-                        display: 'inline',
-                        ml: 0.5, mr: 0.5
-                      } }>
-            { `${ value && formatNumber(Number(value)) }` }
-          </Typography>
-          <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } }
-                      key={ `suffix-${ condition }-${ value }` }>
-            { intl.formatMessage({ id: `wiki.condition.${ condition }.2${ negate ? '.not' : '' }` },
-              { nb: Number(value) }) }
-          </Typography>
-        </Grid>
+        <ConditionsNumber condition={ condition } negate={ negate } value={ value ? Number(value) : undefined }/>
       )
     }
     case 'num_of_merchants': {
       return (
-        <Grid container item alignItems='center'>
-          <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } }
-                      key={ `title-${ condition }-${ value }` }>
-            { intl.formatMessage({ id: `wiki.condition.${ condition }${ negate ? '.not' : '' }` }) }
-          </Typography>
-          <Typography variant='body1'
-                      sx={ {
-                        color: theme.palette.primary.contrastText,
-                        fontWeight: 'bold',
-                        display: 'inline',
-                        ml: 0.5, mr: 0.5
-                      } }>
-            { `${ value && formatNumber(Number(value)) }` }
-          </Typography>
-          <Avatar src='/eu4/wiki/merchant.png' variant='square'
-                  sx={ { display: 'inline-block', width: 32, height: 32, mr: 0.5 } }/>
-          <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } }
-                      key={ `suffix-${ condition }-${ value }` }>
-            { intl.formatMessage({ id: `wiki.condition.${ condition }.2${ negate ? '.not' : '' }` },
-              { nb: Number(value) }) }
-          </Typography>
-        </Grid>
+        <ConditionsNumber condition={ condition } negate={ negate } value={ value ? Number(value) : undefined }
+                          avatar='/eu4/wiki/merchant.png'/>
       )
     }
     case 'is_religion_enabled': {
@@ -318,6 +277,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     case 'owns':
     case 'capital':
     case 'controls':
+    case 'has_discovered':
     case 'owns_core_province': {
       return (
         <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
@@ -407,15 +367,18 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
         }
       }
     }
+    case 'overlord_of':
     case 'alliance_with': {
-      if ('emperor' === value?.toLowerCase()) {
+      if ('root' === value?.toLowerCase() || 'owner' === value?.toLowerCase()) {
+        return defaultNode({ intl, theme, ...props, condition: `${ condition }.root`, value: undefined });
+      } else if ('emperor' === value?.toLowerCase()) {
         return defaultNode({ intl, theme, ...props, condition: `${ condition }.emperor`, value: undefined });
       } else {
         const country = value && getCountry(wiki, value);
 
         if (country) {
           return (
-            <ConditionLocalisedLink condition={ 'alliance_with.country' } wikiVersion={ wikiVersion } negate={ negate }
+            <ConditionLocalisedLink condition={ `${ condition }.country` } wikiVersion={ wikiVersion } negate={ negate }
                                     colons={ false } record={ wiki.countries } value={ value }
                                     type={ wikiTypes.countries } avatar={ getCountrysFlag(country) }/>
           )
