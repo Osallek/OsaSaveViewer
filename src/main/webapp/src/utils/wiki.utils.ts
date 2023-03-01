@@ -1,6 +1,6 @@
 import * as ENV from 'env/env';
 import {
-  Advisor, Country, Idea, IdeaGroup, IdImageLocalised, IdLocalised, Localised, Religion, TradeGood, Wiki
+  Advisor, Country, Dlc, Idea, IdeaGroup, IdImageLocalised, IdLocalised, Localised, Religion, TradeGood, Wiki
 } from 'types/api.types';
 
 export function getWikiImageUrl(path: string): string {
@@ -29,6 +29,22 @@ export function getIdeaGroupUrl(key: string | undefined): string {
 
 export function getTradeGoodUrl(key: string | undefined): string {
   return key ? getWikiImageUrl(`trade-goods/${ key }.png`) : getTradeGoodUrl('noTradeGood');
+}
+
+export function getEstateUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`estate/${ key }.png`) : getEstateUrl('noEstate');
+}
+
+export function getInstitutionUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`institution/${ key }.png`) : getInstitutionUrl('noInstitution');
+}
+
+export function getFactionUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`faction/${ key }.png`) : getFactionUrl('noFaction');
+}
+
+export function getDlcUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`dlcs/${ key }.png`) : getDlcUrl('noDlc');
 }
 
 export function getCountry(wiki: Wiki, tag: string): Country | null {
@@ -101,4 +117,24 @@ export function getIdeaGroupImage(group: IdeaGroup): string {
 
 export function getTradeGoodImage(good: TradeGood): string {
   return getTradeGoodUrl(good.image);
+}
+
+export function getEstateImage(estate: IdImageLocalised): string {
+  return getEstateUrl(estate.image);
+}
+
+export function getInstitutionImage(institution: IdImageLocalised): string {
+  return getInstitutionUrl(institution.image);
+}
+
+export function getFactionImage(faction: IdImageLocalised): string {
+  return getFactionUrl(faction.image);
+}
+
+export function getDlc(wiki: Wiki, name: string): Dlc | null {
+  return (wiki.dlcs && Object.values(wiki.dlcs).find(dlc => dlc.name === name)) ?? null;
+}
+
+export function getDlcImage(dlc: IdImageLocalised): string {
+  return getDlcUrl(dlc.image);
 }

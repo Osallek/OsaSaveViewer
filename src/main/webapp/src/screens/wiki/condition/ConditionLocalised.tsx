@@ -8,8 +8,10 @@ import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
 import { formatNumber } from 'utils/format.utils';
 import {
-  getAdvisor, getAdvisorImage, getCountry, getCountrysFlag, getIdea, getIdeaGroupImage, getReligion, getReligionImage,
-  getTradeGoodImage
+  getAdvisor, getAdvisorImage, getCountry, getCountrysFlag, getDlc, getDlcImage, getEstateImage, getFactionImage,
+  getIdea,
+  getIdeaGroupImage,
+  getInstitutionImage, getReligion, getReligionImage, getTradeGoodImage
 } from 'utils/wiki.utils';
 import ConditionLocalisedLink from './ConditionLocalisedLink';
 
@@ -25,27 +27,24 @@ interface ConditionLocalisedProps extends TypographyProps {
 interface DefaultNodeProps extends ConditionLocalisedProps {
   intl: IntlShape;
   theme: Theme;
+  grid?: boolean;
 }
 
-const defaultNode = ({
-                       intl, theme, value, negate, condition, wikiVersion, wiki, lower, ...others
-                     }: DefaultNodeProps) => {
+const innerDefaultNode = ({
+                            intl, theme, value, negate, condition, wikiVersion, wiki, lower, grid = true, ...others
+                          }: DefaultNodeProps) => {
   const { sx, ...others2 } = others;
   let cond = intl.formatMessage({
     id: `wiki.condition.${ condition + (negate ? '.not' : '') }`,
     defaultMessage: condition
   });
 
-  //Todo has_estate, government, is_religion_reformed, has_institution, is_former_colonial_nation, is_nomad,
-  // num_of_cities,num_of_ports, has_factions, statesman (check advisors), slaves (check goods), faction_in_power,
-  // num_of_merchants, trade_goods
-
   if (lower) {
     cond = cond.toLowerCase();
   }
 
   return (
-    <Grid container item sx={ { ...sx } }>
+    <>
       <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText, ...sx } }
                   key={ `${ condition }-${ value }` } { ...others2 }>
         { cond }
@@ -70,7 +69,24 @@ const defaultNode = ({
           </Typography>
         </>
       }
-    </Grid>
+    </>
+  )
+}
+
+const defaultNode = (props: DefaultNodeProps) => {
+  const { grid = true, sx } = props;
+
+  return (
+    grid ?
+      (
+        <Grid container item sx={ { ...sx } }>
+          { innerDefaultNode({ ...props }) }
+        </Grid>
+      )
+      :
+      (
+        innerDefaultNode({ ...props })
+      )
   )
 }
 
@@ -89,6 +105,19 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
   }
 
   //Check trade good
+
+  const advisor = getAdvisor(wiki, condition.toLowerCase());
+  if (advisor !== null) {
+    return (
+      <>
+        <ConditionLocalisedLink condition={ 'advisor' } wikiVersion={ wikiVersion } negate={ negate }
+                                record={ wiki.advisors } value={ condition } type={ wikiTypes.advisors }
+                                avatar={ getAdvisorImage(advisor) } colons={ false }
+                                suffix={ defaultNode(
+                                  { intl, theme, ...props, negate, value, grid: false, condition: 'level' }) }/>
+      </>
+    );
+  }
 
   switch (condition) {
     case 'tag': {
@@ -164,12 +193,39 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
                                 record={ wiki.governmentReforms } value={ value } type={ wikiTypes.governmentReforms }/>
       )
     }
+    case 'has_estate': {
+      const estate = value && wiki.estates && wiki.estates[value];
+      return (
+        <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                record={ wiki.estates } value={ value } type={ wikiTypes.estates }
+                                avatar={ estate ? getEstateImage(estate) : undefined }/>
+      )
+    }
+    case 'has_institution': {
+      const institution = value && wiki.institutions && wiki.institutions[value];
+      return (
+        <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                record={ wiki.institutions } value={ value } type={ wikiTypes.institutions }
+                                avatar={ institution ? getInstitutionImage(institution) : undefined }/>
+      )
+    }
     case 'has_estate_privilege': {
       return (
         <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate } colons={ false }
                                 record={ wiki.estatePrivileges } value={ value } type={ wikiTypes.estatePrivileges }
                                 suffix={ intl.formatMessage(
                                   { id: `wiki.condition.active${ negate ? '.not' : '' }` }) }/>
+      )
+    }
+    case 'faction_in_power': {
+      const faction = value && wiki.factions && wiki.factions[value];
+      return (
+        <ConditionLocalisedLink condition={ 'faction_in_power.1' } wikiVersion={ wikiVersion } negate={ negate }
+                                colons={ false }
+                                record={ wiki.factions } value={ value } type={ wikiTypes.factions }
+                                avatar={ faction ? getFactionImage(faction) : undefined }
+                                suffix={ intl.formatMessage(
+                                  { id: `wiki.condition.${ condition }${ negate ? '.not' : '' }` }) }/>
       )
     }
     case 'has_global_flag': {
@@ -195,6 +251,8 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
         </Grid>
       )
     }
+    case 'num_of_ports':
+    case 'num_of_cities':
     case 'years_of_income': {
       return (
         <Grid container item>
@@ -213,8 +271,34 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
           </Typography>
           <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } }
                       key={ `suffix-${ condition }-${ value }` }>
-            { intl.formatMessage({ id: `wiki.condition.years_of_income.2${ negate ? '.not' : '' }` },
-              { years: Number(value) }) }
+            { intl.formatMessage({ id: `wiki.condition.${ condition }.2${ negate ? '.not' : '' }` },
+              { nb: Number(value) }) }
+          </Typography>
+        </Grid>
+      )
+    }
+    case 'num_of_merchants': {
+      return (
+        <Grid container item alignItems='center'>
+          <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } }
+                      key={ `title-${ condition }-${ value }` }>
+            { intl.formatMessage({ id: `wiki.condition.${ condition }${ negate ? '.not' : '' }` }) }
+          </Typography>
+          <Typography variant='body1'
+                      sx={ {
+                        color: theme.palette.primary.contrastText,
+                        fontWeight: 'bold',
+                        display: 'inline',
+                        ml: 0.5, mr: 0.5
+                      } }>
+            { `${ value && formatNumber(Number(value)) }` }
+          </Typography>
+          <Avatar src='/eu4/wiki/merchant.png' variant='square'
+                  sx={ { display: 'inline-block', width: 32, height: 32, mr: 0.5 } }/>
+          <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } }
+                      key={ `suffix-${ condition }-${ value }` }>
+            { intl.formatMessage({ id: `wiki.condition.${ condition }.2${ negate ? '.not' : '' }` },
+              { nb: Number(value) }) }
           </Typography>
         </Grid>
       )
@@ -239,6 +323,19 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
         <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
                                 record={ wiki.provinces } value={ value } type={ wikiTypes.provinces }/>
       )
+    }
+    case 'has_dlc': {
+      const dlc = value && getDlc(wiki, value);
+
+      if (dlc) {
+        return (
+          <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                  record={ wiki.dlcs } value={ dlc.name } type={ wikiTypes.dlcs }
+                                  avatar={ dlc ? getDlcImage(dlc) : undefined }/>
+        )
+      } else {
+        return defaultNode({ intl, theme, ...props, negate, value });
+      }
     }
     case 'culture_group': {
       return (
@@ -270,7 +367,11 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
               condition={ `${ condition }.country` }/>
           )
         } else {
-          return defaultNode({ intl, theme, ...props, negate, value });
+          return (
+            <ConditionLocalisedLink
+              wikiVersion={ wikiVersion } negate={ negate } type={ wikiTypes.cultures }
+              record={ wiki.cultures } value={ value } condition={ condition }/>
+          )
         }
       }
     }
@@ -303,6 +404,23 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
           } else {
             return <></>
           }
+        }
+      }
+    }
+    case 'alliance_with': {
+      if ('emperor' === value?.toLowerCase()) {
+        return defaultNode({ intl, theme, ...props, condition: `${ condition }.emperor`, value: undefined });
+      } else {
+        const country = value && getCountry(wiki, value);
+
+        if (country) {
+          return (
+            <ConditionLocalisedLink condition={ 'alliance_with.country' } wikiVersion={ wikiVersion } negate={ negate }
+                                    colons={ false } record={ wiki.countries } value={ value }
+                                    type={ wikiTypes.countries } avatar={ getCountrysFlag(country) }/>
+          )
+        } else {
+          return defaultNode({ intl, theme, ...props, condition, value: undefined });
         }
       }
     }

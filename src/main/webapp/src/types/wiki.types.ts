@@ -1,85 +1,104 @@
-import React from 'react';
-import AdvisorMenu from 'screens/wiki/icons/AdvisorMenu';
-import AgeMenu from 'screens/wiki/icons/AgeMenu';
-import CountryMenu from 'screens/wiki/icons/CountryMenu';
-import DecisionMenu from 'screens/wiki/icons/DecisionMenu';
-import IdeaGroupMenu from 'screens/wiki/icons/IdeaGroupMenu';
-import ModifierMenu from 'screens/wiki/icons/ModifierMenu';
-import ReligionMenu from 'screens/wiki/icons/ReligionMenu';
-
 export type WikiType = {
   path: string;
-  icon: React.FC;
+  icon: string;
 }
 
 export const wikiTypes: Record<string, WikiType> = {
   countries: {
     path: 'countries',
-    icon: CountryMenu
+    icon: 'country'
   },
   decisions: {
     path: 'decisions',
-    icon: DecisionMenu
+    icon: 'decision'
   },
   advisors: {
     path: 'advisors',
-    icon: AdvisorMenu
+    icon: 'advisor'
   },
   modifiers: {
     path: 'modifiers',
-    icon: ModifierMenu
+    icon: 'modifier'
   },
   ages: {
     path: 'ages',
-    icon: AgeMenu
+    icon: 'age'
   },
   ideaGroups: {
     path: 'idea-groups',
-    icon: IdeaGroupMenu
+    icon: 'idea_group'
   },
   religionGroups: {
     path: 'religion-groups',
-    icon: ReligionMenu
+    icon: 'religion'
   },
   religions: {
     path: 'religions',
-    icon: ReligionMenu
+    icon: 'religion'
   },
   provinces: {
     path: 'provinces',
-    icon: ReligionMenu
+    icon: 'religion'
   },
   cultureGroups: {
     path: 'culture-groups',
-    icon: ReligionMenu
+    icon: 'religion'
   },
   cultures: {
     path: 'cultures',
-    icon: ReligionMenu
+    icon: 'religion'
   },
   estatePrivileges: {
     path: 'estate-privileges',
-    icon: ReligionMenu
+    icon: 'religion'
   },
   greatProjects: {
     path: 'great-projects',
-    icon: ReligionMenu
+    icon: 'religion'
   },
   regions: {
     path: 'regions',
-    icon: ReligionMenu
+    icon: 'religion'
   },
   governmentReforms: {
     path: 'government-reforms',
-    icon: ReligionMenu
+    icon: 'religion'
   },
   techGroups: {
     path: 'tech-groups',
-    icon: ReligionMenu
+    icon: 'religion'
   },
   tradeGoods: {
     path: 'trade-goods',
-    icon: ReligionMenu
+    icon: 'religion'
+  },
+  units: {
+    path: 'units',
+    icon: 'religion'
+  },
+  tradeNodes: {
+    path: 'trade-nodes',
+    icon: 'religion'
+  },
+  technologies: {
+    path: 'technologies',
+    icon: 'religion'
+  },
+  estates: {
+    path: 'estates',
+    icon: 'religion'
+  },
+  institutions: {
+    path: 'institutions',
+    icon: 'religion'
+  },
+  factions: {
+    path: 'factions',
+    icon: 'religion'
+  },
+  dlcs: {
+    path: 'dlcs',
+    icon: 'religion'
   },
 }
 

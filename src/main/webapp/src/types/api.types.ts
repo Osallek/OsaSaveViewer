@@ -760,13 +760,21 @@ export type Wiki = {
   cultures: Record<string, IdLocalised>;
   cultureGroups: Record<string, IdLocalised>;
   religionGroups: Record<string, ReligionGroup>;
-  greatProjects: Record<string, IdImageLocalised>;
+  greatProjects: Record<string, GreatProject>;
   regions: Record<string, Region>;
   superRegions: Record<string, SuperRegion>;
   areas: Record<string, Area>;
   governmentReforms: Record<string, IdLocalised>;
   techGroups: Record<string, TechGroup>;
   centersOfTrade: Record<string, CenterOfTrade>;
+  churchAspects: Record<string, ChurchAspect>;
+  units: Record<string, Unit>;
+  tradeNodes: Record<string, TradeNode>;
+  technologies: Record<Power, TechnologyType>;
+  estates: Record<string, IdImageLocalised>;
+  institutions: Record<string, IdImageLocalised>;
+  factions: Record<string, IdImageLocalised>;
+  dlcs: Record<string, Dlc>;
 }
 
 export type Condition = {
@@ -1107,4 +1115,108 @@ export type CenterOfTrade = {
   provinceModifiers?: Modifiers;
   stateModifiers?: Modifiers;
   globalModifiers?: Modifiers;
+}
+
+export type Unit = IdLocalised & {
+  description?: Localised;
+  unitType: string;
+  type: UnitType;
+  maneuver?: number;
+  offensiveMorale?: number;
+  defensiveMorale?: number;
+  offensiveFire?: number;
+  defensiveFire?: number;
+  offensiveShock?: number;
+  defensiveShock?: number;
+  hullSize?: number;
+  baseCannons?: number;
+  sailSpeed?: number;
+  spriteLevel?: number;
+}
+
+export enum UnitType {
+  INFANTRY = 'INFANTRY',
+  CAVALRY = 'CAVALRY',
+  ARTILLERY = 'ARTILLERY',
+  HEAVY_SHIP = 'HEAVY_SHIP',
+  LIGHT_SHIP = 'LIGHT_SHIP',
+  GALLEY = 'GALLEY',
+  TRANSPORT = 'TRANSPORT',
+}
+
+export type TradeNode = IdLocalised & {
+  location?: number;
+  color: Color;
+  inland: boolean;
+  aiWillPropagateThroughTrade: boolean;
+  end: boolean;
+  provinces?: Array<number>;
+  outgoings?: Array<TradeNodeOutgoing>;
+}
+
+export type TradeNodeOutgoing = {
+  id: string;
+  path?: Array<number>;
+  controls?: Array<Point>;
+}
+
+export type Point = {
+  x: number;
+  y: number;
+}
+
+export type TechnologyType = {
+  aheadOfTime?: Modifiers;
+  technologies?: Array<Technology>;
+}
+
+export type Technology = Localised & {
+  number: number;
+  year: number;
+  type: Power;
+  modifiers?: Modifiers;
+}
+
+export type ChurchAspect = IdLocalised & {
+  modifiers?: Modifiers;
+  cost?: number;
+}
+
+export type GreatProject = IdImageLocalised & {
+  start: number;
+  date?: string;
+  time?: number;
+  buildingCost: number;
+  startingTier: number;
+  type: GreatProjectType;
+  canBeMoved: boolean;
+  tiers?: Array<GreatProjectTier>;
+  canUpgradeTrigger?: Condition;
+  canUseModifiersTrigger?: Condition;
+  keepTrigger?: Condition;
+  buildTrigger?: Condition;
+  onBuilt?: Effects;
+  onDestroy?: Effects;
+}
+
+export enum GreatProjectType {
+  MONUMENT = 'MONUMENT',
+  CANAL = 'CANAL',
+}
+
+export type  GreatProjectTier = {
+  name: string;
+  time?: number;
+  buildingCost: number;
+  provinceModifiers?: Modifiers;
+  areaModifiers?: Modifiers;
+  countryModifiers?: Modifiers;
+  onUpgraded?: Effects;
+}
+
+export type Dlc = IdImageLocalised & {
+  name: string;
+  category?: string;
+  recommendations?: Array<string>;
+  interestingCountries?: Array<string>;
 }

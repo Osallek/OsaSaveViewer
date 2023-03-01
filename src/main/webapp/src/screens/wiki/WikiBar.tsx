@@ -1,5 +1,5 @@
 import { Home } from '@mui/icons-material';
-import { AppBar, Box, Grid, Icon, Toolbar, Tooltip } from '@mui/material';
+import { AppBar, Avatar, Box, Grid, Toolbar, Tooltip } from '@mui/material';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate } from 'react-router-dom';
@@ -52,7 +52,8 @@ function WikiBar({ version, value, imagedValue, type, objects, imagedObjects, ch
               Object.values(wikiTypes).filter(value => value !== type).map(value => (
                 <Tooltip title={ intl.formatMessage({ id: `wiki.${ value.path }` }) } key={ `tooltip-${ value.path }` }>
                   <Link to={ `/wiki/${ version }/${ value.path }` } key={ value.path } style={ { marginLeft: 8 } }>
-                    <Icon component={ value.icon } color='secondary' sx={ { width: 24, height: 24 } }/>
+                    <Avatar variant='square' src={ `/eu4/wiki/${ value.icon }.png` } color='secondary'
+                            sx={ { width: 24, height: 24 } }/>
                   </Link>
                 </Tooltip>
               ))
