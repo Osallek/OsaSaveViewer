@@ -1,7 +1,7 @@
 import * as ENV from 'env/env';
 import {
-  Advisor, Area, Country, Dlc, Idea, IdeaGroup, IdImageLocalised, IdLocalised, Localised, Region, Religion, SuperRegion,
-  TradeGood, Wiki
+  Advisor, Area, Country, Dlc, Idea, IdeaGroup, IdImageLocalised, IdLocalised, Localised, Mission, Region, Religion,
+  SuperRegion, TradeGood, Wiki
 } from 'types/api.types';
 
 export function getWikiImageUrl(path: string): string {
@@ -46,6 +46,10 @@ export function getFactionUrl(key: string | undefined): string {
 
 export function getDlcUrl(key: string | undefined): string {
   return key ? getWikiImageUrl(`dlcs/${ key }.png`) : getDlcUrl('noDlc');
+}
+
+export function getMissionUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`missions/${ key }.png`) : getMissionUrl('noMission');
 }
 
 export function getCountry(wiki: Wiki, tag: string): Country | null {
@@ -124,6 +128,10 @@ export function getIdea(wiki: Wiki, name: string): Idea | null {
   return null;
 }
 
+export function getIdeaGroup(wiki: Wiki, name: string): IdeaGroup | null {
+  return (wiki.ideaGroups && wiki.ideaGroups[name]) ?? null;
+}
+
 export function getIdeaGroupImage(group: IdeaGroup): string {
   return getIdeaGroupUrl(group.image);
 }
@@ -154,4 +162,12 @@ export function getDlc(wiki: Wiki, name: string): Dlc | null {
 
 export function getDlcImage(dlc: IdImageLocalised): string {
   return getDlcUrl(dlc.image);
+}
+
+export function getMission(wiki: Wiki, name: string): Mission | null {
+  return (wiki.missions && wiki.missions[name]) ?? null;
+}
+
+export function getMissionImage(mission: IdImageLocalised): string {
+  return getMissionUrl(mission.image);
 }

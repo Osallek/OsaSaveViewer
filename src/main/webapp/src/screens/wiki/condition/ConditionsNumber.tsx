@@ -3,6 +3,7 @@ import { Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/system';
 import React from 'react';
 import { useIntl } from 'react-intl';
+import { IntlShape } from 'react-intl/src/types';
 import { formatNumber } from 'utils/format.utils';
 
 interface ConditionItemProps {
@@ -11,14 +12,20 @@ interface ConditionItemProps {
   value?: number;
   avatar?: string;
   sx?: SxProps<Theme>;
+  suffix?: string;
+  grid?: boolean;
 }
 
-function ConditionsNumber({ condition, negate, value, avatar, sx }: ConditionItemProps) {
-  const theme = useTheme();
-  const intl = useIntl();
+interface DefaultNodeProps extends ConditionItemProps {
+  intl: IntlShape;
+  theme: Theme;
+}
 
+const innerDefaultNode = ({
+                            intl, theme, value, negate, condition, grid = true, suffix, avatar
+                          }: DefaultNodeProps) => {
   return (
-    <Grid container item alignItems='center' sx={ { ...sx } }>
+    <>
       <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } }
                   key={ `title-${ condition }-${ value }` }>
         { intl.formatMessage({ id: `wiki.condition.${ condition }${ negate ? '.not' : '' }` }) }
@@ -32,7 +39,7 @@ function ConditionsNumber({ condition, negate, value, avatar, sx }: ConditionIte
                       display: 'inline',
                       ml: 0.5, mr: 0.5
                     } }>
-          { formatNumber(value) }
+          { `${ formatNumber(value) }${ suffix ?? '' }` }
         </Typography>
       }
       {
@@ -45,7 +52,26 @@ function ConditionsNumber({ condition, negate, value, avatar, sx }: ConditionIte
         { intl.formatMessage({ id: `wiki.condition.${ condition }.2${ negate ? '.not' : '' }` },
           { nb: Number(value) }) }
       </Typography>
-    </Grid>
+    </>
+  )
+}
+
+function ConditionsNumber(props: ConditionItemProps) {
+  const { grid = true } = props;
+  const theme = useTheme();
+  const intl = useIntl();
+
+  return (
+    grid ?
+      (
+        <Grid container item>
+          { innerDefaultNode({ theme, intl, ...props }) }
+        </Grid>
+      )
+      :
+      (
+        innerDefaultNode({ theme, intl, ...props })
+      )
   )
 }
 

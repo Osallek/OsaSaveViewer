@@ -17,26 +17,28 @@ import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
 import { getArea, getCountry, getCountrysFlag, getProvince, getRegion, getSuperRegion } from 'utils/wiki.utils';
 import ConditionOpinion from './clause/ConditionOpinion';
+import ConditionProvinceGroup from './clause/ConditionProvinceGroup';
 
 interface ConditionClauseProps extends TypographyProps {
   wiki: Wiki;
   name: string;
   clause: Condition;
-  level: number;
+  root: boolean;
   i: number;
   useExample: boolean;
   wikiVersion: string;
+  negate: boolean;
 }
 
-function ConditionClause({ wiki, name, clause, level, i, useExample, wikiVersion }: ConditionClauseProps) {
+function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion, negate }: ConditionClauseProps) {
   const theme = useTheme();
   const intl = useIntl();
 
   const country = getCountry(wiki, name);
   if (country !== null) {
     return (
-      <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } level={ level }
-                       useExample={ useExample } sx={ { p: 0 } }
+      <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+                       useExample={ useExample } sx={ { p: 0 } } negate={ negate }
                        title={
                          <ConditionLocalisedLink link={ false }
                                                  wikiVersion={ wikiVersion } negate={ false } record={ wiki.countries }
@@ -60,75 +62,32 @@ function ConditionClause({ wiki, name, clause, level, i, useExample, wikiVersion
 
   if (province !== null) {
     return (
-      <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } level={ level }
-                       useExample={ useExample } title={ getLName(province) }/>
+      <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+                       useExample={ useExample } title={ getLName(province) } negate={ negate }/>
     )
   }
 
   const region = getRegion(wiki, name);
   if (region !== null) {
     return (
-      <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } level={ level }
-                       useExample={ useExample } sx={ { p: 0 } }
-                       title={
-                         <ConditionLocalisedLink link={ false } colons={ false } type={ wikiTypes.regions }
-                                                 wikiVersion={ wikiVersion } negate={ false } record={ wiki.regions }
-                                                 value={ intl.formatMessage({
-                                                     id: 'wiki.condition.region.clause'
-                                                   },
-                                                   { region: getLName(region) }) }
-                                                 sx={ {
-                                                   color: theme.palette.primary.contrastText,
-                                                   backgroundColor: theme.palette.primary.dark,
-                                                   fontWeight: 'bold'
-                                                 } }/>
-                       }>
-      </ConditionsBlock>
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+                              useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ region }/>
     )
   }
 
   const superRegion = getSuperRegion(wiki, name);
   if (superRegion !== null) {
     return (
-      <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } level={ level }
-                       useExample={ useExample } sx={ { p: 0 } }
-                       title={
-                         <ConditionLocalisedLink link={ false } colons={ false } type={ wikiTypes.superRegions }
-                                                 wikiVersion={ wikiVersion } negate={ false }
-                                                 record={ wiki.superRegions }
-                                                 value={ intl.formatMessage({
-                                                     id: 'wiki.condition.super_region.clause'
-                                                   },
-                                                   { superRegion: getLName(superRegion) }) }
-                                                 sx={ {
-                                                   color: theme.palette.primary.contrastText,
-                                                   backgroundColor: theme.palette.primary.dark,
-                                                   fontWeight: 'bold'
-                                                 } }/>
-                       }>
-      </ConditionsBlock>
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+                              useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ superRegion }/>
     )
   }
 
   const area = getArea(wiki, name);
   if (area !== null) {
     return (
-      <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } level={ level }
-                       useExample={ useExample } sx={ { p: 0 } }
-                       title={
-                         <ConditionLocalisedLink link={ false } colons={ false } type={ wikiTypes.areas }
-                                                 wikiVersion={ wikiVersion } negate={ false } record={ wiki.areas }
-                                                 value={ intl.formatMessage({
-                                                     id: 'wiki.condition.area.clause'
-                                                   },
-                                                   { area: getLName(area) }) }
-                                                 sx={ {
-                                                   color: theme.palette.primary.contrastText,
-                                                   backgroundColor: theme.palette.primary.dark,
-                                                   fontWeight: 'bold'
-                                                 } }/>
-                       }>
-      </ConditionsBlock>
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+                              useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ area }/>
     )
   }
 
@@ -149,7 +108,8 @@ function ConditionClause({ wiki, name, clause, level, i, useExample, wikiVersion
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionOpinion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name }/>
+          <ConditionOpinion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name }
+                            negate={ negate }/>
         </ListItem>
       )
     }
@@ -159,24 +119,25 @@ function ConditionClause({ wiki, name, clause, level, i, useExample, wikiVersion
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionReverseOpinion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name }/>
+          <ConditionReverseOpinion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name }
+                                   negate={ negate }/>
         </ListItem>
       )
     }
     case 'num_of_owned_provinces_with': {
       return (
-        <ConditionNumOfProvinces condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } level={ level }
-                                 useExample={ useExample }/>
+        <ConditionNumOfProvinces condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } root={ root }
+                                 useExample={ useExample } negate={ negate }/>
       )
     }
     case 'has_great_project': {
       return (
-        <ConditionGreatProject condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion }/>
+        <ConditionGreatProject condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }/>
       )
     }
     case 'religious_school': {
       return (
-        <ConditionReligiousSchool condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion }/>
+        <ConditionReligiousSchool condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }/>
       )
     }
     case 'trust': {
@@ -185,7 +146,7 @@ function ConditionClause({ wiki, name, clause, level, i, useExample, wikiVersion
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionTrust condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion }/>
+          <ConditionTrust condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }/>
         </ListItem>
       )
     }
@@ -195,14 +156,14 @@ function ConditionClause({ wiki, name, clause, level, i, useExample, wikiVersion
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionFactionInfluence condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion }/>
+          <ConditionFactionInfluence condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }/>
         </ListItem>
       )
     }
     default: {
       return (
-        <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } level={ level }
-                         useExample={ useExample }
+        <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+                         useExample={ useExample } negate={ negate }
                          title={ `${ intl.formatMessage({ id: `wiki.condition.${ name }`, defaultMessage: name }) }` }/>
       )
     }

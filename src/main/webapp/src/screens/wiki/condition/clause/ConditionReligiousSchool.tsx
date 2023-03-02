@@ -11,10 +11,13 @@ interface ConditionReligiousSchoolProps extends TypographyProps {
   wiki: Wiki;
   wikiVersion: string;
   condition: Condition;
+  negate: boolean;
   value?: string;
 }
 
-function ConditionReligiousSchool({ wiki, wikiVersion, condition, }: ConditionReligiousSchoolProps): JSX.Element {
+function ConditionReligiousSchool({
+                                    wiki, wikiVersion, condition, negate
+                                  }: ConditionReligiousSchoolProps): JSX.Element {
   const theme = useTheme();
 
   let school = undefined;
@@ -32,7 +35,7 @@ function ConditionReligiousSchool({ wiki, wikiVersion, condition, }: ConditionRe
       <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
         <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
       </ListItemIcon>
-      <ConditionLocalised wikiVersion={ wikiVersion } negate={ false }
+      <ConditionLocalised wikiVersion={ wikiVersion } negate={ negate }
                           value={ religiousSchool ? getLName(religiousSchool) : school }
                           condition={ 'religious_school' } wiki={ wiki }/>
     </ListItem>

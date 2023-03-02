@@ -10,10 +10,11 @@ interface ConditionTrustProps extends TypographyProps {
   wiki: Wiki;
   wikiVersion: string;
   condition: Condition;
+  negate: boolean;
   value?: string;
 }
 
-function ConditionFactionInfluence({ wiki, wikiVersion, condition, }: ConditionTrustProps): JSX.Element {
+function ConditionFactionInfluence({ wiki, wikiVersion, condition, negate }: ConditionTrustProps): JSX.Element {
   let name = undefined;
   if (condition.conditions && condition.conditions.faction && condition.conditions.faction.length > 0) {
     name = condition.conditions.faction[0];
@@ -26,10 +27,10 @@ function ConditionFactionInfluence({ wiki, wikiVersion, condition, }: ConditionT
 
   let faction = influence !== undefined && name !== undefined && getFaction(wiki, name);
   return (
-    <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ false } value={ name }
+    <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } value={ name }
                             colons={ false } record={ wiki.factions } type={ wikiTypes.factions } sx={ { pl: -1 } }
                             avatar={ faction ? getFactionImage(faction) : undefined }
-                            suffix={ <ConditionsNumber condition={ 'faction.influence' } negate={ false }
+                            suffix={ <ConditionsNumber condition={ 'faction.influence' } negate={ negate }
                                                        value={ influence ? Number(influence) : undefined }
                                                        sx={ { display: 'contents' } }/> }/>
   )

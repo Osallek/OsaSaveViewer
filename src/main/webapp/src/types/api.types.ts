@@ -775,6 +775,8 @@ export type Wiki = {
   institutions: Record<string, IdImageLocalised>;
   factions: Record<string, IdImageLocalised>;
   dlcs: Record<string, Dlc>;
+  missions: Record<string, Mission>;
+  disasters: Record<string, IdLocalised>;
 }
 
 export type Condition = {
@@ -1219,4 +1221,11 @@ export type Dlc = IdImageLocalised & {
   category?: string;
   recommendations?: Array<string>;
   interestingCountries?: Array<string>;
+}
+
+export type Mission = IdImageLocalised & {
+  required?: Array<string>;
+  completedBy?: string;
+  description?: Localised;
+  generic: boolean;
 }

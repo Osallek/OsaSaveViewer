@@ -11,9 +11,10 @@ interface ConditionOpinionProps extends TypographyProps {
   wikiVersion: string;
   clause: string;
   condition: Condition;
+  negate: boolean;
 }
 
-function ConditionOpinion({ wiki, wikiVersion, condition, clause }: ConditionOpinionProps): JSX.Element {
+function ConditionOpinion({ wiki, wikiVersion, condition, clause, negate }: ConditionOpinionProps): JSX.Element {
   let tag = undefined;
   if (condition.conditions && condition.conditions.who && condition.conditions.who.length > 0) {
     tag = condition.conditions.who[0];
@@ -27,13 +28,13 @@ function ConditionOpinion({ wiki, wikiVersion, condition, clause }: ConditionOpi
   if (opinion !== undefined && tag !== undefined && 'emperor' === tag?.toLowerCase()) {
     return (
       <ConditionLocalised condition={ `${ clause }.emperor` } wikiVersion={ wikiVersion } wiki={ wiki }
-                          value={ opinion }/>
+                          value={ opinion } negate={ negate }/>
     )
   }
 
   let country = opinion !== undefined && tag !== undefined && getCountry(wiki, tag);
   return (
-    <ConditionLocalisedLink condition='has_opinion.country' wikiVersion={ wikiVersion } negate={ false } value={ tag }
+    <ConditionLocalisedLink condition='has_opinion.country' wikiVersion={ wikiVersion } negate={ negate } value={ tag }
                             record={ wiki.countries } colons={ false } sx={ { pl: -1 } }
                             avatar={ country ? getCountrysFlag(country) : undefined } type={ wikiTypes.countries }
                             suffix={ <ConditionLocalised condition={ `${ clause }.country.2` } value={ opinion }

@@ -12,33 +12,45 @@ const negateCondition = (key: string, condition: Condition): boolean => {
     && (condition.clauses === undefined || Object.keys(condition.clauses).length === 0);
 }
 
+const negateClause = (key: string, condition: Condition): boolean => {
+  return 'not' === key && (condition.scopes === undefined || Object.keys(condition.scopes).length === 0)
+    && (condition.conditions === undefined || Object.keys(condition.conditions).length === 0);
+}
+
+const negateScope = (key: string, condition: Condition): boolean => {
+  return 'not' === key && (condition.clauses === undefined || Object.keys(condition.clauses).length === 0)
+    && (condition.conditions === undefined || Object.keys(condition.conditions).length === 0);
+}
+
 interface ConditionsListProps extends TypographyProps {
   wiki: Wiki;
   condition: Condition;
   useExample: boolean;
   wikiVersion: string;
-  level?: number;
+  root?: boolean;
   negate?: boolean;
 }
 
-function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, negate = false }: ConditionsListProps) {
+function ConditionsList({
+                          wiki, condition, useExample, root = false, wikiVersion, negate = false
+                        }: ConditionsListProps) {
   const theme = useTheme();
   const intl = useIntl();
 
-  if (level == 0) {
+  if (root) {
     console.log(condition);
   }
 
   return (
-    <Paper elevation={ level === 0 ? 1 : 0 }
+    <Paper elevation={ 0 }
            sx={ {
              width: 'auto',
              backgroundColor: theme.palette.primary.light,
-             mt: level === 0 ? 2 : 0,
-             pt: level === 0 ? 2 : 0,
-             pb: level === 0 ? 2 : 0,
-             pl: level === 0 ? 2 : 1,
-             pr: level === 0 ? 2 : 1
+             mt: root ? 2 : 0,
+             pt: root ? 2 : 0,
+             pb: root ? 2 : 0,
+             pl: root ? 2 : 0,
+             pr: root ? 2 : 0
            } }>
       <List key='condition-list' sx={ { pb: 0, pt: 0 } }>
         <>
@@ -46,32 +58,42 @@ function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, n
             condition.clauses && condition.clauses['limit'] &&
             (
               condition.clauses['limit'].map((clause, i) => {
-                return <ConditionsClause name={ 'limit' } clause={ clause } level={ level } i={ i } wiki={ wiki }
+                return <ConditionsClause name={ 'limit' } clause={ clause } root={ false } i={ i } wiki={ wiki }
                                          useExample={ useExample } wikiVersion={ wikiVersion }
-                                         key={ `limit-clause-${ i }` }/>
+                                         key={ `limit-clause-${ i }` } negate={ negate }/>
               })
             )
           }
-          <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ negate }/>
+          <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                           root={ root }/>
           {
             condition.scopes &&
             Object.entries(condition.scopes).map(([key, conditions]) => {
               return conditions.map((condition, i) => {
+                if (negateCondition(key, condition)) {
+                  return (
+                    <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ true }
+                                     root={ root } key={ `${ key }-condition-items-${ i }` }/>
+                  )
+                }
+
+                if (negateClause(key, condition)) {
+                  return (
+                    <ConditionsList condition={ condition } root={ false } wiki={ wiki }
+                                    wikiVersion={ wikiVersion } useExample={ useExample }
+                                    negate={ true } key={ `${ key }-condition-items-${ i }` }/>
+                  )
+                }
+
                 return (
-                  negateCondition(key, condition) ? (
-                      <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ true }
-                                       key={ `${ key }-condition-items-${ i }` }/>
-                    )
-                    :
-                    (
-                      <ConditionsBlock wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } level={ level }
-                                       useExample={ useExample } key={ `${ key }-condition-block-${ i }` }
-                                       title={ `${ intl.formatMessage({
-                                         id: `wiki.condition.${ key }`,
-                                         defaultMessage: key
-                                       }) }`
-                                       }/>
-                    )
+                  <ConditionsBlock wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion }
+                                   root={ false } negate={ negateScope(key, condition) }
+                                   useExample={ useExample } key={ `${ key }-condition-block-${ i }` }
+                                   title={ `${ intl.formatMessage({
+                                     id: `wiki.condition.${ key }`,
+                                     defaultMessage: key
+                                   }) }`
+                                   }/>
                 )
               })
             })
@@ -82,9 +104,9 @@ function ConditionsList({ wiki, condition, useExample, level = 0, wikiVersion, n
               .filter(([key, clauses]) => 'limit' !== key)
               .map(([key, clauses]) => {
                 return clauses.map((clause, i) => {
-                  return <ConditionsClause name={ key } clause={ clause } level={ level } i={ i } wiki={ wiki }
+                  return <ConditionsClause name={ key } clause={ clause } root={ false } i={ i } wiki={ wiki }
                                            useExample={ useExample } wikiVersion={ wikiVersion }
-                                           key={ `${ key }-clause-${ i }` }/>
+                                           key={ `${ key }-clause-${ i }` } negate={ negate }/>
                 })
               })
           }

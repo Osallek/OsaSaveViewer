@@ -37,7 +37,6 @@ function DecisionPage() {
           const { data: versionsData } = await api.wiki.versions();
 
           if (versionsData && versionsData[version]) {
-            console.log(version);
             const { data } = await api.wiki.data(version, versionsData[version]);
 
             if (data && data.decisions[id]) {
@@ -131,7 +130,7 @@ function DecisionPage() {
                                          </Grid>
                                        }
                                        details={
-                                         <ConditionsList condition={ decision.potential } wiki={ wiki }
+                                         <ConditionsList condition={ decision.potential } wiki={ wiki } root
                                                          useExample={ useExample } wikiVersion={ version }/>
                                        }
                         />
@@ -147,7 +146,7 @@ function DecisionPage() {
                                          </Grid>
                                        }
                                        details={
-                                         <ConditionsList condition={ decision.allow } wiki={ wiki }
+                                         <ConditionsList condition={ decision.allow } wiki={ wiki } root
                                                          useExample={ useExample } wikiVersion={ version }/>
                                        }
                         />

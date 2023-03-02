@@ -11,10 +11,10 @@ interface ConditionTrustProps extends TypographyProps {
   wiki: Wiki;
   wikiVersion: string;
   condition: Condition;
-  value?: string;
+  negate: boolean;
 }
 
-function ConditionTrust({ wiki, wikiVersion, condition, }: ConditionTrustProps): JSX.Element {
+function ConditionTrust({ wiki, wikiVersion, condition, negate }: ConditionTrustProps): JSX.Element {
   let tag = undefined;
   if (condition.conditions && condition.conditions.who && condition.conditions.who.length > 0) {
     tag = condition.conditions.who[0];
@@ -28,13 +28,13 @@ function ConditionTrust({ wiki, wikiVersion, condition, }: ConditionTrustProps):
   if (trust !== undefined && tag !== undefined && 'emperor' === tag?.toLowerCase()) {
     return (
       <ConditionLocalised condition={ 'trust.emperor' } wikiVersion={ wikiVersion } wiki={ wiki }
-                          value={ trust }/>
+                          value={ trust } negate={ negate }/>
     )
   }
 
   if (trust !== undefined && tag !== undefined && 'root' === tag?.toLowerCase()) {
     return (
-      <ConditionsNumber condition={ 'trust' } negate={ false } value={ trust ? Number(trust) : undefined }/>
+      <ConditionsNumber condition={ 'trust' } negate={ negate } value={ trust ? Number(trust) : undefined }/>
     )
   }
 
@@ -46,7 +46,7 @@ function ConditionTrust({ wiki, wikiVersion, condition, }: ConditionTrustProps):
   if (country) {
     return (
       <>
-        <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ false } value={ tag }
+        <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } value={ tag }
                                 colons={ false } avatar={ getCountrysFlag(country) } record={ wiki.countries }
                                 type={ wikiTypes.countries } sx={ { pl: -1 } }
                                 suffix={ <ConditionsNumber condition={ 'trust.country' } negate={ false }

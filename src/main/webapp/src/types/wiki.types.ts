@@ -60,6 +60,14 @@ export const wikiTypes: Record<string, WikiType> = {
     path: 'regions',
     icon: 'religion'
   },
+  superRegions: {
+    path: 'super-regions',
+    icon: 'religion'
+  },
+  areas: {
+    path: 'areas',
+    icon: 'religion'
+  },
   governmentReforms: {
     path: 'government-reforms',
     icon: 'religion'
@@ -98,6 +106,14 @@ export const wikiTypes: Record<string, WikiType> = {
   },
   dlcs: {
     path: 'dlcs',
+    icon: 'religion'
+  },
+  missions: {
+    path: 'missions',
+    icon: 'religion'
+  },
+  disasters: {
+    path: 'disasters',
     icon: 'religion'
   },
 }

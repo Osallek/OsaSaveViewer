@@ -4,7 +4,6 @@ import { IconButtonProps } from '@mui/material/IconButton/IconButton';
 import { Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/system';
 import React from 'react';
-import { useIntl } from 'react-intl';
 import { Condition, Wiki } from 'types/api.types';
 import ConditionsList from './ConditionsList';
 
@@ -13,8 +12,9 @@ interface ConditionsBlockProps {
   title?: React.ReactNode;
   condition: Condition;
   wikiVersion: string;
-  level: number;
+  root: boolean;
   useExample: boolean;
+  negate: boolean;
   children?: React.ReactNode;
   sx?: SxProps<Theme>;
 }
@@ -22,7 +22,7 @@ interface ConditionsBlockProps {
 const PCardContent = styled(CardContent)(({ theme }) => ({
   "&:last-child": {
     paddingBottom: 0,
-    paddingLeft: 0,
+    paddingLeft: theme.spacing(1),
     marginBottom: theme.spacing(1),
   }
 }));
@@ -44,10 +44,9 @@ const ExpandMoreButton = styled((props: ExpandMoreProps) => {
 }));
 
 function ConditionsBlock({
-                           wiki, title, condition, wikiVersion, level, useExample, children, sx
+                           wiki, title, condition, wikiVersion, root, useExample, children, sx, negate
                          }: ConditionsBlockProps) {
   const theme = useTheme();
-  const intl = useIntl();
 
   const [expanded, setExpanded] = React.useState(true);
 
@@ -86,9 +85,9 @@ function ConditionsBlock({
       <Collapse in={ expanded } timeout="auto" unmountOnExit>
         <PCardContent sx={ { p: 1, ...sx } }>
           { children }
-          <ConditionsList condition={ condition } level={ level + 1 } wiki={ wiki }
+          <ConditionsList condition={ condition } root={ root } wiki={ wiki }
                           wikiVersion={ wikiVersion } useExample={ useExample }
-                          negate={ false }/>
+                          negate={ negate }/>
         </PCardContent>
       </Collapse>
     </Card>

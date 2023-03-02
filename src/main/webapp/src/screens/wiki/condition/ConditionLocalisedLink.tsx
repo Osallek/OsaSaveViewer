@@ -1,7 +1,8 @@
-import { Avatar, Grid, Paper, styled, Typography, useTheme } from '@mui/material';
+import { Avatar, Grid, Paper, styled, Theme, Typography, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
+import { IntlShape } from 'react-intl/src/types';
 import { Link } from 'react-router-dom';
 import { Localised } from 'types/api.types';
 import { WikiType } from 'types/wiki.types';
@@ -18,63 +19,21 @@ interface ConditionLocalisedLinkProps extends TypographyProps {
   colons?: boolean;
   suffix?: string | React.ReactElement;
   link?: boolean;
+  grid?: boolean;
 }
 
-const NoColorLink = styled(Link)({
-  textDecoration: 'none',
-});
-
-function ConditionLocalisedLinkChildren({
-                                          wikiVersion, type, negate, condition, avatar, colons, suffix, value, record,
-                                          link = true, ...others
-                                        }: ConditionLocalisedLinkProps): JSX.Element {
-  const [hover, setHover] = useState<boolean>(false);
-  const theme = useTheme();
-  const { sx, ...others2 } = others;
-
-  return (
-    <Paper elevation={ 0 } onMouseEnter={ () => setHover(true) } onMouseLeave={ () => setHover(false) }
-           sx={ {
-             p: 0.5,
-             backgroundColor: (hover && link) ? 'rgba(55, 71, 79, 0.24)' : 'transparent',
-             cursor: link ? 'pointer' : undefined,
-           } }>
-      <Grid container item alignItems='center' sx={ { width: 'fit-content' } }>
-        {
-          avatar &&
-          <Avatar src={ avatar } variant='square'
-                  sx={ { display: 'inline-block', width: 32, height: 32, mr: 0.5 } }/>
-        }
-        {
-          value &&
-          <Typography variant='body1'
-                      sx={ {
-                        color: theme.palette.primary.contrastText,
-                        fontWeight: 'bold',
-                        fontStyle: 'italic',
-                        display: 'inline',
-                        mr: 0.5,
-                        ...sx
-                      } }
-                      { ...others2 }>
-            { ` ${ record && record[value] ? getLName(record[value]) : value }` }
-          </Typography>
-        }
-      </Grid>
-    </Paper>
-  )
+interface DefaultNodeProps extends ConditionLocalisedLinkProps {
+  intl: IntlShape;
+  theme: Theme;
 }
 
-function ConditionLocalisedLink(props: ConditionLocalisedLinkProps): JSX.Element {
-  const theme = useTheme();
-  const intl = useIntl();
+const innerDefaultNode = (props: DefaultNodeProps) => {
   const {
-    wikiVersion, condition, value, negate, type, record, avatar, colons = true, suffix,
-    link = true, sx, ...others
+    intl, theme, condition, negate, suffix, wikiVersion, colons = true, value, type, link = true, avatar, sx, ...others
   } = props;
 
   return (
-    <Grid container item alignItems='center' key={ `tooltip-total-${ value }` } sx={ { ...sx } }>
+    <>
       {
         condition &&
         <Typography variant='body1'
@@ -102,7 +61,7 @@ function ConditionLocalisedLink(props: ConditionLocalisedLinkProps): JSX.Element
                   <ConditionLocalisedLinkChildren { ...props }/>
                 </NoColorLink>
                 :
-                <ConditionLocalisedLinkChildren { ...props } sx={{ ...props.sx, fontStyle: '' }}/>
+                <ConditionLocalisedLinkChildren { ...props } sx={ { ...props.sx, fontStyle: '' } }/>
             }
           </>
         )
@@ -119,7 +78,69 @@ function ConditionLocalisedLink(props: ConditionLocalisedLinkProps): JSX.Element
             suffix
         )
       }
-    </Grid>
+    </>
+  )
+}
+
+const NoColorLink = styled(Link)({
+  textDecoration: 'none',
+});
+
+function ConditionLocalisedLinkChildren({
+                                          wikiVersion, type, negate, condition, avatar, colons, suffix, value, record,
+                                          link = true, sx, ...others
+                                        }: ConditionLocalisedLinkProps): JSX.Element {
+  const [hover, setHover] = useState<boolean>(false);
+  const theme = useTheme();
+
+  return (
+    <Paper elevation={ 0 } onMouseEnter={ () => setHover(true) } onMouseLeave={ () => setHover(false) }
+           sx={ {
+             p: 0.5,
+             backgroundColor: (hover && link) ? 'rgba(55, 71, 79, 0.24)' : 'transparent',
+             cursor: link ? 'pointer' : undefined,
+           } }>
+      <Grid container item alignItems='center' sx={ { width: 'fit-content' } }>
+        {
+          avatar &&
+          <Avatar src={ avatar } variant='square'
+                  sx={ { display: 'inline-block', width: 32, height: 32, mr: 0.5 } }/>
+        }
+        {
+          value &&
+          <Typography variant='body1' { ...others }
+                      sx={ {
+                        color: theme.palette.primary.contrastText,
+                        fontWeight: 'bold',
+                        fontStyle: 'italic',
+                        display: 'inline',
+                        mr: 0.5,
+                        ...sx,
+                      } }>
+            { ` ${ record && record[value] ? getLName(record[value]) : value }` }
+          </Typography>
+        }
+      </Grid>
+    </Paper>
+  )
+}
+
+function ConditionLocalisedLink(props: ConditionLocalisedLinkProps): JSX.Element {
+  const theme = useTheme();
+  const intl = useIntl();
+  const { grid = true, value, sx } = props;
+
+  return (
+    grid ?
+      (
+        <Grid container item alignItems='center' key={ `tooltip-total-${ value }` } sx={ { ...sx } }>
+          { innerDefaultNode({ theme, intl, ...props }) }
+        </Grid>
+      )
+      :
+      (
+        innerDefaultNode({ theme, intl, ...props })
+      )
   )
 }
 
