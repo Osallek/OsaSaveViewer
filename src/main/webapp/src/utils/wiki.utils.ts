@@ -146,6 +146,10 @@ export function getTradeGoodImage(good: TradeGood): string {
   return getTradeGoodUrl(good.image);
 }
 
+export function getEstate(wiki: Wiki, name: string): IdImageLocalised | null {
+  return (wiki.estates && wiki.estates[name]) ?? null;
+}
+
 export function getEstateImage(estate: IdImageLocalised): string {
   return getEstateUrl(estate.image);
 }

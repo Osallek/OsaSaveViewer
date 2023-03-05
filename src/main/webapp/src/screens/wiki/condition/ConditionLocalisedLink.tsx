@@ -29,7 +29,7 @@ interface DefaultNodeProps extends ConditionLocalisedLinkProps {
 
 const innerDefaultNode = (props: DefaultNodeProps) => {
   const {
-    intl, theme, condition, negate, suffix, wikiVersion, colons = true, value, type, link = true, avatar, sx, ...others
+    intl, theme, condition, negate, suffix, wikiVersion, colons = true, value, type, link = true, avatar, sx, grid, ...others
   } = props;
 
   return (
@@ -88,7 +88,7 @@ const NoColorLink = styled(Link)({
 
 function ConditionLocalisedLinkChildren({
                                           wikiVersion, type, negate, condition, avatar, colons, suffix, value, record,
-                                          link = true, sx, ...others
+                                          link = true, sx, grid, ...others
                                         }: ConditionLocalisedLinkProps): JSX.Element {
   const [hover, setHover] = useState<boolean>(false);
   const theme = useTheme();

@@ -334,6 +334,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     case 'hre_size':
     case 'colony':
     case 'reform_level':
+    case 'num_of_janissaries':
     case 'years_of_income': {
       return (
         <ConditionsNumber condition={ condition } negate={ negate } value={ value ? Number(value) : undefined }/>
@@ -341,6 +342,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     }
     case 'reform_desire':
     case 'army_professionalism':
+    case 'janissary_percentage':
     case 'navy_size_percentage': {
       return (
         <ConditionsNumber condition={ condition } negate={ negate } value={ value ? (Number(value) * 100) : undefined }
