@@ -64,8 +64,16 @@ export const wikiTypes: Record<string, WikiType> = {
     path: 'super-regions',
     icon: 'religion'
   },
+  continents: {
+    path: 'continents',
+    icon: 'religion'
+  },
   areas: {
     path: 'areas',
+    icon: 'religion'
+  },
+  colonialRegions: {
+    path: 'colonial-regions',
     icon: 'religion'
   },
   governmentReforms: {
@@ -82,6 +90,10 @@ export const wikiTypes: Record<string, WikiType> = {
   },
   units: {
     path: 'units',
+    icon: 'religion'
+  },
+  buildings: {
+    path: 'buildings',
     icon: 'religion'
   },
   tradeNodes: {
@@ -114,6 +126,14 @@ export const wikiTypes: Record<string, WikiType> = {
   },
   disasters: {
     path: 'disasters',
+    icon: 'religion'
+  },
+  imperialIncidents: {
+    path: 'imperial-incidents',
+    icon: 'religion'
+  },
+  incidents: {
+    path: 'incidents',
     icon: 'religion'
   },
 }

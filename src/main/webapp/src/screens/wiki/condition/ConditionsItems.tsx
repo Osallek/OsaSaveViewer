@@ -8,11 +8,12 @@ interface ConditionItemProps {
   wiki: Wiki;
   condition: Condition;
   wikiVersion: string;
+  useExample: boolean;
   root: boolean;
   negate?: boolean;
 }
 
-function ConditionsItems({ wiki, condition, wikiVersion, negate = false, root }: ConditionItemProps) {
+function ConditionsItems({ wiki, condition, wikiVersion, negate = false, root, useExample }: ConditionItemProps) {
   const theme = useTheme();
 
   return (
@@ -26,7 +27,7 @@ function ConditionsItems({ wiki, condition, wikiVersion, negate = false, root }:
                   <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
                     <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
                   </ListItemIcon>
-                  <ListItemText primary={ <ConditionLocalised condition={ key } value={ value } wiki={ wiki }
+                  <ListItemText primary={ <ConditionLocalised condition={ key } value={ value } wiki={ wiki } useExample={ useExample }
                                                               wikiVersion={ wikiVersion } negate={ negate }/> }/>
                 </ListItem>
               )

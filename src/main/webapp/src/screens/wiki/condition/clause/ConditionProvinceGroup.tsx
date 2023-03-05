@@ -16,10 +16,11 @@ interface ConditionProvinceGroupProps extends TypographyProps {
   negate: boolean;
   value: Localised;
   root: boolean;
+  name: string;
 }
 
 function ConditionProvinceGroup({
-                                  wiki, wikiVersion, useExample, condition, negate, value, root
+                                  wiki, wikiVersion, useExample, condition, negate, value, root, name
                                 }: ConditionProvinceGroupProps): JSX.Element {
   const theme = useTheme();
   const intl = useIntl();
@@ -29,24 +30,23 @@ function ConditionProvinceGroup({
     type = condition.conditions.type[0];
   }
 
-
   const copy = JSON.parse(JSON.stringify(condition));
   delete copy.conditions?.type;
 
   return (
     <ConditionsBlock wiki={ wiki } condition={ copy } wikiVersion={ wikiVersion } root={ root }
-                     useExample={ useExample } sx={ { p: 0 } } negate={ negate }
+                     useExample={ useExample } negate={ negate }
                      title={
                        <ConditionLocalisedLink link={ false } colons={ false } type={ wikiTypes.regions }
                                                wikiVersion={ wikiVersion } negate={ negate } record={ wiki.regions }
                                                value={ intl.formatMessage({
-                                                   id: `wiki.condition.region.clause${ 'all' === type ? '.all' : '' }`
+                                                   id: `wiki.condition.${ name }.clause${ 'all' === type ? '.all' : '' }`
                                                  },
                                                  { region: getLName(value) }) }
                                                sx={ {
                                                  color: theme.palette.primary.contrastText,
                                                  backgroundColor: theme.palette.primary.dark,
-                                                 fontWeight: 'bold'
+                                                 fontWeight: 'bold',
                                                } }/>
                      }>
     </ConditionsBlock>

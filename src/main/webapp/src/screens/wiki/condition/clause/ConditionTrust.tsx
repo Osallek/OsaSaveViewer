@@ -12,9 +12,10 @@ interface ConditionTrustProps extends TypographyProps {
   wikiVersion: string;
   condition: Condition;
   negate: boolean;
+  useExample: boolean;
 }
 
-function ConditionTrust({ wiki, wikiVersion, condition, negate }: ConditionTrustProps): JSX.Element {
+function ConditionTrust({ wiki, wikiVersion, condition, negate, useExample }: ConditionTrustProps): JSX.Element {
   let tag = undefined;
   if (condition.conditions && condition.conditions.who && condition.conditions.who.length > 0) {
     tag = condition.conditions.who[0];
@@ -28,7 +29,7 @@ function ConditionTrust({ wiki, wikiVersion, condition, negate }: ConditionTrust
   if (trust !== undefined && tag !== undefined && 'emperor' === tag?.toLowerCase()) {
     return (
       <ConditionLocalised condition={ 'trust.emperor' } wikiVersion={ wikiVersion } wiki={ wiki }
-                          value={ trust } negate={ negate }/>
+                          value={ trust } negate={ negate } useExample={useExample}/>
     )
   }
 

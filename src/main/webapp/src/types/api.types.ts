@@ -763,6 +763,7 @@ export type Wiki = {
   greatProjects: Record<string, GreatProject>;
   regions: Record<string, Region>;
   superRegions: Record<string, SuperRegion>;
+  continents: Record<string, Continent>;
   areas: Record<string, Area>;
   governmentReforms: Record<string, IdLocalised>;
   techGroups: Record<string, TechGroup>;
@@ -777,6 +778,10 @@ export type Wiki = {
   dlcs: Record<string, Dlc>;
   missions: Record<string, Mission>;
   disasters: Record<string, IdLocalised>;
+  imperialIncidents: Record<string, IdLocalised>;
+  incidents: Record<string, IdLocalised>;
+  colonialRegions: Record<string, ColonialRegion>;
+  buildings: Record<string, Building>;
 }
 
 export type Condition = {
@@ -1046,10 +1051,16 @@ export type Region = IdLocalised & {
   areas: Array<string>;
   provinces: Array<number>;
   color: Color;
+  monsoon: Array<MinMax<MonthDay>>
 }
 
 export type SuperRegion = IdLocalised & {
   regions: Array<string>;
+  provinces: Array<number>;
+  color: Color;
+}
+
+export type Continent = IdLocalised & {
   provinces: Array<number>;
   color: Color;
 }
@@ -1228,4 +1239,43 @@ export type Mission = IdImageLocalised & {
   completedBy?: string;
   description?: Localised;
   generic: boolean;
+}
+
+export type MinMax<T> = {
+  min?: T;
+  max?: T;
+}
+
+export type MonthDay = {
+  month: number;
+  day: number;
+}
+
+export type ColonialRegion = IdLocalised & {
+  provinces?: Array<number>;
+  color: Color;
+  taxIncome?: number;
+  nativeSize?: number;
+  nativeFerocity?: number;
+  nativeHostileness?: number;
+  tradeGoods?: Record<string, number>;
+  cultures?: Record<string, number>;
+  religions?: Record<string, number>;
+}
+
+export type Building = IdImageLocalised & {
+  cost?: number;
+  time?: number;
+  makeObsolete?: string;
+  onePerCountry: boolean;
+  allowInGoldProvinces: boolean;
+  indestructible: boolean;
+  onmap: boolean;
+  influencingFort: boolean;
+  manufactory?: Array<string>;
+  bonusManufactory?: Array<string>;
+  governmentSpecific: boolean;
+  showSeparate: boolean;
+  modifier?: Modifiers;
+  buildTrigger?: Condition;
 }

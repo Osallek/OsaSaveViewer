@@ -11,10 +11,11 @@ interface ConditionGreatProjectProps extends TypographyProps {
   wikiVersion: string;
   condition: Condition;
   negate: boolean;
+  useExample: boolean;
   value?: string;
 }
 
-function ConditionGreatProject({ wiki, wikiVersion, condition, negate }: ConditionGreatProjectProps): JSX.Element {
+function ConditionGreatProject({ wiki, wikiVersion, condition, negate, useExample }: ConditionGreatProjectProps): JSX.Element {
   let tier = undefined;
   if (condition.conditions && condition.conditions.tier && condition.conditions.tier.length > 0) {
     tier = condition.conditions.tier[0];
@@ -36,7 +37,7 @@ function ConditionGreatProject({ wiki, wikiVersion, condition, negate }: Conditi
                               colons={ false } avatar={ getGreatProjectImage(greatProject) }
                               record={ wiki.greatProjects } type={ wikiTypes.greatProjects } sx={ { pl: -1 } }
                               suffix={ <ConditionLocalised condition={ 'is_level' } sx={ { display: 'contents' } }
-                                                           wikiVersion={ wikiVersion } wiki={ wiki }
+                                                           wikiVersion={ wikiVersion } wiki={ wiki } useExample={useExample}
                                                            value={ tier }/> }/>
     )
   } else {

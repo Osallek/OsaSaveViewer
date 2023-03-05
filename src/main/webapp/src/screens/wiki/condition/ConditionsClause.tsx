@@ -7,17 +7,18 @@ import ConditionCustomTriggerTooltip from 'screens/wiki/condition/clause/Conditi
 import ConditionFactionInfluence from 'screens/wiki/condition/clause/ConditionFactionInfluence';
 import ConditionGreatProject from 'screens/wiki/condition/clause/ConditionGreatProject';
 import ConditionNumOfProvinces from 'screens/wiki/condition/clause/ConditionNumOfProvinces';
+import ConditionOpinion from 'screens/wiki/condition/clause/ConditionOpinion';
+import ConditionProvinceGroup from 'screens/wiki/condition/clause/ConditionProvinceGroup';
 import ConditionReligiousSchool from 'screens/wiki/condition/clause/ConditionReligiousSchool';
 import ConditionReverseOpinion from 'screens/wiki/condition/clause/ConditionReverseOpinion';
 import ConditionTrust from 'screens/wiki/condition/clause/ConditionTrust';
+import ConditionVariable from 'screens/wiki/condition/clause/ConditionVariable';
 import ConditionLocalisedLink from 'screens/wiki/condition/ConditionLocalisedLink';
 import ConditionsBlock from 'screens/wiki/condition/ConditionsBlock';
 import { Condition, Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
-import { getArea, getCountry, getCountrysFlag, getProvince, getRegion, getSuperRegion } from 'utils/wiki.utils';
-import ConditionOpinion from './clause/ConditionOpinion';
-import ConditionProvinceGroup from './clause/ConditionProvinceGroup';
+import { getArea, getColonialRegion, getContinent, getCountry, getCountrysFlag, getProvince, getRegion, getSuperRegion } from 'utils/wiki.utils';
 
 interface ConditionClauseProps extends TypographyProps {
   wiki: Wiki;
@@ -70,7 +71,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
   const region = getRegion(wiki, name);
   if (region !== null) {
     return (
-      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root } name='region'
                               useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ region }/>
     )
   }
@@ -78,7 +79,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
   const superRegion = getSuperRegion(wiki, name);
   if (superRegion !== null) {
     return (
-      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root } name='super_region'
                               useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ superRegion }/>
     )
   }
@@ -86,8 +87,24 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
   const area = getArea(wiki, name);
   if (area !== null) {
     return (
-      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root } name='area'
                               useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ area }/>
+    )
+  }
+
+  const continent = getContinent(wiki, name);
+  if (continent !== null) {
+    return (
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root } name='continent'
+                              useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ continent }/>
+    )
+  }
+
+  const colonialRegion = getColonialRegion(wiki, name);
+  if (colonialRegion !== null) {
+    return (
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root } name='colonial_region'
+                              useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ colonialRegion }/>
     )
   }
 
@@ -109,7 +126,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
           <ConditionOpinion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name }
-                            negate={ negate }/>
+                            negate={ negate } useExample={ useExample }/>
         </ListItem>
       )
     }
@@ -120,7 +137,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
           <ConditionReverseOpinion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name }
-                                   negate={ negate }/>
+                                   negate={ negate } useExample={ useExample }/>
         </ListItem>
       )
     }
@@ -132,12 +149,12 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
     }
     case 'has_great_project': {
       return (
-        <ConditionGreatProject condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }/>
+        <ConditionGreatProject condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } useExample={ useExample }/>
       )
     }
     case 'religious_school': {
       return (
-        <ConditionReligiousSchool condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }/>
+        <ConditionReligiousSchool condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } useExample={ useExample }/>
       )
     }
     case 'trust': {
@@ -146,7 +163,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionTrust condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }/>
+          <ConditionTrust condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } useExample={ useExample }/>
         </ListItem>
       )
     }
@@ -157,6 +174,16 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
           <ConditionFactionInfluence condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }/>
+        </ListItem>
+      )
+    }
+    case 'check_variable': {
+      return (
+        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+          <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
+            <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
+          </ListItemIcon>
+          <ConditionVariable condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } useExample={ useExample }/>
         </ListItem>
       )
     }

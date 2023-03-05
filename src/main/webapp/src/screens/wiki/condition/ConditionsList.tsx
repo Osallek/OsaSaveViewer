@@ -65,7 +65,7 @@ function ConditionsList({
             )
           }
           <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
-                           root={ root }/>
+                           root={ root } useExample={ useExample }/>
           {
             condition.scopes &&
             Object.entries(condition.scopes).map(([key, conditions]) => {
@@ -73,7 +73,7 @@ function ConditionsList({
                 if (negateCondition(key, condition)) {
                   return (
                     <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ true }
-                                     root={ root } key={ `${ key }-condition-items-${ i }` }/>
+                                     root={ root } key={ `${ key }-condition-items-${ i }` } useExample={ useExample }/>
                   )
                 }
 

@@ -12,9 +12,10 @@ interface ConditionOpinionProps extends TypographyProps {
   clause: string;
   condition: Condition;
   negate: boolean;
+  useExample: boolean;
 }
 
-function ConditionOpinion({ wiki, wikiVersion, condition, clause, negate }: ConditionOpinionProps): JSX.Element {
+function ConditionOpinion({ wiki, wikiVersion, condition, clause, negate, useExample }: ConditionOpinionProps): JSX.Element {
   let tag = undefined;
   if (condition.conditions && condition.conditions.who && condition.conditions.who.length > 0) {
     tag = condition.conditions.who[0];
@@ -28,7 +29,14 @@ function ConditionOpinion({ wiki, wikiVersion, condition, clause, negate }: Cond
   if (opinion !== undefined && tag !== undefined && 'emperor' === tag?.toLowerCase()) {
     return (
       <ConditionLocalised condition={ `${ clause }.emperor` } wikiVersion={ wikiVersion } wiki={ wiki }
-                          value={ opinion } negate={ negate }/>
+                          value={ opinion } negate={ negate } useExample={useExample}/>
+    )
+  }
+
+  if (opinion !== undefined && tag !== undefined && 'root' === tag?.toLowerCase()) {
+    return (
+      <ConditionLocalised condition={ `${ clause }.root` } wikiVersion={ wikiVersion } wiki={ wiki }
+                          value={ opinion } negate={ negate } useExample={useExample}/>
     )
   }
 
@@ -38,7 +46,7 @@ function ConditionOpinion({ wiki, wikiVersion, condition, clause, negate }: Cond
                             record={ wiki.countries } colons={ false } sx={ { pl: -1 } }
                             avatar={ country ? getCountrysFlag(country) : undefined } type={ wikiTypes.countries }
                             suffix={ <ConditionLocalised condition={ `${ clause }.country.2` } value={ opinion }
-                                                         wiki={ wiki } grid={ false }
+                                                         wiki={ wiki } grid={ false } useExample={useExample}
                                                          wikiVersion={ wikiVersion }/> }/>
   )
 }

@@ -1,7 +1,9 @@
 import * as ENV from 'env/env';
 import {
-  Advisor, Area, Country, Dlc, Idea, IdeaGroup, IdImageLocalised, IdLocalised, Localised, Mission, Region, Religion,
-  SuperRegion, TradeGood, Wiki
+  Advisor, Area, Building, ColonialRegion, Continent, Country, Dlc, Idea, IdeaGroup, IdExampleLocalised, IdImageLocalised, IdLocalised, Localised, Mission,
+  Region,
+  Religion, SuperRegion,
+  TradeGood, Wiki
 } from 'types/api.types';
 
 export function getWikiImageUrl(path: string): string {
@@ -50,6 +52,10 @@ export function getDlcUrl(key: string | undefined): string {
 
 export function getMissionUrl(key: string | undefined): string {
   return key ? getWikiImageUrl(`missions/${ key }.png`) : getMissionUrl('noMission');
+}
+
+export function getBuildingUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`buildings/${ key }.png`) : getBuildingUrl('noBuilding');
 }
 
 export function getCountry(wiki: Wiki, tag: string): Country | null {
@@ -170,4 +176,32 @@ export function getMission(wiki: Wiki, name: string): Mission | null {
 
 export function getMissionImage(mission: IdImageLocalised): string {
   return getMissionUrl(mission.image);
+}
+
+export function getImperialIncident(wiki: Wiki, name: string): IdLocalised | null {
+  return (wiki.imperialIncidents && wiki.imperialIncidents[name]) ?? null;
+}
+
+export function getIncident(wiki: Wiki, name: string): IdLocalised | null {
+  return (wiki.incidents && wiki.incidents[name]) ?? null;
+}
+
+export function getContinent(wiki: Wiki, name: string): Continent | null {
+  return (wiki.continents && wiki.continents[name]) ?? null;
+}
+
+export function getColonialRegion(wiki: Wiki, name: string): ColonialRegion | null {
+  return (wiki.colonialRegions && wiki.colonialRegions[name]) ?? null;
+}
+
+export function getIdExampleLocalised(wiki: Wiki, name: string): IdExampleLocalised | null {
+  return (wiki.idExampleLocalised && wiki.idExampleLocalised[name]) ?? null;
+}
+
+export function getBuilding(wiki: Wiki, name: string): Building | null {
+  return (wiki.buildings && wiki.buildings[name]) ?? null;
+}
+
+export function getBuildingImage(building: IdImageLocalised): string {
+  return getBuildingUrl(building.image);
 }

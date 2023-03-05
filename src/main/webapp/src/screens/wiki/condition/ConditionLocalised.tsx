@@ -3,13 +3,14 @@ import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { IntlShape } from 'react-intl/src/types';
+import LocalisedExample from 'screens/wiki/LocalisedExample';
 import { Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
 import {
-  getAdvisor, getAdvisorImage, getArea, getCountry, getCountrysFlag, getDlc, getDlcImage, getEstateImage,
-  getFactionImage, getIdea, getIdeaGroup, getIdeaGroupImage, getInstitutionImage, getMission, getMissionImage,
-  getRegion, getReligion, getReligionImage, getSuperRegion, getTradeGoodImage
+  getAdvisor, getAdvisorImage, getArea, getBuilding, getBuildingImage, getColonialRegion, getContinent, getCountry, getCountrysFlag, getDlc, getDlcImage,
+  getEstateImage, getFactionImage, getIdea, getIdeaGroup, getIdeaGroupImage, getIdExampleLocalised, getImperialIncident, getInstitutionImage, getMission,
+  getMissionImage, getProvince, getRegion, getReligion, getReligionImage, getSuperRegion, getTradeGoodImage
 } from 'utils/wiki.utils';
 import ConditionLocalisedLink from './ConditionLocalisedLink';
 import ConditionsNumber from './ConditionsNumber';
@@ -18,6 +19,7 @@ interface ConditionLocalisedProps extends TypographyProps {
   wiki: Wiki;
   condition: string;
   wikiVersion: string;
+  useExample: boolean;
   value?: string;
   negate?: boolean;
   lower?: boolean;
@@ -30,7 +32,7 @@ interface DefaultNodeProps extends ConditionLocalisedProps {
 }
 
 const innerDefaultNode = ({
-                            intl, theme, value, negate, condition, wikiVersion, wiki, lower, grid = true, ...others
+                            intl, theme, value, negate, condition, wikiVersion, wiki, lower, grid = true, useExample, ...others
                           }: DefaultNodeProps) => {
   const { sx, ...others2 } = others;
   let cond = intl.formatMessage({
@@ -92,7 +94,7 @@ const defaultNode = (props: DefaultNodeProps) => {
 function ConditionLocalised(props: ConditionLocalisedProps) {
   const theme = useTheme();
   const intl = useIntl();
-  let { wiki, condition, wikiVersion, value, negate = false, lower = false, ...others } = props;
+  let { wiki, condition, wikiVersion, value, negate = false, lower = false, useExample, ...others } = props;
 
   if ('no' === value) {
     negate = !negate;
@@ -116,6 +118,19 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     );
   }
 
+  const building = getBuilding(wiki, condition.toLowerCase());
+  if (building !== null) {
+    return (
+      <Grid container item alignItems='center'>
+        <ConditionsNumber condition={ 'building' } negate={ negate } value={ value ? Number(value) : undefined }
+                          sx={ { width: undefined } } grid={ false }/>
+        <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } grid={ false }
+                                record={ wiki.buildings } value={ condition } type={ wikiTypes.buildings }
+                                avatar={ getBuildingImage(building) } colons={ false }/>
+      </Grid>
+    );
+  }
+
   const ideaGroup = getIdeaGroup(wiki, condition.toLowerCase());
   if (ideaGroup !== null) {
     return (
@@ -131,6 +146,10 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
 
   switch (condition) {
     case 'tag': {
+      if ('root' === value?.toLowerCase()) {
+        return defaultNode({ intl, theme, ...props, negate, value: undefined, condition: `${ condition }.root` });
+      }
+
       const country = value && getCountry(wiki, value);
 
       return country ? (
@@ -139,7 +158,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
                                   avatar={ getCountrysFlag(country) }/>
         )
         :
-        <></>
+        defaultNode({ intl, theme, ...props, negate, value });
     }
     case 'advisor': {
       const advisor = value && getAdvisor(wiki, value);
@@ -150,7 +169,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
                                   avatar={ getAdvisorImage(advisor) } colons={ false }/>
         )
         :
-        <></>
+        defaultNode({ intl, theme, ...props, negate, value });
     }
     case 'region': {
       const region = value && getRegion(wiki, value);
@@ -160,7 +179,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
                                   record={ wiki.regions } value={ value } type={ wikiTypes.regions }/>
         )
         :
-        <></>
+        defaultNode({ intl, theme, ...props, negate, value });
     }
     case 'superregion': {
       const superRegion = value && getSuperRegion(wiki, value);
@@ -170,7 +189,17 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
                                   record={ wiki.superRegions } value={ value } type={ wikiTypes.superRegions }/>
         )
         :
-        <></>
+        defaultNode({ intl, theme, ...props, negate, value });
+    }
+    case 'continent': {
+      const continent = value && getContinent(wiki, value);
+
+      return continent ? (
+          <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                  record={ wiki.continents } value={ value } type={ wikiTypes.continents }/>
+        )
+        :
+        defaultNode({ intl, theme, ...props, negate, value });
     }
     case 'area': {
       const area = value && getArea(wiki, value);
@@ -180,7 +209,17 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
                                   record={ wiki.areas } value={ value } type={ wikiTypes.areas }/>
         )
         :
-        <></>
+        defaultNode({ intl, theme, ...props, negate, value });
+    }
+    case 'colonial_region': {
+      const colonialRegion = value && getColonialRegion(wiki, value);
+
+      return colonialRegion ? (
+          <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                  record={ wiki.colonialRegions } value={ value } type={ wikiTypes.colonialRegions }/>
+        )
+        :
+        defaultNode({ intl, theme, ...props, negate, value });
     }
     case 'has_country_modifier': {
       return (
@@ -290,11 +329,17 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     case 'num_of_ports':
     case 'num_of_cities':
     case 'num_of_cities':
+    case 'total_number_of_cardinals':
+    case 'num_of_subjects':
+    case 'hre_size':
+    case 'colony':
+    case 'reform_level':
     case 'years_of_income': {
       return (
         <ConditionsNumber condition={ condition } negate={ negate } value={ value ? Number(value) : undefined }/>
       )
     }
+    case 'reform_desire':
     case 'army_professionalism':
     case 'navy_size_percentage': {
       return (
@@ -323,12 +368,64 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     case 'owns':
     case 'capital':
     case 'controls':
-    case 'has_discovered':
+    case 'province_id':
     case 'owns_core_province': {
       return (
         <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
                                 record={ wiki.provinces } value={ value } type={ wikiTypes.provinces }/>
       )
+    }
+    case 'controlled_by':
+    case 'has_discovered': {
+      if ('root' === value?.toLowerCase()) {
+        return defaultNode({ intl, theme, ...props, negate, value: undefined, condition: `${ condition }.root` });
+      } else {
+        const province = value && !isNaN(Number(value)) && getProvince(wiki, Number(value));
+
+        if (province) {
+          return (
+            <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                    record={ wiki.provinces } value={ value } type={ wikiTypes.provinces }/>
+          )
+        } else {
+          const country = value && getCountry(wiki, value);
+
+          if (country) {
+            return (
+              <ConditionLocalisedLink condition={ `${ condition }.country` } wikiVersion={ wikiVersion } negate={ negate } record={ wiki.countries }
+                                      value={ value } type={ wikiTypes.countries } avatar={ getCountrysFlag(country) }/>
+            )
+          } else {
+            return defaultNode({ intl, theme, ...props, negate, value });
+          }
+        }
+      }
+    }
+    case 'country_or_non_sovereign_subject_holds': {
+      if ('root' === value?.toLowerCase()) {
+        return defaultNode({ intl, theme, ...props, negate, value: undefined, condition: `${ condition }.root` });
+      } else {
+        const province = value && !isNaN(Number(value)) && getProvince(wiki, Number(value));
+
+        if (province) {
+          return (
+            <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                    record={ wiki.provinces } value={ value } type={ wikiTypes.provinces }/>
+          )
+        } else {
+          const country = value && getCountry(wiki, value);
+
+          if (country) {
+            return (
+              <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } record={ wiki.countries } colons={ false }
+                                      value={ value } type={ wikiTypes.countries } avatar={ getCountrysFlag(country) }
+                                      suffix={ intl.formatMessage({ id: `wiki.condition.${ condition }.country` }) }/>
+            )
+          } else {
+            return defaultNode({ intl, theme, ...props, negate, value });
+          }
+        }
+      }
     }
     case 'has_dlc': {
       const dlc = value && getDlc(wiki, value);
@@ -344,6 +441,19 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
       }
     }
     case 'has_mission': {
+      const mission = value && getMission(wiki, value);
+
+      if (mission) {
+        return (
+          <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                  record={ wiki.missions } value={ mission.id } type={ wikiTypes.missions }
+                                  avatar={ mission ? getMissionImage(mission) : undefined }/>
+        )
+      } else {
+        return defaultNode({ intl, theme, ...props, negate, value });
+      }
+    }
+    case 'mission_completed': {
       const mission = value && getMission(wiki, value);
 
       if (mission) {
@@ -397,6 +507,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     case 'dominant_religion':
     case 'heir_religion':
     case 'ruler_religion':
+    case 'truce_with':
     case 'religion': {
       if ('root' === value?.toLowerCase() || 'owner' === value?.toLowerCase()) {
         return defaultNode({ intl, theme, ...props, condition: `${ condition }.root`, value: undefined });
@@ -421,11 +532,28 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
                                       type={ wikiTypes.religions }/>
             )
           } else {
-            return <></>
+            return defaultNode({ intl, theme, ...props, negate, value });
           }
         }
       }
     }
+    case 'total_base_tax':
+    case 'total_development': {
+      const country = value && getCountry(wiki, value);
+
+      if (country) {
+        return (
+          <ConditionLocalisedLink condition={ `${ condition }.country` } wikiVersion={ wikiVersion } negate={ negate }
+                                  colons={ false } record={ wiki.countries } value={ value }
+                                  type={ wikiTypes.countries } avatar={ getCountrysFlag(country) }/>
+        )
+      } else {
+        return defaultNode({ intl, theme, ...props, condition, value });
+      }
+    }
+    case 'senior_union_with':
+    case 'vassal_of':
+    case 'junior_union_with':
     case 'overlord_of':
     case 'alliance_with': {
       if ('root' === value?.toLowerCase() || 'owner' === value?.toLowerCase()) {
@@ -446,6 +574,42 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
         }
       }
     }
+    case 'active_imperial_incident': {
+      if ('any' === value?.toLowerCase()) {
+        return defaultNode({ intl, theme, ...props, condition: `${ condition }.any`, value: undefined });
+      } else {
+        const incident = value && getImperialIncident(wiki, value);
+
+        if (incident) {
+          return (
+            <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                    colons={ false } record={ wiki.imperialIncidents } value={ value }
+                                    type={ wikiTypes.imperialIncidents }
+                                    suffix={ intl.formatMessage({ id: `${ condition }.incident${ negate ? '.not' : '' }` }).toLowerCase() }/>
+          )
+        } else {
+          return defaultNode({ intl, theme, ...props, condition });
+        }
+      }
+    }
+    case 'is_incident_active': {
+      if ('any' === value?.toLowerCase()) {
+        return defaultNode({ intl, theme, ...props, condition: `${ condition }.any`, value: undefined });
+      } else {
+        const incident = value && getImperialIncident(wiki, value);
+
+        if (incident) {
+          return (
+            <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                    colons={ false } record={ wiki.incidents } value={ value }
+                                    type={ wikiTypes.incidents }
+                                    suffix={ intl.formatMessage({ id: `${ condition }.incident${ negate ? '.not' : '' }` }).toLowerCase() }/>
+          )
+        } else {
+          return defaultNode({ intl, theme, ...props, condition });
+        }
+      }
+    }
     case 'secondary_religion': {
       const religion = value && getReligion(wiki, value);
 
@@ -458,7 +622,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
                                     { id: `wiki.condition.secondary_religion${ negate ? '.not' : '' }` }).toLowerCase() }/>
         )
       } else {
-        return <></>
+        return defaultNode({ intl, theme, ...props, negate, value });
       }
     }
     case 'war_with': {
@@ -513,6 +677,12 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
       )
     case 'is_strongest_trade_power':
       if ('root' === value?.toLowerCase()) {
+        return (
+          <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText, ...others.sx } } { ...others }>
+            { `${ intl.formatMessage({ id: `wiki.condition.is_strongest_trade_power${ negate ? '.not' : '' }` }) }` }
+          </Typography>
+        )
+      } else if ('prev' === value?.toLowerCase()) {
         return (
           <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText, ...others.sx } } { ...others }>
             { `${ intl.formatMessage({ id: `wiki.condition.is_strongest_trade_power${ negate ? '.not' : '' }` }) }` }
@@ -619,7 +789,15 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
         </Typography>
       )
     default:
-      return defaultNode({ intl, theme, ...props, negate, value });
+      const trigger = getIdExampleLocalised(wiki, condition + '_tt');
+      if (trigger) {
+        return (
+          <LocalisedExample example={ trigger } useExample={ useExample }
+                            sx={ { color: theme.palette.primary.contrastText, ...others.sx } } { ...others }/>
+        )
+      } else {
+        return defaultNode({ intl, theme, ...props, negate, value });
+      }
   }
 }
 

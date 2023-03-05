@@ -12,10 +12,11 @@ interface ConditionReverseOpinionProps extends TypographyProps {
   clause: string;
   condition: Condition;
   negate: boolean;
+  useExample: boolean;
 }
 
 function ConditionReverseOpinion({
-                                   wiki, wikiVersion, condition, clause, negate
+                                   wiki, wikiVersion, condition, clause, negate, useExample
                                  }: ConditionReverseOpinionProps): JSX.Element {
   let tag = undefined;
   if (condition.conditions && condition.conditions.who && condition.conditions.who.length > 0) {
@@ -30,7 +31,7 @@ function ConditionReverseOpinion({
   if (opinion !== undefined && tag !== undefined && 'emperor' === tag?.toLowerCase()) {
     return (
       <ConditionLocalised condition={ `${ clause }.emperor` } wikiVersion={ wikiVersion } wiki={ wiki }
-                          negate={ negate } value={ opinion }/>
+                          negate={ negate } value={ opinion } useExample={ useExample }/>
     )
   }
 
@@ -40,7 +41,7 @@ function ConditionReverseOpinion({
                             colons={ false } avatar={ country ? getCountrysFlag(country) : undefined }
                             type={ wikiTypes.countries } sx={ { pl: -1 } }
                             suffix={ <ConditionLocalised condition={ `${ clause }.country` } value={ opinion }
-                                                         sx={ { display: 'contents' } } wiki={ wiki }
+                                                         sx={ { display: 'contents' } } wiki={ wiki } useExample={ useExample }
                                                          wikiVersion={ wikiVersion }/> }/>
   )
 }
