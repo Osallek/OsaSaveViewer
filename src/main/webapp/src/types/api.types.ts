@@ -751,7 +751,7 @@ export type Wiki = {
   idExampleLocalised: Record<string, IdExampleLocalised>;
   idLocalised: Record<string, IdLocalised>;
   modifiers: Record<string, Modifier>;
-  ages: Record<string, IdLocalised>;
+  ages: Record<string, Age>;
   ideaGroups: Record<string, IdeaGroup>;
   tradeGoods: Record<string, TradeGood>;
   religions: Record<string, Religion>;
@@ -773,7 +773,7 @@ export type Wiki = {
   tradeNodes: Record<string, TradeNode>;
   technologies: Record<Power, TechnologyType>;
   estates: Record<string, IdImageLocalised>;
-  institutions: Record<string, IdImageLocalised>;
+  institutions: Record<string, Institution>;
   factions: Record<string, IdImageLocalised>;
   dlcs: Record<string, Dlc>;
   missions: Record<string, Mission>;
@@ -1278,4 +1278,39 @@ export type Building = IdImageLocalised & {
   showSeparate: boolean;
   modifier?: Modifiers;
   buildTrigger?: Condition;
+}
+
+export type Age = IdImageLocalised & {
+  start: number;
+  religiousConflicts: boolean;
+  canStart?: Condition;
+  papacy?: number;
+  absolutism?: Record<string, number>;
+  objectives?: Record<string, AgeObjective>;
+  abilities?: Record<string, AgeAbility>;
+}
+
+export type AgeObjective = IdImageLocalised & {
+  allow?: Condition;
+  trigger: Condition;
+}
+
+export type AgeAbility = IdImageLocalised & {
+  allow?: Condition;
+  modifiers?: Modifiers;
+  effects?: Effects;
+  rules?: Array<string>;
+}
+
+export type Institution = IdImageLocalised & {
+  bonus?: Modifiers;
+  embracementSpeed?: Modifiers;
+  tradeCompanyEfficiency?: number;
+  startChance?: number;
+  historicalStartProvince?: number;
+  historicalStartDate?: string;
+  onStart?: string;
+  history?: Condition;
+  canStart?: Condition;
+  canEmbrace?: Condition;
 }

@@ -1,8 +1,7 @@
 import * as ENV from 'env/env';
 import {
-  Advisor, Area, Building, ColonialRegion, Continent, Country, Dlc, Idea, IdeaGroup, IdExampleLocalised, IdImageLocalised, IdLocalised, Localised, Mission,
-  Region,
-  Religion, SuperRegion,
+  Advisor, Age, AgeAbility, AgeObjective, Area, Building, ColonialRegion, Continent, Country, Dlc, Idea, IdeaGroup,
+  IdExampleLocalised, IdImageLocalised, IdLocalised, Institution, Localised, Mission, Region, Religion, SuperRegion,
   TradeGood, Wiki
 } from 'types/api.types';
 
@@ -56,6 +55,18 @@ export function getMissionUrl(key: string | undefined): string {
 
 export function getBuildingUrl(key: string | undefined): string {
   return key ? getWikiImageUrl(`buildings/${ key }.png`) : getBuildingUrl('noBuilding');
+}
+
+export function getAgeUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`ages/${ key }.png`) : getAgeUrl('noAge');
+}
+
+export function getAgeAbilityUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`age-abilities/${ key }.png`) : getAgeUrl('noAgeAbility');
+}
+
+export function getAgeObjectiveUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`age-objectives/${ key }.png`) : getAgeUrl('noAgeObjective');
 }
 
 export function getCountry(wiki: Wiki, tag: string): Country | null {
@@ -154,6 +165,10 @@ export function getEstateImage(estate: IdImageLocalised): string {
   return getEstateUrl(estate.image);
 }
 
+export function getInstitution(wiki: Wiki, name: string): Institution | null {
+  return (wiki.institutions && wiki.institutions[name]) ?? null;
+}
+
 export function getInstitutionImage(institution: IdImageLocalised): string {
   return getInstitutionUrl(institution.image);
 }
@@ -209,3 +224,48 @@ export function getBuilding(wiki: Wiki, name: string): Building | null {
 export function getBuildingImage(building: IdImageLocalised): string {
   return getBuildingUrl(building.image);
 }
+
+export function getAge(wiki: Wiki, name: string): Age | null {
+  return (wiki.ages && wiki.ages[name]) ?? null;
+}
+
+export function getAgeImage(age: IdImageLocalised): string {
+  return getAgeUrl(age.image);
+}
+
+export function getAgeAbility(wiki: Wiki, name: string): AgeAbility | null {
+  if (!wiki.ages) {
+    return null;
+  }
+
+  for (const age of Object.values(wiki.ages)) {
+    if (age.abilities && age.abilities[name]) {
+      return age.abilities[name];
+    }
+  }
+
+  return null;
+}
+
+export function getAgeAbilityImage(age: AgeAbility): string {
+  return getAgeAbilityUrl(age.image);
+}
+
+export function getAgeObjective(wiki: Wiki, name: string): AgeObjective | null {
+  if (!wiki.ages) {
+    return null;
+  }
+
+  for (const age of Object.values(wiki.ages)) {
+    if (age.objectives && age.objectives[name]) {
+      return age.objectives[name];
+    }
+  }
+
+  return null;
+}
+
+export function getAgeObjectiveImage(age: AgeObjective): string {
+  return getAgeObjectiveUrl(age.image);
+}
+

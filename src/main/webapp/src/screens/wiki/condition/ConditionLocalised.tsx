@@ -8,8 +8,10 @@ import { Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
 import {
-  getAdvisor, getAdvisorImage, getArea, getBuilding, getBuildingImage, getColonialRegion, getContinent, getCountry, getCountrysFlag, getDlc, getDlcImage,
-  getEstateImage, getFactionImage, getIdea, getIdeaGroup, getIdeaGroupImage, getIdExampleLocalised, getImperialIncident, getInstitutionImage, getMission,
+  getAdvisor, getAdvisorImage, getAge, getAgeImage, getArea, getBuilding, getBuildingImage, getColonialRegion,
+  getContinent, getCountry, getCountrysFlag, getDlc, getDlcImage, getEstateImage, getFactionImage, getIdea,
+  getIdeaGroup, getIdeaGroupImage, getIdExampleLocalised, getImperialIncident, getInstitution, getInstitutionImage,
+  getMission,
   getMissionImage, getProvince, getRegion, getReligion, getReligionImage, getSuperRegion, getTradeGoodImage
 } from 'utils/wiki.utils';
 import ConditionLocalisedLink from './ConditionLocalisedLink';
@@ -32,7 +34,8 @@ interface DefaultNodeProps extends ConditionLocalisedProps {
 }
 
 const innerDefaultNode = ({
-                            intl, theme, value, negate, condition, wikiVersion, wiki, lower, grid = true, useExample, ...others
+                            intl, theme, value, negate, condition, wikiVersion, wiki, lower, grid = true, useExample,
+                            ...others
                           }: DefaultNodeProps) => {
   const { sx, ...others2 } = others;
   let cond = intl.formatMessage({
@@ -228,9 +231,11 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
       )
     }
     case 'current_age': {
+      const age = value && getAge(wiki, value);
       return (
         <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
-                                record={ wiki.ages } value={ value } type={ wikiTypes.ages }/>
+                                record={ wiki.ages } value={ value } type={ wikiTypes.ages }
+                                avatar={ age ? getAgeImage(age) : undefined } avatarWidth={ 'auto' }/>
       )
     }
     case 'has_idea_group':
@@ -277,7 +282,8 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
       )
     }
     case 'has_institution': {
-      const institution = value && wiki.institutions && wiki.institutions[value];
+      console.log(wiki.institutions)
+      const institution = value && getInstitution(wiki, value);
       return (
         <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
                                 record={ wiki.institutions } value={ value } type={ wikiTypes.institutions }
@@ -394,7 +400,8 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
 
           if (country) {
             return (
-              <ConditionLocalisedLink condition={ `${ condition }.country` } wikiVersion={ wikiVersion } negate={ negate } record={ wiki.countries }
+              <ConditionLocalisedLink condition={ `${ condition }.country` } wikiVersion={ wikiVersion }
+                                      negate={ negate } record={ wiki.countries }
                                       value={ value } type={ wikiTypes.countries } avatar={ getCountrysFlag(country) }/>
             )
           } else {
@@ -419,7 +426,8 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
 
           if (country) {
             return (
-              <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } record={ wiki.countries } colons={ false }
+              <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } record={ wiki.countries }
+                                      colons={ false }
                                       value={ value } type={ wikiTypes.countries } avatar={ getCountrysFlag(country) }
                                       suffix={ intl.formatMessage({ id: `wiki.condition.${ condition }.country` }) }/>
             )
@@ -587,7 +595,8 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
             <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
                                     colons={ false } record={ wiki.imperialIncidents } value={ value }
                                     type={ wikiTypes.imperialIncidents }
-                                    suffix={ intl.formatMessage({ id: `${ condition }.incident${ negate ? '.not' : '' }` }).toLowerCase() }/>
+                                    suffix={ intl.formatMessage(
+                                      { id: `${ condition }.incident${ negate ? '.not' : '' }` }).toLowerCase() }/>
           )
         } else {
           return defaultNode({ intl, theme, ...props, condition });
@@ -605,7 +614,8 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
             <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
                                     colons={ false } record={ wiki.incidents } value={ value }
                                     type={ wikiTypes.incidents }
-                                    suffix={ intl.formatMessage({ id: `${ condition }.incident${ negate ? '.not' : '' }` }).toLowerCase() }/>
+                                    suffix={ intl.formatMessage(
+                                      { id: `${ condition }.incident${ negate ? '.not' : '' }` }).toLowerCase() }/>
           )
         } else {
           return defaultNode({ intl, theme, ...props, condition });

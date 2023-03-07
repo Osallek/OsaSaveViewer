@@ -16,6 +16,7 @@ interface ConditionLocalisedLinkProps extends TypographyProps {
   condition?: string;
   value?: string;
   avatar?: string;
+  avatarWidth?: string;
   colons?: boolean;
   suffix?: string | React.ReactElement;
   link?: boolean;
@@ -29,7 +30,8 @@ interface DefaultNodeProps extends ConditionLocalisedLinkProps {
 
 const innerDefaultNode = (props: DefaultNodeProps) => {
   const {
-    intl, theme, condition, negate, suffix, wikiVersion, colons = true, value, type, link = true, avatar, sx, grid, ...others
+    intl, theme, condition, negate, suffix, wikiVersion, colons = true, value, type, link = true, avatar, sx, grid,
+    avatarWidth, ...others
   } = props;
 
   return (
@@ -88,7 +90,7 @@ const NoColorLink = styled(Link)({
 
 function ConditionLocalisedLinkChildren({
                                           wikiVersion, type, negate, condition, avatar, colons, suffix, value, record,
-                                          link = true, sx, grid, ...others
+                                          link = true, sx, grid, avatarWidth, ...others
                                         }: ConditionLocalisedLinkProps): JSX.Element {
   const [hover, setHover] = useState<boolean>(false);
   const theme = useTheme();
@@ -104,7 +106,7 @@ function ConditionLocalisedLinkChildren({
         {
           avatar &&
           <Avatar src={ avatar } variant='square'
-                  sx={ { display: 'inline-block', width: 32, height: 32, mr: 0.5 } }/>
+                  sx={ { display: 'inline-block', width: avatarWidth ?? 32, height: 32, mr: 0.5 } }/>
         }
         {
           value &&

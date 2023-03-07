@@ -27,12 +27,12 @@ function ConditionFactionInfluence({ wiki, wikiVersion, condition, negate }: Con
 
   let faction = influence !== undefined && name !== undefined && getFaction(wiki, name);
   return (
-    <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } value={ name }
-                            colons={ false } record={ wiki.factions } type={ wikiTypes.factions } sx={ { pl: -1 } }
+    <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } value={ name } grid={ false }
+                            record={ wiki.factions } type={ wikiTypes.factions } sx={ { pl: 0 } } colons={ false }
                             avatar={ faction ? getFactionImage(faction) : undefined }
                             suffix={ <ConditionsNumber condition={ 'faction.influence' } negate={ negate }
-                                                       value={ influence ? Number(influence) : undefined }
-                                                       sx={ { display: 'contents' } }/> }/>
+                                                       grid={ false }
+                                                       value={ influence ? Number(influence) : undefined }/> }/>
   )
 }
 

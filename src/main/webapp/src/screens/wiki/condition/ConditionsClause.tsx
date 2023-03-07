@@ -25,7 +25,9 @@ import ConditionsBlock from 'screens/wiki/condition/ConditionsBlock';
 import { Condition, Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
-import { getArea, getColonialRegion, getContinent, getCountry, getCountrysFlag, getProvince, getRegion, getSuperRegion } from 'utils/wiki.utils';
+import {
+  getArea, getColonialRegion, getContinent, getCountry, getCountrysFlag, getProvince, getRegion, getSuperRegion
+} from 'utils/wiki.utils';
 
 interface ConditionClauseProps extends TypographyProps {
   wiki: Wiki;
@@ -86,7 +88,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
   const superRegion = getSuperRegion(wiki, name);
   if (superRegion !== null) {
     return (
-      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root } name='super_region'
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+                              name='super_region'
                               useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ superRegion }/>
     )
   }
@@ -102,7 +105,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
   const continent = getContinent(wiki, name);
   if (continent !== null) {
     return (
-      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root } name='continent'
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+                              name='continent'
                               useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ continent }/>
     )
   }
@@ -110,7 +114,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
   const colonialRegion = getColonialRegion(wiki, name);
   if (colonialRegion !== null) {
     return (
-      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root } name='colonial_region'
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+                              name='colonial_region'
                               useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ colonialRegion }/>
     )
   }
@@ -132,7 +137,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionOpinion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name } negate={ negate } useExample={ useExample }/>
+          <ConditionOpinion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name }
+                            negate={ negate } useExample={ useExample }/>
         </ListItem>
       )
     }
@@ -142,7 +148,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionPrivateerPower condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name } negate={ negate } useExample={ useExample }/>
+          <ConditionPrivateerPower condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name }
+                                   negate={ negate } useExample={ useExample }/>
         </ListItem>
       )
     }
@@ -152,7 +159,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionReverseOpinion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name } negate={ negate } useExample={ useExample }/>
+          <ConditionReverseOpinion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } clause={ name }
+                                   negate={ negate } useExample={ useExample }/>
         </ListItem>
       )
     }
@@ -164,17 +172,25 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
     }
     case 'has_great_project': {
       return (
-        <ConditionGreatProject condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } useExample={ useExample }/>
+        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+          <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
+            <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
+          </ListItemIcon>
+          <ConditionGreatProject condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }
+                                 useExample={ useExample }/>
+        </ListItem>
       )
     }
     case 'religious_school': {
       return (
-        <ConditionReligiousSchool condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } useExample={ useExample }/>
+        <ConditionReligiousSchool condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }
+                                  useExample={ useExample }/>
       )
     }
     case 'num_of_religion': {
       return (
-        <ConditionNumOfReligion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } clause={ name }/>
+        <ConditionNumOfReligion condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }
+                                clause={ name }/>
       )
     }
     case 'trust': {
@@ -183,7 +199,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionTrust condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } useExample={ useExample }/>
+          <ConditionTrust condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }
+                          useExample={ useExample }/>
         </ListItem>
       )
     }
@@ -203,7 +220,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionVariable condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } useExample={ useExample }/>
+          <ConditionVariable condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }
+                             useExample={ useExample }/>
         </ListItem>
       )
     }
@@ -213,7 +231,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionNumEstatePrivileges condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } useExample={ useExample }
+          <ConditionNumEstatePrivileges condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }
+                                        useExample={ useExample }
                                         clause={ name }/>
         </ListItem>
       )
@@ -224,7 +243,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionNumEstateAgendasCompleted condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } clause={ name }/>
+          <ConditionNumEstateAgendasCompleted condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion }
+                                              negate={ negate } clause={ name }/>
         </ListItem>
       )
     }
@@ -234,7 +254,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionEstateLoyalty condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } useExample={ useExample }
+          <ConditionEstateLoyalty condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }
+                                  useExample={ useExample }
                                   clause={ name }/>
         </ListItem>
       )
@@ -245,7 +266,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
-          <ConditionEstateInfluence condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate } useExample={ useExample }
+          <ConditionEstateInfluence condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }
+                                    useExample={ useExample }
                                     clause={ name }/>
         </ListItem>
       )

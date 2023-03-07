@@ -32,7 +32,7 @@ function ConditionEstateInfluence({ wiki, wikiVersion, condition, clause, negate
   const estate = value !== undefined && name !== undefined && getEstate(wiki, name);
   return (
     <ConditionLocalisedLink condition={ `${ clause }.1` } wikiVersion={ wikiVersion } negate={ negate } value={ name } type={ wikiTypes.estates }
-                            record={ wiki.estates } colons={ false } avatar={ estate ? getEstateImage(estate) : undefined } grid={ false }
+                            record={ wiki.estates } avatar={ estate ? getEstateImage(estate) : undefined } grid={ false }
                             suffix={ <ConditionLocalised condition={ `${ clause }${ loyalty ? '.loyalty' : '' }` }
                                                          negate={ loyalty ? negateLoyalty : negate } value={ value } grid={ false }
                                                          useExample={ useExample } wiki={ wiki } wikiVersion={ wikiVersion }/> }/>
