@@ -10,8 +10,8 @@ import { getLName } from 'utils/data.utils';
 
 interface ConditionLocalisedLinkProps extends TypographyProps {
   wikiVersion: string;
-  type: WikiType;
-  record: Record<string, Localised>;
+  type?: WikiType;
+  record?: Record<string, Localised>;
   negate: boolean;
   condition?: string;
   value?: string;
@@ -59,7 +59,7 @@ const innerDefaultNode = (props: DefaultNodeProps) => {
             }
             {
               link ?
-                <NoColorLink to={ link ? `/wiki/${ wikiVersion }/${ type.path }/${ value }` : '' }>
+                <NoColorLink to={ link ? `/wiki/${ wikiVersion }/${ type?.path }/${ value }` : '' }>
                   <ConditionLocalisedLinkChildren { ...props }/>
                 </NoColorLink>
                 :

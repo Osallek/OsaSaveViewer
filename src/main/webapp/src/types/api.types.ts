@@ -756,7 +756,7 @@ export type Wiki = {
   tradeGoods: Record<string, TradeGood>;
   religions: Record<string, Religion>;
   estatePrivileges: Record<string, IdLocalised>;
-  provinces: Record<string, IdLocalised>;
+  provinces: Record<string, Province>;
   cultures: Record<string, IdLocalised>;
   cultureGroups: Record<string, IdLocalised>;
   religionGroups: Record<string, ReligionGroup>;
@@ -1313,4 +1313,52 @@ export type Institution = IdImageLocalised & {
   history?: Condition;
   canStart?: Condition;
   canEmbrace?: Condition;
+}
+
+export type Province = IdLocalised & {
+  name?: string;
+  isOcean: boolean;
+  isLake: boolean;
+  climate?: string;
+  monsoon?: string;
+  winter?: string;
+  terrainCategory?: string;
+  area?: string;
+  continent?: string;
+  tradeCompany?: string;
+  historyItems?: Record<string, ProvinceHistoryItem>;
+}
+
+export type ProvinceHistoryItem = {
+  owner?: string;
+  controller?: string;
+  addCores?: Array<string>;
+  removeCores?: Array<string>;
+  isCity?: boolean;
+  culture?: string;
+  religion?: string;
+  baseTax?: number;
+  baseProduction?: number;
+  baseManpower?: number;
+  tradeGood?: string;
+  hre?: boolean;
+  capital?: string;
+  discoveredBy?: Array<string>;
+  reformationCenter?: boolean;
+  seatInParliament?: boolean;
+  unrest?: number;
+  centerOfTrade?: number;
+  extraCost?: number;
+  nativeSize?: number;
+  nativeHostileness?: number;
+  nativeFerocity?: number;
+  addPermanentModifier?: Array<ModifierApply>;
+  removeProvinceModifier?: Array<ModifierApply>;
+  newBuildings?: Array<string>;
+  removeBuildings?: Array<string>;
+}
+
+export type ModifierApply = {
+  modifier?: string;
+  duration: number;
 }

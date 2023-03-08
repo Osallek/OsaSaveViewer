@@ -65,15 +65,12 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
     )
   }
 
-  let province = null;
-  if (!isNaN(Number(name))) {
-    province = getProvince(wiki, Number(name));
-  }
-
-  if (province !== null) {
+  const province = !isNaN(Number(name)) && getProvince(wiki, Number(name));
+  if (province !== null && province) {
     return (
-      <ConditionsBlock wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
-                       useExample={ useExample } title={ getLName(province) } negate={ negate }/>
+      <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
+                              name='province' useExample={ useExample } negate={ negate }
+                              value={ province }/>
     )
   }
 
@@ -89,8 +86,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
   if (superRegion !== null) {
     return (
       <ConditionProvinceGroup wiki={ wiki } condition={ clause } wikiVersion={ wikiVersion } root={ root }
-                              name='super_region'
-                              useExample={ useExample } sx={ { p: 0 } } negate={ negate } value={ superRegion }/>
+                              name='super_region' useExample={ useExample } sx={ { p: 0 } } negate={ negate }
+                              value={ superRegion }/>
     )
   }
 

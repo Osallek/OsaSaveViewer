@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl';
 import ConditionLocalisedLink from 'screens/wiki/condition/ConditionLocalisedLink';
 import ConditionsBlock from 'screens/wiki/condition/ConditionsBlock';
 import { Condition, Localised, Wiki } from 'types/api.types';
-import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
 
 interface ConditionProvinceGroupProps extends TypographyProps {
@@ -37,12 +36,12 @@ function ConditionProvinceGroup({
     <ConditionsBlock wiki={ wiki } condition={ copy } wikiVersion={ wikiVersion } root={ root }
                      useExample={ useExample } negate={ negate }
                      title={
-                       <ConditionLocalisedLink link={ false } colons={ false } type={ wikiTypes.regions }
-                                               wikiVersion={ wikiVersion } negate={ negate } record={ wiki.regions }
+                       <ConditionLocalisedLink link={ false } colons={ false } wikiVersion={ wikiVersion }
+                                               negate={ negate }
                                                value={ intl.formatMessage({
                                                    id: `wiki.condition.${ name }.clause${ 'all' === type ? '.all' : '' }`
                                                  },
-                                                 { region: getLName(value) }) }
+                                                 { name: getLName(value) }) }
                                                sx={ {
                                                  color: theme.palette.primary.contrastText,
                                                  backgroundColor: theme.palette.primary.dark,
