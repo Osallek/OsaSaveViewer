@@ -9,10 +9,9 @@ import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
 import {
   getAdvisor, getAdvisorImage, getAge, getAgeImage, getArea, getBuilding, getBuildingImage, getColonialRegion,
-  getContinent, getCountry, getCountrysFlag, getDlc, getDlcImage, getEstateImage, getFactionImage, getIdea,
+  getContinent, getCountry, getCountrysFlag, getDlc, getDlcImage, getEstateImage, getFaction, getFactionImage, getIdea,
   getIdeaGroup, getIdeaGroupImage, getIdExampleLocalised, getImperialIncident, getInstitution, getInstitutionImage,
-  getMission,
-  getMissionImage, getProvince, getRegion, getReligion, getReligionImage, getSuperRegion, getTradeGoodImage
+  getMission, getMissionImage, getProvince, getRegion, getReligion, getReligionImage, getSuperRegion, getTradeGoodImage
 } from 'utils/wiki.utils';
 import ConditionLocalisedLink from './ConditionLocalisedLink';
 import ConditionsNumber from './ConditionsNumber';
@@ -299,7 +298,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
       )
     }
     case 'faction_in_power': {
-      const faction = value && wiki.factions && wiki.factions[value];
+      const faction = value && getFaction(wiki, value);
       return (
         <ConditionLocalisedLink condition={ 'faction_in_power.1' } wikiVersion={ wikiVersion } negate={ negate }
                                 colons={ false }
@@ -307,6 +306,14 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
                                 avatar={ faction ? getFactionImage(faction) : undefined }
                                 suffix={ intl.formatMessage(
                                   { id: `wiki.condition.${ condition }${ negate ? '.not' : '' }` }) }/>
+      )
+    }
+    case 'has_faction': {
+      const faction = value && getFaction(wiki, value);
+      return (
+        <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
+                                record={ wiki.factions } value={ value } type={ wikiTypes.factions }
+                                avatar={ faction ? getFactionImage(faction) : undefined }/>
       )
     }
     case 'has_global_flag': {

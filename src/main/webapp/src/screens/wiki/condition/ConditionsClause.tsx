@@ -44,6 +44,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
   const theme = useTheme();
   const intl = useIntl();
 
+  //Todo religion_years
+
   const country = getCountry(wiki, name);
   if (country !== null) {
     return (

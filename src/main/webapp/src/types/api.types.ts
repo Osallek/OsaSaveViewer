@@ -757,8 +757,8 @@ export type Wiki = {
   religions: Record<string, Religion>;
   estatePrivileges: Record<string, IdLocalised>;
   provinces: Record<string, Province>;
-  cultures: Record<string, IdLocalised>;
-  cultureGroups: Record<string, IdLocalised>;
+  cultures: Record<string, Culture>;
+  cultureGroups: Record<string, CultureGroup>;
   religionGroups: Record<string, ReligionGroup>;
   greatProjects: Record<string, GreatProject>;
   regions: Record<string, Region>;
@@ -774,7 +774,7 @@ export type Wiki = {
   technologies: Record<Power, TechnologyType>;
   estates: Record<string, IdImageLocalised>;
   institutions: Record<string, Institution>;
-  factions: Record<string, IdImageLocalised>;
+  factions: Record<string, Faction>;
   dlcs: Record<string, Dlc>;
   missions: Record<string, Mission>;
   disasters: Record<string, IdLocalised>;
@@ -1361,4 +1361,30 @@ export type ProvinceHistoryItem = {
 export type ModifierApply = {
   modifier?: string;
   duration: number;
+}
+
+export type Culture = IdLocalised & {
+  group?: string;
+  primary?: string;
+  maleNames?: Array<string>;
+  femaleNames?: Array<string>;
+  dynastyNames?: Array<string>;
+}
+
+export type CultureGroup = IdLocalised & {
+  cultures?: Array<string>;
+  maleNames?: Array<string>;
+  femaleNames?: Array<string>;
+  dynastyNames?: Array<string>;
+}
+
+export type Faction = IdImageLocalised & {
+  category: Power;
+  modifiers?: Modifiers;
+  trigger?: Condition;
+  names?: Array<Names>;
+}
+
+export type Names = IdLocalised & {
+  trigger?: Condition;
 }
