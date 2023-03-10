@@ -9,7 +9,9 @@ import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
 import {
   getAdvisor, getAdvisorImage, getAge, getAgeImage, getArea, getBuilding, getBuildingImage, getColonialRegion,
-  getContinent, getCountry, getCountrysFlag, getDlc, getDlcImage, getEstateImage, getFaction, getFactionImage, getIdea,
+  getContinent, getCountry, getCountrysFlag, getDisaster, getDisasterImage, getDlc, getDlcImage, getEstateImage,
+  getFaction,
+  getFactionImage, getIdea,
   getIdeaGroup, getIdeaGroupImage, getIdExampleLocalised, getImperialIncident, getInstitution, getInstitutionImage,
   getMission, getMissionImage, getProvince, getRegion, getReligion, getReligionImage, getSuperRegion, getTradeGoodImage
 } from 'utils/wiki.utils';
@@ -267,9 +269,11 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
       )
     }
     case 'has_disaster': {
+      const disaster = value && getDisaster(wiki, value);
       return (
         <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
-                                record={ wiki.disasters } value={ value } type={ wikiTypes.disasters }/>
+                                record={ wiki.disasters } value={ value } type={ wikiTypes.disasters }
+                                avatar={ disaster ? getDisasterImage(disaster) : undefined }/>
       )
     }
     case 'has_estate': {
@@ -281,7 +285,6 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
       )
     }
     case 'has_institution': {
-      console.log(wiki.institutions)
       const institution = value && getInstitution(wiki, value);
       return (
         <ConditionLocalisedLink condition={ condition } wikiVersion={ wikiVersion } negate={ negate }

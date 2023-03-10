@@ -1,6 +1,7 @@
 import * as ENV from 'env/env';
 import {
-  Advisor, Age, AgeAbility, AgeObjective, Area, Building, ColonialRegion, Continent, Country, Dlc, Idea, IdeaGroup,
+  Advisor, Age, AgeAbility, AgeObjective, Area, Building, ColonialRegion, Continent, Country, Disaster, Dlc, Idea,
+  IdeaGroup,
   IdExampleLocalised, IdImageLocalised, IdLocalised, Institution, Localised, Mission, Region, Religion, SuperRegion,
   TradeGood, Wiki
 } from 'types/api.types';
@@ -67,6 +68,10 @@ export function getAgeAbilityUrl(key: string | undefined): string {
 
 export function getAgeObjectiveUrl(key: string | undefined): string {
   return key ? getWikiImageUrl(`age-objectives/${ key }.png`) : getAgeUrl('noAgeObjective');
+}
+
+export function getDisasterUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`disasters/${ key }.png`) : getDisasterUrl('noDisaster');
 }
 
 export function getCountry(wiki: Wiki, tag: string): Country | null {
@@ -267,5 +272,13 @@ export function getAgeObjective(wiki: Wiki, name: string): AgeObjective | null {
 
 export function getAgeObjectiveImage(age: AgeObjective): string {
   return getAgeObjectiveUrl(age.image);
+}
+
+export function getDisaster(wiki: Wiki, name: string): Disaster | null {
+  return (wiki.disasters && wiki.disasters[name]) ?? null;
+}
+
+export function getDisasterImage(disaster: IdImageLocalised): string {
+  return getDisasterUrl(disaster.image);
 }
 

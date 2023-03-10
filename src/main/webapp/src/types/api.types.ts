@@ -777,7 +777,7 @@ export type Wiki = {
   factions: Record<string, Faction>;
   dlcs: Record<string, Dlc>;
   missions: Record<string, Mission>;
-  disasters: Record<string, IdLocalised>;
+  disasters: Record<string, Disaster>;
   imperialIncidents: Record<string, IdLocalised>;
   incidents: Record<string, IdLocalised>;
   colonialRegions: Record<string, ColonialRegion>;
@@ -1387,4 +1387,17 @@ export type Faction = IdImageLocalised & {
 
 export type Names = IdLocalised & {
   trigger?: Condition;
+}
+
+export type Disaster = IdImageLocalised & {
+  description: ExampleLocalised;
+  potential: Condition;
+  canStart: Condition;
+  canStop: Condition;
+  progress: Modifiers;
+  modifier: Modifiers;
+  onStart?: string;
+  onEnd?: string;
+  monthlyEvents?: Array<string>;
+  randomEvents?: Record<string, number>;
 }
