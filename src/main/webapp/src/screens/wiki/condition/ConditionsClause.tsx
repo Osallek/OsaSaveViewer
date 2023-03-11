@@ -28,6 +28,7 @@ import { getLName } from 'utils/data.utils';
 import {
   getArea, getColonialRegion, getContinent, getCountry, getCountrysFlag, getProvince, getRegion, getSuperRegion
 } from 'utils/wiki.utils';
+import ConditionReligionYears from './clause/ConditionReligionYears';
 
 interface ConditionClauseProps extends TypographyProps {
   wiki: Wiki;
@@ -43,8 +44,6 @@ interface ConditionClauseProps extends TypographyProps {
 function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion, negate }: ConditionClauseProps) {
   const theme = useTheme();
   const intl = useIntl();
-
-  //Todo religion_years
 
   const country = getCountry(wiki, name);
   if (country !== null) {
@@ -122,7 +121,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
   switch (name) {
     case 'custom_trigger_tooltip': {
       return (
-        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
@@ -132,7 +131,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
     }
     case 'has_opinion': {
       return (
-        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
@@ -143,7 +142,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
     }
     case 'privateer_power': {
       return (
-        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
@@ -154,7 +153,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
     }
     case 'reverse_has_opinion': {
       return (
-        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
@@ -169,9 +168,20 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
                                  useExample={ useExample } negate={ negate }/>
       )
     }
+    case 'religion_years': {
+      return (
+        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
+          <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
+            <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
+          </ListItemIcon>
+          <ConditionReligionYears condition={ clause } clause={ name } wiki={ wiki } wikiVersion={ wikiVersion }
+                                  negate={ negate }/>
+        </ListItem>
+      )
+    }
     case 'has_great_project': {
       return (
-        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
@@ -194,7 +204,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
     }
     case 'trust': {
       return (
-        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
@@ -205,7 +215,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
     }
     case 'faction_influence': {
       return (
-        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
@@ -215,7 +225,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
     }
     case 'check_variable': {
       return (
-        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>

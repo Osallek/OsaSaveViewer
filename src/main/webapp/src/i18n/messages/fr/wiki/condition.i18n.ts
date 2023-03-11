@@ -604,6 +604,12 @@ const wikiCondition = {
   'wiki.condition.num_of_religion.1': '{nb, plural, =0 {est} =1 {est} other {sont}}',
   'wiki.condition.num_of_religion.1.not': '{nb, plural, =0 {est} =1 {est} other {sont}}',
   'wiki.condition.calc_true_if': '{nb, plural, =0 {Aucun condition suivante n\'est remplie} =1 {Au moins une des conditions suivantes est remplie} other {Au moins # des conditions suivantes sont remplies}}',
+  'wiki.condition.religion_years.1': 'La religion',
+  'wiki.condition.religion_years.1.not': 'La religion',
+  'wiki.condition.religion_years': 'est active depuis au moins',
+  'wiki.condition.religion_years.not': 'est active depuis moins de',
+  'wiki.condition.religion_years.2': '{nb, plural, =0 {an} =1 {an} other {ans}}',
+  'wiki.condition.religion_years.2.not': '{nb, plural, =0 {an} =1 {an} other {ans}}',
 }
 
 export default wikiCondition;

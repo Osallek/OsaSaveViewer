@@ -19,6 +19,7 @@ interface ConditionLocalisedLinkProps extends TypographyProps {
   avatarWidth?: string;
   colons?: boolean;
   suffix?: string | React.ReactElement;
+  inlineSuffix?: string;
   link?: boolean;
   grid?: boolean;
 }
@@ -90,7 +91,7 @@ const NoColorLink = styled(Link)({
 
 function ConditionLocalisedLinkChildren({
                                           wikiVersion, type, negate, condition, avatar, colons, suffix, value, record,
-                                          link = true, sx, grid, avatarWidth, ...others
+                                          link = true, sx, grid, avatarWidth, inlineSuffix, ...others
                                         }: ConditionLocalisedLinkProps): JSX.Element {
   const [hover, setHover] = useState<boolean>(false);
   const theme = useTheme();
@@ -101,6 +102,7 @@ function ConditionLocalisedLinkChildren({
              p: 0.5,
              backgroundColor: (hover && link) ? 'rgba(55, 71, 79, 0.24)' : 'transparent',
              cursor: link ? 'pointer' : undefined,
+             width: 'fit-content'
            } }>
       <Grid container item alignItems='center' sx={ { width: 'fit-content' } }>
         {
@@ -119,7 +121,7 @@ function ConditionLocalisedLinkChildren({
                         mr: 0.5,
                         ...sx,
                       } }>
-            { ` ${ record && record[value] ? getLName(record[value]) : value }` }
+            { ` ${ record && record[value] ? getLName(record[value]) : value }${ inlineSuffix ?? '' }` }
           </Typography>
         }
       </Grid>

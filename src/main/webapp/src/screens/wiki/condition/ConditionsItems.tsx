@@ -27,8 +27,9 @@ function ConditionsItems({ wiki, condition, wikiVersion, negate = false, root, u
                   <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
                     <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
                   </ListItemIcon>
-                  <ListItemText primary={ <ConditionLocalised condition={ key } value={ value } wiki={ wiki } useExample={ useExample }
-                                                              wikiVersion={ wikiVersion } negate={ negate }/> }/>
+                  <ListItemText primary={ <ConditionLocalised condition={ key } value={ value } wiki={ wiki }
+                                                              useExample={ useExample } wikiVersion={ wikiVersion }
+                                                              negate={ negate }/> }/>
                 </ListItem>
               )
             })
