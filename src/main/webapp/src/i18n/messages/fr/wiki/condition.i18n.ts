@@ -187,6 +187,8 @@ const wikiCondition = {
   'wiki.condition.is_capital_of.emperor.not': 'N\'est pas la capitale que l\'empereur du SERG',
   'wiki.condition.is_free_or_tributary_trigger': 'Est indépendant ou tributaire',
   'wiki.condition.is_free_or_tributary_trigger.not': 'N\'est indépendant ou tributaire',
+  'wiki.condition.has_active_debate': 'A un débat en cours',
+  'wiki.condition.has_active_debate.not': 'N\'a pas de débat en cours',
   'wiki.condition.is_state': 'Relève d\'un État',
   'wiki.condition.is_state.not': 'Ne relève pas d\'un État',
   'wiki.condition.num_of_owned_provinces_with': 'Au moins {nb, plural, =0 {Aucun de nos provinces ne remplie} =1 {une de nos provinces remplie} other {# de nos provinces remplissent}} les conditions suivantes',
@@ -610,6 +612,18 @@ const wikiCondition = {
   'wiki.condition.religion_years.not': 'est active depuis moins de',
   'wiki.condition.religion_years.2': '{nb, plural, =0 {an} =1 {an} other {ans}}',
   'wiki.condition.religion_years.2.not': '{nb, plural, =0 {an} =1 {an} other {ans}}',
+  'wiki.condition.has_not_enacted_parliament_action': 'N\'a pas promulguée l\'action parlementaire',
+  'wiki.condition.has_enacted_parliament_action': 'A pas promulguée l\'action parlementaire',
+  'wiki.condition.has_issue_unlocked_tooltip': 'A débloqué l\'action parlementaire',
+  'wiki.condition.has_issue_unlocked_tooltip.not': 'N\'a pas débloqué l\'action parlementaire',
+  'wiki.condition.has_issue_unlocked': 'A débloqué l\'action parlementaire',
+  'wiki.condition.has_issue_unlocked.not': 'N\'a pas débloqué l\'action parlementaire',
+  'wiki.condition.has_enabled_estate_action': 'A prit la décision',
+  'wiki.condition.has_enabled_estate_action.not': 'N\'a pas prit la décision',
+  'wiki.condition.estate_action_off_cooldown': 'N\'a pas prit la décision',
+  'wiki.condition.estate_action_off_cooldown.not': 'A prit la décision',
+  'wiki.condition.estate_action_off_cooldown.days': 'il y a moins de',
+  'wiki.condition.estate_action_off_cooldown.days.2': 'jours',
 }
 
 export default wikiCondition;

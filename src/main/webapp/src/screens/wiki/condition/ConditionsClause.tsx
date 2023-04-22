@@ -28,6 +28,10 @@ import { getLName } from 'utils/data.utils';
 import {
   getArea, getColonialRegion, getContinent, getCountry, getCountrysFlag, getProvince, getRegion, getSuperRegion
 } from 'utils/wiki.utils';
+import ConditionEnactedEstateAction from './clause/ConditionEnactedEstateAction';
+import ConditionEnactedParliamentAction from './clause/ConditionEnactedParliamentAction';
+import ConditionEstateActionOffCooldown from './clause/ConditionEstateActionOffCooldown';
+import ConditionHasIssueUnlockTooltip from './clause/ConditionHasIssueUnlockTooltip';
 import ConditionReligionYears from './clause/ConditionReligionYears';
 
 interface ConditionClauseProps extends TypographyProps {
@@ -278,6 +282,52 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
           <ConditionEstateInfluence condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion } negate={ negate }
                                     useExample={ useExample }
                                     clause={ name }/>
+        </ListItem>
+      )
+    }
+    case 'estate_action_off_cooldown': {
+      return (
+        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+          <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
+            <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
+          </ListItemIcon>
+          <ConditionEstateActionOffCooldown condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion }
+                                            negate={ negate } useExample={ useExample } clause={ name }/>
+        </ListItem>
+      )
+    }
+    case 'has_not_enacted_parliament_action':
+    case 'has_enacted_parliament_action': {
+      return (
+        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+          <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
+            <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
+          </ListItemIcon>
+          <ConditionEnactedParliamentAction condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion }
+                                            negate={ negate } useExample={ useExample } clause={ name }/>
+        </ListItem>
+      )
+    }
+    case 'has_issue_unlocked':
+    case 'has_issue_unlocked_tooltip': {
+      return (
+        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+          <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
+            <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
+          </ListItemIcon>
+          <ConditionHasIssueUnlockTooltip condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion }
+                                          negate={ negate } useExample={ useExample } clause={ name }/>
+        </ListItem>
+      )
+    }
+    case 'has_enabled_estate_action': {
+      return (
+        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
+          <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
+            <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
+          </ListItemIcon>
+          <ConditionEnactedEstateAction condition={ clause } wiki={ wiki } wikiVersion={ wikiVersion }
+                                        negate={ negate } useExample={ useExample } clause={ name }/>
         </ListItem>
       )
     }

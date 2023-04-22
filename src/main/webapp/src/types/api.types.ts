@@ -782,6 +782,8 @@ export type Wiki = {
   incidents: Record<string, IdLocalised>;
   colonialRegions: Record<string, ColonialRegion>;
   buildings: Record<string, Building>;
+  parliamentActions: Record<string, IdLocalised>;
+  estateActions: Record<string, IdLocalised>;
 }
 
 export type Condition = {
