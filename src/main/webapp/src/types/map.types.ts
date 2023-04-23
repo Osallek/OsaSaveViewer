@@ -713,7 +713,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
                 }
             });
 
-            return getGradient((max / 3) | 0, colorToHex(EMPTY_COLOR), "#00FF00");
+            return getGradient((Math.max(max, 3) / 3) | 0, colorToHex(EMPTY_COLOR), "#00FF00");
         },
         selectable: true,
         tooltip: (province, save, dataId) => {
