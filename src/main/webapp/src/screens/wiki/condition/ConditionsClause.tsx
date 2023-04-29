@@ -26,7 +26,8 @@ import { Condition, Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
 import {
-  getArea, getColonialRegion, getContinent, getCountry, getCountrysFlag, getProvince, getRegion, getSuperRegion
+  getArea, getColonialRegion, getContinent, getCountry, getCountrysFlag, getProvince, getRegion, getSuperRegion,
+  getTradeGood, getTradeGoodImage
 } from 'utils/wiki.utils';
 import ConditionEnactedEstateAction from './clause/ConditionEnactedEstateAction';
 import ConditionEnactedParliamentAction from './clause/ConditionEnactedParliamentAction';
@@ -125,7 +126,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
   switch (name) {
     case 'custom_trigger_tooltip': {
       return (
-        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
+        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
@@ -263,7 +264,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
     }
     case 'estate_loyalty': {
       return (
-        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
+        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
@@ -275,7 +276,7 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
     }
     case 'estate_influence': {
       return (
-        <ListItem sx={ { pl: 1 } } key={ `${ name }-clause-${ i }` }>
+        <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
             <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
           </ListItemIcon>
@@ -285,7 +286,8 @@ function ConditionClause({ wiki, name, clause, root, i, useExample, wikiVersion,
         </ListItem>
       )
     }
-    case 'estate_action_off_cooldown': {
+    case 'estate_action_off_cooldown':
+    case 'estate_action_off_shared_cooldown': {
       return (
         <ListItem sx={ { pl: 0 } } key={ `${ name }-clause-${ i }` }>
           <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>

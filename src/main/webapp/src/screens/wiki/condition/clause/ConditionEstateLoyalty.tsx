@@ -22,8 +22,8 @@ function ConditionEstateLoyalty({ wiki, wikiVersion, condition, clause, negate, 
   }
 
   let value = undefined;
-  if (condition.conditions && condition.conditions.influence && condition.conditions.influence.length > 0) {
-    value = condition.conditions.influence[0];
+  if (condition.conditions && condition.conditions.loyalty && condition.conditions.loyalty.length > 0) {
+    value = condition.conditions.loyalty[0];
   }
 
   const influence = value === undefined && condition.conditions?.higher_than_influence;

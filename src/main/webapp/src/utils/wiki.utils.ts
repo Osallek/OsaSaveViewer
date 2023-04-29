@@ -27,7 +27,7 @@ export function getGreatProjectUrl(key: string | undefined): string {
 }
 
 export function getIdeaGroupUrl(key: string | undefined): string {
-  return key ? getWikiImageUrl(`idea-groups/${ key }.png`) : getIdeaGroupUrl('noIdeaGroup');
+  return key ? getWikiImageUrl(`idea-groups/${ key }.png`) : '/eu4/wiki/idea_group.png';
 }
 
 export function getTradeGoodUrl(key: string | undefined): string {
@@ -216,6 +216,10 @@ export function getContinent(wiki: Wiki, name: string): Continent | null {
 
 export function getColonialRegion(wiki: Wiki, name: string): ColonialRegion | null {
   return (wiki.colonialRegions && wiki.colonialRegions[name]) ?? null;
+}
+
+export function getTradeGood(wiki: Wiki, name: string): TradeGood | null {
+  return (wiki.tradeGoods && wiki.tradeGoods[name]) ?? null;
 }
 
 export function getIdExampleLocalised(wiki: Wiki, name: string): IdExampleLocalised | null {

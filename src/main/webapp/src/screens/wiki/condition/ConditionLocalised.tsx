@@ -12,9 +12,10 @@ import {
   getContinent, getCountry, getCountrysFlag, getDisaster, getDisasterImage, getDlc, getDlcImage, getEstateImage,
   getFaction, getFactionImage, getIdea, getIdeaGroup, getIdeaGroupImage, getIdExampleLocalised, getImperialIncident,
   getInstitution, getInstitutionImage, getMission, getMissionImage, getProvince, getRegion, getReligion,
-  getReligionImage, getSuperRegion, getTradeGoodImage
+  getReligionImage, getSuperRegion, getTradeGood, getTradeGoodImage
 } from 'utils/wiki.utils';
 import ConditionLocalisedLink from './ConditionLocalisedLink';
+import ConditionsBlock from './ConditionsBlock';
 import ConditionsNumber from './ConditionsNumber';
 
 interface ConditionLocalisedProps extends TypographyProps {
@@ -143,6 +144,19 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
         <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } grid={ false }
                                 record={ wiki.ideaGroups } value={ condition } type={ wikiTypes.ideaGroups }
                                 avatar={ getIdeaGroupImage(ideaGroup) } colons={ false }/>
+      </Grid>
+    );
+  }
+
+  const tradeGood = getTradeGood(wiki, condition.toLowerCase());
+  if (tradeGood !== null) {
+    return (
+      <Grid container item alignItems='center'>
+        <ConditionsNumber condition={ 'tradeGood' } negate={ negate } value={ value ? Number(value) : undefined }
+                          sx={ { width: undefined } } grid={ false }/>
+        <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } grid={ false }
+                                record={ wiki.tradeGoods } value={ condition } type={ wikiTypes.tradeGoods }
+                                avatar={ getTradeGoodImage(tradeGood) } colons={ false }/>
       </Grid>
     );
   }
