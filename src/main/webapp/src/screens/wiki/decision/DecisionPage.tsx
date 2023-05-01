@@ -12,7 +12,7 @@ import theme from 'theme';
 import { Decision, Wiki } from 'types/api.types';
 import { getLName } from 'utils/data.utils';
 import { stringLocalisedComparator } from 'utils/format.utils';
-import { wikiTypes } from '../../../types/wiki.types';
+import { wikiTypes } from 'types/wiki.types';
 import WikiAccordion from '../WikiAccordion';
 
 function DecisionPage() {

@@ -37,10 +37,6 @@ function ConditionsList({
   const theme = useTheme();
   const intl = useIntl();
 
-  if (root) {
-    console.log(condition);
-  }
-
   return (
     <Paper elevation={ 0 }
            sx={ {

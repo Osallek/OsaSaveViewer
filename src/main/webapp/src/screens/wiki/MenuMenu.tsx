@@ -11,13 +11,17 @@ interface MenuMenuProps {
   objects?: Array<IdLocalised>;
   imagedObjects?: Array<IdImageLocalised>;
   onChange: (value: IdLocalised | IdImageLocalised | null) => void;
+  showId?: boolean;
+  group?: boolean;
 }
 
 const MenuMenuPopper = function (props: PopperProps) {
   return <Popper { ...props } style={ { maxWidth: 'fit-content' } } placement="bottom-start"/>;
 };
 
-function MenuMenu({ title, value, imagedValue, objects, imagedObjects, onChange }: MenuMenuProps) {
+function MenuMenu({
+                    title, value, imagedValue, objects, imagedObjects, onChange, showId = true, group = true
+                  }: MenuMenuProps) {
   const theme = useTheme();
 
   return (
@@ -33,9 +37,9 @@ function MenuMenu({ title, value, imagedValue, objects, imagedObjects, onChange 
             value={ value }
             PopperComponent={ MenuMenuPopper }
             options={ objects }
-            getOptionLabel={ option => `${ getLName(option) } (${ option.id })` }
+            getOptionLabel={ option => `${ getLName(option) }${ showId ? ` (${ option.id })` : '' }` }
             isOptionEqualToValue={ (option, value) => option.id === value.id }
-            groupBy={ option => cleanString((getLName(option) ?? ' ').slice(0, 1)).toUpperCase() }
+            groupBy={ option => group ? cleanString((getLName(option) ?? ' ').slice(0, 1)).toUpperCase() : '' }
             renderInput={ (params) =>
               <TextField { ...params } label={ title } size='small' color='secondary'
                          InputProps={ { ...params.InputProps, style: { color: theme.palette.primary.contrastText } } }
@@ -50,7 +54,7 @@ function MenuMenu({ title, value, imagedValue, objects, imagedObjects, onChange 
                 <li { ...props }>
                   <Grid container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
                     <Typography variant='body1' component='span'>
-                      { `${ getLName(option) } (${ option.id })` }
+                      { `${ getLName(option) }${ showId ? ` (${ option.id })` : '' }` }
                     </Typography>
                   </Grid>
                 </li>
@@ -66,9 +70,9 @@ function MenuMenu({ title, value, imagedValue, objects, imagedObjects, onChange 
               disablePortal
               value={ imagedValue }
               options={ imagedObjects }
-              getOptionLabel={ option => `${ getLName(option) } (${ option.id })` }
+              getOptionLabel={ option => `${ getLName(option) }${ showId ? ` (${ option.id })` : '' }` }
               isOptionEqualToValue={ (option, value) => option.id === value.id }
-              groupBy={ option => cleanString((getLName(option) ?? ' ').slice(0, 1)).toUpperCase() }
+              groupBy={ option => group ? cleanString((getLName(option) ?? ' ').slice(0, 1)).toUpperCase() : '' }
               renderInput={ (params) => <TextField { ...params } label={ title }/> }
               noOptionsText=''
               renderOption={ (props, option) => {
@@ -77,7 +81,7 @@ function MenuMenu({ title, value, imagedValue, objects, imagedObjects, onChange 
                     <Grid container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
                       <Avatar src={ option.image } variant='square' style={ { display: 'inline-block' } }/>
                       <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
-                        { `${ getLName(option) } (${ option.id })` }
+                        { `${ getLName(option) }${ showId ? ` (${ option.id })` : '' }` }
                       </Typography>
                     </Grid>
                   </li>

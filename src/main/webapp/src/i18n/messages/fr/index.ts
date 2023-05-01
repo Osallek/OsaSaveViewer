@@ -11,8 +11,10 @@ import wikiAdvisor from 'i18n/messages/fr/wiki/advisor.i18n';
 import wikiCondition from 'i18n/messages/fr/wiki/condition.i18n';
 import wikiCountry from 'i18n/messages/fr/wiki/country.i18n';
 import wikiDecision from 'i18n/messages/fr/wiki/decision.i18n';
+import wikiModifier from 'i18n/messages/fr/wiki/modifier.i18n';
+import wikiPolicy from 'i18n/messages/fr/wiki/policy.i18n';
+import wikiIdeaGroup from 'i18n/messages/fr/wiki/ideaGroup.i18n';
 import { Localization } from 'types/api.types';
-import wikiModifier from './wiki/modifier.i18n';
 
 const fr = {
   locale: 'fr',
@@ -32,6 +34,8 @@ const fr = {
     ...wikiCommon,
     ...wikiCondition,
     ...wikiModifier,
+    ...wikiPolicy,
+    ...wikiIdeaGroup,
   },
 }
 

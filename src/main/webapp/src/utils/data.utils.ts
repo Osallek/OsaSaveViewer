@@ -1,7 +1,7 @@
 import * as ENV from 'env/env';
-import { eu4Locale } from '../index';
-import { Localised, Localization } from '../types/api.types';
-import { MapSave } from '../types/map.types';
+import { eu4Locale } from 'index';
+import { IdLocalised, Localised, Localization } from 'types/api.types';
+import { MapSave } from 'types/map.types';
 import { capitalize } from './format.utils';
 
 export const fakeTag = "---";
@@ -20,8 +20,8 @@ export function isValidDate(date?: string | null, save?: MapSave): boolean {
   return true;
 }
 
-export function getLName(localised: Localised): string | undefined {
-  return getName(localised.localisations);
+export function getLName(localised: Localised | IdLocalised): string | undefined {
+  return getName(localised.localisations) ?? ('id' in localised ? localised.id : undefined);
 }
 
 export function getName(localisations: Record<Localization, string>): string | undefined {

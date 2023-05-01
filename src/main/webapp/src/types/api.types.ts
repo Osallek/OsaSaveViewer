@@ -55,9 +55,7 @@ export type ExampleLocalised = Localised & {
   localisationsExample: Record<Localization, string>;
 }
 
-export type IdExampleLocalised = ExampleLocalised & {
-  id: string;
-}
+export type IdExampleLocalised = ExampleLocalised & IdLocalised;
 
 export type IdLocalised = Localised & {
   id: string;
@@ -784,6 +782,7 @@ export type Wiki = {
   buildings: Record<string, Building>;
   parliamentActions: Record<string, IdLocalised>;
   estateActions: Record<string, IdLocalised>;
+  policies: Record<string, Policy>;
 }
 
 export type Condition = {
@@ -1089,7 +1088,7 @@ export type ReligiousSchool = IdImageLocalised & {
 
 export type IdeaGroup = IdImageLocalised & {
   category: Power;
-  isFree: boolean;
+  free: boolean;
   trigger?: Condition;
   start?: Modifiers;
   bonus?: Modifiers;
@@ -1402,4 +1401,11 @@ export type Disaster = IdImageLocalised & {
   onEnd?: string;
   monthlyEvents?: Array<string>;
   randomEvents?: Record<string, number>;
+}
+
+export type Policy = IdLocalised & {
+  category: Power;
+  allow?: Condition;
+  potential?: Condition;
+  modifiers?: Modifiers;
 }

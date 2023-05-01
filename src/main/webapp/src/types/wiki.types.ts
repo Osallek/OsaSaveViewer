@@ -28,6 +28,10 @@ export const wikiTypes: Record<string, WikiType> = {
     path: 'idea-groups',
     icon: 'idea_group'
   },
+  policies: {
+    path: 'policies',
+    icon: 'policy'
+  },
   religionGroups: {
     path: 'religion-groups',
     icon: 'religion'

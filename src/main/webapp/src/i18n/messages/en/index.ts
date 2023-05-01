@@ -12,6 +12,7 @@ import wikiCondition from 'i18n/messages/en/wiki/condition.i18n';
 import wikiCountry from 'i18n/messages/en/wiki/country.i18n';
 import wikiDecision from 'i18n/messages/en/wiki/decision.i18n';
 import { Localization } from 'types/api.types';
+import wikiPolicy from 'i18n/messages/en/wiki/policy.i18n';
 
 const en = {
   locale: 'en',
@@ -30,6 +31,7 @@ const en = {
     ...wikiAdvisor,
     ...wikiCommon,
     ...wikiCondition,
+    ...wikiPolicy,
   },
 }
 
