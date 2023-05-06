@@ -62,6 +62,10 @@ export function getAgeUrl(key: string | undefined): string {
   return key ? getWikiImageUrl(`ages/${ key }.png`) : getAgeUrl('noAge');
 }
 
+export function getModifierUrl(key: string | undefined): string {
+  return key ? getWikiImageUrl(`modifiers/${ key }.png`) : getModifierUrl('noModifier');
+}
+
 export function getAgeAbilityUrl(key: string | undefined): string {
   return key ? getWikiImageUrl(`age-abilities/${ key }.png`) : getAgeUrl('noAgeAbility');
 }
@@ -240,6 +244,10 @@ export function getAge(wiki: Wiki, name: string): Age | null {
 
 export function getAgeImage(age: IdImageLocalised): string {
   return getAgeUrl(age.image);
+}
+
+export function getModifierImage(modifier: IdImageLocalised): string {
+  return getModifierUrl(modifier.image);
 }
 
 export function getAgeAbility(wiki: Wiki, name: string): AgeAbility | null {

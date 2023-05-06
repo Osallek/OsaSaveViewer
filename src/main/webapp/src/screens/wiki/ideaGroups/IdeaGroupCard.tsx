@@ -1,20 +1,68 @@
-import { Avatar, Card, CardActionArea, CardContent, CardHeader, Collapse, Grid, Typography } from '@mui/material';
+import {
+  Avatar, Card, CardActionArea, CardContent, CardHeader, Collapse, Grid, Table, TableBody, TableCell, TableContainer,
+  TableRow, Typography
+} from '@mui/material';
+import { intl } from 'index';
 import React, { useState } from 'react';
 import theme from 'theme';
-import { IdeaGroup } from 'types/api.types';
+import { IdeaGroup, Modifiers, ModifierType, Wiki } from 'types/api.types';
 import { getLName } from 'utils/data.utils';
+import { formatNumberPlus } from 'utils/format.utils';
 import { getIdeaGroupImage } from 'utils/wiki.utils';
+
+const modifiersGrid = (modifiers: Modifiers, wiki: Wiki) => {
+  return <Grid container>
+    {
+      modifiers.enables &&
+      modifiers.enables.map(enable => (
+        <Grid container key={ `enable-${ enable.id }` }>
+          <Typography variant='body1'>
+            { getLName(enable) }
+          </Typography>
+        </Grid>
+      ))
+    }
+    {
+      modifiers.modifiers &&
+      Object.entries(modifiers.modifiers)
+            .filter(([name]) => wiki.rawModifiers[name])
+            .map(([name, value]) => {
+              const modifier = wiki.rawModifiers[name];
+              let v = '';
+
+              if (modifier.type === ModifierType.MULTIPLICATIVE) {
+                v = `${ formatNumberPlus(value * 100) }%`
+              } else {
+                v = `${ formatNumberPlus(value) }`
+              }
+
+              return (
+                <Grid container key={ `modifier-${ name }` }>
+                  <Typography component='div' variant='body1'>
+                    { `${ getLName(modifier) } : ` }
+                    <Typography variant='body1' sx={ { fontWeight: 'bold', color: 'green', display: 'inline' } }>
+                      { v }
+                    </Typography>
+                  </Typography>
+                </Grid>
+              )
+            })
+    }
+  </Grid>;
+}
 
 interface IdeaGroupCardProps {
   group: IdeaGroup;
+  wiki: Wiki;
 }
 
-function IdeaGroupCard({ group }: IdeaGroupCardProps) {
+function IdeaGroupCard({ group, wiki }: IdeaGroupCardProps) {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [borderRadius, setBorderRadius] = useState<number>(4);
+  const nbIdeas = group.ideas ? Object.values(group.ideas).length : 0;
 
   return (
-    <Card sx={ { width: '100%' } } elevation={ expanded ? 1 : 0 }>
+    <Card sx={ { width: '100%', height: 'fit-content' } } elevation={ expanded ? 1 : 0 }>
       <CardActionArea onClick={ () => setExpanded(!expanded) }>
         <CardHeader disableTypography
                     title={
@@ -41,9 +89,53 @@ function IdeaGroupCard({ group }: IdeaGroupCardProps) {
         />
       </CardActionArea>
       <Collapse in={ expanded } timeout="auto" unmountOnExit
-                addEndListener={ (node, done) => setBorderRadius(expanded ? 0 : 4) }>
-        <CardContent>
-          dfd
+                addEndListener={ () => setBorderRadius(expanded ? 0 : 4) }>
+        <CardContent sx={ { padding: 0, paddingBottom: '0 !important' } }>
+          <TableContainer>
+            <Table>
+              <TableBody>
+                {
+                  group.ideas && Object.values(group.ideas).map((idea, index) => (
+                    <TableRow key={ `idea-${ idea.id }` }>
+                      <TableCell sx={ {
+                        backgroundColor: theme.palette.primary.light,
+                        borderBottomColor: (!group.bonus && index === nbIdeas - 1) ? theme.palette.primary.light : undefined
+                      } }>
+                        <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                    sx={ { fontWeight: 'bold' } }>
+                          { getLName(idea) }
+                        </Typography>
+                      </TableCell>
+                      <TableCell style={ {
+                        borderBottom: (!group.bonus && index === nbIdeas - 1) ? 'none' : undefined
+                      } }>
+                        { idea.modifiers && modifiersGrid(idea.modifiers, wiki) }
+                      </TableCell>
+                    </TableRow>
+                  ))
+                }
+                {
+                  group.bonus &&
+                  (
+                    <TableRow key={ `bonus-${ group.id }` }>
+                      <TableCell sx={ {
+                        backgroundColor: theme.palette.primary.light,
+                        borderBottomColor: theme.palette.primary.light
+                      } }>
+                        <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                    sx={ { fontWeight: 'bold' } }>
+                          { intl.formatMessage({ id: 'wiki.ideaGroups.bonus' }) }
+                        </Typography>
+                      </TableCell>
+                      <TableCell style={ { borderBottom: 'none' } }>
+                        { group.bonus && modifiersGrid(group.bonus, wiki) }
+                      </TableCell>
+                    </TableRow>
+                  )
+                }
+              </TableBody>
+            </Table>
+          </TableContainer>
         </CardContent>
       </Collapse>
     </Card>

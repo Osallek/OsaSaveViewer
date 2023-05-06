@@ -52,6 +52,14 @@ export function formatNumber(number: number | undefined, max: number = 2): strin
   return number !== undefined ? intl.formatNumber(number, { maximumFractionDigits: max }) : '';
 }
 
+export function formatNumberPlus(number: number | undefined, max: number = 2): string {
+  if (number === undefined) {
+    return '';
+  } else {
+    return (number > 0 ? '+' : '') + intl.formatNumber(number, { maximumFractionDigits: max });
+  }
+}
+
 export function formatDate(date: string | undefined): string {
   return date ? intl.formatDate(date) : '';
 }

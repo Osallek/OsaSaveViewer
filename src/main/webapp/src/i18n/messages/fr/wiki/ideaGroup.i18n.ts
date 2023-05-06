@@ -9,6 +9,7 @@ const wikiIdeaGroup = {
   'wiki.ideaGroups.ADM': 'Groupes administratifs',
   'wiki.ideaGroups.DIP': 'Groupes diplomatiques',
   'wiki.ideaGroups.MIL': 'Groupes militaires',
+  'wiki.ideaGroups.bonus': 'Bonus'
 }
 
 export default wikiIdeaGroup;

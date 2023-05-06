@@ -749,6 +749,7 @@ export type Wiki = {
   idExampleLocalised: Record<string, IdExampleLocalised>;
   idLocalised: Record<string, IdLocalised>;
   modifiers: Record<string, Modifier>;
+  rawModifiers: Record<string, RawModifier>;
   ages: Record<string, Age>;
   ideaGroups: Record<string, IdeaGroup>;
   tradeGoods: Record<string, TradeGood>;
@@ -971,7 +972,7 @@ export type Leader = {
 }
 
 export type Modifiers = {
-  enables?: Array<string>;
+  enables?: Array<IdLocalised>;
   modifiers?: Record<string, number>;
 }
 
@@ -1408,4 +1409,15 @@ export type Policy = IdLocalised & {
   allow?: Condition;
   potential?: Condition;
   modifiers?: Modifiers;
+}
+
+export enum ModifierType {
+  ADDITIVE = 'ADDITIVE',
+  MULTIPLICATIVE = 'MULTIPLICATIVE',
+  CONSTANT = 'CONSTANT',
+  BOOLEAN = 'BOOLEAN'
+}
+
+export type RawModifier = IdImageLocalised & {
+  type: ModifierType;
 }

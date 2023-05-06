@@ -92,7 +92,7 @@ function IdeaGroupList() {
                 </Backdrop>
                 :
                 <Grid container sx={ { p: 3, flexDirection: 'column', alignItems: 'center' } }>
-                  <Grid container item xs={ 12 } xl={ 10 } spacing={ 2 }>
+                  <Grid container item xs={ 12 } spacing={ 2 }>
                     <Grid container item rowSpacing={ 4 }>
                       {
                         Object.keys(Power).map(category => (
@@ -105,7 +105,7 @@ function IdeaGroupList() {
                                   filtered && filtered.filter(i => category === i.category)
                                     .map((group, index) => (
                                       <Grid container item xs={ 12 } md={ 6 } xl={ 4 } key={ group.id }>
-                                        <IdeaGroupCard group={ group }/>
+                                        <IdeaGroupCard group={ group } wiki={ wiki }/>
                                       </Grid>
                                     ))
                                 }
