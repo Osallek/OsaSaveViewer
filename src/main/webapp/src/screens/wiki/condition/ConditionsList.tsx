@@ -31,10 +31,12 @@ interface ConditionsListProps extends TypographyProps {
   negate?: boolean;
   backgroundColor?: string;
   dot?: boolean;
+  spaced?: boolean;
 }
 
 function ConditionsList({
-                          wiki, condition, useExample, root = false, wikiVersion, negate = false, backgroundColor, dot
+                          wiki, condition, useExample, root = false, wikiVersion, negate = false, backgroundColor, dot,
+                          spaced
                         }: ConditionsListProps) {
   const theme = useTheme();
   const intl = useIntl();
@@ -63,7 +65,7 @@ function ConditionsList({
             )
           }
           <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
-                           root={ root } useExample={ useExample } dot={ dot }/>
+                           root={ root } useExample={ useExample } dot={ dot } spaced={ spaced }/>
           {
             condition.scopes &&
             Object.entries(condition.scopes).map(([key, conditions]) => {

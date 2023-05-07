@@ -7,6 +7,7 @@ import NodePage from 'screens/node/NodePage';
 import SavePage from 'screens/save/SavePage';
 import UserPage from 'screens/user/UserPage';
 import WarPage from 'screens/war/WarPage';
+import PoliciesList from 'screens/wiki/policies/PoliciesList';
 import DecisionPage from './screens/wiki/decision/DecisionPage';
 import IdeasGroupsList from './screens/wiki/ideaGroups/IdeaGroupList';
 
@@ -23,6 +24,7 @@ const AppRouter: React.FunctionComponent = () => {
       <Route path="/wiki/:version/decisions" element={ <HomePage/> }/>
       <Route path="/wiki/:version/decisions/:id" element={ <DecisionPage/> }/>
       <Route path="/wiki/:version/idea-groups" element={ <IdeasGroupsList/> }/>
+      <Route path="/wiki/:version/policies" element={ <PoliciesList/> }/>
       <Route path="/" element={ <HomePage/> }/>
       <Route path="*" element={ <Navigate to="/" replace/> }/>
     </Routes>

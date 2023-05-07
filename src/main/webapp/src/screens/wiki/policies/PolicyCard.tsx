@@ -2,25 +2,25 @@ import {
   Avatar, Card, CardActionArea, CardContent, CardHeader, Collapse, Grid, Table, TableBody, TableCell, TableContainer,
   TableRow, Typography
 } from '@mui/material';
-import { intl } from 'index';
 import React, { useState } from 'react';
+import { useIntl } from 'react-intl';
 import ConditionsList from 'screens/wiki/condition/ConditionsList';
 import { modifiersGrid } from 'screens/wiki/ModifiersGrid';
 import theme from 'theme';
-import { IdeaGroup, Wiki } from 'types/api.types';
+import { Policy, Wiki } from 'types/api.types';
 import { getLName } from 'utils/data.utils';
-import { getIdeaGroupImage } from 'utils/wiki.utils';
 
-interface IdeaGroupCardProps {
-  group: IdeaGroup;
+interface PolicyCardProps {
+  policy: Policy;
   wiki: Wiki;
   version: string;
 }
 
-function IdeaGroupCard({ group, wiki, version }: IdeaGroupCardProps) {
+function PolicyCard({ policy, wiki, version }: PolicyCardProps) {
+  const intl = useIntl();
+
   const [expanded, setExpanded] = useState<boolean>(false);
   const [borderRadius, setBorderRadius] = useState<number>(4);
-  const nbIdeas = group.ideas ? Object.values(group.ideas).length : 0;
 
   return (
     <Card sx={ { width: '100%', height: 'fit-content' } } elevation={ expanded ? 1 : 0 }>
@@ -34,15 +34,13 @@ function IdeaGroupCard({ group, wiki, version }: IdeaGroupCardProps) {
                                       fontWeight: 'bold',
                                       mr: 1
                                     } }>
-                          { getLName(group) }
+                          { getLName(policy) }
                         </Typography>
                         <Avatar
-                          src={ `/eu4/wiki/${ group.category.toLowerCase() }.png` }
+                          src={ `/eu4/wiki/${ policy.category.toLowerCase() }.png` }
                           variant='square' sx={ { width: 28, height: 28 } }/>
                       </Grid>
                     }
-                    avatar={ <Avatar src={ getIdeaGroupImage(group) }
-                                     variant='square'/> }
                     sx={ {
                       backgroundColor: theme.palette.primary.dark, borderBottomRightRadius: borderRadius,
                       borderBottomLeftRadius: borderRadius
@@ -56,8 +54,8 @@ function IdeaGroupCard({ group, wiki, version }: IdeaGroupCardProps) {
             <Table>
               <TableBody>
                 {
-                  group.trigger && (
-                    <TableRow key={ `trigger-${ group.id }` }>
+                  policy.allow && (
+                    <TableRow key={ `trigger-${ policy.id }` }>
                       <TableCell sx={ {
                         backgroundColor: theme.palette.primary.main, borderRight: '1px solid rgba(224, 224, 224, 1);'
                       } }>
@@ -68,52 +66,27 @@ function IdeaGroupCard({ group, wiki, version }: IdeaGroupCardProps) {
                       </TableCell>
                       <TableCell sx={ { backgroundColor: theme.palette.primary.main, padding: 0 } }>
                         <ConditionsList sx={ { backgroundColor: theme.palette.primary.main } }
-                                        condition={ group.trigger } wiki={ wiki } root={ false } useExample={ false }
+                                        condition={ policy.allow } wiki={ wiki } root={ false } useExample={ false }
                                         wikiVersion={ version } backgroundColor={ theme.palette.primary.main }
                                         dot={ false } spaced={ false }/>
                       </TableCell>
                     </TableRow>
                   )
                 }
-                {
-                  group.ideas && Object.values(group.ideas).map((idea, index) => (
-                    <TableRow key={ `idea-${ idea.id }` }>
-                      <TableCell sx={ {
-                        backgroundColor: theme.palette.primary.light,
-                        borderBottomColor: (!group.bonus && index === nbIdeas - 1) ? theme.palette.primary.light : undefined
-                      } }>
-                        <Typography variant='body1' color={ theme.palette.primary.contrastText }
-                                    sx={ { fontWeight: 'bold' } }>
-                          { getLName(idea) }
-                        </Typography>
-                      </TableCell>
-                      <TableCell style={ {
-                        borderBottom: (!group.bonus && index === nbIdeas - 1) ? 'none' : undefined
-                      } }>
-                        { idea.modifiers && modifiersGrid(idea.modifiers, wiki) }
-                      </TableCell>
-                    </TableRow>
-                  ))
-                }
-                {
-                  group.bonus &&
-                  (
-                    <TableRow key={ `bonus-${ group.id }` }>
-                      <TableCell sx={ {
-                        backgroundColor: theme.palette.primary.light,
-                        borderBottomColor: theme.palette.primary.light
-                      } }>
-                        <Typography variant='body1' color={ theme.palette.primary.contrastText }
-                                    sx={ { fontWeight: 'bold' } }>
-                          { intl.formatMessage({ id: 'wiki.ideaGroups.bonus' }) }
-                        </Typography>
-                      </TableCell>
-                      <TableCell style={ { borderBottom: 'none' } }>
-                        { group.bonus && modifiersGrid(group.bonus, wiki) }
-                      </TableCell>
-                    </TableRow>
-                  )
-                }
+                <TableRow key={ `policy-${ policy.id }` }>
+                  <TableCell sx={ {
+                    backgroundColor: theme.palette.primary.light,
+                    borderBottomColor: theme.palette.primary.light
+                  } }>
+                    <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                sx={ { fontWeight: 'bold' } }>
+                      { getLName(policy) }
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    { policy.modifiers && modifiersGrid(policy.modifiers, wiki) }
+                  </TableCell>
+                </TableRow>
               </TableBody>
             </Table>
           </TableContainer>
@@ -123,4 +96,4 @@ function IdeaGroupCard({ group, wiki, version }: IdeaGroupCardProps) {
   )
 }
 
-export default IdeaGroupCard;
+export default PolicyCard;
