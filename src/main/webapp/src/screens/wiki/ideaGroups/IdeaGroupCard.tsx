@@ -4,6 +4,7 @@ import {
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useState } from 'react';
+import ConditionsList from 'screens/wiki/condition/ConditionsList';
 import theme from 'theme';
 import { IdeaGroup, Modifiers, ModifierType, Wiki } from 'types/api.types';
 import { getLName } from 'utils/data.utils';
@@ -54,9 +55,10 @@ const modifiersGrid = (modifiers: Modifiers, wiki: Wiki) => {
 interface IdeaGroupCardProps {
   group: IdeaGroup;
   wiki: Wiki;
+  version: string;
 }
 
-function IdeaGroupCard({ group, wiki }: IdeaGroupCardProps) {
+function IdeaGroupCard({ group, wiki, version }: IdeaGroupCardProps) {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [borderRadius, setBorderRadius] = useState<number>(4);
   const nbIdeas = group.ideas ? Object.values(group.ideas).length : 0;
@@ -94,6 +96,26 @@ function IdeaGroupCard({ group, wiki }: IdeaGroupCardProps) {
           <TableContainer>
             <Table>
               <TableBody>
+                {
+                  group.trigger && (
+                    <TableRow key={ `trigger-${ group.id }` }>
+                      <TableCell sx={ {
+                        backgroundColor: theme.palette.primary.main, borderRight: '1px solid rgba(224, 224, 224, 1);'
+                      } }>
+                        <Typography variant='body1' color={ theme.palette.primary.contrastText }
+                                    sx={ { fontWeight: 'bold' } }>
+                          Condition
+                        </Typography>
+                      </TableCell>
+                      <TableCell sx={ { backgroundColor: theme.palette.primary.main, padding: 0 } }>
+                        <ConditionsList sx={ { backgroundColor: theme.palette.primary.main } }
+                                        condition={ group.trigger } wiki={ wiki } root={ false } useExample={ false }
+                                        wikiVersion={ version } backgroundColor={ theme.palette.primary.main }
+                                        dot={ false }/>
+                      </TableCell>
+                    </TableRow>
+                  )
+                }
                 {
                   group.ideas && Object.values(group.ideas).map((idea, index) => (
                     <TableRow key={ `idea-${ idea.id }` }>

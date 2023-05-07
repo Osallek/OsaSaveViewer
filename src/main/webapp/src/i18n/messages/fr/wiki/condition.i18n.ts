@@ -260,6 +260,8 @@ const wikiCondition = {
   'wiki.condition.is_core.root.not': 'N\'est pas une province légitime',
   'wiki.condition.has_government_attribute': 'Le gouvernement utilisé a l\'attribut',
   'wiki.condition.has_government_attribute.not': 'Le gouvernement utilisé n\'a pas l\'attribut',
+  'wiki.condition.primitives': 'Est primitif',
+  'wiki.condition.primitives.not': 'N\'est pas primitif',
   'wiki.condition.has_government_mechanic': 'Utilise le mécanisme gouvernemental',
   'wiki.condition.has_government_mechanic.not': 'N\'utilise le mécanisme gouvernemental',
   'wiki.condition.region': 'Est dans la région',

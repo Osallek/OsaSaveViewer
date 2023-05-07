@@ -29,10 +29,12 @@ interface ConditionsListProps extends TypographyProps {
   wikiVersion: string;
   root?: boolean;
   negate?: boolean;
+  backgroundColor?: string;
+  dot?: boolean;
 }
 
 function ConditionsList({
-                          wiki, condition, useExample, root = false, wikiVersion, negate = false
+                          wiki, condition, useExample, root = false, wikiVersion, negate = false, backgroundColor, dot
                         }: ConditionsListProps) {
   const theme = useTheme();
   const intl = useIntl();
@@ -41,7 +43,7 @@ function ConditionsList({
     <Paper elevation={ 0 }
            sx={ {
              width: 'auto',
-             backgroundColor: theme.palette.primary.light,
+             backgroundColor: backgroundColor ?? theme.palette.primary.light,
              mt: root ? 2 : 0,
              pt: root ? 2 : 0,
              pb: root ? 2 : 0,
@@ -61,7 +63,7 @@ function ConditionsList({
             )
           }
           <ConditionsItems wiki={ wiki } condition={ condition } wikiVersion={ wikiVersion } negate={ negate }
-                           root={ root } useExample={ useExample }/>
+                           root={ root } useExample={ useExample } dot={ dot }/>
           {
             condition.scopes &&
             Object.entries(condition.scopes).map(([key, conditions]) => {
@@ -97,14 +99,14 @@ function ConditionsList({
           {
             condition.clauses &&
             Object.entries(condition.clauses)
-              .filter(([key, clauses]) => 'limit' !== key)
-              .map(([key, clauses]) => {
-                return clauses.map((clause, i) => {
-                  return <ConditionsClause name={ key } clause={ clause } root={ false } i={ i } wiki={ wiki }
-                                           useExample={ useExample } wikiVersion={ wikiVersion }
-                                           key={ `${ key }-clause-${ i }` } negate={ negate }/>
-                })
-              })
+                  .filter(([key, clauses]) => 'limit' !== key)
+                  .map(([key, clauses]) => {
+                    return clauses.map((clause, i) => {
+                      return <ConditionsClause name={ key } clause={ clause } root={ false } i={ i } wiki={ wiki }
+                                               useExample={ useExample } wikiVersion={ wikiVersion }
+                                               key={ `${ key }-clause-${ i }` } negate={ negate }/>
+                    })
+                  })
           }
         </>
       </List>

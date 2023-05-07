@@ -103,11 +103,12 @@ function IdeaGroupList() {
                               <Grid container item spacing={ 3 }>
                                 {
                                   filtered && filtered.filter(i => category === i.category)
-                                    .map((group, index) => (
-                                      <Grid container item xs={ 12 } md={ 6 } xl={ 4 } key={ group.id }>
-                                        <IdeaGroupCard group={ group } wiki={ wiki }/>
-                                      </Grid>
-                                    ))
+                                                      .map((group, index) => (
+                                                        <Grid container item xs={ 12 } md={ 6 } xl={ 4 } key={ group.id }>
+                                                          <IdeaGroupCard group={ group } wiki={ wiki }
+                                                                         version={ version }/>
+                                                        </Grid>
+                                                      ))
                                 }
                               </Grid>
                             </Grid>

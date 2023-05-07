@@ -11,9 +11,12 @@ interface ConditionItemProps {
   useExample: boolean;
   root: boolean;
   negate?: boolean;
+  dot?: boolean;
 }
 
-function ConditionsItems({ wiki, condition, wikiVersion, negate = false, root, useExample }: ConditionItemProps) {
+function ConditionsItems({
+                           wiki, condition, wikiVersion, negate = false, root, useExample, dot = true
+                         }: ConditionItemProps) {
   const theme = useTheme();
 
   return (
@@ -24,9 +27,11 @@ function ConditionsItems({ wiki, condition, wikiVersion, negate = false, root, u
             return values.map((value, i) => {
               return (
                 <ListItem key={ `${ key }-${ value }-${ i }` } sx={ { pl: root ? 0 : 1, pr: root ? 0 : 1 } }>
-                  <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
-                    <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
-                  </ListItemIcon>
+                  { dot && (
+                    <ListItemIcon sx={ { minWidth: 8, mr: 1 } }>
+                      <Circle sx={ { fontSize: 8, color: theme.palette.primary.contrastText } }/>
+                    </ListItemIcon>
+                  ) }
                   <ListItemText primary={ <ConditionLocalised condition={ key } value={ value } wiki={ wiki }
                                                               useExample={ useExample } wikiVersion={ wikiVersion }
                                                               negate={ negate }/> }/>
