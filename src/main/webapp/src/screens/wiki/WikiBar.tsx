@@ -4,11 +4,11 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate } from 'react-router-dom';
 import { IdImageLocalised, IdLocalised } from 'types/api.types';
-import { WikiType, wikiTypes } from '../../types/wiki.types';
+import { WikiType, wikiTypes } from 'types/wiki.types';
 import MenuMenu from './MenuMenu';
 
 interface WikiBarProps {
-  type: WikiType;
+  type?: WikiType;
   version?: string;
   value?: IdLocalised | null;
   imagedValue?: IdImageLocalised | null;
@@ -24,7 +24,7 @@ function WikiBar({ version, value, imagedValue, type, objects, imagedObjects, ch
   const navigate = useNavigate();
 
   const handleMenuChange = (value: IdLocalised | IdImageLocalised | null) => {
-    if (value) {
+    if (value && type) {
       navigate(`/wiki/${ version }/${ type.path }/${ value.id }`)
     }
   }
@@ -37,17 +37,19 @@ function WikiBar({ version, value, imagedValue, type, objects, imagedObjects, ch
             <Home color='secondary' style={ { width: 40, height: 40 } }/>
           </Link>
           {
-            objects ?
-              <MenuMenu title={ intl.formatMessage({ id: `wiki.${ type.path }` }) } showId={ showId }
-                        objects={ Object.values(objects) } value={ value } group={ group }
-                        onChange={ handleMenuChange }
-              />
-              :
-              imagedObjects &&
-              <MenuMenu title={ intl.formatMessage({ id: `wiki.${ type.path }` }) } showId={ showId }
-                        objects={ Object.values(imagedObjects) } imagedValue={ imagedValue } group={ group }
-                        onChange={ handleMenuChange }
-              />
+            type && (
+              objects ?
+                <MenuMenu title={ intl.formatMessage({ id: `wiki.${ type.path }` }) } showId={ showId }
+                          objects={ Object.values(objects) } value={ value } group={ group }
+                          onChange={ handleMenuChange }
+                />
+                :
+                imagedObjects &&
+                <MenuMenu title={ intl.formatMessage({ id: `wiki.${ type.path }` }) } showId={ showId }
+                          objects={ Object.values(imagedObjects) } imagedValue={ imagedValue } group={ group }
+                          onChange={ handleMenuChange }
+                />
+            )
           }
           {
             Object.values(wikiTypes).filter(value => value !== type).map(value => (

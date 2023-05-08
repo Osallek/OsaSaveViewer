@@ -1409,6 +1409,7 @@ export type Policy = IdLocalised & {
   allow?: Condition;
   potential?: Condition;
   modifiers?: Modifiers;
+  groups: Array<string>;
 }
 
 export enum ModifierType {

@@ -2,7 +2,7 @@ import { Grid, Typography } from '@mui/material';
 import React from 'react';
 import { Modifiers, ModifierType, Wiki } from 'types/api.types';
 import { getLName } from 'utils/data.utils';
-import { formatNumberPlus } from 'utils/format.utils';
+import { formatNumberPlus, stringLocalisedComparator } from 'utils/format.utils';
 
 export const modifiersGrid = (modifiers: Modifiers, wiki: Wiki) => {
   return <Grid container>
@@ -20,6 +20,7 @@ export const modifiersGrid = (modifiers: Modifiers, wiki: Wiki) => {
       modifiers.modifiers &&
       Object.entries(modifiers.modifiers)
             .filter(([name]) => wiki.rawModifiers[name])
+            .sort(([nameA], [nameB]) => stringLocalisedComparator(wiki.rawModifiers[nameA], wiki.rawModifiers[nameB]))
             .map(([name, value]) => {
               const modifier = wiki.rawModifiers[name];
               let v = '';

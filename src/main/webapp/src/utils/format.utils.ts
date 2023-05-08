@@ -40,6 +40,18 @@ export function stringComparator(a: string, b: string): number {
   return a.localeCompare(b);
 }
 
+export function stringUComparator(a: string | undefined | null, b: string | undefined | null): number {
+  if (!a && !b) {
+    return 0;
+  } else if (!a && b) {
+    return -1;
+  } else if (a && !b) {
+    return 1;
+  } else {
+    return (a && b) ? a.localeCompare(b) : 0;
+  }
+}
+
 export function stringLocalisedComparator(a: Localised, b: Localised): number {
   return stringComparator(getLName(a) ?? '', getLName(b) ?? '');
 }
