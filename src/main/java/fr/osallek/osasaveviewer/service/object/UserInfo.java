@@ -50,7 +50,12 @@ public class UserInfo {
                                                          .map(CountryDTO::getImage)
                                                          .orElse(null),
                                                      save.getVersion(),
-                                                     save.getCountries().stream().map(CountryDTO::getPlayers).filter(CollectionUtils::isNotEmpty).count(),
+                                                     save.getCountries()
+                                                         .stream()
+                                                         .filter(CountryDTO::isAlive)
+                                                         .map(CountryDTO::getPlayers)
+                                                         .filter(CollectionUtils::isNotEmpty)
+                                                         .count(),
                                                      this.id, this.name, this.image);
 
         this.saves.add(serverSave);
