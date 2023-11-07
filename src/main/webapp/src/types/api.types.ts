@@ -792,21 +792,6 @@ export type Condition = {
   clauses?: Record<string, Array<Condition>>
 }
 
-export type Effects = {
-  limit?: Condition;
-  ifEffect?: Effects;
-  elseIfEffect?: Array<Effects>;
-  elseEffect?: Effects;
-  effects?: Record<string, Array<Effects>>;
-  regions?: Record<string, Array<Effects>>;
-  areas?: Record<string, Array<Effects>>;
-  countries?: Record<string, Array<Effects>>;
-  provinces?: Record<string, Array<Effects>>;
-  units?: Record<string, Array<Effects>>;
-  countryEvents?: Array<Event>;
-  addCountryModifiers?: Array<AddModifier>;
-}
-
 export type Decision = IdExampleLocalised & {
   description: ExampleLocalised;
   major: boolean;
@@ -816,7 +801,7 @@ export type Decision = IdExampleLocalised & {
   potential: Condition;
   provincesToHighlight?: Condition;
   allow: Condition;
-  effects: Effects;
+  effects: Modifiers;
 }
 
 export type Event = {
@@ -1082,7 +1067,7 @@ export type ReligionGroup = IdLocalised & {
 export type ReligiousSchool = IdImageLocalised & {
   potentialInviteScholar?: Condition;
   canInviteScholar?: Condition;
-  onInviteScholar?: Effects;
+  onInviteScholar?: Modifiers;
   inviteScholarModifierDisplay?: string;
   modifiers?: Modifiers;
 }
@@ -1210,8 +1195,8 @@ export type GreatProject = IdImageLocalised & {
   canUseModifiersTrigger?: Condition;
   keepTrigger?: Condition;
   buildTrigger?: Condition;
-  onBuilt?: Effects;
-  onDestroy?: Effects;
+  onBuilt?: Modifiers;
+  onDestroy?: Modifiers;
 }
 
 export enum GreatProjectType {
@@ -1226,7 +1211,7 @@ export type  GreatProjectTier = {
   provinceModifiers?: Modifiers;
   areaModifiers?: Modifiers;
   countryModifiers?: Modifiers;
-  onUpgraded?: Effects;
+  onUpgraded?: Modifiers;
 }
 
 export type Dlc = IdImageLocalised & {
@@ -1300,7 +1285,7 @@ export type AgeObjective = IdImageLocalised & {
 export type AgeAbility = IdImageLocalised & {
   allow?: Condition;
   modifiers?: Modifiers;
-  effects?: Effects;
+  effects?: Modifiers;
   rules?: Array<string>;
 }
 
