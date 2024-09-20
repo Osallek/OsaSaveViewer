@@ -1042,10 +1042,10 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
               { ({ height, width }) =>
                 <TableBody>
                   <FixedSizeList
-                    height={ height - (headerRef.current ? headerRef.current?.clientHeight : 0) - 1 }
+                    height={ height ?? 0 - (headerRef.current ? headerRef.current?.clientHeight : 0) - 1 }
                     itemCount={ countries.length }
                     itemSize={ 72 }
-                    width={ Math.max(width, columns.reduce((s, a) => s + a.minWidth, 0)) }
+                    width={ Math.max(width ?? 0, columns.reduce((s, a) => s + a.minWidth, 0)) }
                     itemData={ countries }
                     itemKey={ (index, data) => `${ data[index].tag }-${ type }` }
                     overscanCount={ 10 }

@@ -364,10 +364,10 @@ function TradeNodeTable({ save, visible }: TradeNodeTableProps) {
               { ({ height, width }) =>
                 <TableBody>
                   <FixedSizeList
-                    height={ height - (headerRef.current ? headerRef.current?.clientHeight : 0) }
+                    height={ height ?? 0 - (headerRef.current ? headerRef.current?.clientHeight : 0) }
                     itemCount={ tradeNodes.length }
                     itemSize={ 62 }
-                    width={ Math.max(width, columns.reduce((s, a) => s + a.minWidth, 0)) }
+                    width={ Math.max(width ?? 0, columns.reduce((s, a) => s + a.minWidth, 0)) }
                     itemData={ tradeNodes }
                     itemKey={ (index, data) => data[index].name }
                     overscanCount={ 10 }

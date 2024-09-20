@@ -451,11 +451,11 @@ function WarTable({ save, visible }: WarTableProps) {
               { ({ height, width }) =>
                 <TableBody>
                   <VariableSizeList
-                    height={ height - (headerRef.current ? headerRef.current?.clientHeight : 0) }
+                    height={ height ?? 0 - (headerRef.current ? headerRef.current?.clientHeight : 0) }
                     itemCount={ wars.length }
                     estimatedItemSize={ 72 }
-                    itemSize={ index => rowHeight(index, width, wars) }
-                    width={ Math.max(width, columns.reduce((s, a) => s + a.minWidth, 0)) }
+                    itemSize={ index => rowHeight(index, width ?? 0, wars) }
+                    width={ Math.max(width ?? 0, columns.reduce((s, a) => s + a.minWidth, 0)) }
                     itemData={ wars }
                     itemKey={ (index, data) => data[index].id }
                     overscanCount={ 10 }

@@ -578,11 +578,11 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
               { ({ height, width }) => (
                 <TableBody>
                   <VariableSizeList
-                    height={ height - (headerRef.current ? headerRef.current?.clientHeight : 0) - 1 }
+                    height={ height ?? 0 - (headerRef.current ? headerRef.current?.clientHeight : 0) - 1 }
                     itemCount={ provinces.length }
                     estimatedItemSize={ ProvinceTableType.DEV === type ? 52 : 75 }
-                    itemSize={ index => rowHeight(index, width, type, provinces) }
-                    width={ Math.max(width, columns.reduce((s, a) => s + a.minWidth, 0)) }
+                    itemSize={ index => rowHeight(index, width ?? 0, type, provinces) }
+                    width={ Math.max(width ?? 0, columns.reduce((s, a) => s + a.minWidth, 0)) }
                     itemData={ provinces }
                     itemKey={ (index, data) => data[index].id }
                     overscanCount={ 10 }
