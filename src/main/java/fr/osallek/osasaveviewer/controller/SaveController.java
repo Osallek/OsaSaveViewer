@@ -43,12 +43,12 @@ public class SaveController {
     }
 
     @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SortedSet<ServerSaveDTO>> edit(@PathVariable("userId") String userId) throws IOException {
+    public ResponseEntity<SortedSet<ServerSaveDTO>> getUser(@PathVariable("userId") String userId) throws IOException {
         return ResponseEntity.ok(this.saveService.getSaveForUser(userId));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UploadResponseDTO> edit(@RequestBody ExtractorSaveDTO save) throws IOException {
+    public ResponseEntity<UploadResponseDTO> upload(@RequestBody ExtractorSaveDTO save) throws IOException {
         return ResponseEntity.ok(this.saveService.upload(save));
     }
 }

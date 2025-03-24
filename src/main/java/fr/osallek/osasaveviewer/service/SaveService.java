@@ -7,6 +7,7 @@ import fr.osallek.osasaveviewer.common.exception.PreviousSaveAfterException;
 import fr.osallek.osasaveviewer.common.exception.PreviousSaveDoesNotExistException;
 import fr.osallek.osasaveviewer.common.exception.UnauthorizedException;
 import fr.osallek.osasaveviewer.config.ApplicationProperties;
+import fr.osallek.osasaveviewer.controller.dto.BotSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.ServerSaveDTO;
 import fr.osallek.osasaveviewer.controller.dto.UploadResponseDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.ColorsDTO;
@@ -21,6 +22,7 @@ import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
@@ -34,6 +36,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -115,6 +119,10 @@ public class SaveService {
         return this.properties.getDataSavesFolder().resolve(id + ".json.gz");
     }
 
+    public Path getBotSave(String id) {
+        return this.properties.getDataSavesFolder().resolve(id + ".bot.json.gz");
+    }
+
     public Path getSaveImage(String id) {
         return this.properties.getDataSavesFolder().resolve(id + ".png");
     }
@@ -133,12 +141,24 @@ public class SaveService {
         }
     }
 
+    public BotSaveDTO readBotSave(String id) throws IOException {
+        if (!saveExists(id)) {
+            return null;
+        }
+
+        try (GZIPInputStream inputStream = new GZIPInputStream(new FileInputStream(getBotSave(id).toFile()))) {
+            return this.objectMapper.readValue(inputStream, BotSaveDTO.class);
+        }
+    }
+
     public UploadResponseDTO upload(ExtractorSaveDTO save) throws IOException {
         if (StringUtils.isNotBlank(save.getPreviousSave()) && !saveExists(save.getPreviousSave())) {
             throw new PreviousSaveDoesNotExistException(save.getPreviousSave());
         }
 
         String id = getId();
+        LOGGER.info("Uploading save: {}", id);
+        Instant start = Instant.now();
 
         if (StringUtils.isNotBlank(save.getPreviousSave())) {
             ExtractorSaveDTO previousSave = readSave(save.getPreviousSave());
@@ -155,6 +175,12 @@ public class SaveService {
             this.objectMapper.writeValue(outputStream, save);
         }
 
+        try (CustomGZIPOutputStream outputStream = new CustomGZIPOutputStream(new FileOutputStream(getBotSave(id).toFile()))) {
+            this.objectMapper.writeValue(outputStream, new BotSaveDTO(save));
+        } catch (Exception e) {
+            LOGGER.error("An error occurred while writing bot save {}: {}", id, e.getMessage(), e);
+        }
+
         UserInfo userInfo = this.userService.getOrCreateUserInfo(save.getOwner());
         ServerSaveDTO serverSave = userInfo.addSave(save, id);
         this.userService.saveUserInfo(userInfo);
@@ -164,6 +190,9 @@ public class SaveService {
         if (!serverSave.hideAll()) {
             this.lastSaves.add(serverSave);
         }
+
+        LOGGER.info("Uploaded {} in {} with: {}", id, DurationFormatUtils.formatDuration(Duration.between(start, Instant.now()).toMillis(), "mm:ss.SSS"),
+                    this.objectMapper.writeValueAsString(response.assetsDTO()));
 
         return response;
     }
@@ -240,7 +269,6 @@ public class SaveService {
 
         ExtractorSaveDTO save = readSave(id);
         Map<Color, Integer> colorsMap = new HashMap<>();
-
 
         colorsMap.put(OCEAN_PROV_COLOR, OCEAN_COLOR);
         colorsMap.put(IMPASSABLE_PROV_COLOR, IMPASSABLE_COLOR);

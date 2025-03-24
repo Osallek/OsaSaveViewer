@@ -1,8 +1,12 @@
 package fr.osallek.osasaveviewer.controller;
 
+import fr.osallek.osasaveviewer.config.ApplicationProperties;
+import fr.osallek.osasaveviewer.controller.dto.BotSaveDTO;
+import fr.osallek.osasaveviewer.controller.dto.NameDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.CountryDTO;
 import fr.osallek.osasaveviewer.controller.dto.save.Eu4Language;
 import fr.osallek.osasaveviewer.controller.dto.save.ExtractorSaveDTO;
+import fr.osallek.osasaveviewer.controller.dto.save.ImageLocalised;
 import fr.osallek.osasaveviewer.controller.dto.save.WarDTO;
 import fr.osallek.osasaveviewer.service.SaveService;
 import fr.osallek.osasaveviewer.service.UserService;
@@ -53,9 +57,12 @@ public class BotController {
 
     private final SaveService saveService;
 
-    public BotController(UserService userService, SaveService saveService) {
+    private final ApplicationProperties applicationProperties;
+
+    public BotController(UserService userService, SaveService saveService, ApplicationProperties properties) {
         this.userService = userService;
         this.saveService = saveService;
+        this.applicationProperties = properties;
     }
 
     @GetMapping(value = "/user/{userId}", produces = MediaType.TEXT_HTML_VALUE)
@@ -75,7 +82,7 @@ public class BotController {
 
     @GetMapping(value = "/save/{saveId}", produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> save(@PathVariable("saveId") String id) throws IOException {
-        ExtractorSaveDTO save = this.saveService.readSave(id);
+        BotSaveDTO save = this.saveService.readBotSave(id);
 
         if (save == null) {
             return ResponseEntity.notFound().build();
@@ -83,23 +90,20 @@ public class BotController {
 
         String url = "save/" + id;
         String title = save.getName();
-        String image = "https://eu4.osallek.net/data/saves/" + id + ".png";
+        String image = this.applicationProperties.getFrontUrl() + "/data/saves/" + id + ".png";
 
         return ResponseEntity.ok(TEMPLATE.replace("{URL}", url).replace("{TITLE}", title).replace("{IMAGE}", image));
     }
 
     @GetMapping(value = "/save/{saveId}/warfare/{id}", produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> saveWar(@PathVariable("saveId") String id, @PathVariable("id") int warId) throws IOException {
-        ExtractorSaveDTO save = this.saveService.readSave(id);
+        BotSaveDTO save = this.saveService.readBotSave(id);
 
         if (save == null) {
             return ResponseEntity.notFound().build();
         }
 
-        Optional<WarDTO> war = save.getWars()
-                                   .stream()
-                                   .filter(w -> w.getId() == warId)
-                                   .findFirst();
+        Optional<NameDTO> war = Optional.ofNullable(save.getWars().get(warId));
 
         if (war.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -107,23 +111,20 @@ public class BotController {
 
         String url = "save/" + id + "/war/" + warId;
         String title = save.getName() + " - " + war.get().getName();
-        String image = "https://eu4.osallek.net/data/saves/" + id + ".png";
+        String image = this.applicationProperties.getFrontUrl() + "/data/saves/" + id + ".png";
 
         return ResponseEntity.ok(TEMPLATE.replace("{URL}", url).replace("{TITLE}", title).replace("{IMAGE}", image));
     }
 
     @GetMapping(value = "/save/{saveId}/{tag}", produces = MediaType.TEXT_HTML_VALUE)
     public ResponseEntity<String> saveCountry(@PathVariable("saveId") String id, @PathVariable("tag") String tag) throws IOException {
-        ExtractorSaveDTO save = this.saveService.readSave(id);
+        BotSaveDTO save = this.saveService.readBotSave(id);
 
         if (save == null) {
             return ResponseEntity.notFound().build();
         }
 
-        Optional<CountryDTO> country = save.getCountries()
-                                           .stream()
-                                           .filter(c -> c.getTag().equals(tag))
-                                           .findFirst();
+        Optional<ImageLocalised> country = Optional.ofNullable(save.getCountries().get(tag));
 
         if (country.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -131,7 +132,7 @@ public class BotController {
 
         String url = "save/" + id + "/" + tag;
         String title = save.getName() + " - " + country.get().getLocalisations().getOrDefault(Eu4Language.ENGLISH, tag);
-        String image = "https://eu4.osallek.net/" + country.map(CountryDTO::getImage).map(s -> "data/flags/" + s + ".png").orElse("extractor_en.png");
+        String image = this.applicationProperties.getFrontUrl() + "/" + country.map(ImageLocalised::getImage).map(s -> "data/flags/" + s + ".png").orElse("extractor_en.png");
 
         return ResponseEntity.ok(TEMPLATE.replace("{URL}", url).replace("{TITLE}", title).replace("{IMAGE}", image));
     }
