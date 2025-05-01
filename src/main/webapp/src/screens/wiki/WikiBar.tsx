@@ -1,15 +1,16 @@
 import { Home } from '@mui/icons-material';
 import { AppBar, Avatar, Grid, Toolbar, Tooltip } from '@mui/material';
-import React from 'react';
+import { api } from 'api';
+import { WikiContext } from 'AppRouter';
+import React, { useContext, useEffect } from 'react';
 import { useIntl } from 'react-intl';
-import { Link, useNavigate } from 'react-router-dom';
-import { IdImageLocalised, IdLocalised } from 'types/api.types';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { IdImageLocalised, IdLocalised, Wiki } from 'types/api.types';
 import { WikiType, wikiTypes } from 'types/wiki.types';
 import MenuMenu from './MenuMenu';
 
 interface WikiBarProps {
   type?: WikiType;
-  version?: string;
   value?: IdLocalised | null;
   imagedValue?: IdImageLocalised | null;
   objects?: Array<IdLocalised>;
@@ -19,22 +20,51 @@ interface WikiBarProps {
   group?: boolean;
 }
 
-function WikiBar({ version, value, imagedValue, type, objects, imagedObjects, children, showId, group }: WikiBarProps) {
+function WikiBar({ value, imagedValue, type, objects, imagedObjects, children, showId, group }: WikiBarProps) {
   const intl = useIntl();
   const navigate = useNavigate();
+  const { wikiState, setWikiState } = useContext(WikiContext)!;
+  const { version } = useParams();
 
   const handleMenuChange = (value: IdLocalised | IdImageLocalised | null) => {
     if (value && type) {
-      navigate(`/wiki/${ version }/${ type.path }/${ value.id }`)
+      navigate(`/wiki/${ version }/${ type.path }/${ value.id }`);
     }
-  }
+  };
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        if (version) {
+          let versionsData: Record<string, string>;
+
+          if (!wikiState.versions || !wikiState.versions[version]) {
+            versionsData = (await api.wiki.versions()).data;
+            setWikiState({ ...wikiState, versions: versionsData });
+          } else {
+            versionsData = wikiState.versions;
+          }
+
+          if (versionsData[version]) {
+            let data: Wiki;
+            if (!wikiState.wikis || !wikiState.wikis[version]) {
+              data = (await api.wiki.data(version, versionsData[version])).data;
+              setWikiState({ ...wikiState, wikis: { ...wikiState.wikis, [version]: data } });
+            }
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [version, wikiState]);
 
   return (
     <AppBar style={ { position: 'relative' } }>
       <Toolbar style={ { justifyContent: 'center' } }>
-        <Grid container item alignItems='center' xs={ 12 } xl={ 10 }>
+        <Grid container item alignItems="center" xs={ 12 } xl={ 10 }>
           <Link to={ `/wiki/${ version }` }>
-            <Home color='secondary' style={ { width: 40, height: 40 } }/>
+            <Home color="secondary" style={ { width: 40, height: 40 } }/>
           </Link>
           {
             type && (
@@ -55,7 +85,7 @@ function WikiBar({ version, value, imagedValue, type, objects, imagedObjects, ch
             Object.values(wikiTypes).filter(value => value !== type).map(value => (
               <Tooltip title={ intl.formatMessage({ id: `wiki.${ value.path }` }) } key={ `tooltip-${ value.path }` }>
                 <Link to={ `/wiki/${ version }/${ value.path }` } key={ value.path } style={ { marginLeft: 8 } }>
-                  <Avatar variant='square' src={ `/eu4/wiki/${ value.icon }.png` } color='secondary'
+                  <Avatar variant="square" src={ `/eu4/wiki/${ value.icon }.png` } color="secondary"
                           sx={ { width: 24, height: 24 } }/>
                 </Link>
               </Tooltip>
@@ -67,7 +97,7 @@ function WikiBar({ version, value, imagedValue, type, objects, imagedObjects, ch
         children
       }
     </AppBar>
-  )
+  );
 }
 
 export default WikiBar;

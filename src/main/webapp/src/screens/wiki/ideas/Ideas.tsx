@@ -4,7 +4,8 @@ import {
   Typography
 } from '@mui/material';
 import { api } from 'api';
-import React, { useEffect, useState } from 'react';
+import { WikiContext } from 'AppRouter';
+import React, { useContext, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
 import { modifiersGrid } from 'screens/wiki/ModifiersGrid';
@@ -16,8 +17,9 @@ import { stringComparator, stringLocalisedComparator, stringUComparator } from '
 import { getIdeaGroupImage } from 'utils/wiki.utils';
 
 function Ideas() {
-  const params = useParams();
+  const { version } = useParams();
   const intl = useIntl();
+  const { wikiState } = useContext(WikiContext)!;
 
   const [wiki, setWiki] = useState<Wiki>();
   const [ideaGroups, setIdeaGroups] = useState<Array<IdeaGroup>>();
@@ -30,45 +32,27 @@ function Ideas() {
   const [selectedPolicies, setSelectedPolicies] = useState<Array<Policy>>([]);
   const [modifiers, setModifiers] = useState<Modifiers | undefined>(undefined);
 
-  const { version } = params;
-
   useEffect(() => {
-    ;(async () => {
-      try {
-        if (version) {
-          const { data: versionsData } = await api.wiki.versions();
-
-          if (versionsData && versionsData[version]) {
-            const { data } = await api.wiki.data(version, versionsData[version]);
-
-            if (data) {
-              setWiki(data);
-              setIdeaGroups(
-                Object.values(data.ideaGroups)
-                      .filter(i => i.category !== undefined)
-                      .sort((a, b) => stringComparator(a.category, b.category) || stringLocalisedComparator(a, b)));
-              setPolicies(
-                Object.values(data.policies)
-                      .filter(i => i.category != undefined)
-                      .sort((a, b) => stringComparator(a.category, b.category) || stringLocalisedComparator(a, b)));
-              setTagIdeas(
-                Object.values(data.ideaGroups)
-                      .filter(i => i.free && i.start && (i.start.modifiers || i.start.enables))
-                      .sort(stringLocalisedComparator));
-              document.title = intl.formatMessage({ id: 'wiki.ideaGroups' });
-            }
-          }
-        } else {
-          setError(true);
-        }
-      } catch (e) {
-        console.error(e);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    })()
-  }, []);
+    if (!wiki && version && wikiState && wikiState.wikis && wikiState.wikis[version]) {
+      const wiki = wikiState.wikis[version];
+      setWiki(wiki);
+      setIdeaGroups(
+        Object.values(wiki.ideaGroups)
+              .filter(i => i.category !== undefined)
+              .sort((a, b) => stringComparator(a.category, b.category) || stringLocalisedComparator(a, b)));
+      setPolicies(
+        Object.values(wiki.policies)
+              .filter(i => i.category != undefined)
+              .sort((a, b) => stringComparator(a.category, b.category) || stringLocalisedComparator(a, b)));
+      setTagIdeas(
+        Object.values(wiki.ideaGroups)
+              .filter(i => i.free && i.start && (i.start.modifiers || i.start.enables))
+              .sort(stringLocalisedComparator));
+      document.title = intl.formatMessage({ id: 'wiki.ideaGroups' });
+      setLoading(false);
+      setError(false);
+    }
+  }, [wikiState, version, wiki, intl]);
 
   useEffect(() => {
     const modifs: Array<Modifiers> = [];
@@ -160,7 +144,7 @@ function Ideas() {
           </Grid>
           :
           <>
-            <WikiBar version={ version } group={ false }>
+            <WikiBar  group={ false }>
               <Toolbar sx={ { justifyContent: 'center', backgroundColor: theme.palette.primary.dark } }>
                 <Typography variant='h6' color={ theme.palette.primary.contrastText }>
                   { intl.formatMessage({ id: 'wiki.ideas' }) }

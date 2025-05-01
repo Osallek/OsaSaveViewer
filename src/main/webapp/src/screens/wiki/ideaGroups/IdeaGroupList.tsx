@@ -1,7 +1,7 @@
 import { Home } from '@mui/icons-material';
 import { Backdrop, CircularProgress, Grid, Toolbar, Typography } from '@mui/material';
-import { api } from 'api';
-import React, { useEffect, useState } from 'react';
+import { WikiContext } from 'AppRouter';
+import React, { useContext, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
 import IdeaGroupCard from 'screens/wiki/ideaGroups/IdeaGroupCard';
@@ -14,6 +14,7 @@ import { stringComparator, stringLocalisedComparator } from 'utils/format.utils'
 function IdeaGroupList() {
   const params = useParams();
   const intl = useIntl();
+  const { wikiState } = useContext(WikiContext)!;
 
   const [wiki, setWiki] = useState<Wiki>();
   const [ideaGroups, setIdeaGroups] = useState<Array<IdeaGroup>>();
@@ -24,32 +25,16 @@ function IdeaGroupList() {
   const { version } = params;
 
   useEffect(() => {
-    ;(async () => {
-      try {
-        if (version) {
-          const { data: versionsData } = await api.wiki.versions();
-
-          if (versionsData && versionsData[version]) {
-            const { data } = await api.wiki.data(version, versionsData[version]);
-
-            if (data) {
-              setWiki(data);
-              setIdeaGroups(
-                Object.values(data.ideaGroups).filter(i => i.category != undefined).sort(stringLocalisedComparator));
-              document.title = intl.formatMessage({ id: 'wiki.ideaGroups' });
-            }
-          }
-        } else {
-          setError(true);
-        }
-      } catch (e) {
-        console.error(e);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    })()
-  }, []);
+    if (!wiki && version && wikiState && wikiState.wikis && wikiState.wikis[version]) {
+      const wiki = wikiState.wikis[version];
+      setWiki(wiki);
+      setIdeaGroups(
+        Object.values(wiki.ideaGroups).filter(i => i.category !== undefined).sort(stringLocalisedComparator));
+      document.title = intl.formatMessage({ id: 'wiki.ideaGroups' });
+      setLoading(false);
+      setError(false);
+    }
+  }, [wikiState, version]);
 
   useEffect(() => {
     if (ideaGroups) {
@@ -76,7 +61,7 @@ function IdeaGroupList() {
           </Grid>
           :
           <>
-            <WikiBar version={ version } type={ wikiTypes.ideaGroups }
+            <WikiBar  type={ wikiTypes.ideaGroups }
                      objects={ ideaGroups?.filter(idea => !idea.free) }
                      group={ false }>
               <Toolbar sx={ { justifyContent: 'center', backgroundColor: theme.palette.primary.dark } }>

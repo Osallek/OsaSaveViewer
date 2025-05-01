@@ -1,7 +1,7 @@
 import { Home } from '@mui/icons-material';
 import { Backdrop, CircularProgress, Grid, Toolbar, Typography } from '@mui/material';
-import { api } from 'api';
-import React, { useEffect, useState } from 'react';
+import { WikiContext } from 'AppRouter';
+import React, { useContext, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
 import PolicyCard from 'screens/wiki/policies/PolicyCard';
@@ -12,8 +12,9 @@ import { wikiTypes } from 'types/wiki.types';
 import { stringComparator, stringLocalisedComparator } from 'utils/format.utils';
 
 function PoliciesList() {
-  const params = useParams();
+  const { version } = useParams();
   const intl = useIntl();
+  const { wikiState } = useContext(WikiContext)!;
 
   const [wiki, setWiki] = useState<Wiki>();
   const [policies, setPolicies] = useState<Array<Policy>>();
@@ -21,35 +22,17 @@ function PoliciesList() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
 
-  const { version } = params;
-
   useEffect(() => {
-    ;(async () => {
-      try {
-        if (version) {
-          const { data: versionsData } = await api.wiki.versions();
-
-          if (versionsData && versionsData[version]) {
-            const { data } = await api.wiki.data(version, versionsData[version]);
-
-            if (data) {
-              setWiki(data);
-              setPolicies(
-                Object.values(data.policies).filter(i => i.category != undefined).sort(stringLocalisedComparator));
-              document.title = intl.formatMessage({ id: 'wiki.policies' });
-            }
-          }
-        } else {
-          setError(true);
-        }
-      } catch (e) {
-        console.error(e);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    })()
-  }, []);
+    if (!wiki && version && wikiState && wikiState.wikis && wikiState.wikis[version]) {
+      const wiki = wikiState.wikis[version];
+      setWiki(wiki);
+      setPolicies(
+        Object.values(wiki.policies).filter(i => i.category !== undefined).sort(stringLocalisedComparator));
+      document.title = intl.formatMessage({ id: 'wiki.policies' });
+      setLoading(false);
+      setError(false);
+    }
+  }, [wikiState, version, wiki, intl]);
 
   useEffect(() => {
     if (policies) {
@@ -75,7 +58,7 @@ function PoliciesList() {
           </Grid>
           :
           <>
-            <WikiBar version={ version } type={ wikiTypes.policies } objects={ policies } group={ false }>
+            <WikiBar  type={ wikiTypes.policies } objects={ policies } group={ false }>
               <Toolbar sx={ { justifyContent: 'center', backgroundColor: theme.palette.primary.dark } }>
                 <Typography variant='h6' color={ theme.palette.primary.contrastText }>
                   { intl.formatMessage({ id: 'wiki.policies' }) }
