@@ -1,6 +1,6 @@
 import { FilterList, Launch } from '@mui/icons-material';
 import {
-  Autocomplete, Card, CardContent, ClickAwayListener, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Autocomplete, Card, CardContent, ClickAwayListener, GridLegacy, IconButton, Paper, Popper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   TableSortLabel, TextField, Typography, useTheme
 } from '@mui/material';
 import { intl } from 'index';
@@ -38,7 +38,7 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'tradeNode.name' }),
       minWidth: 170,
       value: (save, tradeNode, width) =>
-        <Grid container alignItems='center' justifyContent='space-between' flexWrap='nowrap'
+        <GridLegacy container alignItems='center' justifyContent='space-between' flexWrap='nowrap'
               style={ { width } } key={ `trade-node-name-${ tradeNode.name }` }>
           <div style={ {
             width: 10,
@@ -49,11 +49,11 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
           <Typography variant='body1' style={ { whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' } }>
             { getTradeNodesName(tradeNode) }
           </Typography>
-          <Grid item flexGrow={ 1 }/>
+          <GridLegacy item flexGrow={ 1 }/>
           <Link to={ `trade-node/${ tradeNode.name }` } target='_blank' rel='noopener noreferrer'>
             <Launch color='primary'/>
           </Link>
-        </Grid>,
+        </GridLegacy>,
       comparatorValue: (save, node) => getTradeNodesName(node),
       filterValues: save => Array.from(new Set<string>(save.tradeNodes ? save.tradeNodes.map(node => getTradeNodesName(node)).sort(stringComparator) : [])),
       filter: (save, node, filter) => filter.includes(getTradeNodesName(node)),
@@ -63,9 +63,9 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'tradeNode.totalValue' }),
       minWidth: 120,
       value: (save, node, width) =>
-        <Grid style={ { width } }>
+        <GridLegacy style={ { width } }>
           <Typography variant='body1'>{ formatNumber(getTradeNodeValue(node)) }</Typography>
-        </Grid>
+        </GridLegacy>
       ,
       comparatorValue: (save, node) => getTradeNodeValue(node),
       filterValues: save => Array.from(new Set<number>(save.tradeNodes ? save.tradeNodes.map(node => round(getTradeNodeValue(node), valueRadix)).sort(numberComparator) : [])),
@@ -76,9 +76,9 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'tradeNode.localValue' }),
       minWidth: 120,
       value: (save, node, width) =>
-        <Grid style={ { width } }>
+        <GridLegacy style={ { width } }>
           <Typography variant='body1'>{ formatNumber(getTradeNodeLocalValue(node)) }</Typography>
-        </Grid>
+        </GridLegacy>
       ,
       comparatorValue: (save, node) => getTradeNodeLocalValue(node),
       filterValues: save => Array.from(new Set<number>(save.tradeNodes ? save.tradeNodes.map(node => round(getTradeNodeLocalValue(node), localValueRadix)).sort(numberComparator) : [])),
@@ -89,9 +89,9 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'tradeNode.incomingValue' }),
       minWidth: 120,
       value: (save, node, width) =>
-        <Grid style={ { width } }>
+        <GridLegacy style={ { width } }>
           <Typography variant='body1'>{ formatNumber(getTradeNodeIncomingValue(node)) }</Typography>
-        </Grid>
+        </GridLegacy>
       ,
       comparatorValue: (save, node) => getTradeNodeIncomingValue(node),
       filterValues: save => Array.from(new Set<number>(save.tradeNodes ? save.tradeNodes.map(node => round(getTradeNodeIncomingValue(node), incomingValueRadix)).sort(numberComparator) : [])),
@@ -102,9 +102,9 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'tradeNode.outGoingValue' }),
       minWidth: 120,
       value: (save, node, width) =>
-        <Grid style={ { width } }>
+        <GridLegacy style={ { width } }>
           <Typography variant='body1'>{ formatNumber(getTradeNodeOutgoingValue(node, save)) }</Typography>
-        </Grid>
+        </GridLegacy>
       ,
       comparatorValue: (save, node) => getTradeNodeOutgoingValue(node, save),
       filterValues: save => Array.from(new Set<number>(save.tradeNodes ? save.tradeNodes.map(node => round(getTradeNodeOutgoingValue(node, save), incomingValueRadix)).sort(numberComparator) : [])),
@@ -115,9 +115,9 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'tradeNode.retention' }),
       minWidth: 120,
       value: (save, node, width) =>
-        <Grid style={ { width } }>
+        <GridLegacy style={ { width } }>
           <Typography variant='body1'>{ `${formatNumber(node.retention * 100)}%` }</Typography>
-        </Grid>
+        </GridLegacy>
       ,
       comparatorValue: (save, node) => node.retention,
       filterValues: save => Array.from(new Set<number>(save.tradeNodes ? save.tradeNodes.map(node => round(node.retention * 100, 10)).sort(numberComparator) : [])),
@@ -128,9 +128,9 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'tradeNode.nbCountries' }),
       minWidth: 120,
       value: (save, node, width) =>
-        <Grid style={ { width } }>
+        <GridLegacy style={ { width } }>
           <Typography variant='body1'>{ node.countries ? node.countries.length : 0 }</Typography>
-        </Grid>
+        </GridLegacy>
       ,
       comparatorValue: (save, node) => node.countries ? node.countries.length : 0,
       filterValues: save => Array.from(new Set<number>(save.tradeNodes ? save.tradeNodes.map(node => node.countries ? node.countries.length : 0).sort(numberComparator) : [])),
@@ -329,7 +329,7 @@ function TradeNodeTable({ save, visible }: TradeNodeTableProps) {
                     key={ column.id }
                     style={ { minWidth: column.minWidth, backgroundColor: theme.palette.primary.light } }
                   >
-                    <Grid container alignItems='center' ref={ el => columnsRefs.current[index] = el }
+                    <GridLegacy container alignItems='center' ref={ el => columnsRefs.current[index] = el }
                           style={ { flexFlow: 'nowrap' } }>
                       <IconButton
                         onClick={ (e) => {
@@ -355,7 +355,7 @@ function TradeNodeTable({ save, visible }: TradeNodeTableProps) {
                           { column.label }
                         </Typography>
                       </TableSortLabel>
-                    </Grid>
+                    </GridLegacy>
                   </TableCell>
                 )) }
               </TableRow>

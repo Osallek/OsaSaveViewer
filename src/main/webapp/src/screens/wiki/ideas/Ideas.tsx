@@ -1,6 +1,6 @@
 import { Home } from '@mui/icons-material';
 import {
-  Autocomplete, Avatar, Backdrop, Card, CardContent, CardHeader, Chip, CircularProgress, Grid, TextField, Toolbar,
+  Autocomplete, Avatar, Backdrop, Card, CardContent, CardHeader, Chip, CircularProgress, GridLegacy, TextField, Toolbar,
   Typography
 } from '@mui/material';
 import { api } from 'api';
@@ -130,7 +130,7 @@ function Ideas() {
     <>
       {
         (error || (!loading && (!ideaGroups || !version || !wiki))) ?
-          <Grid container alignItems='center' justifyContent='center' flexDirection='column'
+          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
                 sx={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
             <Typography variant='h2' color={ theme.palette.primary.contrastText }>
               404
@@ -141,7 +141,7 @@ function Ideas() {
             <Link to='/'>
               <Home fontSize='large' color='primary' sx={ { width: 40, height: 40 } }/>
             </Link>
-          </Grid>
+          </GridLegacy>
           :
           <>
             <WikiBar  group={ false }>
@@ -157,10 +157,10 @@ function Ideas() {
                   <CircularProgress color='primary'/>
                 </Backdrop>
                 :
-                <Grid container sx={ { alignItems: 'flex-start', justifyContent: 'center', padding: 3 } }>
-                  <Grid container item xs={ 12 } md={ 6 } xl={ 5 } rowGap={ 2 }
+                <GridLegacy container sx={ { alignItems: 'flex-start', justifyContent: 'center', padding: 3 } }>
+                  <GridLegacy container item xs={ 12 } md={ 6 } xl={ 5 } rowGap={ 2 }
                         sx={ { flexDirection: 'column' } } style={ { paddingTop: 0, paddingLeft: 0 } }>
-                    <Grid container item>
+                    <GridLegacy container item>
                       <Card style={ { width: '100%', backgroundColor: theme.palette.primary.light } }>
                         <CardHeader title={ intl.formatMessage({ id: 'wiki.ideas.tagIdeas' }) }
                                     titleTypographyProps={ {
@@ -177,13 +177,13 @@ function Ideas() {
                             renderOption={ (props, option) => {
                               return (
                                 <li { ...props }>
-                                  <Grid container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
+                                  <GridLegacy container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
                                     <Avatar src={ getIdeaGroupImage(option) } variant='square'
                                             style={ { display: 'inline-block' } }/>
                                     <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                                       { `${ getLName(option) } (${ option.id })` }
                                     </Typography>
-                                  </Grid>
+                                  </GridLegacy>
                                 </li>
                               )
                             } }
@@ -199,8 +199,8 @@ function Ideas() {
                           />
                         </CardContent>
                       </Card>
-                    </Grid>
-                    <Grid container item>
+                    </GridLegacy>
+                    <GridLegacy container item>
                       <Card style={ { width: '100%', backgroundColor: theme.palette.primary.light } }>
                         <CardHeader title={ intl.formatMessage({ id: 'wiki.ideas.ideas' }) }
                                     titleTypographyProps={ {
@@ -219,13 +219,13 @@ function Ideas() {
                             renderOption={ (props, option) => {
                               return (
                                 <li { ...props }>
-                                  <Grid container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
+                                  <GridLegacy container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
                                     <Avatar src={ getIdeaGroupImage(option) } variant='square'
                                             style={ { display: 'inline-block' } }/>
                                     <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                                       { getLName(option) }
                                     </Typography>
-                                  </Grid>
+                                  </GridLegacy>
                                 </li>
                               )
                             } }
@@ -246,8 +246,8 @@ function Ideas() {
                           />
                         </CardContent>
                       </Card>
-                    </Grid>
-                    <Grid container item>
+                    </GridLegacy>
+                    <GridLegacy container item>
                       <Card style={ { width: '100%', backgroundColor: theme.palette.primary.light } }>
                         <CardHeader title={ intl.formatMessage({ id: 'wiki.ideas.policies' }) }
                                     titleTypographyProps={ {
@@ -268,7 +268,7 @@ function Ideas() {
                             renderOption={ (props, option) => {
                               return (
                                 <li { ...props }>
-                                  <Grid container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
+                                  <GridLegacy container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
                                     <Avatar src={ `/eu4/wiki/${ option.category.toLowerCase() }.png` } variant='square'
                                             style={ { display: 'inline-block' } }/>
                                     <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
@@ -276,7 +276,7 @@ function Ideas() {
                                                                          .sort(stringUComparator)
                                                                          .join(' + ') })` }
                                     </Typography>
-                                  </Grid>
+                                  </GridLegacy>
                                 </li>
                               )
                             } }
@@ -298,9 +298,9 @@ function Ideas() {
                           />
                         </CardContent>
                       </Card>
-                    </Grid>
-                  </Grid>
-                  <Grid container item xs={ 12 } md={ 10 } lg={ 6 } xl={ 5 } sx={ { paddingLeft: 3 } }>
+                    </GridLegacy>
+                  </GridLegacy>
+                  <GridLegacy container item xs={ 12 } md={ 10 } lg={ 6 } xl={ 5 } sx={ { paddingLeft: 3 } }>
                     { modifiers && (
                       <Card style={ { width: '100%', backgroundColor: theme.palette.primary.light } }>
                         <CardHeader title={ intl.formatMessage({ id: 'wiki.ideas.total' }) }
@@ -313,8 +313,8 @@ function Ideas() {
                         </CardContent>
                       </Card>
                     ) }
-                  </Grid>
-                </Grid>
+                  </GridLegacy>
+                </GridLegacy>
             }
           </>
       }

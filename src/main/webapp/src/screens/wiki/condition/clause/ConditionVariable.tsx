@@ -1,4 +1,4 @@
-import { Grid, Typography, useTheme } from '@mui/material';
+import { GridLegacy, Typography, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -29,7 +29,7 @@ function ConditionVariable({ wiki, wikiVersion, condition, negate, useExample }:
 
   if (value !== undefined && variable !== undefined) {
     return (
-      <Grid container item alignItems='center'>
+      <GridLegacy container item alignItems='center'>
         <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } } key={ `title-${ condition }-${ value }` }>
           { intl.formatMessage({ id: 'wiki.condition.variable' }) }
         </Typography>
@@ -44,7 +44,7 @@ function ConditionVariable({ wiki, wikiVersion, condition, negate, useExample }:
         </Typography>
         <ConditionLocalised wiki={ wiki } condition={ 'check_variable' } wikiVersion={ wikiVersion } negate={ negate } value={ value } grid={ false }
                             useExample={ useExample }/>
-      </Grid>
+      </GridLegacy>
     )
   } else {
     return <></>

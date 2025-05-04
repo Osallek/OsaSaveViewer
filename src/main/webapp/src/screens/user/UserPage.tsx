@@ -1,5 +1,5 @@
 import { Home } from '@mui/icons-material';
-import { AppBar, Avatar, Backdrop, CircularProgress, Grid, Toolbar, Typography } from '@mui/material';
+import { AppBar, Avatar, Backdrop, CircularProgress, GridLegacy, Toolbar, Typography } from '@mui/material';
 import { api } from 'api';
 import { UserContext, UserContextProps } from 'App';
 import React, { useContext, useEffect, useState } from 'react';
@@ -67,7 +67,7 @@ function UserPage() {
     <>
       {
         (error || (!loading && !pageUser)) ?
-          <Grid container alignItems='center' justifyContent='center' flexDirection='column'
+          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
                 style={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
             <Typography variant='h2' color={ theme.palette.primary.contrastText }>
               404
@@ -78,17 +78,17 @@ function UserPage() {
             <Link to='/'>
               <Home fontSize='large' color='primary' style={ { width: 40, height: 40 } }/>
             </Link>
-          </Grid>
+          </GridLegacy>
           :
           <>
             <AppBar style={ { position: 'relative' } }>
               <Toolbar style={ { justifyContent: 'center' } }>
-                <Grid container item alignItems='center' xs={ 12 } xl={ 10 }>
+                <GridLegacy container item alignItems='center' xs={ 12 } xl={ 10 }>
                   <Link to={ `/` }>
                     <Home color='secondary' style={ { width: 40, height: 40 } }/>
                   </Link>
                   <SteamLogin/>
-                </Grid>
+                </GridLegacy>
               </Toolbar>
             </AppBar>
             {
@@ -97,9 +97,9 @@ function UserPage() {
                   <CircularProgress color='primary'/>
                 </Backdrop>
                 :
-                <Grid container justifyContent='center' style={ { padding: 24 } }>
-                  <Grid container item xs={ 12 } xl={ 10 }>
-                    <Grid container item style={ { margin: 8 } }>
+                <GridLegacy container justifyContent='center' style={ { padding: 24 } }>
+                  <GridLegacy container item xs={ 12 } xl={ 10 }>
+                    <GridLegacy container item style={ { margin: 8 } }>
                       {
                         pageUser.image &&
                           <Avatar src={ pageUser.image } variant='square' alt={ pageUser.id }/>
@@ -107,10 +107,10 @@ function UserPage() {
                       <Typography variant='h4' component='div' style={ { marginLeft: pageUser.image ? 8 : 0 } }>
                         { pageUser.name ?? pageUser.id }
                       </Typography>
-                    </Grid>
+                    </GridLegacy>
                     <SaveTable saves={ pageUser?.saves } currentUser={ user?.id } handleDelete={ handleDelete } owner={ false } actionTable={ actionTable }/>
-                  </Grid>
-                </Grid>
+                  </GridLegacy>
+                </GridLegacy>
 
             }
           </>

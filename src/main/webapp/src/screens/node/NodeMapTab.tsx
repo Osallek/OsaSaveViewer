@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Grid, Tooltip, useTheme } from '@mui/material';
+import { Button, CircularProgress, GridLegacy, Tooltip, useTheme } from '@mui/material';
 import React, { RefObject, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import SaveMap from 'screens/save/SaveMap';
@@ -21,7 +21,7 @@ function NodeMapTab({ node, save, containerRef }: NodeMapTabProps) {
 
   return (
     <div style={ { width: '100%', height: '100%' } }>
-      <Grid container style={ {
+      <GridLegacy container style={ {
         width: 'calc(100% - 48px)',
         height: `calc(100% - ${ (containerRef.current ? containerRef.current.offsetTop : 0) + 48 }px)`,
         justifyContent: 'center',
@@ -31,7 +31,7 @@ function NodeMapTab({ node, save, containerRef }: NodeMapTabProps) {
         position: 'absolute',
       } }>
         <CircularProgress color='primary'/>
-      </Grid>
+      </GridLegacy>
       <div style={ { position: 'fixed', top: 5 + (containerRef.current ? containerRef.current.offsetTop + 24 : 0), left: 29, zIndex: 1 } }>
         <Tooltip title={ intl.formatMessage({ id: 'map.mod.TRADE_NODE' }) } key={ 'tooltip-node' }>
           <Button onClick={ () => setMapMode(MapMode.TRADE_NODE) } style={ { padding: 0, minWidth: 0 } } disableRipple key={ `button-node` }>

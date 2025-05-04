@@ -1,7 +1,7 @@
 import { Shield } from '@mui/icons-material';
 import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineOppositeContent, TimelineSeparator } from '@mui/lab';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Avatar, Card, CardContent, CardHeader, Divider, Grid, Paper, Tooltip, useTheme } from '@mui/material';
+import { Avatar, Card, CardContent, CardHeader, Divider, GridLegacy, Paper, Tooltip, useTheme } from '@mui/material';
 import { blue, green, red } from '@mui/material/colors';
 import { toPng } from 'html-to-image';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -72,13 +72,13 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
             </Tooltip>
           ),
           display: (
-            <Grid container>
+            <GridLegacy container>
               { h.addAttacker.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b))).map(tag => (
                 <Tooltip title={ getCountryName(save, tag) } key={ `attacker-${ war.id }-${ tag }` }>
                   <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
                 </Tooltip>
               )) }
-            </Grid>
+            </GridLegacy>
           ),
           date: h.date
         });
@@ -92,13 +92,13 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
             </Tooltip>
           ),
           display: (
-            <Grid container>
+            <GridLegacy container>
               { h.addDefender.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b))).map(tag => (
                 <Tooltip title={ getCountryName(save, tag) } key={ `defender-${ war.id }-${ tag }` }>
                   <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
                 </Tooltip>
               )) }
-            </Grid>
+            </GridLegacy>
           ),
           date: h.date
         });
@@ -114,13 +114,13 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
             </Tooltip>
           ),
           display: (
-            <Grid container>
+            <GridLegacy container>
               { h.remAttacker.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b))).map(tag => (
                 <Tooltip title={ getCountryName(save, tag) } key={ `attacker-${ war.id }-${ tag }` }>
                   <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
                 </Tooltip>
               )) }
-            </Grid>
+            </GridLegacy>
           ),
           date: h.date
         });
@@ -134,13 +134,13 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
             </Tooltip>
           ),
           display: (
-            <Grid container>
+            <GridLegacy container>
               { h.remDefender.sort((a, b) => stringComparator(getCountryName(save, a), getCountryName(save, b))).map(tag => (
                 <Tooltip title={ getCountryName(save, tag) } key={ `defender-${ war.id }-${ tag }` }>
                   <Avatar src={ getCountryFlag(save, tag) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
                 </Tooltip>
               )) }
-            </Grid>
+            </GridLegacy>
           ),
           date: h.date
         });
@@ -159,117 +159,117 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
             <Card style={ { width: '100%' } }>
               <CardHeader title={ `${ battle.name }` } style={ { backgroundColor: theme.palette.primary.light, color: theme.palette.primary.contrastText } }/>
               <CardContent>
-                <Grid container style={ { width: '100%' } }>
-                  <Grid container item xs={ 5 } alignItems='end' rowGap={ 1 } flexDirection='column'>
-                    <Grid>
+                <GridLegacy container style={ { width: '100%' } }>
+                  <GridLegacy container item xs={ 5 } alignItems='end' rowGap={ 1 } flexDirection='column'>
+                    <GridLegacy>
                       <Tooltip title={ getCountryName(save, battle.attacker.country) } key={ `defender-${ war.id }-${ battle.attacker.country }` }>
                         <Avatar src={ getCountryFlag(save, battle.attacker.country) } variant='square' component={ Paper }/>
                       </Tooltip>
-                    </Grid>
+                    </GridLegacy>
                     {
                       getProvince(save, battle.location) &&
                         <>
-                            <Grid container alignItems='center' justifyContent='end' style={ { flexWrap: 'nowrap', textAlign: 'end' } }>
+                            <GridLegacy container alignItems='center' justifyContent='end' style={ { flexWrap: 'nowrap', textAlign: 'end' } }>
                               { battle.attacker.commander ?? '-' }
                                 <Avatar src='/eu4/country/general.png' variant='square' style={ { marginLeft: 4, width: 24, height: 24 } }/>
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='end'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='end'>
                               { formatNumber(battle.attacker.infantry) }
                                 <Avatar src='/eu4/country/infantry.png' variant='square' style={ { marginLeft: 4, width: 24, height: 24 } }/>
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='end'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='end'>
                               { formatNumber(battle.attacker.cavalry) }
                                 <Avatar src='/eu4/country/cavalry.png' variant='square' style={ { marginLeft: 4, width: 24, height: 24 } }/>
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='end'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='end'>
                               { formatNumber(battle.attacker.artillery) }
                                 <Avatar src='/eu4/country/artillery.png' variant='square' style={ { marginLeft: 4, width: 24, height: 24 } }/>
-                            </Grid>
+                            </GridLegacy>
                         </>
                     }
                     {
                       getOceanLakeProvince(save, battle.location) &&
                         <>
-                            <Grid container alignItems='center' justifyContent='end' style={ { flexWrap: 'nowrap', textAlign: 'end' } }>
+                            <GridLegacy container alignItems='center' justifyContent='end' style={ { flexWrap: 'nowrap', textAlign: 'end' } }>
                               { battle.attacker.commander ?? '-' }
                                 <Avatar src='/eu4/country/admiral.png' variant='square' style={ { marginLeft: 4, width: 24, height: 24 } }/>
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='end'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='end'>
                               { formatNumber(battle.attacker.heavyShip) }
                                 <Avatar src='/eu4/country/heavy_ship.png' variant='square' style={ { marginRight: 3, marginLeft: 4, width: 33, height: 25 } }/>
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='end'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='end'>
                               { formatNumber(battle.attacker.lightShip) }
                                 <Avatar src='/eu4/country/light_ship.png' variant='square' style={ { marginLeft: 4, width: 35, height: 27 } }/>
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='end'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='end'>
                               { formatNumber(battle.attacker.galley) }
                                 <Avatar src='/eu4/country/galley.png' variant='square' style={ { marginLeft: 8, marginRight: 3, width: 29, height: 22 } }/>
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='end'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='end'>
                               { formatNumber(battle.attacker.transport) }
                                 <Avatar src='/eu4/country/transport.png' variant='square' style={ { marginLeft: 10, marginRight: 6, width: 24, height: 22 } }/>
-                            </Grid>
+                            </GridLegacy>
                         </>
                     }
-                  </Grid>
-                  <Grid container item xs={ 2 } justifyContent='center' alignItems='center'>
+                  </GridLegacy>
+                  <GridLegacy container item xs={ 2 } justifyContent='center' alignItems='center'>
                     <SwordsIcon/>
-                  </Grid>
-                  <Grid container item xs={ 5 }>
-                    <Grid>
+                  </GridLegacy>
+                  <GridLegacy container item xs={ 5 }>
+                    <GridLegacy>
                       <Tooltip title={ getCountryName(save, battle.defender.country) } key={ `defender-${ war.id }-${ battle.defender.country }` }>
                         <Avatar src={ getCountryFlag(save, battle.defender.country) } variant='square' component={ Paper }/>
                       </Tooltip>
-                    </Grid>
+                    </GridLegacy>
                     {
                       getProvince(save, battle.location) &&
                         <>
-                            <Grid container alignItems='center' justifyContent='start' style={ { flexWrap: 'nowrap' } }>
+                            <GridLegacy container alignItems='center' justifyContent='start' style={ { flexWrap: 'nowrap' } }>
                                 <Avatar src='/eu4/country/general.png' variant='square' style={ { marginRight: 4, width: 24, height: 24 } }/>
                               { battle.defender.commander ?? '-' }
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='start'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='start'>
                                 <Avatar src='/eu4/country/infantry.png' variant='square' style={ { marginRight: 4, width: 24, height: 24 } }/>
                               { formatNumber(battle.defender.infantry) }
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='start'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='start'>
                                 <Avatar src='/eu4/country/cavalry.png' variant='square' style={ { marginRight: 4, width: 24, height: 24 } }/>
                               { formatNumber(battle.defender.cavalry) }
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='start'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='start'>
                                 <Avatar src='/eu4/country/artillery.png' variant='square' style={ { marginRight: 4, width: 24, height: 24 } }/>
                               { formatNumber(battle.defender.artillery) }
-                            </Grid>
+                            </GridLegacy>
                         </>
                     }
                     {
                       getOceanLakeProvince(save, battle.location) &&
                         <>
-                            <Grid container alignItems='center' justifyContent='start' style={ { flexWrap: 'nowrap' } }>
+                            <GridLegacy container alignItems='center' justifyContent='start' style={ { flexWrap: 'nowrap' } }>
                                 <Avatar src='/eu4/country/admiral.png' variant='square' style={ { marginLeft: 4, width: 24, height: 24 } }/>
                               { battle.defender.commander ?? '-' }
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='start'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='start'>
                                 <Avatar src='/eu4/country/heavy_ship.png' variant='square' style={ { marginRight: 3, width: 33, height: 25 } }/>
                               { formatNumber(battle.defender.heavyShip) }
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='start'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='start'>
                                 <Avatar src='/eu4/country/light_ship.png' variant='square' style={ { marginRight: 4, width: 35, height: 27 } }/>
                               { formatNumber(battle.defender.lightShip) }
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='start'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='start'>
                                 <Avatar src='/eu4/country/galley.png' variant='square' style={ { marginLeft: 4, marginRight: 5, width: 29, height: 22 } }/>
                               { formatNumber(battle.defender.galley) }
-                            </Grid>
-                            <Grid container alignItems='center' justifyContent='start'>
+                            </GridLegacy>
+                            <GridLegacy container alignItems='center' justifyContent='start'>
                                 <Avatar src='/eu4/country/transport.png' variant='square' style={ { marginLeft: 5, marginRight: 10, width: 24, height: 22 } }/>
                               { formatNumber(battle.defender.transport) }
-                            </Grid>
+                            </GridLegacy>
                         </>
                     }
-                  </Grid>
-                </Grid>
+                  </GridLegacy>
+                </GridLegacy>
                 <Divider variant='middle' style={ { marginBottom: 8, marginTop: 8 } }
                          sx={ {
                            '&::before, &::after': {
@@ -278,14 +278,14 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
                          } }>
                   { intl.formatMessage({ id: 'war.losses' }) }
                 </Divider>
-                <Grid container justifyContent='space-between'>
-                  <Grid container item xs={ 5 } justifyContent='end'>
+                <GridLegacy container justifyContent='space-between'>
+                  <GridLegacy container item xs={ 5 } justifyContent='end'>
                     { formatNumber(battle.attacker.losses) }
-                  </Grid>
-                  <Grid container item xs={ 5 } justifyContent='start'>
+                  </GridLegacy>
+                  <GridLegacy container item xs={ 5 } justifyContent='start'>
                     { formatNumber(battle.defender.losses) }
-                  </Grid>
-                </Grid>
+                  </GridLegacy>
+                </GridLegacy>
               </CardContent>
             </Card>
           ),
@@ -301,7 +301,7 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
     <>
       {
         timeline.length > 0 &&
-          <Grid container item xs={ 10 } lg={ 8 } xl={ 6 } rowGap={ 2 } style={ { alignItems: 'center', justifyContent: 'center' } } ref={ mainRef }>
+          <GridLegacy container item xs={ 10 } lg={ 8 } xl={ 6 } rowGap={ 2 } style={ { alignItems: 'center', justifyContent: 'center' } } ref={ mainRef }>
               <LoadingButton variant='contained' color='primary' onClick={ exportToPng } loading={ exporting } id='export-button'>
                 { intl.formatMessage({ id: 'common.export' }) }
               </LoadingButton>
@@ -326,7 +326,7 @@ function WarHistoryTab({ war, save }: WarHistoryTabProps) {
                   ))
                 }
               </Timeline>
-          </Grid>
+          </GridLegacy>
       }
     </>
   )

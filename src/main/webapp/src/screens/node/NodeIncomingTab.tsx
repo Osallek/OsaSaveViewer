@@ -1,4 +1,4 @@
-import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Avatar, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
@@ -58,7 +58,7 @@ function NodeIncomingTab({ node, save }: NodeIncomingTabProps) {
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
         <PieChart width={ 500 } height={ 500 }>
           <Pie
             activeIndex={ activeIndex }
@@ -100,7 +100,7 @@ function NodeIncomingTab({ node, save }: NodeIncomingTabProps) {
                       } }/>
                     </TableCell>
                     <TableCell>
-                      <Grid container item alignItems='center'>
+                      <GridLegacy container item alignItems='center'>
                         <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                           { incoming.name }
                           {
@@ -108,23 +108,23 @@ function NodeIncomingTab({ node, save }: NodeIncomingTabProps) {
                             ` (${ intl.formatMessage({ id: 'tradeNode.localValue' }) })`
                           }
                         </Typography>
-                      </Grid>
+                      </GridLegacy>
                     </TableCell>
                     <TableCell align='right'>
-                      <Grid item alignItems='center' style={ { display: 'flex', paddingLeft: 8 } }>
+                      <GridLegacy item alignItems='center' style={ { display: 'flex', paddingLeft: 8 } }>
                         <Typography variant='body1' align='right' width='100%'>
                           { formatNumber(incoming.value) }
                         </Typography>
                         <Avatar src={ '/eu4/country/income.png' } variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                      </Grid>
+                      </GridLegacy>
                     </TableCell>
                     <TableCell align='right'>
-                      <Grid item alignItems='center' style={ { display: 'flex', paddingLeft: 8 } }>
+                      <GridLegacy item alignItems='center' style={ { display: 'flex', paddingLeft: 8 } }>
                         <Typography variant='body1' align='right' width='100%'>
                           { formatNumber(incoming.item.added) }
                         </Typography>
                         <Avatar src={ '/eu4/country/income.png' } variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                      </Grid>
+                      </GridLegacy>
                     </TableCell>
                   </TableRow>
                 )) }
@@ -136,26 +136,26 @@ function NodeIncomingTab({ node, save }: NodeIncomingTabProps) {
                   </Typography>
                 </TableCell>
                 <TableCell align='right' style={ { borderBottom: 'none' } }>
-                  <Grid item alignItems='center' style={ { display: 'flex', paddingLeft: 8 } }>
+                  <GridLegacy item alignItems='center' style={ { display: 'flex', paddingLeft: 8 } }>
                     <Typography variant='body1' align='right' width='100%' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
                       { formatNumber(total) }
                     </Typography>
                     <Avatar src={ '/eu4/country/income.png' } variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right' style={ { borderBottom: 'none' } }>
-                  <Grid item alignItems='center' style={ { display: 'flex', paddingLeft: 8 } }>
+                  <GridLegacy item alignItems='center' style={ { display: 'flex', paddingLeft: 8 } }>
                     <Typography variant='body1' align='right' width='100%' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
                       { formatNumber(node.incoming.reduce((s, d) => s + (d.added ?? 0), 0)) }
                     </Typography>
                     <Avatar src={ '/eu4/country/income.png' } variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
+      </GridLegacy>
     </>
   )
 }

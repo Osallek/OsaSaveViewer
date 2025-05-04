@@ -1,7 +1,8 @@
 import { FilterList, Launch } from '@mui/icons-material';
 import {
-  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, TableSortLabel, TextField, Tooltip, Typography, useTheme
+  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, GridLegacy, IconButton, Paper,
+  Popper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TextField, Tooltip,
+  Typography, useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -11,8 +12,12 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { ListChildComponentProps, VariableSizeList } from 'react-window';
 import { SaveWar } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { cleanString, formatDate, formatDuration, formatNumber, numberComparator, round, stringComparator } from 'utils/format.utils';
-import { getCountries, getCountry, getCountryName, getCountrysFlag, getCountrysName, getWarLosses } from 'utils/save.utils';
+import {
+  cleanString, formatDate, formatDuration, formatNumber, numberComparator, round, stringComparator
+} from 'utils/format.utils';
+import {
+  getCountries, getCountry, getCountryName, getCountrysFlag, getCountrysName, getWarLosses
+} from 'utils/save.utils';
 
 const onlyPlayers = 'onlyPlayers';
 
@@ -36,18 +41,21 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'war.name' }),
       minWidth: 170,
       value: (save, war, width) =>
-        <Grid container alignItems='center' justifyContent='space-between' flexWrap='nowrap'
-              style={ { width } } key={ `war-name-${ war.id }` }>
+        <GridLegacy container alignItems="center" justifyContent="space-between" flexWrap="nowrap"
+                    style={ { width } } key={ `war-name-${ war.id }` }>
           <Tooltip title={ war.name }>
-            <Typography variant='body1' style={ { whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' } }>{ war.name }</Typography>
+            <Typography variant="body1" style={ {
+              whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden'
+            } }>{ war.name }</Typography>
           </Tooltip>
-          <Grid item flexGrow={ 1 }/>
-          <Link to={ `war/${ war.id }` } target='_blank' rel='noopener noreferrer'>
-            <Launch color='primary'/>
+          <GridLegacy item flexGrow={ 1 }/>
+          <Link to={ `war/${ war.id }` } target="_blank" rel="noopener noreferrer">
+            <Launch color="primary"/>
           </Link>
-        </Grid>,
+        </GridLegacy>,
       comparatorValue: (save, war) => war.name,
-      filterValues: save => Array.from(new Set<string>(save.wars ? save.wars.map(p => p.name).sort(stringComparator) : [])),
+      filterValues: save => Array.from(
+        new Set<string>(save.wars ? save.wars.map(p => p.name).sort(stringComparator) : [])),
       filter: (save, war, filter) => filter.includes(war.name),
     },
     {
@@ -55,18 +63,20 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'war.attackers' }),
       minWidth: 150,
       value: (save, war, width) =>
-        <Grid container alignItems='center' style={ { width } }>
+        <GridLegacy container alignItems="center" style={ { width } }>
           {
             Object.keys(war.attackers).map(tag => getCountry(save, tag))
-              .map(value => (
-                <Tooltip title={ getCountrysName(value) } key={ `tooltip-attacker-${ value.tag }` }>
-                  <Avatar src={ getCountrysFlag(value) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
-                </Tooltip>
-              ))
+                  .map(value => (
+                    <Tooltip title={ getCountrysName(value) } key={ `tooltip-attacker-${ value.tag }` }>
+                      <Avatar src={ getCountrysFlag(value) } variant="square"
+                              style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
+                    </Tooltip>
+                  ))
           }
-        </Grid>,
+        </GridLegacy>,
       comparatorValue: (save, war) => Object.keys(war.attackers).length,
-      filterValues: save => Array.from(new Set<string>(getCountries(save).map(c => getCountrysName(c)).sort(stringComparator))),
+      filterValues: save => Array.from(
+        new Set<string>(getCountries(save).map(c => getCountrysName(c)).sort(stringComparator))),
       filter: (save, war, filter) => Object.keys(war.attackers).map(attacker => getCountryName(save, attacker)).find(
         name => filter.includes(name)) !== undefined,
     },
@@ -75,18 +85,20 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'war.defenders' }),
       minWidth: 150,
       value: (save, war, width) =>
-        <Grid container alignItems='center' style={ { width } }>
+        <GridLegacy container alignItems="center" style={ { width } }>
           {
             Object.keys(war.defenders).map(tag => getCountry(save, tag))
-              .map(value => (
-                <Tooltip title={ getCountrysName(value) } key={ `tooltip-attacker-${ value.tag }` }>
-                  <Avatar src={ getCountrysFlag(value) } variant='square' style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
-                </Tooltip>
-              ))
+                  .map(value => (
+                    <Tooltip title={ getCountrysName(value) } key={ `tooltip-attacker-${ value.tag }` }>
+                      <Avatar src={ getCountrysFlag(value) } variant="square"
+                              style={ { marginRight: 8, marginBottom: 8 } } component={ Paper }/>
+                    </Tooltip>
+                  ))
           }
-        </Grid>,
+        </GridLegacy>,
       comparatorValue: (save, war) => Object.keys(war.defenders).length,
-      filterValues: save => Array.from(new Set<string>(getCountries(save).map(c => getCountrysName(c)).sort(stringComparator))),
+      filterValues: save => Array.from(
+        new Set<string>(getCountries(save).map(c => getCountrysName(c)).sort(stringComparator))),
       filter: (save, war, filter) => Object.keys(war.defenders).map(attacker => getCountryName(save, attacker)).find(
         name => filter.includes(name)) !== undefined,
     },
@@ -95,13 +107,14 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'war.startDate' }),
       minWidth: 100,
       value: (save, war, width) =>
-        <Grid style={ { width } }>
-          <Typography variant='body1'>
+        <GridLegacy style={ { width } }>
+          <Typography variant="body1">
             { formatDate(war.startDate) }
           </Typography>
-        </Grid>,
+        </GridLegacy>,
       comparatorValue: (save, war) => war.startDate,
-      filterValues: save => Array.from(new Set<number>(save.wars ? save.wars.map(war => Number(war.startDate.slice(0, 4))).sort(numberComparator) : [])),
+      filterValues: save => Array.from(new Set<number>(
+        save.wars ? save.wars.map(war => Number(war.startDate.slice(0, 4))).sort(numberComparator) : [])),
       filter: (save, war, filter) => filter.includes(Number(war.startDate.slice(0, 4))),
     },
     {
@@ -109,15 +122,18 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'war.endDate' }),
       minWidth: 100,
       value: (save, war, width) =>
-        <Grid style={ { width } }>
-          <Typography variant='body1'>
+        <GridLegacy style={ { width } }>
+          <Typography variant="body1">
             { formatDate(war.endDate) }
           </Typography>
-        </Grid>,
+        </GridLegacy>,
       comparatorValue: (save, war) => war.endDate,
       filterValues: save => Array.from(new Set<number>(
-        save.wars ? save.wars.map(war => war.endDate).filter(value => value !== undefined).map(endDate => endDate ? Number(endDate.slice(0, 4)) : 0).sort(
-          numberComparator) : [])),
+        save.wars ? save.wars.map(war => war.endDate)
+                        .filter(value => value !== undefined)
+                        .map(endDate => endDate ? Number(endDate.slice(0, 4)) : 0)
+                        .sort(
+                          numberComparator) : [])),
       filter: (save, war, filter) => war.endDate !== undefined && filter.includes(Number(war.endDate.slice(0, 4))),
     },
     {
@@ -125,15 +141,18 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'war.duration' }),
       minWidth: 120,
       value: (save, war, width) =>
-        <Grid style={ { width } }>
-          <Typography variant='body1'>
+        <GridLegacy style={ { width } }>
+          <Typography variant="body1">
             { formatDuration(war.duration) }
           </Typography>
-        </Grid>,
+        </GridLegacy>,
       comparatorValue: (save, war) => war.duration ?? 0,
       filterValues: save => Array.from(new Set<number>(
-        save.wars ? save.wars.map(war => war.duration).filter(value => value !== undefined).map(duration => ((duration ?? 0) / 12) | 0).sort(
-          numberComparator) : [])),
+        save.wars ? save.wars.map(war => war.duration)
+                        .filter(value => value !== undefined)
+                        .map(duration => ((duration ?? 0) / 12) | 0)
+                        .sort(
+                          numberComparator) : [])),
       filter: (save, war, filter) => war.duration !== undefined && filter.includes((war.duration / 12) | 0),
     },
     {
@@ -141,12 +160,13 @@ function getColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): Colu
       label: intl.formatMessage({ id: 'war.losses' }),
       minWidth: 120,
       value: (save, war, width) =>
-        <Grid style={ { width } }>
-          <Typography variant='body1'>{ formatNumber(getWarLosses(war)) }</Typography>
-        </Grid>
+        <GridLegacy style={ { width } }>
+          <Typography variant="body1">{ formatNumber(getWarLosses(war)) }</Typography>
+        </GridLegacy>
       ,
       comparatorValue: (save, war) => getWarLosses(war),
-      filterValues: save => Array.from(new Set<number>(save.wars ? save.wars.map(war => round(getWarLosses(war), lossesRadix)).sort(numberComparator) : [])),
+      filterValues: save => Array.from(new Set<number>(
+        save.wars ? save.wars.map(war => round(getWarLosses(war), lossesRadix)).sort(numberComparator) : [])),
       filter: (save, war, filter) => filter.includes(round(getWarLosses(war), lossesRadix)),
     },
   ];
@@ -180,7 +200,7 @@ function WarTable({ save, visible }: WarTableProps) {
     const isAsc = orderBy === undefined || (orderBy.id === column.id && order === 'asc');
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(column);
-  }
+  };
 
   if (Object.keys(filters).length > 0) {
     for (const key of Object.keys(filters)) {
@@ -202,8 +222,10 @@ function WarTable({ save, visible }: WarTableProps) {
         }
 
         for (const [key, value] of Object.entries(filters)) {
-          if (key === onlyPlayers && Object.keys(war.attackers).find(country => getCountry(save, country).players !== undefined) === undefined
-            && Object.keys(war.defenders).find(country => getCountry(save, country).players !== undefined) === undefined) {
+          if (key === onlyPlayers && Object.keys(war.attackers)
+                                           .find(country => getCountry(save, country).players !== undefined) === undefined
+            && Object.keys(war.defenders)
+                     .find(country => getCountry(save, country).players !== undefined) === undefined) {
             return false;
           } else {
             const column = columns.find(c => c.id === key);
@@ -311,13 +333,14 @@ function WarTable({ save, visible }: WarTableProps) {
                          paddingLeft: cIndex === columns.length - 1 ? 8 : 16,
                          borderBottom: 'none'
                        } }>
-              { column.value(save, war, columnsRefs.current[cIndex] ? (columnsRefs.current[cIndex]?.clientWidth ?? 0) : column.minWidth) }
+              { column.value(save, war,
+                columnsRefs.current[cIndex] ? (columnsRefs.current[cIndex]?.clientWidth ?? 0) : column.minWidth) }
             </TableCell>
           );
         }) }
       </TableRow>
     );
-  }
+  };
 
   return (
     visible ?
@@ -330,7 +353,7 @@ function WarTable({ save, visible }: WarTableProps) {
             <ClickAwayListener onClickAway={ () => setFilterPopoverOpen(false) }>
               <Popper open
                       anchorEl={ filterPopoverDiv.current }
-                      placement='bottom-start'
+                      placement="bottom-start"
                       style={ { zIndex: 1500 } }
               >
                 <Card style={ {
@@ -345,19 +368,20 @@ function WarTable({ save, visible }: WarTableProps) {
                       disablePortal
                       options={ filterPopoverColumn.filterValues(save) }
                       getOptionLabel={ option => option.toString() }
-                      groupBy={ (option) => typeof option === 'string' ? cleanString(option.slice(0, 1)).toUpperCase() : ''
+                      groupBy={ (option) => typeof option === 'string' ? cleanString(option.slice(0, 1))
+                        .toUpperCase() : ''
                       }
                       renderInput={ (params) =>
                         <TextField { ...params }
                                    label={ filterPopoverColumn.label }
-                                   variant='filled'
-                                   color='primary'
+                                   variant="filled"
+                                   color="primary"
                         /> }
                       value={ filters[filterPopoverColumn.id] ?? [] }
                       onChange={ (event, newInputValue) => {
                         if (!newInputValue || newInputValue.length === 0) {
                           setFilters(prevState => {
-                            const newState: Record<string, (string | number) []> = {}
+                            const newState: Record<string, (string | number) []> = {};
                             for (let key in prevState) {
                               if (key !== filterPopoverColumn.id) {
                                 newState[key] = prevState[key];
@@ -380,14 +404,14 @@ function WarTable({ save, visible }: WarTableProps) {
             </ClickAwayListener>
           )
         }
-        <Grid>
+        <GridLegacy>
           <FormControlLabel
             control={
               <Checkbox checked={ Object.keys(filters).includes(onlyPlayers) }
                         onChange={ (event, checked) => {
                           if (!checked) {
                             setFilters(prevState => {
-                              const newState: Record<string, (string | number) []> = {}
+                              const newState: Record<string, (string | number) []> = {};
                               for (let key in prevState) {
                                 if (key !== onlyPlayers) {
                                   newState[key] = prevState[key];
@@ -406,7 +430,7 @@ function WarTable({ save, visible }: WarTableProps) {
             }
             label={ intl.formatMessage({ id: 'war.onlyPlayers' }) }
             style={ { padding: 8 } }/>
-        </Grid>
+        </GridLegacy>
         <TableContainer component={ Paper } style={ { height: `100%`, borderRadius: 0 } }>
           <Table stickyHeader style={ { width: '100%', height: `100%` } }>
             <TableHead ref={ headerRef }>
@@ -416,8 +440,8 @@ function WarTable({ save, visible }: WarTableProps) {
                     key={ column.id }
                     style={ { minWidth: column.minWidth, backgroundColor: theme.palette.primary.light } }
                   >
-                    <Grid container alignItems='center' ref={ el => columnsRefs.current[index] = el }
-                          style={ { flexFlow: 'nowrap' } }>
+                    <GridLegacy container alignItems="center" ref={ el => {columnsRefs.current[index] = el;} }
+                                style={ { flexFlow: 'nowrap' } }>
                       <IconButton
                         onClick={ (e) => {
                           setFilterPopoverLoc([e.clientX, e.clientY + 25]);
@@ -425,7 +449,7 @@ function WarTable({ save, visible }: WarTableProps) {
                           setFilterPopoverColumn(column);
                         } }
                         style={ { marginRight: 4, padding: 0 } }>
-                        <FilterList fontSize='small'
+                        <FilterList fontSize="small"
                                     style={ { color: filters[column.id] === undefined ? theme.palette.primary.contrastText : theme.palette.primary.main } }/>
                       </IconButton>
                       <TableSortLabel
@@ -438,11 +462,12 @@ function WarTable({ save, visible }: WarTableProps) {
                           }
                         } }
                       >
-                        <Typography variant='button' style={ { fontWeight: 'bold', color: theme.palette.primary.contrastText } }>
+                        <Typography variant="button"
+                                    style={ { fontWeight: 'bold', color: theme.palette.primary.contrastText } }>
                           { column.label }
                         </Typography>
                       </TableSortLabel>
-                    </Grid>
+                    </GridLegacy>
                   </TableCell>
                 )) }
               </TableRow>
@@ -471,7 +496,7 @@ function WarTable({ save, visible }: WarTableProps) {
       </>
       :
       <></>
-  )
+  );
 }
 
 export default WarTable;

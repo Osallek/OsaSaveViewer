@@ -1,5 +1,5 @@
 import { Home } from '@mui/icons-material';
-import { Backdrop, CircularProgress, Grid, Toolbar, Typography } from '@mui/material';
+import { Backdrop, CircularProgress, GridLegacy, Toolbar, Typography } from '@mui/material';
 import { WikiContext } from 'AppRouter';
 import React, { useContext, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -44,7 +44,7 @@ function PoliciesList() {
     <>
       {
         (error || (!loading && (!policies || !version || !wiki))) ?
-          <Grid container alignItems='center' justifyContent='center' flexDirection='column'
+          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
                 sx={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
             <Typography variant='h2' color={ theme.palette.primary.contrastText }>
               404
@@ -55,7 +55,7 @@ function PoliciesList() {
             <Link to='/'>
               <Home fontSize='large' color='primary' sx={ { width: 40, height: 40 } }/>
             </Link>
-          </Grid>
+          </GridLegacy>
           :
           <>
             <WikiBar  type={ wikiTypes.policies } objects={ policies } group={ false }>
@@ -71,34 +71,34 @@ function PoliciesList() {
                   <CircularProgress color='primary'/>
                 </Backdrop>
                 :
-                <Grid container sx={ { p: 3, flexDirection: 'column', alignItems: 'center' } }>
-                  <Grid container item xs={ 12 } spacing={ 2 }>
-                    <Grid container item rowSpacing={ 4 }>
+                <GridLegacy container sx={ { p: 3, flexDirection: 'column', alignItems: 'center' } }>
+                  <GridLegacy container item xs={ 12 } spacing={ 2 }>
+                    <GridLegacy container item rowSpacing={ 4 }>
                       {
                         Object.keys(Power).map(category => (
-                            <Grid container item sx={ { flexDirection: 'column' } } rowSpacing={ 1 } key={ category }>
+                            <GridLegacy container item sx={ { flexDirection: 'column' } } rowSpacing={ 1 } key={ category }>
                               <Typography variant='h4'>
                                 { intl.formatMessage({ id: `wiki.policy.${ category }` }) }
                               </Typography>
-                              <Grid container item spacing={ 3 }>
+                              <GridLegacy container item spacing={ 3 }>
                                 {
                                   filtered && filtered.filter(i => category === i.category)
                                                       .map((policy, index) => (
-                                                        <Grid container item xs={ 12 } md={ 6 } xl={ 4 }
+                                                        <GridLegacy container item xs={ 12 } md={ 6 } xl={ 4 }
                                                               key={ policy.id } id={ policy.id }>
                                                           <PolicyCard policy={ policy } wiki={ wiki }
                                                                       version={ version }/>
-                                                        </Grid>
+                                                        </GridLegacy>
                                                       ))
                                 }
-                              </Grid>
-                            </Grid>
+                              </GridLegacy>
+                            </GridLegacy>
                           )
                         )
                       }
-                    </Grid>
-                  </Grid>
-                </Grid>
+                    </GridLegacy>
+                  </GridLegacy>
+                </GridLegacy>
             }
           </>
       }

@@ -1,4 +1,4 @@
-import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import { Avatar, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
@@ -71,7 +71,7 @@ function CountryEstateTab({ country, save }: CountryEstateTabProps) {
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.control' }) }
         </Typography>
@@ -120,16 +120,16 @@ function CountryEstateTab({ country, save }: CountryEstateTabProps) {
                       } }/>
                     </TableCell>
                     <TableCell>
-                      <Grid container item alignItems='center'>
+                      <GridLegacy container item alignItems='center'>
                         <Avatar src={ estate.item ? getEstateImage(save, estate.item.type) : '/eu4/country/crownland.png' } variant='square'/>
                         <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                           { estate.name }
                         </Typography>
-                      </Grid>
+                      </GridLegacy>
                     </TableCell>
                     <TableCell align='right'>{ `${ formatNumber(estate.value) }%` }</TableCell>
                     <TableCell>
-                      <Grid container>
+                      <GridLegacy container>
                         {
                           (estate.item && estate.item.grantedPrivileges) &&
                           (
@@ -148,14 +148,14 @@ function CountryEstateTab({ country, save }: CountryEstateTabProps) {
                               ))
                           )
                         }
-                      </Grid>
+                      </GridLegacy>
                     </TableCell>
                   </TableRow>
                 )) }
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
+      </GridLegacy>
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { Avatar, CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Avatar, CircularProgress, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
@@ -89,7 +89,7 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
   }, [ranks, devRanks]);
 
   return (
-    <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `religions-${ country.tag }` }>
+    <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `religions-${ country.tag }` }>
       <PieChart width={ 500 } height={ 500 }>
         <Pie
           activeIndex={ activeIndex }
@@ -145,12 +145,12 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
                     } }/>
                   </TableCell>
                   <TableCell>
-                    <Grid container item alignItems='center'>
+                    <GridLegacy container item alignItems='center'>
                       <Avatar src={ getReligionImage(save, item.type) } variant='square'/>
                       <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                         { item.name }
                       </Typography>
-                    </Grid>
+                    </GridLegacy>
                   </TableCell>
                   <TableCell align='right'>{ formatNumber(item.value) }</TableCell>
                   <TableCell align='right'>
@@ -170,7 +170,7 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
           </TableBody>
         </Table>
       </TableContainer>
-    </Grid>
+    </GridLegacy>
   )
 }
 

@@ -1,5 +1,5 @@
 import {
-  Avatar, Card, CardActionArea, CardContent, CardHeader, Collapse, Grid, Table, TableBody, TableCell, TableContainer,
+  Avatar, Card, CardActionArea, CardContent, CardHeader, Collapse, GridLegacy, Table, TableBody, TableCell, TableContainer,
   TableRow, Typography
 } from '@mui/material';
 import React, { useState } from 'react';
@@ -27,7 +27,7 @@ function PolicyCard({ policy, wiki, version }: PolicyCardProps) {
       <CardActionArea onClick={ () => setExpanded(!expanded) }>
         <CardHeader disableTypography
                     title={
-                      <Grid container item alignItems='center'>
+                      <GridLegacy container item alignItems='center'>
                         <Typography variant='h5'
                                     sx={ {
                                       color: theme.palette.primary.contrastText,
@@ -39,7 +39,7 @@ function PolicyCard({ policy, wiki, version }: PolicyCardProps) {
                         <Avatar
                           src={ `/eu4/wiki/${ policy.category.toLowerCase() }.png` }
                           variant='square' sx={ { width: 28, height: 28 } }/>
-                      </Grid>
+                      </GridLegacy>
                     }
                     sx={ {
                       backgroundColor: theme.palette.primary.dark, borderBottomRightRadius: borderRadius,

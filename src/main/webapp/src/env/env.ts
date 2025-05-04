@@ -1,5 +1,17 @@
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
-const DATA_BASE_URL = process.env.REACT_APP_DATA_BASE_URL || '';
-const WIKI_BASE_URL = process.env.REACT_APP_WIKI_BASE_URL || '';
+import { z } from 'zod';
 
-export { API_BASE_URL, DATA_BASE_URL, WIKI_BASE_URL };
+const envSchema = z.object({
+  VITE_API_BASE_URL: z.string().url(),
+  VITE_DATA_BASE_URL: z.string().url(),
+  VITE_WIKI_BASE_URL: z.string().url(),
+});
+
+const parsedEnv = envSchema.safeParse(import.meta.env);
+
+if (!parsedEnv.success) {
+  console.error('❌ Invalid environment variables:', parsedEnv.error.flatten().fieldErrors);
+  throw new Error('Invalid environment variables');
+}
+
+// validated env vars
+export const env = parsedEnv.data;

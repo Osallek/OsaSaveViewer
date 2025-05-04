@@ -1,5 +1,5 @@
 import { Close, Done } from '@mui/icons-material';
-import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
+import { Avatar, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
@@ -16,7 +16,7 @@ function CountryIdeaTab({ country, save }: CountryIdeaTabProps) {
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
         <TableContainer component={ Paper } style={ { borderRadius: 0, width: 'auto', minWidth: '50%', marginTop: 8 } }>
           <Table>
             <TableBody>
@@ -32,24 +32,24 @@ function CountryIdeaTab({ country, save }: CountryIdeaTabProps) {
                           backgroundColor: theme.palette.primary.light,
                           borderBottom: i + 1 === Object.keys(country.ideaGroups).length ? 'none' : '1px solid rgba(224, 224, 224, 1)'
                         } }>
-                          <Grid container alignItems='center'>
+                          <GridLegacy container alignItems='center'>
                             <Avatar src={ getIdeaGroupsImage(group) } variant='square' style={ { marginRight: 8 } }>
                               <Avatar src={ getCountrysFlag(country) } variant='square'/>
                             </Avatar>
                             <Typography variant='body1' color={ theme.palette.primary.contrastText } style={ { fontWeight: 'bold' } }>
                               { getIdeaGroupsName(group) }
                             </Typography>
-                          </Grid>
+                          </GridLegacy>
                         </TableCell>
                         <TableCell style={ {
                           backgroundColor: theme.palette.primary.main,
                           borderBottom: i + 1 === Object.keys(country.ideaGroups).length ? 'none' : '1px solid rgba(224, 224, 224, 1)'
                         } }>
-                          <Grid container alignItems='center'>
+                          <GridLegacy container alignItems='center'>
                             { group.ideas.map((idea, index) => (
                               <Tooltip key={ `${ country.tag }-${ idea.name }` }
                                        title={
-                                         <Grid container alignItems='center'>
+                                         <GridLegacy container alignItems='center'>
                                            { `${ getIdeaName(idea) } : ` }
                                            {
                                              (index + 1) <= level ?
@@ -57,7 +57,7 @@ function CountryIdeaTab({ country, save }: CountryIdeaTabProps) {
                                                :
                                                <Close color='error' fontSize='small'/>
                                            }
-                                         </Grid>
+                                         </GridLegacy>
                                        }>
                                 <Avatar src={ getIdeaUrl(idea.image) } variant='square'
                                         style={ {
@@ -66,7 +66,7 @@ function CountryIdeaTab({ country, save }: CountryIdeaTabProps) {
                                         } }/>
                               </Tooltip>
                             )) }
-                          </Grid>
+                          </GridLegacy>
                         </TableCell>
                       </TableRow>
                     )
@@ -76,7 +76,7 @@ function CountryIdeaTab({ country, save }: CountryIdeaTabProps) {
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
+      </GridLegacy>
     </>
   )
 }

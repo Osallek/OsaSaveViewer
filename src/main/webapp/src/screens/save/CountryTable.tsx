@@ -1,7 +1,8 @@
 import { FilterList, Launch } from '@mui/icons-material';
 import {
-  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, Grid, IconButton, Paper, Popper, Table, TableBody, TableCell,
-  TableContainer, TableHead, TableRow, TableSortLabel, TextField, Tooltip, Typography, useTheme
+  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, GridLegacy, IconButton, Paper,
+  Popper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TextField, Tooltip,
+  Typography, useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -12,10 +13,13 @@ import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { CountryTableType } from 'screens/save/SaveDialog';
 import { Expense, Income, Losses, PowerSpent, SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { cleanString, formatDate, formatNumber, numberComparator, round, round1000, stringComparator } from 'utils/format.utils';
 import {
-  getCountries, getCountrysFlag, getCountrysName, getCRealDev, getDiscipline, getExpense, getIncome, getLoans, getLosses, getManaSpent, getNbImprovements,
-  getPlayer, getStableIncome, getTerritory, getTotalExpense, getTotalExpenses, getTotalIncome, getTotalTotalExpenses, isAdm, isDip, isMil
+  cleanString, formatDate, formatNumber, numberComparator, round, round1000, stringComparator
+} from 'utils/format.utils';
+import {
+  getCountries, getCountrysFlag, getCountrysName, getCRealDev, getDiscipline, getExpense, getIncome, getLoans,
+  getLosses, getManaSpent, getNbImprovements, getPlayer, getStableIncome, getTerritory, getTotalExpense,
+  getTotalExpenses, getTotalIncome, getTotalTotalExpenses, isAdm, isDip, isMil
 } from 'utils/save.utils';
 
 const onlyPlayers = 'onlyPlayers';
@@ -36,20 +40,22 @@ function getNameColumn(): Column {
     label: intl.formatMessage({ id: 'country.name' }),
     minWidth: 200,
     value: (save, country, width) => (
-      <Grid container alignItems='center' flexWrap='nowrap' key={ `name-${ country.tag }-info` } style={ { width } }>
-        <Avatar src={ getCountrysFlag(country) } variant='square' component={ Paper }/>
-        <Typography variant='body1' component='span'
+      <GridLegacy container alignItems="center" flexWrap="nowrap" key={ `name-${ country.tag }-info` }
+                  style={ { width } }>
+        <Avatar src={ getCountrysFlag(country) } variant="square" component={ Paper }/>
+        <Typography variant="body1" component="span"
                     style={ { whiteSpace: 'nowrap', textOverflow: 'ellipsis', marginLeft: 8, overflow: 'hidden' } }>
           { getCountrysName(country) }
         </Typography>
-        <Grid item flexGrow={ 1 }/>
-        <Link to={ country.tag } target='_blank' rel='noopener noreferrer'>
-          <Launch color='primary'/>
+        <GridLegacy item flexGrow={ 1 }/>
+        <Link to={ country.tag } target="_blank" rel="noopener noreferrer">
+          <Launch color="primary"/>
         </Link>
-      </Grid>
+      </GridLegacy>
     ),
     comparatorValue: (save, country) => getCountrysName(country),
-    filterValues: save => Array.from(new Set<string>(getCountries(save).map(c => getCountrysName(c)).sort(stringComparator))),
+    filterValues: save => Array.from(
+      new Set<string>(getCountries(save).map(c => getCountrysName(c)).sort(stringComparator))),
     filter: (save, country, filter) => filter.includes(getCountrysName(country)),
   };
 }
@@ -61,7 +67,8 @@ function getPlayerColumn(): Column {
     minWidth: 170,
     value: (save, country) => getPlayer(country),
     comparatorValue: (save, country) => getPlayer(country),
-    filterValues: save => Array.from(new Set<string>(getCountries(save).flatMap(c => c.players ? c.players.flat() : []).sort(stringComparator))),
+    filterValues: save => Array.from(
+      new Set<string>(getCountries(save).flatMap(c => c.players ? c.players.flat() : []).sort(stringComparator))),
     filter: (save, country, filter) => {
       if (filter === undefined || filter.length === 0) {
         return true;
@@ -73,7 +80,7 @@ function getPlayerColumn(): Column {
 
       return filter.find(value => typeof value === 'string' && country.players?.includes(value)) !== undefined;
     },
-  }
+  };
 }
 
 function getColumns(type: CountryTableType, save: MapSave): Column[] {
@@ -97,11 +104,12 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.dev' }),
           minWidth: 100,
           value: (save, country) =>
-            <Typography variant='body1'>
+            <Typography variant="body1">
               { formatNumber(country.dev) }
             </Typography>,
           comparatorValue: (save, country) => country.dev,
-          filterValues: (save) => Array.from(new Set<number>(getCountries(save).map(country => round(country.dev, devRadix)).sort(numberComparator))),
+          filterValues: (save) => Array.from(
+            new Set<number>(getCountries(save).map(country => round(country.dev, devRadix)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.dev, devRadix)),
         },
         {
@@ -109,13 +117,15 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.realDev' }),
           minWidth: 100,
           value: (save, country) => (
-            <Typography variant='body1'>
+            <Typography variant="body1">
               { formatNumber(getCRealDev(country, save)) }
             </Typography>
           ),
           comparatorValue: (save, country) => getCRealDev(country, save),
           filterValues: (save) => Array.from(
-            new Set<number>(getCountries(save).map(country => round(getCRealDev(country, save), realdevRadix)).sort(numberComparator))),
+            new Set<number>(getCountries(save)
+              .map(country => round(getCRealDev(country, save), realdevRadix))
+              .sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(getCRealDev(country, save), realdevRadix)),
         },
         {
@@ -123,22 +133,26 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.averageDev' }),
           minWidth: 100,
           value: (save, country) =>
-            <Typography variant='body1'>
+            <Typography variant="body1">
               { formatNumber(country.dev / country.nbProvince) }
             </Typography>,
           comparatorValue: (save, country) => country.dev / country.nbProvince,
           filterValues: (save) => Array.from(
-            new Set<number>(getCountries(save).map(country => round(country.dev / country.nbProvince, 5)).sort(numberComparator))),
+            new Set<number>(
+              getCountries(save).map(country => round(country.dev / country.nbProvince, 5)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.dev / country.nbProvince, 5)),
         },
         {
           id: 'manualdev',
           label: intl.formatMessage({ id: 'country.manualDev' }),
           minWidth: 100,
-          value: (save, country) => <Typography variant='body1'>{ formatNumber(getNbImprovements(country, save)) }</Typography>,
+          value: (save, country) => <Typography variant="body1">{ formatNumber(
+            getNbImprovements(country, save)) }</Typography>,
           comparatorValue: (save, country) => getNbImprovements(country, save),
           filterValues: (save) => Array.from(
-            new Set<number>(getCountries(save).map(country => round(getNbImprovements(country, save), manualdevRadix)).sort(numberComparator))),
+            new Set<number>(getCountries(save)
+              .map(country => round(getNbImprovements(country, save), manualdevRadix))
+              .sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(getNbImprovements(country, save), manualdevRadix)),
         },
         getPlayerColumn(),
@@ -152,48 +166,60 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.nbProvinces' }),
           minWidth: 100,
           value: (save, country) => (
-            <Typography variant='body1'>
+            <Typography variant="body1">
               { country.nbProvince }
             </Typography>
           ),
           comparatorValue: (save, country) => country.nbProvince,
-          filterValues: (save) => Array.from(new Set<number>(getCountries(save).map(country => round(country.nbProvince, 10)).sort(numberComparator))),
+          filterValues: (save) => Array.from(
+            new Set<number>(getCountries(save).map(country => round(country.nbProvince, 10)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.nbProvince, 10)),
         },
         {
           id: 'ideas',
           label: intl.formatMessage({ id: 'country.ideas' }),
           minWidth: 100,
-          value: (save, country) => <Typography variant='body1'>
-            { country.ideaGroups ? Object.values(country.ideaGroups).filter((value, index) => index > 0).reduce((s, a) => s + a, 0) : 0 }
+          value: (save, country) => <Typography variant="body1">
+            { country.ideaGroups ? Object.values(country.ideaGroups)
+                                         .filter((value, index) => index > 0)
+                                         .reduce((s, a) => s + a, 0) : 0 }
           </Typography>,
-          comparatorValue: (save, country) => country.ideaGroups ? Object.values(country.ideaGroups).filter((value, index) => index > 0)
-            .reduce((s, a) => s + a, 0) : 0,
+          comparatorValue: (save, country) => country.ideaGroups ? Object.values(country.ideaGroups)
+                                                                         .filter((value, index) => index > 0)
+                                                                         .reduce((s, a) => s + a, 0) : 0,
           filterValues: save => Array.from(new Set<number>(getCountries(save).map(
-            c => (c.ideaGroups ? Object.values(c.ideaGroups).filter((value, index) => index > 0).reduce((s, a) => s + a, 0) : 0)).sort(numberComparator))),
+            c => (c.ideaGroups ? Object.values(c.ideaGroups)
+                                       .filter((value, index) => index > 0)
+                                       .reduce((s, a) => s + a, 0) : 0)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(
-            country.ideaGroups ? Object.values(country.ideaGroups).filter((value, index) => index > 0).reduce((s, a) => s + a, 0) : 0),
+            country.ideaGroups ? Object.values(country.ideaGroups)
+                                       .filter((value, index) => index > 0)
+                                       .reduce((s, a) => s + a, 0) : 0),
         },
         {
           id: 'tech',
           label: intl.formatMessage({ id: 'country.tech' }),
           minWidth: 100,
-          value: (save, country) => <Typography variant='body1'>
+          value: (save, country) => <Typography variant="body1">
             { `${ country.admTech ?? 0 } / ${ country.dipTech ?? 0 } / ${ country.milTech ?? 0 } ` }
           </Typography>,
           comparatorValue: (save, country) => (country.admTech ?? 0) + (country.dipTech ?? 0) + (country.milTech ?? 0),
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(
-            country => (country.admTech ?? 0) + (country.dipTech ?? 0) + (country.milTech ?? 0)).sort(numberComparator))),
-          filter: (save, country, filter) => filter.includes((country.admTech ?? 0) + (country.dipTech ?? 0) + (country.milTech ?? 0)),
+          filterValues: save => Array.from(new Set<number>(getCountries(save)
+            .map(
+              country => (country.admTech ?? 0) + (country.dipTech ?? 0) + (country.milTech ?? 0))
+            .sort(numberComparator))),
+          filter: (save, country, filter) => filter.includes(
+            (country.admTech ?? 0) + (country.dipTech ?? 0) + (country.milTech ?? 0)),
         },
         {
           id: 'prestige',
           label: intl.formatMessage({ id: 'country.prestige' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatNumber(country.prestige ?? 0) }</Typography>,
+            variant="body1">{ formatNumber(country.prestige ?? 0) }</Typography>,
           comparatorValue: (save, country) => country.prestige ?? 0,
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(country.prestige, 10)).sort(numberComparator))),
+          filterValues: save => Array.from(
+            new Set<number>(getCountries(save).map(country => round(country.prestige, 10)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.prestige, 10)),
         },
         {
@@ -201,9 +227,10 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.innovativeness' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatNumber(country.innovativeness ?? 0) }</Typography>,
+            variant="body1">{ formatNumber(country.innovativeness ?? 0) }</Typography>,
           comparatorValue: (save, country) => country.innovativeness ?? 0,
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(country.innovativeness, 10)).sort(numberComparator))),
+          filterValues: save => Array.from(new Set<number>(
+            getCountries(save).map(country => round(country.innovativeness, 10)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.innovativeness, 10)),
         },
         {
@@ -211,9 +238,10 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.powerProjection' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatNumber(country.powerProjection ?? 0) }</Typography>,
+            variant="body1">{ formatNumber(country.powerProjection ?? 0) }</Typography>,
           comparatorValue: (save, country) => country.powerProjection ?? 0,
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(country.powerProjection, 10)).sort(numberComparator))),
+          filterValues: save => Array.from(new Set<number>(
+            getCountries(save).map(country => round(country.powerProjection, 10)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.powerProjection, 10)),
         },
         {
@@ -221,9 +249,10 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.greatPower' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ country.greatPowerRank ?? '' }</Typography>,
+            variant="body1">{ country.greatPowerRank ?? '' }</Typography>,
           comparatorValue: (save, country) => country.greatPowerRank,
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => country.greatPowerRank ?? 1).sort(numberComparator))),
+          filterValues: save => Array.from(
+            new Set<number>(getCountries(save).map(country => country.greatPowerRank ?? 1).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(country.greatPowerRank),
         },
         getPlayerColumn(),
@@ -241,54 +270,61 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'income',
           label: intl.formatMessage({ id: 'country.income' }),
           minWidth: 100,
-          value: (save, country) => <Typography variant='body1'>{ formatNumber(country.income) }</Typography>,
+          value: (save, country) => <Typography variant="body1">{ formatNumber(country.income) }</Typography>,
           comparatorValue: (save, country) => country.income ?? 0,
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(country.income, incomeRadix)).sort(numberComparator))),
+          filterValues: save => Array.from(new Set<number>(
+            getCountries(save).map(country => round(country.income, incomeRadix)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.income, incomeRadix)),
         },
         {
           id: 'loans',
           label: intl.formatMessage({ id: 'country.loans' }),
           minWidth: 100,
-          value: (save, country) => <Typography variant='body1'>{ formatNumber(getLoans(country)) }</Typography>,
+          value: (save, country) => <Typography variant="body1">{ formatNumber(getLoans(country)) }</Typography>,
           comparatorValue: (save, country) => getLoans(country),
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(getLoans(country), loanRadix)).sort(numberComparator))),
+          filterValues: save => Array.from(new Set<number>(
+            getCountries(save).map(country => round(getLoans(country), loanRadix)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(getLoans(country), loanRadix)),
         },
         {
           id: 'inflation',
           label: intl.formatMessage({ id: 'country.inflation' }),
           minWidth: 100,
-          value: (save, country) => <Typography variant='body1'>{ formatNumber(country.inflation) }</Typography>,
+          value: (save, country) => <Typography variant="body1">{ formatNumber(country.inflation) }</Typography>,
           comparatorValue: (save, country) => country.inflation ?? 0,
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(country.inflation, 2)).sort(numberComparator))),
+          filterValues: save => Array.from(
+            new Set<number>(getCountries(save).map(country => round(country.inflation, 2)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.inflation, 2)),
         },
         {
           id: 'mercantilism',
           label: intl.formatMessage({ id: 'country.mercantilism' }),
           minWidth: 100,
-          value: (save, country) => <Typography variant='body1'>{ formatNumber(country.mercantilism) }</Typography>,
+          value: (save, country) => <Typography variant="body1">{ formatNumber(country.mercantilism) }</Typography>,
           comparatorValue: (save, country) => country.mercantilism ?? 0,
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(country.mercantilism, 10)).sort(numberComparator))),
+          filterValues: save => Array.from(
+            new Set<number>(getCountries(save).map(country => round(country.mercantilism, 10)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.mercantilism, 10)),
         },
         {
           id: 'corruption',
           label: intl.formatMessage({ id: 'country.corruption' }),
           minWidth: 100,
-          value: (save, country) => <Typography variant='body1'>{ formatNumber(country.corruption) }</Typography>,
+          value: (save, country) => <Typography variant="body1">{ formatNumber(country.corruption) }</Typography>,
           comparatorValue: (save, country) => country.corruption ?? 0,
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(country.corruption, 2)).sort(numberComparator))),
+          filterValues: save => Array.from(
+            new Set<number>(getCountries(save).map(country => round(country.corruption, 2)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.corruption, 2)),
         },
         {
           id: 'territory',
           label: intl.formatMessage({ id: 'country.territory' }),
           minWidth: 100,
-          value: (save, country) => <Typography variant='body1'>{ formatNumber(getTerritory(country)) + '%' }</Typography>,
+          value: (save, country) => <Typography variant="body1">{ formatNumber(
+            getTerritory(country)) + '%' }</Typography>,
           comparatorValue: (save, country) => getTerritory(country),
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(getTerritory(country), 10)).sort(numberComparator))),
+          filterValues: save => Array.from(new Set<number>(
+            getCountries(save).map(country => round(getTerritory(country), 10)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(getTerritory(country), 10)),
         },
         {
@@ -296,11 +332,12 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.lastBankrupt' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatDate(country.lastBankrupt) }</Typography>,
+            variant="body1">{ formatDate(country.lastBankrupt) }</Typography>,
           comparatorValue: (save, country) => country.lastBankrupt,
           filterValues: save => Array.from(
             new Set<number>(getCountries(save).filter(country => country.lastBankrupt)
-              .map(country => country.lastBankrupt ? Number.parseInt(country.lastBankrupt.slice(0, 4)) : 0).sort(numberComparator))),
+                                              .map(country => country.lastBankrupt ? Number.parseInt(
+                                                country.lastBankrupt.slice(0, 4)) : 0).sort(numberComparator))),
           filter: (save, country, filter) =>
             country.lastBankrupt !== undefined && filter.includes(Number.parseInt(country.lastBankrupt.slice(0, 4))),
         },
@@ -315,7 +352,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.armyMorale' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatNumber(country.armyMorale) }</Typography>,
+            variant="body1">{ formatNumber(country.armyMorale) }</Typography>,
           comparatorValue: (save, country) => country.armyMorale,
           filterValues: save => Array.from(
             new Set<number>(getCountries(save).map(country => country.armyMorale | 0).sort(numberComparator))),
@@ -326,7 +363,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.discipline' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatNumber(getDiscipline(country)) }</Typography>,
+            variant="body1">{ formatNumber(getDiscipline(country)) }</Typography>,
           comparatorValue: (save, country) => getDiscipline(country),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => getDiscipline(country) | 0).sort(numberComparator))),
@@ -337,7 +374,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.armyLimit' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatNumber(country.armyLimit) }</Typography>,
+            variant="body1">{ formatNumber(country.armyLimit) }</Typography>,
           comparatorValue: (save, country) => country.armyLimit,
           filterValues: save => Array.from(
             new Set<number>(
@@ -348,18 +385,21 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           id: 'maxManpower',
           label: intl.formatMessage({ id: 'country.maxManpower' }),
           minWidth: 100,
-          value: (save, country) => <Typography variant='body1'>{ formatNumber(country.maxManpower) }</Typography>,
+          value: (save, country) => <Typography variant="body1">{ formatNumber(country.maxManpower) }</Typography>,
           comparatorValue: (save, country) => country.maxManpower,
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(country.maxManpower, 10000)).sort(numberComparator))),
+          filterValues: save => Array.from(new Set<number>(
+            getCountries(save).map(country => round(country.maxManpower, 10000)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.maxManpower, 10000)),
         },
         {
           id: 'armyTradition',
           label: intl.formatMessage({ id: 'country.armyTradition' }),
           minWidth: 100,
-          value: (save, country) => <Typography variant='body1'>{ formatNumber(country.armyTradition ?? 0) }</Typography>,
+          value: (save, country) => <Typography variant="body1">{ formatNumber(
+            country.armyTradition ?? 0) }</Typography>,
           comparatorValue: (save, country) => country.armyTradition ?? 0,
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(country.armyTradition, 10)).sort(numberComparator))),
+          filterValues: save => Array.from(new Set<number>(
+            getCountries(save).map(country => round(country.armyTradition, 10)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.armyTradition, 10)),
         },
         {
@@ -367,7 +407,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.armyProfessionalism' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatNumber((country.armyProfessionalism ?? 0) * 100) }</Typography>,
+            variant="body1">{ formatNumber((country.armyProfessionalism ?? 0) * 100) }</Typography>,
           comparatorValue: (save, country) => (country.armyProfessionalism ?? 0) * 100,
           filterValues: save => Array.from(
             new Set<number>(
@@ -386,7 +426,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.navalMorale' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatNumber(country.navalMorale) }</Typography>,
+            variant="body1">{ formatNumber(country.navalMorale) }</Typography>,
           comparatorValue: (save, country) => country.navalMorale,
           filterValues: save => Array.from(
             new Set<number>(getCountries(save).map(country => country.navalMorale | 0).sort(numberComparator))),
@@ -397,7 +437,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.navalLimit' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatNumber(country.navalLimit) }</Typography>,
+            variant="body1">{ formatNumber(country.navalLimit) }</Typography>,
           comparatorValue: (save, country) => country.navalLimit,
           filterValues: save => Array.from(
             new Set<number>(
@@ -409,9 +449,10 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.maxSailors' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatNumber(country.maxSailors / 1000) }</Typography>,
+            variant="body1">{ formatNumber(country.maxSailors / 1000) }</Typography>,
           comparatorValue: (save, country) => country.maxSailors / 1000,
-          filterValues: save => Array.from(new Set<number>(getCountries(save).map(country => round(country.maxSailors / 1000, 5000)).sort(numberComparator))),
+          filterValues: save => Array.from(new Set<number>(
+            getCountries(save).map(country => round(country.maxSailors / 1000, 5000)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(round(country.maxSailors / 1000, 5000)),
         },
         {
@@ -419,7 +460,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'country.navalTradition' }),
           minWidth: 100,
           value: (save, country) => <Typography
-            variant='body1'>{ formatNumber(country.navyTradition ?? 0) }</Typography>,
+            variant="body1">{ formatNumber(country.navyTradition ?? 0) }</Typography>,
           comparatorValue: (save, country) => country.navyTradition ?? 0,
           filterValues: save => Array.from(
             new Set<number>(
@@ -441,21 +482,24 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           minWidth: 200,
           value: (save, country) => (
             <>
-              <Typography variant='body1' component='span'>
+              <Typography variant="body1" component="span">
                 { formatNumber(country.expenses ? country.expenses[value] : 0) }
               </Typography>
             </>
           ),
           comparatorValue: (save, country) => country.expenses && country.expenses[value] ? country.expenses[value] : 0,
           filterValues: save => Array.from(new Set<number>(getCountries(save)
-            .map(country => round((country.expenses && country.expenses[value] ? country.expenses[value] : 0), radix)).sort(numberComparator))),
+            .map(country => round((country.expenses && country.expenses[value] ? country.expenses[value] : 0), radix))
+            .sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(
             round((country.expenses && country.expenses[value] ? country.expenses[value] : 0), radix))
-        }
+        };
       });
 
       max = Math.max(...getCountries(save)
-        .flatMap(country => Object.values(Expense).map(value => getExpense(country, value)).reduce((s, d) => s + d ?? 0, 0)));
+        .flatMap(country => Object.values(Expense)
+                                  .map(value => getExpense(country, value))
+                                  .reduce((s, d) => s + (d ?? 0), 0)));
       radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
       return [
@@ -465,7 +509,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'common.total' }),
           minWidth: 200,
           value: (save, country) => (
-            <Typography variant='body1'>
+            <Typography variant="body1">
               { formatNumber(getTotalExpense(country)) }
             </Typography>
           ),
@@ -491,12 +535,12 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           minWidth: 175,
           value: (save, country) => (
             <>
-              <Typography variant='body1' component='span'>
+              <Typography variant="body1" component="span">
                 { formatNumber(getIncome(country, value)) }
               </Typography>
               {
                 index <= 7 &&
-                <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
+                <Typography variant="body1" component="span" style={ { marginLeft: 8 } }>
                   { `(${ formatNumber(getIncome(country, value) * 100 / getStableIncome(country)) }%)` }
                 </Typography>
               }
@@ -507,11 +551,12 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             .map(country => round(getIncome(country, value), radix)).sort(numberComparator))),
           filter: (save, country, filter) =>
             filter.includes(round(getIncome(country, value), radix))
-        }
+        };
       });
 
       max = Math.max(...getCountries(save)
-        .flatMap(country => Object.values(Income).map(value => getIncome(country, value)).reduce((s, d) => s + d ?? 0, 0)));
+        .flatMap(
+          country => Object.values(Income).map(value => getIncome(country, value)).reduce((s, d) => s + (d ?? 0), 0)));
       radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
       return [
@@ -521,12 +566,13 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'common.total' }),
           minWidth: 200,
           value: (save, country) => (
-            <Typography variant='body1'>
+            <Typography variant="body1">
               { formatNumber(getTotalIncome(country)) }
             </Typography>
           ),
           comparatorValue: (save, country) => Object.values(Income)
-            .map(value => getIncome(country, value)).reduce((s, d) => s + d ?? 0, 0),
+                                                    .map(value => getIncome(country, value))
+                                                    .reduce((s, d) => s + (d ?? 0), 0),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getTotalIncome(country), radix))
             .sort(numberComparator))),
@@ -548,7 +594,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           minWidth: 200,
           value: (save, country) => (
             <>
-              <Typography variant='body1' component='span'>
+              <Typography variant="body1" component="span">
                 { formatNumber(getTotalExpenses(country, value)) }
               </Typography>
             </>
@@ -558,11 +604,13 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             .map(country => round(getTotalExpenses(country, value), radix)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(
             round(getTotalExpenses(country, value), radix))
-        }
+        };
       });
 
       max = Math.max(...getCountries(save)
-        .flatMap(country => Object.values(Expense).map(value => getTotalExpenses(country, value)).reduce((s, d) => s + d ?? 0, 0)));
+        .flatMap(country => Object.values(Expense)
+                                  .map(value => getTotalExpenses(country, value))
+                                  .reduce((s, d) => s + (d ?? 0), 0)));
       radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
       return [
@@ -572,12 +620,13 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'common.total' }),
           minWidth: 200,
           value: (save, country) => (
-            <Typography variant='body1'>
+            <Typography variant="body1">
               { formatNumber(getTotalTotalExpenses(country)) }
             </Typography>
           ),
           comparatorValue: (save, country) => Object.values(Expense)
-            .map(value => getTotalExpenses(country, value)).reduce((s, d) => s + d ?? 0, 0),
+                                                    .map(value => getTotalExpenses(country, value))
+                                                    .reduce((s, d) => s + (d ?? 0), 0),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getTotalTotalExpenses(country), radix))
             .sort(numberComparator))),
@@ -589,51 +638,55 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
       ];
 
     case CountryTableType.MANA_SPENT:
-      col = Object.values(PowerSpent).filter(value => !value.startsWith('USELESS') && !value.startsWith('OTHER')).map(value => {
-        const max = Math.max(...getCountries(save).map(country => getManaSpent(country, value) | 0));
-        const radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
+      col = Object.values(PowerSpent)
+                  .filter(value => !value.startsWith('USELESS') && !value.startsWith('OTHER'))
+                  .map(value => {
+                    const max = Math.max(...getCountries(save).map(country => getManaSpent(country, value) | 0));
+                    const radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
-        return {
-          id: value,
-          label: intl.formatMessage({ id: `country.mana.${ value }` }),
-          minWidth: 250,
-          value: (save, country) => (
-            <>
-              <Grid container flexDirection='column' alignItems='center'>
-                {
-                  ((isAdm(value) ? 1 : 0) + (isDip(value) ? 1 : 0) + (isMil(value) ? 1 : 0) > 1) ?
-                    (
-                      <>
-                        <Typography variant='body1'>
-                          { `${ formatNumber(country.admPowerSpent ? country.admPowerSpent[value] : 0) } / ${ formatNumber(
-                            country.dipPowerSpent ? country.dipPowerSpent[value] : 0) } / ${ formatNumber(
-                            country.milPowerSpent ? country.milPowerSpent[value] : 0) }` }
-                        </Typography>
-                        <Typography variant='body1'>
-                          { `(${ formatNumber(getManaSpent(country, value)) })` }
-                        </Typography>
-                      </>
-                    )
-                    :
-                    (
-                      <Typography variant='body1'>
-                        { `${ formatNumber((isAdm(value) && country.admPowerSpent) ? country.admPowerSpent[value] :
-                          ((isDip(value) && country.dipPowerSpent) ? country.dipPowerSpent[value] :
-                            ((isMil(value) && country.milPowerSpent) ? country.milPowerSpent[value] :
-                              undefined))) }` }
-                      </Typography>
-                    )
-                }
-              </Grid>
-            </>
-          ),
-          comparatorValue: (save, country) => getManaSpent(country, value),
-          filterValues: save => Array.from(new Set<number>(getCountries(save)
-            .map(country => round(getManaSpent(country, value), radix)).sort(numberComparator))),
-          filter: (save, country, filter) =>
-            filter.includes(round(getManaSpent(country, value), radix))
-        }
-      });
+                    return {
+                      id: value,
+                      label: intl.formatMessage({ id: `country.mana.${ value }` }),
+                      minWidth: 250,
+                      value: (save, country) => (
+                        <>
+                          <GridLegacy container flexDirection="column" alignItems="center">
+                            {
+                              ((isAdm(value) ? 1 : 0) + (isDip(value) ? 1 : 0) + (isMil(value) ? 1 : 0) > 1) ?
+                                (
+                                  <>
+                                    <Typography variant="body1">
+                                      { `${ formatNumber(
+                                        country.admPowerSpent ? country.admPowerSpent[value] : 0) } / ${ formatNumber(
+                                        country.dipPowerSpent ? country.dipPowerSpent[value] : 0) } / ${ formatNumber(
+                                        country.milPowerSpent ? country.milPowerSpent[value] : 0) }` }
+                                    </Typography>
+                                    <Typography variant="body1">
+                                      { `(${ formatNumber(getManaSpent(country, value)) })` }
+                                    </Typography>
+                                  </>
+                                )
+                                :
+                                (
+                                  <Typography variant="body1">
+                                    { `${ formatNumber(
+                                      (isAdm(value) && country.admPowerSpent) ? country.admPowerSpent[value] :
+                                        ((isDip(value) && country.dipPowerSpent) ? country.dipPowerSpent[value] :
+                                          ((isMil(value) && country.milPowerSpent) ? country.milPowerSpent[value] :
+                                            undefined))) }` }
+                                  </Typography>
+                                )
+                            }
+                          </GridLegacy>
+                        </>
+                      ),
+                      comparatorValue: (save, country) => getManaSpent(country, value),
+                      filterValues: save => Array.from(new Set<number>(getCountries(save)
+                        .map(country => round(getManaSpent(country, value), radix)).sort(numberComparator))),
+                      filter: (save, country, filter) =>
+                        filter.includes(round(getManaSpent(country, value), radix))
+                    };
+                  });
 
       return [
         getNameColumn(),
@@ -642,27 +695,37 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'common.total' }),
           minWidth: 200,
           value: (save, country) => (
-            <Grid container flexDirection='column' alignItems='center'>
-              <Typography variant='body1'>
+            <GridLegacy container flexDirection="column" alignItems="center">
+              <Typography variant="body1">
                 { `${ formatNumber(
-                  Object.values(PowerSpent).map(value => country.admPowerSpent ? country.admPowerSpent[value] : 0).reduce((s, d) => s + d ?? 0, 0)) } / 
+                  Object.values(PowerSpent)
+                        .map(value => country.admPowerSpent ? country.admPowerSpent[value] : 0)
+                        .reduce((s, d) => s + (d ?? 0), 0)) } / 
                 ${ formatNumber(
-                  Object.values(PowerSpent).map(value => country.dipPowerSpent ? country.dipPowerSpent[value] : 0).reduce((s, d) => s + d ?? 0, 0)) } /
+                  Object.values(PowerSpent)
+                        .map(value => country.dipPowerSpent ? country.dipPowerSpent[value] : 0)
+                        .reduce((s, d) => s + (d ?? 0), 0)) } /
                  ${ formatNumber(
-                  Object.values(PowerSpent).map(value => country.milPowerSpent ? country.milPowerSpent[value] : 0).reduce((s, d) => s + d ?? 0, 0)) }` }
+                  Object.values(PowerSpent)
+                        .map(value => country.milPowerSpent ? country.milPowerSpent[value] : 0)
+                        .reduce((s, d) => s + (d ?? 0), 0)) }` }
               </Typography>
-              <Typography variant='body1'>
-                { `(${ formatNumber(Object.values(PowerSpent).map(value => getManaSpent(country, value)).reduce((s, d) => s + d ?? 0, 0)) })` }
+              <Typography variant="body1">
+                { `(${ formatNumber(Object.values(PowerSpent)
+                                          .map(value => getManaSpent(country, value))
+                                          .reduce((s, d) => s + (d ?? 0), 0)) })` }
               </Typography>
-            </Grid>
+            </GridLegacy>
           ),
           comparatorValue: (save, country) => Object.values(PowerSpent).map(value => getManaSpent(country, value))
-            .reduce((s, d) => s + d ?? 0, 0),
+                                                    .reduce((s, d) => s + (d ?? 0), 0),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
-            .map(country => round1000(Object.values(PowerSpent).map(value => getManaSpent(country, value)).reduce((s, d) => s + d ?? 0, 0)))
+            .map(country => round1000(
+              Object.values(PowerSpent).map(value => getManaSpent(country, value)).reduce((s, d) => s + (d ?? 0), 0)))
             .sort(numberComparator))),
           filter: (save, country, filter) =>
-            filter.includes(round1000(Object.values(PowerSpent).map(value => getManaSpent(country, value)).reduce((s, d) => s + d ?? 0, 0)))
+            filter.includes(round1000(
+              Object.values(PowerSpent).map(value => getManaSpent(country, value)).reduce((s, d) => s + (d ?? 0), 0)))
         },
         ...col,
         getPlayerColumn(),
@@ -678,7 +741,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: `country.losses.${ value }` }),
           minWidth: 250,
           value: (save, country) => (
-            <Typography variant='body1'>
+            <Typography variant="body1">
               { formatNumber(getLosses(country, value)) }
             </Typography>
           ),
@@ -687,7 +750,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             .map(country => round(getLosses(country, value), radix)).sort(numberComparator))),
           filter: (save, country, filter) =>
             filter.includes(round(getLosses(country, value), radix))
-        }
+        };
       });
 
       return [
@@ -697,20 +760,31 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'common.total' }),
           minWidth: 200,
           value: (save, country) => (
-            <Typography variant='body1'>
+            <Typography variant="body1">
               { formatNumber(
-                Object.values(Losses).filter((value, index) => index <= 8).map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0)) }
+                Object.values(Losses)
+                      .filter((value, index) => index <= 8)
+                      .map(value => getLosses(country, value))
+                      .reduce((s, d) => s + (d ?? 0), 0)) }
             </Typography>
           ),
-          comparatorValue: (save, country) => Object.values(Losses).filter((value, index) => index <= 8)
-            .map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0),
+          comparatorValue: (save, country) => Object.values(Losses)
+                                                    .filter((value, index) => index <= 8)
+                                                    .map(value => getLosses(country, value))
+                                                    .reduce((s, d) => s + (d ?? 0), 0),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round1000(
-              Object.values(Losses).filter((value, index) => index <= 8).map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0)))
+              Object.values(Losses)
+                    .filter((value, index) => index <= 8)
+                    .map(value => getLosses(country, value))
+                    .reduce((s, d) => s + (d ?? 0), 0)))
             .sort(numberComparator))),
           filter: (save, country, filter) =>
             filter.includes(
-              round1000(Object.values(Losses).filter((value, index) => index <= 8).map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0)))
+              round1000(Object.values(Losses)
+                              .filter((value, index) => index <= 8)
+                              .map(value => getLosses(country, value))
+                              .reduce((s, d) => s + (d ?? 0), 0)))
         },
         ...col,
         getPlayerColumn(),
@@ -727,7 +801,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: `country.losses.${ value }` }),
           minWidth: 250,
           value: (save, country) => (
-            <Typography variant='body1'>
+            <Typography variant="body1">
               { formatNumber(getLosses(country, value)) }
             </Typography>
           ),
@@ -736,7 +810,7 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             .map(country => round(getLosses(country, value), radix)).sort(numberComparator))),
           filter: (save, country, filter) =>
             filter.includes(round(getLosses(country, value), radix))
-        }
+        };
       });
 
       return [
@@ -746,20 +820,31 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           label: intl.formatMessage({ id: 'common.total' }),
           minWidth: 200,
           value: (save, country) => (
-            <Typography variant='body1'>
+            <Typography variant="body1">
               { formatNumber(
-                Object.values(Losses).filter((value, index) => index > 8).map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0)) }
+                Object.values(Losses)
+                      .filter((value, index) => index > 8)
+                      .map(value => getLosses(country, value))
+                      .reduce((s, d) => s + (d ?? 0), 0)) }
             </Typography>
           ),
-          comparatorValue: (save, country) => Object.values(Losses).filter((value, index) => index > 8)
-            .map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0),
+          comparatorValue: (save, country) => Object.values(Losses)
+                                                    .filter((value, index) => index > 8)
+                                                    .map(value => getLosses(country, value))
+                                                    .reduce((s, d) => s + (d ?? 0), 0),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round1000(
-              Object.values(Losses).filter((value, index) => index > 8).map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0)))
+              Object.values(Losses)
+                    .filter((value, index) => index > 8)
+                    .map(value => getLosses(country, value))
+                    .reduce((s, d) => s + (d ?? 0), 0)))
             .sort(numberComparator))),
           filter: (save, country, filter) =>
             filter.includes(
-              round1000(Object.values(Losses).filter((value, index) => index > 8).map(value => getLosses(country, value)).reduce((s, d) => s + d ?? 0, 0)))
+              round1000(Object.values(Losses)
+                              .filter((value, index) => index > 8)
+                              .map(value => getLosses(country, value))
+                              .reduce((s, d) => s + (d ?? 0), 0)))
         },
         ...col,
         getPlayerColumn(),
@@ -796,7 +881,7 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
     const isAsc = orderBy === undefined || (orderBy.id === column.id && order === 'asc');
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(column);
-  }
+  };
 
   if (Object.keys(filters).length > 0) {
     for (const key of Object.keys(filters)) {
@@ -902,14 +987,15 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
                            paddingLeft: cIndex === columns.length - 1 ? 8 : 16,
                            borderBottom: 'none'
                          } }>
-                { column.value(save, country, columnsRefs.current[cIndex] ? columnsRefs.current[cIndex]?.clientWidth : column.minWidth) }
+                { column.value(save, country,
+                  columnsRefs.current[cIndex] ? columnsRefs.current[cIndex]?.clientWidth : column.minWidth) }
               </TableCell>
             );
           }) }
         </TableRow>
       </Tooltip>
     );
-  }
+  };
 
   return (
     visible ?
@@ -922,7 +1008,7 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
             <ClickAwayListener onClickAway={ () => setFilterPopoverOpen(false) }>
               <Popper open
                       anchorEl={ filterPopoverDiv.current }
-                      placement='bottom-start'
+                      placement="bottom-start"
                       style={ { zIndex: 1500 } }
               >
                 <Card style={ {
@@ -937,19 +1023,20 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
                       disablePortal
                       options={ filterPopoverColumn.filterValues(save) }
                       getOptionLabel={ option => option.toString() }
-                      groupBy={ (option) => typeof option === 'string' ? cleanString(option.slice(0, 1)).toUpperCase() : ''
+                      groupBy={ (option) => typeof option === 'string' ? cleanString(option.slice(0, 1))
+                        .toUpperCase() : ''
                       }
                       renderInput={ (params) =>
                         <TextField { ...params }
                                    label={ filterPopoverColumn.label }
-                                   variant='filled'
-                                   color='primary'
+                                   variant="filled"
+                                   color="primary"
                         /> }
                       value={ filters[filterPopoverColumn.id] ?? [] }
                       onChange={ (event, newInputValue) => {
                         if (!newInputValue || newInputValue.length === 0) {
                           setFilters(prevState => {
-                            const newState: Record<string, (string | number) []> = {}
+                            const newState: Record<string, (string | number) []> = {};
                             for (let key in prevState) {
                               if (key !== filterPopoverColumn.id) {
                                 newState[key] = prevState[key];
@@ -972,13 +1059,13 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
             </ClickAwayListener>
           )
         }
-        <Grid>
+        <GridLegacy>
           <FormControlLabel
             control={ <Checkbox checked={ Object.keys(filters).includes(onlyPlayers) }
                                 onChange={ (event, checked) => {
                                   if (!checked) {
                                     setFilters(prevState => {
-                                      const newState: Record<string, (string | number) []> = {}
+                                      const newState: Record<string, (string | number) []> = {};
                                       for (let key in prevState) {
                                         if (key !== onlyPlayers) {
                                           newState[key] = prevState[key];
@@ -997,7 +1084,7 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
             }
             label={ intl.formatMessage({ id: 'country.onlyPlayers' }) }
             style={ { padding: 8 } }/>
-        </Grid>
+        </GridLegacy>
         <TableContainer component={ Paper } style={ { height: `100%`, borderRadius: 0 } }>
           <Table style={ { width: '100%', height: `100%` } }>
             <TableHead ref={ headerRef }>
@@ -1007,8 +1094,8 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
                     key={ column.id }
                     style={ { minWidth: column.minWidth, backgroundColor: theme.palette.primary.light } }
                   >
-                    <Grid container alignItems='center' ref={ el => columnsRefs.current[index] = el }
-                          style={ { flexFlow: 'nowrap' } }>
+                    <GridLegacy container alignItems="center" ref={ el => {columnsRefs.current[index] = el;} }
+                                style={ { flexFlow: 'nowrap' } }>
                       <IconButton
                         onClick={ (e) => {
                           setFilterPopoverLoc([e.clientX, e.clientY + 25]);
@@ -1016,7 +1103,7 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
                           setFilterPopoverColumn(column);
                         } }
                         style={ { marginRight: 4, padding: 0 } }>
-                        <FilterList fontSize='small'
+                        <FilterList fontSize="small"
                                     style={ { color: filters[column.id] === undefined ? theme.palette.primary.contrastText : theme.palette.primary.main } }/>
                       </IconButton>
                       <TableSortLabel
@@ -1029,11 +1116,12 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
                           }
                         } }
                       >
-                        <Typography variant='button' style={ { fontWeight: 'bold', color: theme.palette.primary.contrastText } }>
+                        <Typography variant="button"
+                                    style={ { fontWeight: 'bold', color: theme.palette.primary.contrastText } }>
                           { column.label }
                         </Typography>
                       </TableSortLabel>
-                    </Grid>
+                    </GridLegacy>
                   </TableCell>
                 )) }
               </TableRow>
@@ -1061,7 +1149,7 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
       </>
       :
       <></>
-  )
+  );
 }
 
 export default CountryTable;

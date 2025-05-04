@@ -1,5 +1,5 @@
 import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineOppositeContent, TimelineSeparator } from '@mui/lab';
-import { Avatar, Box, DialogContent, DialogTitle, Grid, LinearProgress, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, DialogContent, DialogTitle, GridLegacy, LinearProgress, Tooltip, Typography } from '@mui/material';
 import { LinearProgressProps } from '@mui/material/LinearProgress/LinearProgress';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -36,21 +36,21 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
   return (
     <>
       <DialogTitle>
-        <Grid container alignItems='center'>
+        <GridLegacy container alignItems='center'>
           <Avatar src={ getCountryFlag(save, history.owner) } variant='square' style={ { marginRight: 8 } }/>
           <Typography variant='h5' color='white' component='span'>
             { `${ province.name } (${ province.id })` }
           </Typography>
-        </Grid>
+        </GridLegacy>
       </DialogTitle>
       <DialogContent>
-        <Grid container>
-          <Grid container item xs={ 12 } md={ timeline && timeline.length > 0 ? 6 : 12 } flexDirection='column' alignItems='center' rowSpacing={ 1 }>
-            <Grid container item alignItems='center'>
-              <Grid item xs={ 6 }>
+        <GridLegacy container>
+          <GridLegacy container item xs={ 12 } md={ timeline && timeline.length > 0 ? 6 : 12 } flexDirection='column' alignItems='center' rowSpacing={ 1 }>
+            <GridLegacy container item alignItems='center'>
+              <GridLegacy item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.owner' }) }:</Typography>
-              </Grid>
-              <Grid container item xs={ 6 } alignItems='center'>
+              </GridLegacy>
+              <GridLegacy container item xs={ 6 } alignItems='center'>
                 { history.owner &&
                     <>
                         <Avatar src={ getCountryFlag(save, history.owner) } variant='square'/>
@@ -59,13 +59,13 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
                         </Typography>
                     </>
                 }
-              </Grid>
-            </Grid>
-            <Grid container item alignItems='center'>
-              <Grid item xs={ 6 }>
+              </GridLegacy>
+            </GridLegacy>
+            <GridLegacy container item alignItems='center'>
+              <GridLegacy item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.controller' }) }:</Typography>
-              </Grid>
-              <Grid container item xs={ 6 } alignItems='center'>
+              </GridLegacy>
+              <GridLegacy container item xs={ 6 } alignItems='center'>
                 { history.controller &&
                     <>
                         <Avatar src={ getCountryFlag(save, history.controller) } variant='square'/>
@@ -74,23 +74,23 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
                         </Typography>
                     </>
                 }
-              </Grid>
-            </Grid>
-            <Grid container item alignItems='center'>
-              <Grid item xs={ 6 }>
+              </GridLegacy>
+            </GridLegacy>
+            <GridLegacy container item alignItems='center'>
+              <GridLegacy item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.dev' }) }:</Typography>
-              </Grid>
-              <Grid container item xs={ 6 } alignItems='center'>
+              </GridLegacy>
+              <GridLegacy container item xs={ 6 } alignItems='center'>
                 <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                   { `${ formatNumber(getPDev(province)) } (${ province.baseTax ?? 0 } / ${ formatNumber(province.baseProduction ?? 0) } / ${ province.baseManpower ?? 0 })` }
                 </Typography>
-              </Grid>
-            </Grid>
-            <Grid container item alignItems='center'>
-              <Grid item xs={ 6 }>
+              </GridLegacy>
+            </GridLegacy>
+            <GridLegacy container item alignItems='center'>
+              <GridLegacy item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.cores' }) }:</Typography>
-              </Grid>
-              <Grid container item xs={ 6 } alignItems='center'>
+              </GridLegacy>
+              <GridLegacy container item xs={ 6 } alignItems='center'>
                 {
                   history.cores &&
                   Array.from(history.cores).map(value => getCountry(save, value))
@@ -102,50 +102,50 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
                       </Tooltip>
                     ))
                 }
-              </Grid>
-            </Grid>
-            <Grid container item alignItems='center'>
-              <Grid item xs={ 6 }>
+              </GridLegacy>
+            </GridLegacy>
+            <GridLegacy container item alignItems='center'>
+              <GridLegacy item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.religion' }) }:</Typography>
-              </Grid>
-              <Grid container item xs={ 6 } alignItems='center'>
+              </GridLegacy>
+              <GridLegacy container item xs={ 6 } alignItems='center'>
                 <Avatar src={ getReligionImage(save, history.religion) } variant='square'/>
                 <Typography variant='body1' component='span'
                             style={ { marginLeft: 8 } }>{ getReligionName(save, history.religion) }</Typography>
-              </Grid>
-            </Grid>
-            <Grid container item alignItems='center'>
-              <Grid item xs={ 6 }>
+              </GridLegacy>
+            </GridLegacy>
+            <GridLegacy container item alignItems='center'>
+              <GridLegacy item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.culture' }) }:</Typography>
-              </Grid>
-              <Grid container item xs={ 6 } alignItems='center'>
+              </GridLegacy>
+              <GridLegacy container item xs={ 6 } alignItems='center'>
                 <Typography variant='body1' component='span'>{ getCultureName(save, history.culture) }</Typography>
-              </Grid>
-            </Grid>
-            <Grid container item alignItems='center'>
-              <Grid item xs={ 6 }>
+              </GridLegacy>
+            </GridLegacy>
+            <GridLegacy container item alignItems='center'>
+              <GridLegacy item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.devastation' }) }:</Typography>
-              </Grid>
-              <Grid container item xs={ 6 } alignItems='center'>
+              </GridLegacy>
+              <GridLegacy container item xs={ 6 } alignItems='center'>
                 <LinearProgressWithLabel variant='determinate' color='error' value={ province.devastation ?? 0 }
                                          style={ { backgroundColor: 'white' } }/>
-              </Grid>
-            </Grid>
-            <Grid container item alignItems='center'>
-              <Grid item xs={ 6 }>
+              </GridLegacy>
+            </GridLegacy>
+            <GridLegacy container item alignItems='center'>
+              <GridLegacy item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.prosperity' }) }:</Typography>
-              </Grid>
-              <Grid container item xs={ 6 } alignItems='center'>
+              </GridLegacy>
+              <GridLegacy container item xs={ 6 } alignItems='center'>
                 <LinearProgressWithLabel variant='determinate' color='success'
                                          value={ (state && state.prosperity) ?? 0 }
                                          style={ { backgroundColor: 'white' } }/>
-              </Grid>
-            </Grid>
-            <Grid container item alignItems='center'>
-              <Grid item xs={ 6 }>
+              </GridLegacy>
+            </GridLegacy>
+            <GridLegacy container item alignItems='center'>
+              <GridLegacy item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.good' }) }:</Typography>
-              </Grid>
-              <Grid container item xs={ 6 } alignItems='center'>
+              </GridLegacy>
+              <GridLegacy container item xs={ 6 } alignItems='center'>
                 { history.tradeGood && history.tradeGood !== 'unknown' &&
                     <>
                         <Avatar src={ getGoodImage(save, history.tradeGood) } variant='square'/>
@@ -154,26 +154,26 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
                         </Typography>
                     </>
                 }
-              </Grid>
-            </Grid>
+              </GridLegacy>
+            </GridLegacy>
             {
               !province.city && province.colonySize &&
               (
-                <Grid container item alignItems='center'>
-                  <Grid item xs={ 6 }>
+                <GridLegacy container item alignItems='center'>
+                  <GridLegacy item xs={ 6 }>
                     <Typography variant='h6'>{ intl.formatMessage({ id: 'province.colonySize' }) }:</Typography>
-                  </Grid>
-                  <Grid container item xs={ 6 } alignItems='center'>
+                  </GridLegacy>
+                  <GridLegacy container item xs={ 6 } alignItems='center'>
                     <Typography variant='body1' component='span'>{ province.colonySize | 0 }</Typography>
-                  </Grid>
-                </Grid>
+                  </GridLegacy>
+                </GridLegacy>
               )
             }
-            <Grid container item alignItems='center'>
-              <Grid item xs={ 6 }>
+            <GridLegacy container item alignItems='center'>
+              <GridLegacy item xs={ 6 }>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.buildings' }) }:</Typography>
-              </Grid>
-              <Grid container item xs={ 6 } alignItems='center'>
+              </GridLegacy>
+              <GridLegacy container item xs={ 6 } alignItems='center'>
                 {
                   province.buildings &&
                   province.buildings.map(value => getBuilding(save, value))
@@ -185,13 +185,13 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
                       </Tooltip>
                     ))
                 }
-              </Grid>
-            </Grid>
-          </Grid>
+              </GridLegacy>
+            </GridLegacy>
+          </GridLegacy>
           {
             timeline && timeline.length > 0 &&
             (
-              <Grid container item xs={ 12 } md={ 6 } alignItems='center' flexDirection='column'>
+              <GridLegacy container item xs={ 12 } md={ 6 } alignItems='center' flexDirection='column'>
                 <Typography variant='h6'>{ intl.formatMessage({ id: 'province.history' }) }</Typography>
                 <Timeline position="left" style={ { padding: 0, marginTop: 0, marginBottom: 0, width: '100%' } }>
                   {
@@ -252,10 +252,10 @@ function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
                     })
                   }
                 </Timeline>
-              </Grid>
+              </GridLegacy>
             )
           }
-        </Grid>
+        </GridLegacy>
       </DialogContent>
     </>
   )

@@ -1,4 +1,4 @@
-import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
+import { Avatar, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { SaveCountry, SaveMonarch } from 'types/api.types';
@@ -23,7 +23,7 @@ function CountryMonarchTab({ country, save }: CountryMonarchTabProps) {
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
         <TableContainer component={ Paper } style={ { borderRadius: 0, width: 'auto', minWidth: '50%', marginTop: 8 } }>
           <Table>
             <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>
@@ -71,7 +71,7 @@ function CountryMonarchTab({ country, save }: CountryMonarchTabProps) {
                           { formatDuration(monarch.duration) }
                         </TableCell>
                         <TableCell>
-                          <Grid container>
+                          <GridLegacy container>
                             { monarch.personalities?.map(p => getPersonality(save, p)).map((personality, index) => (
                               <Tooltip key={ `${ country.tag }-${ personality.name }` }
                                        title={ getPersonalitysName(personality) }>
@@ -83,7 +83,7 @@ function CountryMonarchTab({ country, save }: CountryMonarchTabProps) {
                                         } }/>
                               </Tooltip>
                             )) }
-                          </Grid>
+                          </GridLegacy>
                         </TableCell>
                         <TableCell>
                           { `${ monarch.adm } / ${ monarch.dip } / ${ monarch.mil } (${ monarch.adm + monarch.dip + monarch.mil })` }
@@ -114,7 +114,7 @@ function CountryMonarchTab({ country, save }: CountryMonarchTabProps) {
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
+      </GridLegacy>
     </>
   )
 }

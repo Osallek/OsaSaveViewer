@@ -1,4 +1,4 @@
-import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Avatar, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
@@ -59,7 +59,7 @@ function NodeCountriesTab({ node, save }: NodeCountriesTabProps) {
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
         <PieChart width={ 500 } height={ 500 }>
           <Pie
             activeIndex={ activeIndex }
@@ -105,12 +105,12 @@ function NodeCountriesTab({ node, save }: NodeCountriesTabProps) {
                     key={ `row-${ country.country.tag }` }
                   >
                     <TableCell>
-                      <Grid container item alignItems='center'>
+                      <GridLegacy container item alignItems='center'>
                         <Avatar src={ getCountrysFlag(country.country) } variant='square'/>
                         <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                           { country.name }
                         </Typography>
-                      </Grid>
+                      </GridLegacy>
                     </TableCell>
                     <TableCell align='right'>{ formatNumber(country.value) }</TableCell>
                     <TableCell align='right'>{ formatNumber(country.item.provincePower) }</TableCell>
@@ -119,12 +119,12 @@ function NodeCountriesTab({ node, save }: NodeCountriesTabProps) {
                     <TableCell align='right'>
                       {
                         country.item.money &&
-                          <Grid item alignItems='center' style={ { display: 'flex', paddingLeft: 8 } }>
+                          <GridLegacy item alignItems='center' style={ { display: 'flex', paddingLeft: 8 } }>
                               <Typography variant='body1' align='right' width='100%'>
                                 { formatNumber(country.item.money) }
                               </Typography>
                               <Avatar src={ '/eu4/country/income.png' } variant='square' style={ { width: 36, height: 36, marginLeft: 4 } }/>
-                          </Grid>
+                          </GridLegacy>
                       }
                     </TableCell>
                   </TableRow>
@@ -132,7 +132,7 @@ function NodeCountriesTab({ node, save }: NodeCountriesTabProps) {
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
+      </GridLegacy>
     </>
   )
 }

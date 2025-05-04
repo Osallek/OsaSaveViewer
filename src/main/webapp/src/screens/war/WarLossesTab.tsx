@@ -1,4 +1,4 @@
-import { Avatar, Grid, Typography } from '@mui/material';
+import { Avatar, GridLegacy, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -25,12 +25,12 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
   }, [war, save]);
 
   return (
-    <Grid container item xs={ 12 } md={ 10 } lg={ 8 } xl={ 8 }>
+    <GridLegacy container item xs={ 12 } md={ 10 } lg={ 8 } xl={ 8 }>
       {
         charts.length > 0 &&
         <AutoSizer disableHeight>
           { ({ height, width }) => (
-            <Grid container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } } key='losses-total-grid'>
+            <GridLegacy container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } } key='losses-total-grid'>
               <React.Fragment key='losses'>
                 <Typography variant='h6' style={ { textAlign: 'center' } }>
                   { intl.formatMessage({ id: 'war.losses.total' }) }
@@ -55,21 +55,21 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                   <Tooltip content={ props => {
                     return props.active && props.payload ?
                       (
-                        <Grid container alignItems='center' rowGap={ 2 }
+                        <GridLegacy container alignItems='center' rowGap={ 2 }
                               style={ { padding: 10, backgroundColor: 'white', border: '1px solid rgb(204, 204, 204)', flexDirection: 'column' } }>
                           {
                             props.payload.sort((a, b) => numberComparator(a.value as number, b.value as number))
                               .map(payload => (
-                                <Grid container item alignItems='center' style={ { width: '100%' } } key={ `tooltip-total-${ payload.name as string }` }>
+                                <GridLegacy container item alignItems='center' style={ { width: '100%' } } key={ `tooltip-total-${ payload.name as string }` }>
                                   <Avatar src={ getCountryFlag(save, (payload.name as string).slice(0, 3)) } variant='square'
                                           style={ { display: 'inline-block' } }/>
                                   <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                                     { `${ getCountryName(save, (payload.name as string).slice(0, 3)) } : ${ formatNumber(payload.value as number) }` }
                                   </Typography>
-                                </Grid>
+                                </GridLegacy>
                               ))
                           }
-                        </Grid>
+                        </GridLegacy>
                       ) : undefined;
                   } }/>
                   {
@@ -140,12 +140,12 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                   <Tooltip content={ props => {
                     return props.active && props.payload ?
                       (
-                        <Grid container alignItems='center' rowGap={ 2 }
+                        <GridLegacy container alignItems='center' rowGap={ 2 }
                               style={ { padding: 10, backgroundColor: 'white', border: '1px solid rgb(204, 204, 204)', flexDirection: 'column' } }>
                           {
                             props.payload.sort((a, b) => numberComparator(a.value as number, b.value as number))
                               .map(payload => (
-                                <Grid container key={ `tooltip-land-${ payload.name as string }` }>
+                                <GridLegacy container key={ `tooltip-land-${ payload.name as string }` }>
                                   <div style={ {
                                     width: 10,
                                     height: 10,
@@ -155,10 +155,10 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                                   <Typography variant='body1' component='span' style={ { marginLeft: 4 } }>
                                     { `${ intl.formatMessage({ id: `war.losses.${ payload.name as string }` }) } : ${ formatNumber(payload.value as number) }` }
                                   </Typography>
-                                </Grid>
+                                </GridLegacy>
                               ))
                           }
-                        </Grid>
+                        </GridLegacy>
                       ) : undefined;
                   } }/>
                   {
@@ -225,12 +225,12 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                   <Tooltip content={ props => {
                     return props.active && props.payload ?
                       (
-                        <Grid container alignItems='center' rowGap={ 2 }
+                        <GridLegacy container alignItems='center' rowGap={ 2 }
                               style={ { padding: 10, backgroundColor: 'white', border: '1px solid rgb(204, 204, 204)', flexDirection: 'column' } }>
                           {
                             props.payload.sort((a, b) => numberComparator(a.value as number, b.value as number))
                               .map(payload => (
-                                <Grid container key={ `tooltip-naval-${ payload.name as string }` }>
+                                <GridLegacy container key={ `tooltip-naval-${ payload.name as string }` }>
                                   <div style={ {
                                     width: 10,
                                     height: 10,
@@ -240,10 +240,10 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                                   <Typography variant='body1' component='span' style={ { marginLeft: 4 } }>
                                     { `${ intl.formatMessage({ id: `war.losses.${ payload.name as string }` }) } : ${ formatNumber(payload.value as number) }` }
                                   </Typography>
-                                </Grid>
+                                </GridLegacy>
                               ))
                           }
-                        </Grid>
+                        </GridLegacy>
                       ) : undefined;
                   } }/>
                   {
@@ -313,21 +313,21 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                         <Tooltip content={ props => {
                           return props.active && props.payload ?
                             (
-                              <Grid container alignItems='center' rowGap={ 2 }
+                              <GridLegacy container alignItems='center' rowGap={ 2 }
                                     style={ { padding: 10, backgroundColor: 'white', border: '1px solid rgb(204, 204, 204)', flexDirection: 'column' } }>
                                 {
                                   props.payload.sort((a, b) => numberComparator(a.value as number, b.value as number))
                                     .map(payload => (
-                                      <Grid container item alignItems='center' style={ { width: '100%' } }>
+                                      <GridLegacy container item alignItems='center' style={ { width: '100%' } }>
                                         <Avatar src={ getCountryFlag(save, (payload.name as string).slice(0, 3)) } variant='square'
                                                 style={ { display: 'inline-block' } }/>
                                         <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                                           { `${ getCountryName(save, (payload.name as string).slice(0, 3)) } : ${ formatNumber(payload.value as number) }` }
                                         </Typography>
-                                      </Grid>
+                                      </GridLegacy>
                                     ))
                                 }
-                              </Grid>
+                              </GridLegacy>
                             ) : undefined;
                         } }/>
                         {
@@ -381,11 +381,11 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                   )
                 })
               }
-            </Grid>
+            </GridLegacy>
           ) }
         </AutoSizer>
       }
-    </Grid>
+    </GridLegacy>
   )
 }
 

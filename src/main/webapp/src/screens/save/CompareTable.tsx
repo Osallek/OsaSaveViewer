@@ -1,7 +1,7 @@
 import { PhotoCamera } from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
-  Autocomplete, Avatar, Card, CardContent, CardHeader, Chip, CircularProgress, Grid, IconButton, TextField, Tooltip as Tt, Typography, useTheme
+  Autocomplete, Avatar, Card, CardContent, CardHeader, Chip, CircularProgress, GridLegacy, IconButton, TextField, Tooltip as Tt, Typography, useTheme
 } from '@mui/material';
 import { toPng } from 'html-to-image';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -102,8 +102,8 @@ function CompareTable({ save, visible }: CompareTableProps) {
 
   return (
     visible ?
-      <Grid container style={ { justifyContent: 'center', padding: 24 } } ref={ mainRef }>
-        <Grid container item xs={ 12 } md={ 6 } lg={ 4 } flexDirection='column' rowGap={ 2 }>
+      <GridLegacy container style={ { justifyContent: 'center', padding: 24 } } ref={ mainRef }>
+        <GridLegacy container item xs={ 12 } md={ 6 } lg={ 4 } flexDirection='column' rowGap={ 2 }>
           <Card style={ { width: '100%', backgroundColor: theme.palette.primary.light } }>
             <CardHeader title={ intl.formatMessage({ id: 'common.teamA' }) }
                         titleTypographyProps={ { color: theme.palette.primary.contrastText, fontWeight: 'bold' } }
@@ -119,12 +119,12 @@ function CompareTable({ save, visible }: CompareTableProps) {
                 renderOption={ (props, option) => {
                   return (
                     <li { ...props }>
-                      <Grid container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
+                      <GridLegacy container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
                         <Avatar src={ getCountrysFlag(option) } variant='square' style={ { display: 'inline-block' } }/>
                         <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                           { getCountrysName(option) }
                         </Typography>
-                      </Grid>
+                      </GridLegacy>
                     </li>
                   )
                 } }
@@ -162,12 +162,12 @@ function CompareTable({ save, visible }: CompareTableProps) {
                 renderOption={ (props, option) => {
                   return (
                     <li { ...props }>
-                      <Grid container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
+                      <GridLegacy container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
                         <Avatar src={ getCountrysFlag(option) } variant='square' style={ { display: 'inline-block' } }/>
                         <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                           { getCountrysName(option) }
                         </Typography>
-                      </Grid>
+                      </GridLegacy>
                     </li>
                   )
                 } }
@@ -194,11 +194,11 @@ function CompareTable({ save, visible }: CompareTableProps) {
                          disabled={ exporting || Object.keys(teamA[0]).length <= 1 || Object.keys(teamB[0]).length <= 1 } id='export-button'>
             { intl.formatMessage({ id: 'common.export' }) }
           </LoadingButton>
-        </Grid>
-        <Grid container item xs={ 12 } md={ 10 } lg={ 8 } xl={ 8 }>
+        </GridLegacy>
+        <GridLegacy container item xs={ 12 } md={ 10 } lg={ 8 } xl={ 8 }>
           <AutoSizer disableHeight>
             { ({ height, width }) => (
-              <Grid container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } } key='compare-grid'>
+              <GridLegacy container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } } key='compare-grid'>
                 {
                   previousCharts.map((chart, i) => {
                       return (
@@ -243,22 +243,22 @@ function CompareTable({ save, visible }: CompareTableProps) {
                             <Tooltip content={ props => {
                               return props.active && props.payload ?
                                 (
-                                  <Grid container alignItems='center' rowGap={ 2 }
+                                  <GridLegacy container alignItems='center' rowGap={ 2 }
                                         style={ { padding: 10, backgroundColor: 'white', border: '1px solid rgb(204, 204, 204)', flexDirection: 'column' } }>
                                     {
                                       props.payload.sort((a, b) => stringComparator(getCountryName(save, (a.name as string).slice(0, 3)),
                                         getCountryName(save, (b.name as string).slice(0, 3))))
                                         .map(payload => (
-                                          <Grid container item alignItems='center' style={ { width: '100%' } }>
+                                          <GridLegacy container item alignItems='center' style={ { width: '100%' } }>
                                             <Avatar src={ getCountryFlag(save, (payload.name as string).slice(0, 3)) } variant='square'
                                                     style={ { display: 'inline-block' } }/>
                                             <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                                               { `${ getCountryName(save, (payload.name as string).slice(0, 3)) } : ${ formatNumber(payload.value as number) }` }
                                             </Typography>
-                                          </Grid>
+                                          </GridLegacy>
                                         ))
                                     }
-                                  </Grid>
+                                  </GridLegacy>
                                 ) : undefined;
                             } }/>
                             {
@@ -303,11 +303,11 @@ function CompareTable({ save, visible }: CompareTableProps) {
                     }
                   )
                 }
-              </Grid>
+              </GridLegacy>
             ) }
           </AutoSizer>
-        </Grid>
-      </Grid>
+        </GridLegacy>
+      </GridLegacy>
       :
       <></>
   )

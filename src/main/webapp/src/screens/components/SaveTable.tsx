@@ -2,7 +2,7 @@ import { Delete, Visibility } from '@mui/icons-material';
 import {
   Avatar,
   CircularProgress,
-  Grid,
+  GridLegacy,
   IconButton,
   Paper,
   Table,
@@ -94,12 +94,12 @@ function SaveTable({ saves, currentUser, handleDelete, owner, actionTable }: Sav
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Grid container alignItems='center' flexWrap='nowrap' overflow='hidden'>
+                      <GridLegacy container alignItems='center' flexWrap='nowrap' overflow='hidden'>
                         <Avatar src={ getFlagUrl(save.flag) } variant='square' alt={ getLName(save.countryName) }/>
                         <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                           { getLName(save.countryName) }
                         </Typography>
-                      </Grid>
+                      </GridLegacy>
                     </TableCell>
                     <TableCell>
                       <Typography variant='body1' component='span'>
@@ -115,17 +115,17 @@ function SaveTable({ saves, currentUser, handleDelete, owner, actionTable }: Sav
                       owner &&
                       <TableCell>
                         <Link to={ `/user/${ save.ownerId }` } style={ { textDecoration: 'none' } }>
-                          <Grid container alignItems='center' flexWrap='nowrap' overflow='hidden'>
+                          <GridLegacy container alignItems='center' flexWrap='nowrap' overflow='hidden'>
                             <Avatar src={ save.ownerImage } variant='square' alt={ save.ownerName }/>
                             <Typography variant='body1' component='span' style={ { marginLeft: 8, color: 'inherit' } }>
                               { save.ownerName ?? save.ownerId }
                             </Typography>
-                          </Grid>
+                          </GridLegacy>
                         </Link>
                       </TableCell>
                     }
                     <TableCell>
-                      <Grid container alignItems='center' flexWrap='nowrap' overflow='hidden'>
+                      <GridLegacy container alignItems='center' flexWrap='nowrap' overflow='hidden'>
                         <IconButton color="primary" href={ `/save/${ save.id }` }>
                           <Visibility/>
                         </IconButton>
@@ -135,7 +135,7 @@ function SaveTable({ saves, currentUser, handleDelete, owner, actionTable }: Sav
                             <Delete/>
                           </IconButton>
                         }
-                      </Grid>
+                      </GridLegacy>
                     </TableCell>
                   </TableRow>
                 ))

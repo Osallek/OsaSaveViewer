@@ -1,5 +1,5 @@
 import {
-  Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme
+  Avatar, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme
 } from '@mui/material';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -35,7 +35,7 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.armyStats' }) }
         </Typography>
@@ -57,13 +57,13 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
             <TableBody>
               <TableRow key={ `manpower-${ country.tag }` }>
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
-                  <Grid container alignItems='center'>
+                  <GridLegacy container alignItems='center'>
                     <Avatar src='/eu4/country/manpower.png' variant='square' style={ { marginRight: 8 } }/>
                     <Typography variant='body1' color={ theme.palette.primary.contrastText }
                                 style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.manpower' }) }
                     </Typography>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
                   { formatNumber(country.maxManpower) }
@@ -74,13 +74,13 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
               </TableRow>
               <TableRow key={ `army-limit-${ country.tag }` }>
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
-                  <Grid container alignItems='center'>
+                  <GridLegacy container alignItems='center'>
                     <Avatar src='/eu4/country/land_limit.png' variant='square' style={ { marginRight: 8 } }/>
                     <Typography variant='body1' color={ theme.palette.primary.contrastText }
                                 style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.armyLimit' }) }
                     </Typography>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
                   { formatNumber(country.armyLimit) }
@@ -91,13 +91,13 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
               </TableRow>
               <TableRow key={ `land-morale-${ country.tag }` }>
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
-                  <Grid container alignItems='center'>
+                  <GridLegacy container alignItems='center'>
                     <Avatar src='/eu4/country/land_morale.png' variant='square' style={ { marginRight: 8 } }/>
                     <Typography variant='body1' color={ theme.palette.primary.contrastText }
                                 style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.armyMorale' }) }
                     </Typography>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
                   { formatNumber(country.armyMorale) }
@@ -108,13 +108,13 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
               </TableRow>
               <TableRow key={ `discipline-${ country.tag }` }>
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
-                  <Grid container alignItems='center'>
+                  <GridLegacy container alignItems='center'>
                     <Avatar src='/eu4/country/discipline.png' variant='square' style={ { marginRight: 8 } }/>
                     <Typography variant='body1' color={ theme.palette.primary.contrastText }
                                 style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.discipline' }) }
                     </Typography>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
                   { `${ formatNumber((1 + country.discipline) * 100) }%` }
@@ -125,13 +125,13 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
               </TableRow>
               <TableRow key={ `army-trad-${ country.tag }` }>
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
-                  <Grid container alignItems='center'>
+                  <GridLegacy container alignItems='center'>
                     <Avatar src='/eu4/country/land_tradition.png' variant='square' style={ { marginRight: 8 } }/>
                     <Typography variant='body1' color={ theme.palette.primary.contrastText }
                                 style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.armyTradition' }) }
                     </Typography>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
                   { `${ formatNumber(country.armyTradition ?? 0) }%` }
@@ -142,13 +142,13 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
               </TableRow>
               <TableRow key={ `prof-${ country.tag }` }>
                 <TableCell style={ { backgroundColor: theme.palette.primary.light, borderBottom: 'none' } }>
-                  <Grid container alignItems='center'>
+                  <GridLegacy container alignItems='center'>
                     <Avatar src='/eu4/country/professionalism.png' variant='square' style={ { marginRight: 8 } }/>
                     <Typography variant='body1' color={ theme.palette.primary.contrastText }
                                 style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.armyProfessionalism' }) }
                     </Typography>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right'
                            style={ { borderRight: '1px solid rgba(224, 224, 224, 1)', borderBottom: 'none' } }>
@@ -161,8 +161,8 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: 8 } }>
+      </GridLegacy>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: 8 } }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.navyStats' }) }
         </Typography>
@@ -184,13 +184,13 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
             <TableBody>
               <TableRow key={ `sailors-${ country.tag }` }>
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
-                  <Grid container alignItems='center'>
+                  <GridLegacy container alignItems='center'>
                     <Avatar src='/eu4/country/sailors.png' variant='square' style={ { marginRight: 8 } }/>
                     <Typography variant='body1' color={ theme.palette.primary.contrastText }
                                 style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.sailors' }) }
                     </Typography>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
                   { formatNumber(country.maxSailors / 1000) }
@@ -201,13 +201,13 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
               </TableRow>
               <TableRow key={ `naval-limit-${ country.tag }` }>
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
-                  <Grid container alignItems='center'>
+                  <GridLegacy container alignItems='center'>
                     <Avatar src='/eu4/country/naval_limit.png' variant='square' style={ { marginRight: 8 } }/>
                     <Typography variant='body1' color={ theme.palette.primary.contrastText }
                                 style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.navalLimit' }) }
                     </Typography>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
                   { formatNumber(country.navalLimit) }
@@ -218,13 +218,13 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
               </TableRow>
               <TableRow key={ `naval-morale-${ country.tag }` }>
                 <TableCell style={ { backgroundColor: theme.palette.primary.light } }>
-                  <Grid container alignItems='center'>
+                  <GridLegacy container alignItems='center'>
                     <Avatar src='/eu4/country/naval_morale.png' variant='square' style={ { marginRight: 8 } }/>
                     <Typography variant='body1' color={ theme.palette.primary.contrastText }
                                 style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.navalMorale' }) }
                     </Typography>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
                   { formatNumber(country.navalMorale ?? 0) }
@@ -235,13 +235,13 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
               </TableRow>
               <TableRow key={ `naval-trad-${ country.tag }` }>
                 <TableCell style={ { backgroundColor: theme.palette.primary.light, borderBottom: 'none' } }>
-                  <Grid container alignItems='center'>
+                  <GridLegacy container alignItems='center'>
                     <Avatar src='/eu4/country/naval_tradition.png' variant='square' style={ { marginRight: 8 } }/>
                     <Typography variant='body1' color={ theme.palette.primary.contrastText }
                                 style={ { fontWeight: 'bold' } }>
                       { intl.formatMessage({ id: 'country.navalTradition' }) }
                     </Typography>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right'
                            style={ { borderRight: '1px solid rgba(224, 224, 224, 1)', borderBottom: 'none' } }>
@@ -254,7 +254,7 @@ function CountryMilitaryTab({ country, save }: CountryMilitaryTabProps) {
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
+      </GridLegacy>
     </>
   )
 }

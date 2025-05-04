@@ -5,7 +5,7 @@ import {
   Card,
   CardContent,
   ClickAwayListener,
-  Grid,
+  GridLegacy,
   IconButton,
   Paper,
   Popper,
@@ -183,7 +183,7 @@ function getInfoColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): 
 
         if (h.owner) {
           return (
-            <Grid container alignItems='center' flexWrap='nowrap'>
+            <GridLegacy container alignItems='center' flexWrap='nowrap'>
               <Avatar src={ getCountryFlag(save, h.owner) } variant='square' component={ Paper }/>
               <Typography variant='body1' component='span' style={ {
                 marginLeft: 8,
@@ -193,7 +193,7 @@ function getInfoColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): 
               } }>
                 { getCountryName(save, h.owner) }
               </Typography>
-            </Grid>
+            </GridLegacy>
           );
         } else {
           return (<></>);
@@ -215,12 +215,12 @@ function getInfoColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): 
 
         if (h.religion) {
           return (
-            <Grid container alignItems='center' flexWrap='nowrap'>
+            <GridLegacy container alignItems='center' flexWrap='nowrap'>
               <Avatar src={ getReligionImage(save, h.religion) } variant='square'/>
               <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                 { getReligionName(save, h.religion) }
               </Typography>
-            </Grid>
+            </GridLegacy>
           );
         } else {
           return (<></>);
@@ -258,12 +258,12 @@ function getInfoColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): 
 
         if (h.tradeGood) {
           return (
-            <Grid container alignItems='center' flexWrap='nowrap'>
+            <GridLegacy container alignItems='center' flexWrap='nowrap'>
               <Avatar src={ getGoodImage(save, h.tradeGood) } variant='square'/>
               <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                 { getGoodName(save, h.tradeGood) }
               </Typography>
-            </Grid>
+            </GridLegacy>
           );
         } else {
           return (<></>);
@@ -278,7 +278,7 @@ function getInfoColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): 
       label: intl.formatMessage({ id: 'province.buildings' }),
       minWidth: 150,
       value: province => (
-        <Grid container alignItems='center'>
+        <GridLegacy container alignItems='center'>
           {
             province.buildings &&
             province.buildings.map(value => getBuilding(save, value))
@@ -290,7 +290,7 @@ function getInfoColumns(save: MapSave, columns?: Array<HTMLDivElement | null>): 
                 </Tooltip>
               ))
           }
-        </Grid>
+        </GridLegacy>
       ),
       comparatorValue: province => province.buildings ? province.buildings.length : 0,
       filterValues: Array.from(new Set<string>(
@@ -542,7 +542,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
                     key={ column.id }
                     style={ { minWidth: column.minWidth, backgroundColor: theme.palette.primary.light } }
                   >
-                    <Grid container alignItems='center' ref={ el => columnsRefs.current[index] = el }
+                    <GridLegacy container alignItems='center' ref={ el => columnsRefs.current[index] = el }
                           style={ { flexFlow: 'nowrap' } }>
                       <IconButton
                         onClick={ (e) => {
@@ -569,7 +569,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
                           { column.label }
                         </Typography>
                       </TableSortLabel>
-                    </Grid>
+                    </GridLegacy>
                   </TableCell>
                 )) }
               </TableRow>

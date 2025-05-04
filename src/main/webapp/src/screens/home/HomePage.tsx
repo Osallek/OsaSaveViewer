@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardMedia,
   CircularProgress,
-  Grid,
+  GridLegacy,
   List,
   ListItem,
   Toolbar,
@@ -50,13 +50,13 @@ function HomePage() {
     <>
       <AppBar sx={ { position: 'relative' } }>
         <Toolbar style={ { justifyContent: 'center' } }>
-          <Grid container item alignItems='center' xs={ 12 } xl={ 10 }>
+          <GridLegacy container item alignItems='center' xs={ 12 } xl={ 10 }>
             <Avatar src={ '/favicon.ico' } alt={ intl.formatMessage({ id: 'common.name' }) } variant='square'/>
             <Typography variant='h6' component='div' style={ { marginLeft: 8 } }>
               { intl.formatMessage({ id: 'common.name' }) }
             </Typography>
             <SteamLogin/>
-          </Grid>
+          </GridLegacy>
         </Toolbar>
       </AppBar>
       { loadingSaves ?
@@ -67,9 +67,9 @@ function HomePage() {
         )
         :
         (
-          <Grid container justifyContent='center' style={ { padding: 24 } }>
-            <Grid container item xs={ 12 } xl={ 10 }>
-              <Grid container item style={ { marginBottom: 16 } }>
+          <GridLegacy container justifyContent='center' style={ { padding: 24 } }>
+            <GridLegacy container item xs={ 12 } xl={ 10 }>
+              <GridLegacy container item style={ { marginBottom: 16 } }>
                 <Card style={ { width: '100%' } }>
                   <CardHeader title={ intl.formatMessage({ id: 'home.howTo' }) }
                               titleTypographyProps={ { variant: 'h4' } }
@@ -78,8 +78,8 @@ function HomePage() {
                                 color: theme.palette.primary.contrastText
                               } }/>
                   <CardContent>
-                    <Grid container>
-                      <Grid container item flexDirection='column' xs={ 12 } lg={ 6 }>
+                    <GridLegacy container>
+                      <GridLegacy container item flexDirection='column' xs={ 12 } lg={ 6 }>
                         <Typography gutterBottom variant='h5' component='div'>
                           { intl.formatMessage({ id: 'home.required' }) }
                         </Typography>
@@ -121,23 +121,23 @@ function HomePage() {
                         <Typography gutterBottom variant='body1' component='div'>
                           { intl.formatMessage({ id: 'home.editor.1' }) }
                         </Typography>
-                      </Grid>
-                      <Grid container item justifyContent='center' xs={ 12 } lg={ 6 }>
+                      </GridLegacy>
+                      <GridLegacy container item justifyContent='center' xs={ 12 } lg={ 6 }>
                         <CardMedia component='img' image={ `/extractor_${ intl.locale }.png` } alt='Extractor'
                                    style={ { maxWidth: 600 } }/>
-                      </Grid>
-                    </Grid>
+                      </GridLegacy>
+                    </GridLegacy>
                   </CardContent>
                 </Card>
-              </Grid>
-              <Grid container item>
+              </GridLegacy>
+              <GridLegacy container item>
                 <Typography variant='h4' style={ { margin: 8 } }>
                   { intl.formatMessage({ id: 'home.recent' }) }
                 </Typography>
                 <SaveTable saves={ saves } currentUser={ user?.id } owner={ true }/>
-              </Grid>
-            </Grid>
-          </Grid>
+              </GridLegacy>
+            </GridLegacy>
+          </GridLegacy>
         )
       }
     </>

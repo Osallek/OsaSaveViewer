@@ -1,4 +1,4 @@
-import { CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { CircularProgress, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Legend, Pie, PieChart, Sector } from 'recharts';
@@ -89,11 +89,11 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `grid-incomevsexpense-${ country.tag }` }>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `grid-incomevsexpense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.MANA_SPENT' }) }
         </Typography>
-        <Grid container style={ { width: '100%', justifyContent: 'center' } }>
+        <GridLegacy container style={ { width: '100%', justifyContent: 'center' } }>
           <PieChart width={ 550 } height={ 500 }>
             <Legend verticalAlign="top" height={ 36 } content={
               <Typography variant='h6'>
@@ -160,7 +160,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
               )) }
             </Pie>
           </PieChart>
-        </Grid>
+        </GridLegacy>
         <TableContainer component={ Paper } style={ { borderRadius: 0, width: 'auto' } }>
           <Table>
             <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>
@@ -323,7 +323,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
+      </GridLegacy>
     </>
   )
 }

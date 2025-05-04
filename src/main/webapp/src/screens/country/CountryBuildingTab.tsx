@@ -1,4 +1,4 @@
-import { Avatar, CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Avatar, CircularProgress, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { green } from '@mui/material/colors';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -38,7 +38,7 @@ function CountryBuildingTab({ country, save }: CountryBuildingTabProps) {
   }, [ranks]);
 
   return (
-    <Grid container justifyContent='center' alignItems='center' style={ { width: '100%', minHeight: '100%' } } key={ `grid-buildings-${ country.tag }` }>
+    <GridLegacy container justifyContent='center' alignItems='center' style={ { width: '100%', minHeight: '100%' } } key={ `grid-buildings-${ country.tag }` }>
       {
         buildings.length > 0 &&
           <BarChart
@@ -81,12 +81,12 @@ function CountryBuildingTab({ country, save }: CountryBuildingTabProps) {
             { buildings.map((value, index) => (
               <TableRow key={ `${ country }-building-${ value.type }` } style={ { height: 73 } }>
                 <TableCell>
-                  <Grid container item alignItems='center'>
+                  <GridLegacy container item alignItems='center'>
                     <Avatar src={ getBuildingImage(save, value.type) } variant='square'/>
                     <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                       { value.name }
                     </Typography>
-                  </Grid>
+                  </GridLegacy>
                 </TableCell>
                 <TableCell align='right'>{ formatNumber(value.value) }</TableCell>
                 <TableCell align='right'>
@@ -110,7 +110,7 @@ function CountryBuildingTab({ country, save }: CountryBuildingTabProps) {
           </TableBody>
         </Table>
       </TableContainer>
-    </Grid>
+    </GridLegacy>
   )
 }
 

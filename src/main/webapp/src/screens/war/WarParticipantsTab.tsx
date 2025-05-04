@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { GridLegacy, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
@@ -58,8 +58,8 @@ function WarParticipantsTab({ war, save }: WarParticipantsTabProps) {
   }, [war, save]);
 
   return (
-    <Grid container item xs={ 12 } md={ 10 } lg={ 8 } xl={ 8 } style={ { width: 'fit-content', justifyContent: 'space-between' } }>
-      <Grid container item xs={ 6 } style={ { flexDirection: 'column', alignContent: 'space-between' } } key='participation-attackers'>
+    <GridLegacy container item xs={ 12 } md={ 10 } lg={ 8 } xl={ 8 } style={ { width: 'fit-content', justifyContent: 'space-between' } }>
+      <GridLegacy container item xs={ 6 } style={ { flexDirection: 'column', alignContent: 'space-between' } } key='participation-attackers'>
         <Typography variant='h6' style={ { textAlign: 'center' } }>
           { intl.formatMessage({ id: 'war.attackers' }) }
         </Typography>
@@ -83,8 +83,8 @@ function WarParticipantsTab({ war, save }: WarParticipantsTabProps) {
             )) }
           </Pie>
         </PieChart>
-      </Grid>
-      <Grid container item xs={ 6 } style={ { flexDirection: 'column', alignContent: 'space-between' } } key='participation-defenders'>
+      </GridLegacy>
+      <GridLegacy container item xs={ 6 } style={ { flexDirection: 'column', alignContent: 'space-between' } } key='participation-defenders'>
         <Typography variant='h6' style={ { textAlign: 'center' } }>
           { intl.formatMessage({ id: 'war.defenders' }) }
         </Typography>
@@ -108,8 +108,8 @@ function WarParticipantsTab({ war, save }: WarParticipantsTabProps) {
             )) }
           </Pie>
         </PieChart>
-      </Grid>
-    </Grid>
+      </GridLegacy>
+    </GridLegacy>
   )
 }
 

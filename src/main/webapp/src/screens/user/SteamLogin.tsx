@@ -1,4 +1,4 @@
-import { Avatar, Grid, Menu, MenuItem, Typography, useTheme } from '@mui/material';
+import { Avatar, GridLegacy, Menu, MenuItem, Typography, useTheme } from '@mui/material';
 import { api } from 'api';
 import { UserContext, UserContextProps } from 'App';
 import { intl } from 'index';
@@ -24,7 +24,7 @@ function SteamLogin() {
   }
 
   return (
-    <Grid container alignItems='center' justifyContent='center' onMouseEnter={ event => setAnchorEl(event.currentTarget) } onMouseLeave={ handleClose }
+    <GridLegacy container alignItems='center' justifyContent='center' onMouseEnter={ event => setAnchorEl(event.currentTarget) } onMouseLeave={ handleClose }
           style={ { width: 'auto', marginLeft: 'auto' } }>
       {
         user === undefined ?
@@ -59,7 +59,7 @@ function SteamLogin() {
             </Typography>
           </>
       }
-    </Grid>
+    </GridLegacy>
   )
 }
 

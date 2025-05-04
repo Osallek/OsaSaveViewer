@@ -1,4 +1,4 @@
-import { Avatar, Grid, Typography } from '@mui/material';
+import { Avatar, GridLegacy, Typography } from '@mui/material';
 import React from 'react';
 import { Modifiers, ModifierType, Wiki } from 'types/api.types';
 import { getLName } from 'utils/data.utils';
@@ -6,15 +6,15 @@ import { formatNumberPlus, stringLocalisedComparator } from 'utils/format.utils'
 import { getIdeaGroupImage, getModifierImage } from 'utils/wiki.utils';
 
 export const modifiersGrid = (modifiers: Modifiers, wiki: Wiki) => {
-  return <Grid container>
+  return <GridLegacy container>
     {
       modifiers.enables &&
       modifiers.enables.map(enable => (
-        <Grid container key={ `enable-${ enable.id }` }>
+        <GridLegacy container key={ `enable-${ enable.id }` }>
           <Typography variant='body1'>
             { getLName(enable) }
           </Typography>
-        </Grid>
+        </GridLegacy>
       ))
     }
     {
@@ -33,7 +33,7 @@ export const modifiersGrid = (modifiers: Modifiers, wiki: Wiki) => {
               }
 
               return (
-                <Grid container alignItems='center'  key={ `modifier-${ name }` }>
+                <GridLegacy container alignItems='center'  key={ `modifier-${ name }` }>
                   <Avatar src={ getModifierImage(modifier) } variant='square'
                           style={ { display: 'inline-block' } }/>
                   <Typography component='div' variant='body1'>
@@ -42,9 +42,9 @@ export const modifiersGrid = (modifiers: Modifiers, wiki: Wiki) => {
                       { v }
                     </Typography>
                   </Typography>
-                </Grid>
+                </GridLegacy>
               )
             })
     }
-  </Grid>;
+  </GridLegacy>;
 }

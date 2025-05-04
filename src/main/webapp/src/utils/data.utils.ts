@@ -1,3 +1,4 @@
+import { env } from 'env/env';
 import * as ENV from 'env/env';
 import { eu4Locale } from 'index';
 import { IdLocalised, Localised, Localization } from 'types/api.types';
@@ -38,11 +39,11 @@ export function getName(localisations: Record<Localization, string>): string | u
 }
 
 export function getDataUrl(path: string): string {
-  return `${ ENV.DATA_BASE_URL }/${ path }`;
+  return `${ env.VITE_DATA_BASE_URL }/${ path }`;
 }
 
 export function getWikiDataUrl(version: string, path: string): string {
-  return `${ ENV.WIKI_BASE_URL }/${ version }/${ path }`;
+  return `${ env.VITE_WIKI_BASE_URL }/${ version }/${ path }`;
 }
 
 export function getFlagUrl(key: string | undefined): string {

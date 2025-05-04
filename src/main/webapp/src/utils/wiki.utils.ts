@@ -1,13 +1,12 @@
-import * as ENV from 'env/env';
+import { env } from 'env/env';
 import {
   Advisor, Age, AgeAbility, AgeObjective, Area, Building, ColonialRegion, Continent, Country, Disaster, Dlc, Idea,
-  IdeaGroup,
-  IdExampleLocalised, IdImageLocalised, IdLocalised, Institution, Localised, Mission, Region, Religion, SuperRegion,
-  TradeGood, Wiki
+  IdeaGroup, IdExampleLocalised, IdImageLocalised, IdLocalised, Institution, Localised, Mission, Region, Religion,
+  SuperRegion, TradeGood, Wiki
 } from 'types/api.types';
 
 export function getWikiImageUrl(path: string): string {
-  return `${ ENV.WIKI_BASE_URL }/images/${ path }`;
+  return `${ env.VITE_WIKI_BASE_URL }/images/${ path }`;
 }
 
 export function getFlagUrl(key: string | undefined): string {

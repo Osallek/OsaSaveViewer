@@ -1,6 +1,6 @@
-import { Avatar, Grid, Paper, styled, Theme, Typography, useTheme } from '@mui/material';
+import { Avatar, GridLegacy, Paper, styled, Theme, Typography, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
-import React, { useState } from 'react';
+import React, { JSX, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { IntlShape } from 'react-intl/src/types';
 import { Link } from 'react-router-dom';
@@ -32,7 +32,7 @@ interface DefaultNodeProps extends ConditionLocalisedLinkProps {
 const innerDefaultNode = (props: DefaultNodeProps) => {
   const {
     intl, theme, condition, negate, suffix, wikiVersion, colons = true, value, type, link = true, avatar, sx, grid,
-    avatarWidth, ...others
+    avatarWidth, inlineSuffix, ...others
   } = props;
 
   return (
@@ -104,7 +104,7 @@ function ConditionLocalisedLinkChildren({
              cursor: link ? 'pointer' : undefined,
              width: 'fit-content'
            } }>
-      <Grid container item alignItems='center' sx={ { width: 'fit-content' } }>
+      <GridLegacy container item alignItems='center' sx={ { width: 'fit-content' } }>
         {
           avatar &&
           <Avatar src={ avatar } variant='square'
@@ -124,7 +124,7 @@ function ConditionLocalisedLinkChildren({
             { ` ${ record && record[value] ? getLName(record[value]) : value }${ inlineSuffix ?? '' }` }
           </Typography>
         }
-      </Grid>
+      </GridLegacy>
     </Paper>
   )
 }
@@ -137,9 +137,9 @@ function ConditionLocalisedLink(props: ConditionLocalisedLinkProps): JSX.Element
   return (
     grid ?
       (
-        <Grid container item alignItems='center' key={ `tooltip-total-${ value }` } sx={ { ...sx } }>
+        <GridLegacy container item alignItems='center' key={ `tooltip-total-${ value }` } sx={ { ...sx } }>
           { innerDefaultNode({ theme, intl, ...props }) }
-        </Grid>
+        </GridLegacy>
       )
       :
       (

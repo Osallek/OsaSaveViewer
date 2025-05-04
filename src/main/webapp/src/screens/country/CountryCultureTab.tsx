@@ -1,4 +1,4 @@
-import { CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { CircularProgress, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
@@ -89,7 +89,7 @@ function CountryCultureTab({ country, save }: CountryCultureTabProps) {
   }, [ranks, devRanks]);
 
   return (
-    <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `cultures-${ country.tag }` }>
+    <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `cultures-${ country.tag }` }>
       <PieChart width={ 500 } height={ 500 }>
         <Pie
           activeIndex={ activeIndex }
@@ -166,7 +166,7 @@ function CountryCultureTab({ country, save }: CountryCultureTabProps) {
           </TableBody>
         </Table>
       </TableContainer>
-    </Grid>
+    </GridLegacy>
   )
 }
 

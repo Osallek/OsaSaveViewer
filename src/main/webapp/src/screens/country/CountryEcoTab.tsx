@@ -1,5 +1,5 @@
 import {
-  Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography
+  GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography
 } from '@mui/material';
 import { green, red } from '@mui/material/colors';
 import React from 'react';
@@ -22,7 +22,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
             key={ `grid-incomevsexpense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.incomeVsExpense' }) }
@@ -68,8 +68,8 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
             } }/>
           </Bar>
         </BarChart>
-      </Grid>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
+      </GridLegacy>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
             key={ `grid-income-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.income' }) }
@@ -163,8 +163,8 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
+      </GridLegacy>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
             key={ `grid-expense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.expense' }) }
@@ -254,8 +254,8 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: 8 } }
+      </GridLegacy>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: 8 } }
             key={ `grid-totalexpense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.totalExpense' }) }
@@ -347,7 +347,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
+      </GridLegacy>
     </>
   )
 }

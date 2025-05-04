@@ -1,4 +1,4 @@
-import { Avatar, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
+import { Avatar, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { SaveCountry, SaveLeader } from 'types/api.types';
@@ -23,7 +23,7 @@ function CountryLeaderTab({ country, save }: CountryLeaderTabProps) {
 
   return (
     <>
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
         <TableContainer component={ Paper } style={ { borderRadius: 0, width: 'auto', minWidth: '50%', marginTop: 8 } }>
           <Table>
             <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>
@@ -71,7 +71,7 @@ function CountryLeaderTab({ country, save }: CountryLeaderTabProps) {
                           { formatDuration(leader.duration) }
                         </TableCell>
                         <TableCell>
-                          <Grid container>
+                          <GridLegacy container>
                             { leader.personality
                               && (
                                 <Tooltip key={ `${ country.tag }-leader-${ i }-${ leader.personality }` }
@@ -81,7 +81,7 @@ function CountryLeaderTab({ country, save }: CountryLeaderTabProps) {
                                           style={ { width: 28, height: 28 } }/>
                                 </Tooltip>
                               ) }
-                          </Grid>
+                          </GridLegacy>
                         </TableCell>
                         <TableCell>
                           { `${ leader.shock } / ${ leader.fire } / ${ leader.manuever } / ${ leader.siege } (${ leader.shock + leader.fire + leader.manuever + leader.siege })` }
@@ -111,7 +111,7 @@ function CountryLeaderTab({ country, save }: CountryLeaderTabProps) {
             </TableBody>
           </Table>
         </TableContainer>
-      </Grid>
+      </GridLegacy>
     </>
   )
 }

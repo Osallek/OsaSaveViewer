@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { GridLegacy, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -24,11 +24,11 @@ function GraphTable({ save, visible }: GraphTableProps) {
 
   return (
     visible ?
-      <Grid container style={ { alignItems: 'center', justifyContent: 'center', padding: 24 } }>
-        <Grid container item xs={ 12 } lg={ 10 } xl={ 8 }>
+      <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', padding: 24 } }>
+        <GridLegacy container item xs={ 12 } lg={ 10 } xl={ 8 }>
           <AutoSizer disableHeight>
             { ({ height, width }) => (
-              <Grid container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } }>
+              <GridLegacy container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } }>
                 {
                   charts.map((chart, i) => (
                     <React.Fragment key={ `rank-${ previousCharts[i].key }` }>
@@ -60,11 +60,11 @@ function GraphTable({ save, visible }: GraphTableProps) {
                     </React.Fragment>
                   ))
                 }
-              </Grid>
+              </GridLegacy>
             ) }
           </AutoSizer>
-        </Grid>
-      </Grid>
+        </GridLegacy>
+      </GridLegacy>
       :
       <></>
   )

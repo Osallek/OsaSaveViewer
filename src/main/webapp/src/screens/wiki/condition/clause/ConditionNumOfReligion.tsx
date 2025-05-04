@@ -1,4 +1,4 @@
-import { Grid, Typography, useTheme } from '@mui/material';
+import { GridLegacy, Typography, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -32,7 +32,7 @@ function ConditionNumOfReligion({ wiki, wikiVersion, condition, clause, negate }
 
   const religion = value !== undefined && name !== undefined && getReligion(wiki, name);
   return (
-    <Grid container item alignItems='center'>
+    <GridLegacy container item alignItems='center'>
       <ConditionsNumber condition={ clause } negate={ negate }
                         value={ value ? (Number.isInteger(Number(value)) ? Number(value) : Number(value) * 100) : undefined }
                         sx={ { width: undefined } } grid={ false } suffix={ (value && Number.isInteger(Number(value))) ? undefined : '%' }/>
@@ -41,7 +41,7 @@ function ConditionNumOfReligion({ wiki, wikiVersion, condition, clause, negate }
       </Typography>
       <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } grid={ false } record={ wiki.religions } value={ name } type={ wikiTypes.religions }
                               avatar={ religion ? getReligionImage(religion) : undefined } colons={ false }/>
-    </Grid>
+    </GridLegacy>
   )
 }
 

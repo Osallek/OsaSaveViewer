@@ -1,5 +1,5 @@
 import { Close, KeyboardArrowDown } from '@mui/icons-material';
-import { AppBar, Button, Grid, IconButton, Menu, MenuItem, Toolbar, Typography, useTheme } from '@mui/material';
+import { AppBar, Button, GridLegacy, IconButton, Menu, MenuItem, Toolbar, Typography, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -93,7 +93,7 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
     <>
       <AppBar style={ { position: 'relative' } }>
         <Toolbar>
-          <Grid container alignItems='center'>
+          <GridLegacy container alignItems='center'>
             <IconButton
               edge='start'
               onClick={ onClose }
@@ -257,7 +257,7 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
                 </>
               )
             }
-          </Grid>
+          </GridLegacy>
         </Toolbar>
       </AppBar>
       <CountryTable save={ save } type={ countriesTable } visible={ Views.COUNTRIES === view }/>

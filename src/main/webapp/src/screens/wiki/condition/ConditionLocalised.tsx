@@ -1,4 +1,4 @@
-import { Avatar, Grid, Theme, Typography, useTheme } from '@mui/material';
+import { Avatar, GridLegacy, Theme, Typography, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -84,9 +84,9 @@ const defaultNode = (props: DefaultNodeProps) => {
   return (
     grid ?
       (
-        <Grid container item sx={ { ...sx } }>
+        <GridLegacy container item sx={ { ...sx } }>
           { innerDefaultNode({ ...props }) }
-        </Grid>
+        </GridLegacy>
       )
       :
       (
@@ -125,39 +125,39 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
   const building = getBuilding(wiki, condition.toLowerCase());
   if (building !== null) {
     return (
-      <Grid container item alignItems='center'>
+      <GridLegacy container item alignItems='center'>
         <ConditionsNumber condition={ 'building' } negate={ negate } value={ value ? Number(value) : undefined }
                           sx={ { width: undefined } } grid={ false }/>
         <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } grid={ false }
                                 record={ wiki.buildings } value={ condition } type={ wikiTypes.buildings }
                                 avatar={ getBuildingImage(building) } colons={ false }/>
-      </Grid>
+      </GridLegacy>
     );
   }
 
   const ideaGroup = getIdeaGroup(wiki, condition.toLowerCase());
   if (ideaGroup !== null) {
     return (
-      <Grid container item alignItems='center'>
+      <GridLegacy container item alignItems='center'>
         <ConditionsNumber condition={ 'ideaGroup' } negate={ negate } value={ value ? Number(value) : undefined }
                           sx={ { width: undefined } } grid={ false }/>
         <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } grid={ false }
                                 record={ wiki.ideaGroups } value={ condition } type={ wikiTypes.ideaGroups }
                                 avatar={ getIdeaGroupImage(ideaGroup) } colons={ false }/>
-      </Grid>
+      </GridLegacy>
     );
   }
 
   const tradeGood = getTradeGood(wiki, condition.toLowerCase());
   if (tradeGood !== null) {
     return (
-      <Grid container item alignItems='center'>
+      <GridLegacy container item alignItems='center'>
         <ConditionsNumber condition={ 'tradeGood' } negate={ negate } value={ value ? Number(value) : undefined }
                           sx={ { width: undefined } } grid={ false }/>
         <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } grid={ false }
                                 record={ wiki.tradeGoods } value={ condition } type={ wikiTypes.tradeGoods }
                                 avatar={ getTradeGoodImage(tradeGood) } colons={ false }/>
-      </Grid>
+      </GridLegacy>
     );
   }
 
@@ -334,7 +334,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     }
     case 'has_global_flag': {
       return (
-        <Grid container item>
+        <GridLegacy container item>
           <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } }
                       key={ `title-${ condition }-${ value }` }>
             { intl.formatMessage({ id: `wiki.condition.${ condition }${ negate ? '.not' : '' }` }) }
@@ -352,7 +352,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
                       key={ `suffix-${ condition }-${ value }` }>
             { intl.formatMessage({ id: `wiki.condition.active${ negate ? '.not' : '' }` }) }
           </Typography>
-        </Grid>
+        </GridLegacy>
       )
     }
     case 'num_of_ports':
@@ -683,7 +683,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     }
     case 'monthly_income':
       return (
-        <Grid container item alignItems='center'>
+        <GridLegacy container item alignItems='center'>
           <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText, ...others.sx } } { ...others }>
             { `${ intl.formatMessage(
               { id: `wiki.condition.${ condition + (negate ? '.not' : '') }` }) }` }
@@ -709,7 +709,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
             </>
           }
           <Avatar src={ '/eu4/country/income.png' } variant='square' sx={ { width: 36, height: 36, ml: 0.25 } }/>
-        </Grid>
+        </GridLegacy>
       )
     case 'is_strongest_trade_power':
       if ('root' === value?.toLowerCase()) {

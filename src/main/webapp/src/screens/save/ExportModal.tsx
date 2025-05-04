@@ -1,5 +1,5 @@
 import {
-  Autocomplete, Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, FormControl, Grid, InputLabel, MenuItem, Modal, Select, TextField, Typography,
+  Autocomplete, Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, FormControl, GridLegacy, InputLabel, MenuItem, Modal, Select, TextField, Typography,
   useTheme
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -36,14 +36,14 @@ function ExportModal({ save, open, onClose, onExport }: CompareTableProps) {
 
   return (
     <Modal open={ open } onClose={ onClose }>
-      <Grid container item xs={ 10 } lg={ 6 } xl={ 4 }
+      <GridLegacy container item xs={ 10 } lg={ 6 } xl={ 4 }
             style={ { position: 'absolute', top: '25%', left: '50%', transform: 'translate(-50%, -50%)' } }>
         <Card style={ { backgroundColor: theme.palette.primary.light, width: '100%' } }>
           <CardHeader title={ intl.formatMessage({ id: 'common.export' }) }
                       titleTypographyProps={ { color: theme.palette.primary.contrastText } }
                       style={ { backgroundColor: theme.palette.primary.dark, borderTopLeftRadius: 4, borderTopRightRadius: 4 } }/>
           <CardContent>
-            <Grid container rowGap={ 2 }>
+            <GridLegacy container rowGap={ 2 }>
               <FormControl fullWidth>
                 <InputLabel id="mm">
                   <span style={ { color: theme.palette.primary.contrastText } }>
@@ -90,12 +90,12 @@ function ExportModal({ save, open, onClose, onExport }: CompareTableProps) {
                 renderOption={ (props, option) => {
                   return (
                     <li { ...props }>
-                      <Grid container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
+                      <GridLegacy container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
                         <Avatar src={ getCountrysFlag(option) } variant='square' style={ { display: 'inline-block' } }/>
                         <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                           { getCountrysName(option) }
                         </Typography>
-                      </Grid>
+                      </GridLegacy>
                     </li>
                   )
                 } }
@@ -110,7 +110,7 @@ function ExportModal({ save, open, onClose, onExport }: CompareTableProps) {
                   ))
                 }
               />
-            </Grid>
+            </GridLegacy>
           </CardContent>
           <CardActions style={ { justifyContent: 'center' } }>
             <Button variant='contained' color='primary' onClick={ doExport }>
@@ -118,7 +118,7 @@ function ExportModal({ save, open, onClose, onExport }: CompareTableProps) {
             </Button>
           </CardActions>
         </Card>
-      </Grid>
+      </GridLegacy>
     </Modal>
   )
 }

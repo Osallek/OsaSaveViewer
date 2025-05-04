@@ -1,4 +1,4 @@
-import { Grid, Typography, useTheme } from '@mui/material';
+import { GridLegacy, Typography, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -32,7 +32,7 @@ function ConditionNumEstatePrivileges({ wiki, wikiVersion, condition, clause, ne
 
   const estate = value !== undefined && name !== undefined && getEstate(wiki, name);
   return (
-    <Grid container item alignItems='center'>
+    <GridLegacy container item alignItems='center'>
       <ConditionsNumber condition={ clause } negate={ negate } value={ value ? Number(value) : undefined }
                         sx={ { width: undefined } } grid={ false }/>
       <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText, ml: 0.5 } } key={ `${ condition }-${ value }` }>
@@ -40,7 +40,7 @@ function ConditionNumEstatePrivileges({ wiki, wikiVersion, condition, clause, ne
       </Typography>
       <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } grid={ false } record={ wiki.estates } value={ name } type={ wikiTypes.estates }
                               avatar={ estate ? getEstateImage(estate) : undefined } colons={ false }/>
-    </Grid>
+    </GridLegacy>
   )
 }
 

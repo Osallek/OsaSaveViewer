@@ -1,5 +1,5 @@
 import { Home, Map } from '@mui/icons-material';
-import { AppBar, Backdrop, CircularProgress, Grid, Tab, Tabs, Toolbar, Typography } from '@mui/material';
+import { AppBar, Backdrop, CircularProgress, GridLegacy, Tab, Tabs, Toolbar, Typography } from '@mui/material';
 import { api } from 'api';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -81,7 +81,7 @@ function WarPage() {
     <>
       { (error || (!loading && (war === undefined || save === undefined))) ?
         (
-          <Grid container alignItems='center' justifyContent='center' flexDirection='column'
+          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
                 style={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
             <Typography variant='h2' color={ theme.palette.primary.contrastText }>
               404
@@ -92,7 +92,7 @@ function WarPage() {
             <Link to='/'>
               <Home fontSize='large' color='primary'/>
             </Link>
-          </Grid>
+          </GridLegacy>
         )
         :
         (loading ?
@@ -107,24 +107,24 @@ function WarPage() {
               <>
                 <AppBar sx={ { position: 'relative' } }>
                   <Toolbar>
-                    <Grid container alignItems='center'>
+                    <GridLegacy container alignItems='center'>
                       <Link to={ `/save/${ saveId }` }>
                         <Map color='secondary'/>
                       </Link>
                       <Typography sx={ { ml: 2, mr: 2 } } variant='h6' component='div'>
                         { `${ save.name } (${ formatDate(save.date) })` }
                       </Typography>
-                    </Grid>
+                    </GridLegacy>
                   </Toolbar>
                   <Toolbar style={ { backgroundColor: theme.palette.primary.dark } }>
-                    <Grid container alignItems='center'>
+                    <GridLegacy container alignItems='center'>
                       <Typography variant='h6' color={ theme.palette.primary.contrastText }>
                         { war.name }
                       </Typography>
-                    </Grid>
+                    </GridLegacy>
                   </Toolbar>
                 </AppBar>
-                <Grid item alignItems='center' justifyContent='center' xs={ 12 }>
+                <GridLegacy item alignItems='center' justifyContent='center' xs={ 12 }>
                   <Tabs
                     value={ activeTab }
                     onChange={ (event, value) => handleTab(value) }
@@ -132,16 +132,16 @@ function WarPage() {
                     scrollButtons='auto'
                     style={ { marginBottom: 8 } }
                   >
-                    <Grid item style={ { flex: 1 } }/>
+                    <GridLegacy item style={ { flex: 1 } }/>
                     <Tab label={ intl.formatMessage({ id: 'war.tab.info' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'war.tab.map' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'war.tab.participants' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'war.tab.losses' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'war.tab.history' }) }/>
-                    <Grid item style={ { flex: 1 } }/>
+                    <GridLegacy item style={ { flex: 1 } }/>
                   </Tabs>
-                </Grid>
-                <Grid container alignItems='start' justifyContent='center' style={ { padding: 24 } } key={ `grid-g-${ warId }` } ref={ containerRef }>
+                </GridLegacy>
+                <GridLegacy container alignItems='start' justifyContent='center' style={ { padding: 24 } } key={ `grid-g-${ warId }` } ref={ containerRef }>
                   {
                     activeTab == 1 && <WarInfoTab war={ war } save={ save }/>
                   }
@@ -157,7 +157,7 @@ function WarPage() {
                   {
                     activeTab == 5 && <WarHistoryTab war={ war } save={ save }/>
                   }
-                </Grid>
+                </GridLegacy>
               </>
             )
         )

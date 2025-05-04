@@ -1,4 +1,4 @@
-import { Avatar, Badge, Grid, Tooltip, Typography } from '@mui/material';
+import { Avatar, Badge, GridLegacy, Tooltip, Typography } from '@mui/material';
 import { ElbowType, Enabled, GroupByType, NavigationMode, PageFitMode } from 'basicprimitives';
 import { FamConfigShape, FamDiagram } from 'basicprimitivesreact';
 import React, { useEffect, useRef, useState } from 'react';
@@ -46,7 +46,7 @@ const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
       onItemRender: ({ context }: any) => (
         <Tooltip title={ context.description ? getLName(context.description) ?? '' : '' }
                  key={ `tooltip-${ context.name }` }>
-          <Grid container alignItems='center' justifyContent='center' flexDirection='column'
+          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
                 style={ { minHeight: '100%' } }>
             <Badge color='error' variant='dot'>
               <Avatar src={ context.image } alt={ context.title }
@@ -61,7 +61,7 @@ const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
             } }>
               { context.title }
             </Typography>
-          </Grid>
+          </GridLegacy>
         </Tooltip>
       ),
     },
@@ -72,7 +72,7 @@ const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
       onItemRender: ({ context }: any) => (
         <Tooltip title={ context.description ? getLName(context.description) ?? '' : '' }
                  key={ `tooltip-${ context.name }` }>
-          <Grid container alignItems='center' justifyContent='center' flexDirection='column'
+          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
                 style={ { minHeight: '100%' } }>
             <Badge color='success' variant='dot'>
               <Avatar src={ context.image } alt={ context.title } style={ { width: 60, height: 60 } }/>
@@ -86,7 +86,7 @@ const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
                         } }>
               { context.title }
             </Typography>
-          </Grid>
+          </GridLegacy>
         </Tooltip>
       ),
     }
@@ -110,7 +110,7 @@ function CountryMissionTab({ country, save }: CountryMissionTabProps) {
   }, [country, save]);
 
   return (
-    <Grid container
+    <GridLegacy container
           style={ {
             alignItems: 'center',
             justifyContent: 'center',
@@ -121,7 +121,7 @@ function CountryMissionTab({ country, save }: CountryMissionTabProps) {
       {
         config && <FamDiagram centerOnCursor={ true } config={ config }/>
       }
-    </Grid>
+    </GridLegacy>
   )
 }
 

@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { GridLegacy, Typography } from '@mui/material';
 import { green } from '@mui/material/colors';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -78,11 +78,11 @@ function CountryHistoryTab({ country, save }: CountryHistoryTabProps) {
   }, [save]);
 
   return (
-    <Grid container style={ { alignItems: 'center', justifyContent: 'center' } }>
-      <Grid container item xs={ 12 } lg={ 10 } xl={ 8 }>
+    <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center' } }>
+      <GridLegacy container item xs={ 12 } lg={ 10 } xl={ 8 }>
         <AutoSizer disableHeight>
           { ({ height, width }) => (
-            <Grid container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } }>
+            <GridLegacy container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } }>
               <Typography variant='h6' style={ { textAlign: 'center' } }>
                 { intl.formatMessage({ id: 'country.history.income' }) }
               </Typography>
@@ -196,17 +196,17 @@ function CountryHistoryTab({ country, save }: CountryHistoryTabProps) {
                       <Tooltip content={ props => {
                         return props.active ? (
                           <div style={ { padding: 10, backgroundColor: 'white', border: '1px solid rgb(204, 204, 204)' } }>
-                            <Grid container flexDirection='column'>
+                            <GridLegacy container flexDirection='column'>
                               <div>
                                 { `${ props.label } : ${ props.payload ? previousCharts[i].valueMapper(props.payload[0].payload.value) : '' }` }
                               </div>
                               {
                                 country.players &&
-                                  <Grid container alignContent='center'>
+                                  <GridLegacy container alignContent='center'>
                                     { props.payload && `${ intl.formatMessage({ id: 'common.rank' }) } : ` }{ props.payload && getRankDisplay(props.payload[0].payload.rank ?? 0) }
-                                  </Grid>
+                                  </GridLegacy>
                               }
-                            </Grid>
+                            </GridLegacy>
                           </div>
                         ) : undefined;
                       } }/>
@@ -227,11 +227,11 @@ function CountryHistoryTab({ country, save }: CountryHistoryTabProps) {
                   </>
                 ))
               }
-            </Grid>
+            </GridLegacy>
           ) }
         </AutoSizer>
-      </Grid>
-    </Grid>
+      </GridLegacy>
+    </GridLegacy>
   )
 }
 

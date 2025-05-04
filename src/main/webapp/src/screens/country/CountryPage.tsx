@@ -1,5 +1,5 @@
 import { Home, KeyboardArrowDown, Map } from '@mui/icons-material';
-import { AppBar, Avatar, Backdrop, Button, CircularProgress, Grid, Menu, MenuItem, Tab, Tabs, Toolbar, Typography } from '@mui/material';
+import { AppBar, Avatar, Backdrop, Button, CircularProgress, GridLegacy, Menu, MenuItem, Tab, Tabs, Toolbar, Typography } from '@mui/material';
 import { api } from 'api';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -97,7 +97,7 @@ function CountryPage() {
     <>
       { (error || (!loading && (country === undefined || save === undefined))) ?
         (
-          <Grid container alignItems='center' justifyContent='center' flexDirection='column'
+          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
                 style={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
             <Typography variant='h2' color={ theme.palette.primary.contrastText }>
               404
@@ -108,7 +108,7 @@ function CountryPage() {
             <Link to='/'>
               <Home fontSize='large' color='primary'/>
             </Link>
-          </Grid>
+          </GridLegacy>
         )
         :
         (loading ?
@@ -123,7 +123,7 @@ function CountryPage() {
               <>
                 <AppBar sx={ { position: 'relative' } }>
                   <Toolbar>
-                    <Grid container alignItems='center'>
+                    <GridLegacy container alignItems='center'>
                       <Link to={ `/save/${ saveId }` }>
                         <Map color='secondary'/>
                       </Link>
@@ -162,18 +162,18 @@ function CountryPage() {
                             ))
                         }
                       </Menu>
-                    </Grid>
+                    </GridLegacy>
                   </Toolbar>
                   <Toolbar style={ { backgroundColor: theme.palette.primary.dark } }>
-                    <Grid container xs={ 12 } alignItems='center'>
+                    <GridLegacy container xs={ 12 } alignItems='center'>
                       <Avatar src={ getCountrysFlag(country) } variant='square' style={ { marginRight: 16 } }/>
                       <Typography variant='h6' color={ theme.palette.primary.contrastText }>
                         { getCountrysName(country) + (getPlayer(country) ? ` (${ getPlayer(country) })` : '') }
                       </Typography>
-                    </Grid>
+                    </GridLegacy>
                   </Toolbar>
                 </AppBar>
-                <Grid item alignItems='center' justifyContent='center' xs={ 12 }>
+                <GridLegacy item alignItems='center' justifyContent='center' xs={ 12 }>
                   <Tabs
                     value={ activeTab }
                     onChange={ (event, value) => handleTab(value) }
@@ -181,7 +181,7 @@ function CountryPage() {
                     scrollButtons='auto'
                     style={ { marginBottom: 8 } }
                   >
-                    <Grid item style={ { flex: 1 } }/>
+                    <GridLegacy item style={ { flex: 1 } }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.info' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.map' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.eco' }) }/>
@@ -197,101 +197,101 @@ function CountryPage() {
                     <Tab label={ intl.formatMessage({ id: 'country.tab.religions' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.cultures' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.history' }) }/>
-                    <Grid item style={ { flex: 1 } }/>
+                    <GridLegacy item style={ { flex: 1 } }/>
                   </Tabs>
-                </Grid>
-                <Grid container alignItems='start' justifyContent='center' style={ { padding: 24 } } key={ `grid-g-${ tag }` } ref={ containerRef }>
+                </GridLegacy>
+                <GridLegacy container alignItems='start' justifyContent='center' style={ { padding: 24 } } key={ `grid-g-${ tag }` } ref={ containerRef }>
                   {
                     activeTab == 1 &&
-                      <Grid container item display='flex' xs={ 12 } md={ 12 } lg={ 8 } xl={ 6 } key='gridInfo'>
+                      <GridLegacy container item display='flex' xs={ 12 } md={ 12 } lg={ 8 } xl={ 6 } key='gridInfo'>
                           <CountryInfoTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 2 &&
-                      <Grid container item key='gridMap'>
+                      <GridLegacy container item key='gridMap'>
                           <CountryMapTab country={ country } save={ save } containerRef={ containerRef }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 3 &&
-                      <Grid container item key='gridEco'>
+                      <GridLegacy container item key='gridEco'>
                           <CountryEcoTab country={ country }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 4 &&
-                      <Grid container key='gridEstate'>
+                      <GridLegacy container key='gridEstate'>
                           <CountryEstateTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 5 &&
-                      <Grid container key='gridDiplomacy'>
+                      <GridLegacy container key='gridDiplomacy'>
                           <CountryDiplomacyTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 6 &&
-                      <Grid container key='gridMilitary'>
+                      <GridLegacy container key='gridMilitary'>
                           <CountryMilitaryTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 7 &&
-                      <Grid container key='gridIdea'>
+                      <GridLegacy container key='gridIdea'>
                           <CountryIdeaTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 8 &&
-                      <Grid container key='gridMonarch'>
+                      <GridLegacy container key='gridMonarch'>
                           <CountryMonarchTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 9 &&
-                      <Grid container key='gridLeader'>
+                      <GridLegacy container key='gridLeader'>
                           <CountryLeaderTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 10 &&
-                      <Grid container key='gridMana'>
+                      <GridLegacy container key='gridMana'>
                           <CountryManaTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 11 &&
-                      <Grid container key='gridBuilding'>
+                      <GridLegacy container key='gridBuilding'>
                           <CountryBuildingTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 12 &&
-                      <Grid container style={ { height: '100%' } } key='gridMission'>
+                      <GridLegacy container style={ { height: '100%' } } key='gridMission'>
                           <CountryMissionTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab == 13 &&
-                      <Grid container key='grid1Religion'>
+                      <GridLegacy container key='grid1Religion'>
                           <CountryReligionTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab === 14 &&
-                      <Grid container key='gridCulture'>
+                      <GridLegacy container key='gridCulture'>
                           <CountryCultureTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
                   {
                     activeTab === 15 &&
-                      <Grid container key='gridHistory'>
+                      <GridLegacy container key='gridHistory'>
                           <CountryHistoryTab country={ country } save={ save }/>
-                      </Grid>
+                      </GridLegacy>
                   }
-                </Grid>
+                </GridLegacy>
               </>
             )
         )

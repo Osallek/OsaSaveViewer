@@ -1,5 +1,5 @@
 import { Home, KeyboardArrowDown, Map } from '@mui/icons-material';
-import { AppBar, Backdrop, Button, CircularProgress, Grid, Menu, MenuItem, Tab, Tabs, Toolbar, Typography } from '@mui/material';
+import { AppBar, Backdrop, Button, CircularProgress, GridLegacy, Menu, MenuItem, Tab, Tabs, Toolbar, Typography } from '@mui/material';
 import { api } from 'api';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -84,7 +84,7 @@ function NodePage() {
     <>
       { (error || (!loading && (node === undefined || save === undefined))) ?
         (
-          <Grid container alignItems='center' justifyContent='center' flexDirection='column'
+          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
                 style={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
             <Typography variant='h2' color={ theme.palette.primary.contrastText }>
               404
@@ -95,7 +95,7 @@ function NodePage() {
             <Link to='/'>
               <Home fontSize='large' color='primary'/>
             </Link>
-          </Grid>
+          </GridLegacy>
         )
         :
         (loading ?
@@ -110,7 +110,7 @@ function NodePage() {
               <>
                 <AppBar sx={ { position: 'relative' } }>
                   <Toolbar>
-                    <Grid container alignItems='center'>
+                    <GridLegacy container alignItems='center'>
                       <Link to={ `/save/${ saveId }` }>
                         <Map color='secondary'/>
                       </Link>
@@ -151,10 +151,10 @@ function NodePage() {
                             ))
                         }
                       </Menu>
-                    </Grid>
+                    </GridLegacy>
                   </Toolbar>
                   <Toolbar style={ { backgroundColor: theme.palette.primary.dark } }>
-                    <Grid container alignItems='center'>
+                    <GridLegacy container alignItems='center'>
                       <div style={ {
                         width: 10,
                         height: 10,
@@ -164,10 +164,10 @@ function NodePage() {
                       <Typography variant='h6' color={ theme.palette.primary.contrastText }>
                         { getTradeNodesName(node) }
                       </Typography>
-                    </Grid>
+                    </GridLegacy>
                   </Toolbar>
                 </AppBar>
-                <Grid item alignItems='center' justifyContent='center' xs={ 12 }>
+                <GridLegacy item alignItems='center' justifyContent='center' xs={ 12 }>
                   <Tabs
                     value={ activeTab }
                     onChange={ (event, value) => handleTab(value) }
@@ -175,7 +175,7 @@ function NodePage() {
                     scrollButtons='auto'
                     style={ { marginBottom: 8 } }
                   >
-                    <Grid item style={ { flex: 1 } }/>
+                    <GridLegacy item style={ { flex: 1 } }/>
                     <Tab label={ intl.formatMessage({ id: 'tradeNode.tab.info' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'tradeNode.tab.map' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'tradeNode.tab.countries' }) }/>
@@ -184,10 +184,10 @@ function NodePage() {
                       (!node.retention || node.retention < 1) &&
                         <Tab label={ intl.formatMessage({ id: 'tradeNode.outGoingValue' }) }/>
                     }
-                    <Grid item style={ { flex: 1 } }/>
+                    <GridLegacy item style={ { flex: 1 } }/>
                   </Tabs>
-                </Grid>
-                <Grid container alignItems='start' justifyContent='center' style={ { padding: 24 } } key={ `grid-g-${ nodeId }` } ref={ containerRef }>
+                </GridLegacy>
+                <GridLegacy container alignItems='start' justifyContent='center' style={ { padding: 24 } } key={ `grid-g-${ nodeId }` } ref={ containerRef }>
                   {
                     activeTab == 1 && <NodeInfoTab node={ node } save={ save }/>
                   }
@@ -203,7 +203,7 @@ function NodePage() {
                   {
                     activeTab == 5 && <NodeOutgoingTab node={ node } save={ save }/>
                   }
-                </Grid>
+                </GridLegacy>
               </>
             )
         )

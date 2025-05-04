@@ -1,5 +1,5 @@
 import { Home } from '@mui/icons-material';
-import { AppBar, Avatar, Grid, Toolbar, Tooltip } from '@mui/material';
+import { AppBar, Avatar, GridLegacy, Toolbar, Tooltip } from '@mui/material';
 import { api } from 'api';
 import { WikiContext } from 'AppRouter';
 import React, { useContext, useEffect } from 'react';
@@ -62,7 +62,7 @@ function WikiBar({ value, imagedValue, type, objects, imagedObjects, children, s
   return (
     <AppBar style={ { position: 'relative' } }>
       <Toolbar style={ { justifyContent: 'center' } }>
-        <Grid container item alignItems="center" xs={ 12 } xl={ 10 }>
+        <GridLegacy container item alignItems="center" xs={ 12 } xl={ 10 }>
           <Link to={ `/wiki/${ version }` }>
             <Home color="secondary" style={ { width: 40, height: 40 } }/>
           </Link>
@@ -91,7 +91,7 @@ function WikiBar({ value, imagedValue, type, objects, imagedObjects, children, s
               </Tooltip>
             ))
           }
-        </Grid>
+        </GridLegacy>
       </Toolbar>
       {
         children

@@ -7,7 +7,7 @@ import {
   Chip,
   CircularProgress,
   Dialog,
-  Grid,
+  GridLegacy,
   IconButton,
   MenuItem,
   Select,
@@ -19,6 +19,7 @@ import {
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { api, endpoints } from 'api';
+import { env } from 'env/env';
 import * as ENV from 'env/env';
 import moment from 'moment';
 import 'moment/locale/en-gb';
@@ -46,14 +47,14 @@ function SavePage() {
   const [exportingModal, setExportingModal] = useState<boolean>(false);
   const [timelapse, setTimelapse] = useState<boolean>(false);
   const [maxTimelapse, setMaxTimelapse] = useState<boolean>(false);
-  const [timelapseId, setTimelapseId] = useState<NodeJS.Timer | undefined>(undefined);
+  const [timelapseId, setTimelapseId] = useState<NodeJS.Timeout | undefined>(undefined);
   const [error, setError] = useState<boolean>(false);
   const [mapReady, setMapReady] = useState<boolean>(false);
   const [statDialog, setStatDialog] = useState<boolean>(false);
   const mapRef = useRef<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [mapMode, setMapMode] = useState<MapMode>(MapMode.POLITICAL);
-  const [date, setDate] = useState<string | undefined>(undefined);
+  const [date, setDate] = useState<moment.Moment | undefined>(undefined);
   const [building, setBuilding] = useState<string | null>(null);
 
   const { id } = params;
@@ -94,7 +95,7 @@ function SavePage() {
   const download = () => {
     if (id && save) {
       const link = document.createElement('a');
-      link.href = ENV.DATA_BASE_URL + endpoints.save.download(id);
+      link.href = env.VITE_DATA_BASE_URL + endpoints.save.download(id);
       link.setAttribute('download', `${ cleanString(save.name).replace('.eu4', '') }.eu4`);
 
       if (document.body) {
@@ -197,7 +198,7 @@ function SavePage() {
           handleDate(undefined);
         }
       } else {
-        setDate(date);
+        setDate(moment(date, 'YYYY-MM-DD'));
       }
     } else if (save) {
       handleDate(save.date);
@@ -219,7 +220,7 @@ function SavePage() {
       {
         error ?
           (
-            <Grid container alignItems='center' justifyContent='center' flexDirection='column'
+            <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
                   style={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
               <Typography variant='h2' color={ theme.palette.primary.contrastText }>
                 404
@@ -230,7 +231,7 @@ function SavePage() {
               <Link to='/'>
                 <Home fontSize='large' color='primary'/>
               </Link>
-            </Grid>
+            </GridLegacy>
           )
           :
           (
@@ -303,8 +304,8 @@ function SavePage() {
                         value={ date }
                         disabled={ timelapse }
                         onChange={ value => handleDate(value?.format('YYYY-MM-DD')) }
-                        OpenPickerButtonProps={ { style: { left: '-16px' } } }
-                        renderInput={ (params) => <Badge color='error' variant='dot'
+                        // OpenPickerButtonProps={ { style: { left: '-16px' } } }
+/*                        renderInput={ (params) => <Badge color='error' variant='dot'
                                                          invisible={ mapModes[MapMode[mapMode]].supportDate }
                                                          anchorOrigin={ { horizontal: 'right', vertical: 'bottom' } }>
                           <Tooltip title={ intl.formatMessage(
@@ -335,7 +336,7 @@ function SavePage() {
                                          },
                                        } }/>
                           </Tooltip>
-                        </Badge> }
+                        </Badge> }*/
                       />
                     </LocalizationProvider>
                   </div>
@@ -358,7 +359,7 @@ function SavePage() {
                       displayEmpty
                       renderValue={ value => (
                         value ?
-                          <Grid container item alignItems='center'>
+                          <GridLegacy container item alignItems='center'>
                             <Avatar src={ getBuildingImage(save, value) } variant='square'
                                     style={ { display: 'inline-block', width: 24, height: 24 } }/>
                             <Typography variant='body1' style={ {
@@ -368,7 +369,7 @@ function SavePage() {
                             } }>
                               { value && getBuildingName(save, value) }
                             </Typography>
-                          </Grid>
+                          </GridLegacy>
                           :
                           <Typography variant='body1' style={ {
                             color: theme.palette.primary.contrastText,
@@ -477,7 +478,7 @@ function SavePage() {
                   </>
                 }
                 <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady } dataId={ searchParams.get('id') }
-                         date={ date } ref={ mapRef }/>
+                         date={ date?.format('YYYY-MM-DD') } ref={ mapRef }/>
                 {
                   save &&
                   (
