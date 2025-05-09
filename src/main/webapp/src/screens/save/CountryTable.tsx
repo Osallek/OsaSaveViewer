@@ -1,8 +1,27 @@
 import { FilterList, Launch } from '@mui/icons-material';
 import {
-  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, GridLegacy, IconButton, Paper,
-  Popper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TextField, Tooltip,
-  Typography, useTheme
+  Autocomplete,
+  Avatar,
+  Card,
+  CardContent,
+  Checkbox,
+  ClickAwayListener,
+  FormControlLabel,
+  GridLegacy,
+  IconButton,
+  Paper,
+  Popper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TextField,
+  Tooltip,
+  Typography,
+  useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -14,12 +33,36 @@ import { CountryTableType } from 'screens/save/SaveDialog';
 import { Expense, Income, Losses, PowerSpent, SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import {
-  cleanString, formatDate, formatNumber, numberComparator, round, round1000, stringComparator
+  cleanString,
+  formatDate,
+  formatNumber,
+  numberComparator,
+  round,
+  round1000,
+  stringComparator
 } from 'utils/format.utils';
 import {
-  getCountries, getCountrysFlag, getCountrysName, getCRealDev, getDiscipline, getExpense, getIncome, getLoans,
-  getLosses, getManaSpent, getNbImprovements, getPlayer, getStableIncome, getTerritory, getTotalExpense,
-  getTotalExpenses, getTotalIncome, getTotalTotalExpenses, isAdm, isDip, isMil
+  getCountries,
+  getCountrysFlag,
+  getCountrysName,
+  getCRealDev,
+  getDiscipline,
+  getExpense,
+  getIncome,
+  getLoans,
+  getLosses,
+  getManaSpent,
+  getNbImprovements,
+  getPlayer,
+  getStableIncome,
+  getTerritory,
+  getTotalExpense,
+  getTotalExpenses,
+  getTotalIncome,
+  getTotalTotalExpenses,
+  isAdm,
+  isDip,
+  isMil
 } from 'utils/save.utils';
 
 const onlyPlayers = 'onlyPlayers';
@@ -181,20 +224,20 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           minWidth: 100,
           value: (save, country) => <Typography variant="body1">
             { country.ideaGroups ? Object.values(country.ideaGroups)
-                                         .filter((value, index) => index > 0)
-                                         .reduce((s, a) => s + a, 0) : 0 }
+              .filter((value, index) => index > 0)
+              .reduce((s, a) => s + a, 0) : 0 }
           </Typography>,
           comparatorValue: (save, country) => country.ideaGroups ? Object.values(country.ideaGroups)
-                                                                         .filter((value, index) => index > 0)
-                                                                         .reduce((s, a) => s + a, 0) : 0,
+            .filter((value, index) => index > 0)
+            .reduce((s, a) => s + a, 0) : 0,
           filterValues: save => Array.from(new Set<number>(getCountries(save).map(
             c => (c.ideaGroups ? Object.values(c.ideaGroups)
-                                       .filter((value, index) => index > 0)
-                                       .reduce((s, a) => s + a, 0) : 0)).sort(numberComparator))),
+              .filter((value, index) => index > 0)
+              .reduce((s, a) => s + a, 0) : 0)).sort(numberComparator))),
           filter: (save, country, filter) => filter.includes(
             country.ideaGroups ? Object.values(country.ideaGroups)
-                                       .filter((value, index) => index > 0)
-                                       .reduce((s, a) => s + a, 0) : 0),
+              .filter((value, index) => index > 0)
+              .reduce((s, a) => s + a, 0) : 0),
         },
         {
           id: 'tech',
@@ -336,8 +379,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
           comparatorValue: (save, country) => country.lastBankrupt,
           filterValues: save => Array.from(
             new Set<number>(getCountries(save).filter(country => country.lastBankrupt)
-                                              .map(country => country.lastBankrupt ? Number.parseInt(
-                                                country.lastBankrupt.slice(0, 4)) : 0).sort(numberComparator))),
+              .map(country => country.lastBankrupt ? Number.parseInt(
+                country.lastBankrupt.slice(0, 4)) : 0).sort(numberComparator))),
           filter: (save, country, filter) =>
             country.lastBankrupt !== undefined && filter.includes(Number.parseInt(country.lastBankrupt.slice(0, 4))),
         },
@@ -498,8 +541,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
 
       max = Math.max(...getCountries(save)
         .flatMap(country => Object.values(Expense)
-                                  .map(value => getExpense(country, value))
-                                  .reduce((s, d) => s + (d ?? 0), 0)));
+          .map(value => getExpense(country, value))
+          .reduce((s, d) => s + (d ?? 0), 0)));
       radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
       return [
@@ -540,9 +583,9 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
               </Typography>
               {
                 index <= 7 &&
-                <Typography variant="body1" component="span" style={ { marginLeft: 8 } }>
-                  { `(${ formatNumber(getIncome(country, value) * 100 / getStableIncome(country)) }%)` }
-                </Typography>
+                  <Typography variant="body1" component="span" style={ { marginLeft: 8 } }>
+                    { `(${ formatNumber(getIncome(country, value) * 100 / getStableIncome(country)) }%)` }
+                  </Typography>
               }
             </>
           ),
@@ -571,8 +614,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </Typography>
           ),
           comparatorValue: (save, country) => Object.values(Income)
-                                                    .map(value => getIncome(country, value))
-                                                    .reduce((s, d) => s + (d ?? 0), 0),
+            .map(value => getIncome(country, value))
+            .reduce((s, d) => s + (d ?? 0), 0),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getTotalIncome(country), radix))
             .sort(numberComparator))),
@@ -609,8 +652,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
 
       max = Math.max(...getCountries(save)
         .flatMap(country => Object.values(Expense)
-                                  .map(value => getTotalExpenses(country, value))
-                                  .reduce((s, d) => s + (d ?? 0), 0)));
+          .map(value => getTotalExpenses(country, value))
+          .reduce((s, d) => s + (d ?? 0), 0)));
       radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
       return [
@@ -625,8 +668,8 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             </Typography>
           ),
           comparatorValue: (save, country) => Object.values(Expense)
-                                                    .map(value => getTotalExpenses(country, value))
-                                                    .reduce((s, d) => s + (d ?? 0), 0),
+            .map(value => getTotalExpenses(country, value))
+            .reduce((s, d) => s + (d ?? 0), 0),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round(getTotalTotalExpenses(country), radix))
             .sort(numberComparator))),
@@ -639,54 +682,54 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
 
     case CountryTableType.MANA_SPENT:
       col = Object.values(PowerSpent)
-                  .filter(value => !value.startsWith('USELESS') && !value.startsWith('OTHER'))
-                  .map(value => {
-                    const max = Math.max(...getCountries(save).map(country => getManaSpent(country, value) | 0));
-                    const radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
+        .filter(value => !value.startsWith('USELESS') && !value.startsWith('OTHER'))
+        .map(value => {
+          const max = Math.max(...getCountries(save).map(country => getManaSpent(country, value) | 0));
+          const radix = max >= 5000 ? 1000 : max >= 500 ? 100 : 10;
 
-                    return {
-                      id: value,
-                      label: intl.formatMessage({ id: `country.mana.${ value }` }),
-                      minWidth: 250,
-                      value: (save, country) => (
+          return {
+            id: value,
+            label: intl.formatMessage({ id: `country.mana.${ value }` }),
+            minWidth: 250,
+            value: (save, country) => (
+              <>
+                <GridLegacy container flexDirection="column" alignItems="center">
+                  {
+                    ((isAdm(value) ? 1 : 0) + (isDip(value) ? 1 : 0) + (isMil(value) ? 1 : 0) > 1) ?
+                      (
                         <>
-                          <GridLegacy container flexDirection="column" alignItems="center">
-                            {
-                              ((isAdm(value) ? 1 : 0) + (isDip(value) ? 1 : 0) + (isMil(value) ? 1 : 0) > 1) ?
-                                (
-                                  <>
-                                    <Typography variant="body1">
-                                      { `${ formatNumber(
-                                        country.admPowerSpent ? country.admPowerSpent[value] : 0) } / ${ formatNumber(
-                                        country.dipPowerSpent ? country.dipPowerSpent[value] : 0) } / ${ formatNumber(
-                                        country.milPowerSpent ? country.milPowerSpent[value] : 0) }` }
-                                    </Typography>
-                                    <Typography variant="body1">
-                                      { `(${ formatNumber(getManaSpent(country, value)) })` }
-                                    </Typography>
-                                  </>
-                                )
-                                :
-                                (
-                                  <Typography variant="body1">
-                                    { `${ formatNumber(
-                                      (isAdm(value) && country.admPowerSpent) ? country.admPowerSpent[value] :
-                                        ((isDip(value) && country.dipPowerSpent) ? country.dipPowerSpent[value] :
-                                          ((isMil(value) && country.milPowerSpent) ? country.milPowerSpent[value] :
-                                            undefined))) }` }
-                                  </Typography>
-                                )
-                            }
-                          </GridLegacy>
+                          <Typography variant="body1">
+                            { `${ formatNumber(
+                              country.admPowerSpent ? country.admPowerSpent[value] : 0) } / ${ formatNumber(
+                              country.dipPowerSpent ? country.dipPowerSpent[value] : 0) } / ${ formatNumber(
+                              country.milPowerSpent ? country.milPowerSpent[value] : 0) }` }
+                          </Typography>
+                          <Typography variant="body1">
+                            { `(${ formatNumber(getManaSpent(country, value)) })` }
+                          </Typography>
                         </>
-                      ),
-                      comparatorValue: (save, country) => getManaSpent(country, value),
-                      filterValues: save => Array.from(new Set<number>(getCountries(save)
-                        .map(country => round(getManaSpent(country, value), radix)).sort(numberComparator))),
-                      filter: (save, country, filter) =>
-                        filter.includes(round(getManaSpent(country, value), radix))
-                    };
-                  });
+                      )
+                      :
+                      (
+                        <Typography variant="body1">
+                          { `${ formatNumber(
+                            (isAdm(value) && country.admPowerSpent) ? country.admPowerSpent[value] :
+                              ((isDip(value) && country.dipPowerSpent) ? country.dipPowerSpent[value] :
+                                ((isMil(value) && country.milPowerSpent) ? country.milPowerSpent[value] :
+                                  undefined))) }` }
+                        </Typography>
+                      )
+                  }
+                </GridLegacy>
+              </>
+            ),
+            comparatorValue: (save, country) => getManaSpent(country, value),
+            filterValues: save => Array.from(new Set<number>(getCountries(save)
+              .map(country => round(getManaSpent(country, value), radix)).sort(numberComparator))),
+            filter: (save, country, filter) =>
+              filter.includes(round(getManaSpent(country, value), radix))
+          };
+        });
 
       return [
         getNameColumn(),
@@ -699,26 +742,26 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
               <Typography variant="body1">
                 { `${ formatNumber(
                   Object.values(PowerSpent)
-                        .map(value => country.admPowerSpent ? country.admPowerSpent[value] : 0)
-                        .reduce((s, d) => s + (d ?? 0), 0)) } / 
+                    .map(value => country.admPowerSpent ? country.admPowerSpent[value] : 0)
+                    .reduce((s, d) => s + (d ?? 0), 0)) } / 
                 ${ formatNumber(
                   Object.values(PowerSpent)
-                        .map(value => country.dipPowerSpent ? country.dipPowerSpent[value] : 0)
-                        .reduce((s, d) => s + (d ?? 0), 0)) } /
+                    .map(value => country.dipPowerSpent ? country.dipPowerSpent[value] : 0)
+                    .reduce((s, d) => s + (d ?? 0), 0)) } /
                  ${ formatNumber(
                   Object.values(PowerSpent)
-                        .map(value => country.milPowerSpent ? country.milPowerSpent[value] : 0)
-                        .reduce((s, d) => s + (d ?? 0), 0)) }` }
+                    .map(value => country.milPowerSpent ? country.milPowerSpent[value] : 0)
+                    .reduce((s, d) => s + (d ?? 0), 0)) }` }
               </Typography>
               <Typography variant="body1">
                 { `(${ formatNumber(Object.values(PowerSpent)
-                                          .map(value => getManaSpent(country, value))
-                                          .reduce((s, d) => s + (d ?? 0), 0)) })` }
+                  .map(value => getManaSpent(country, value))
+                  .reduce((s, d) => s + (d ?? 0), 0)) })` }
               </Typography>
             </GridLegacy>
           ),
           comparatorValue: (save, country) => Object.values(PowerSpent).map(value => getManaSpent(country, value))
-                                                    .reduce((s, d) => s + (d ?? 0), 0),
+            .reduce((s, d) => s + (d ?? 0), 0),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round1000(
               Object.values(PowerSpent).map(value => getManaSpent(country, value)).reduce((s, d) => s + (d ?? 0), 0)))
@@ -763,28 +806,28 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             <Typography variant="body1">
               { formatNumber(
                 Object.values(Losses)
-                      .filter((value, index) => index <= 8)
-                      .map(value => getLosses(country, value))
-                      .reduce((s, d) => s + (d ?? 0), 0)) }
+                  .filter((value, index) => index <= 8)
+                  .map(value => getLosses(country, value))
+                  .reduce((s, d) => s + (d ?? 0), 0)) }
             </Typography>
           ),
           comparatorValue: (save, country) => Object.values(Losses)
-                                                    .filter((value, index) => index <= 8)
-                                                    .map(value => getLosses(country, value))
-                                                    .reduce((s, d) => s + (d ?? 0), 0),
+            .filter((value, index) => index <= 8)
+            .map(value => getLosses(country, value))
+            .reduce((s, d) => s + (d ?? 0), 0),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round1000(
               Object.values(Losses)
-                    .filter((value, index) => index <= 8)
-                    .map(value => getLosses(country, value))
-                    .reduce((s, d) => s + (d ?? 0), 0)))
+                .filter((value, index) => index <= 8)
+                .map(value => getLosses(country, value))
+                .reduce((s, d) => s + (d ?? 0), 0)))
             .sort(numberComparator))),
           filter: (save, country, filter) =>
             filter.includes(
               round1000(Object.values(Losses)
-                              .filter((value, index) => index <= 8)
-                              .map(value => getLosses(country, value))
-                              .reduce((s, d) => s + (d ?? 0), 0)))
+                .filter((value, index) => index <= 8)
+                .map(value => getLosses(country, value))
+                .reduce((s, d) => s + (d ?? 0), 0)))
         },
         ...col,
         getPlayerColumn(),
@@ -823,28 +866,28 @@ function getColumns(type: CountryTableType, save: MapSave): Column[] {
             <Typography variant="body1">
               { formatNumber(
                 Object.values(Losses)
-                      .filter((value, index) => index > 8)
-                      .map(value => getLosses(country, value))
-                      .reduce((s, d) => s + (d ?? 0), 0)) }
+                  .filter((value, index) => index > 8)
+                  .map(value => getLosses(country, value))
+                  .reduce((s, d) => s + (d ?? 0), 0)) }
             </Typography>
           ),
           comparatorValue: (save, country) => Object.values(Losses)
-                                                    .filter((value, index) => index > 8)
-                                                    .map(value => getLosses(country, value))
-                                                    .reduce((s, d) => s + (d ?? 0), 0),
+            .filter((value, index) => index > 8)
+            .map(value => getLosses(country, value))
+            .reduce((s, d) => s + (d ?? 0), 0),
           filterValues: save => Array.from(new Set<number>(getCountries(save)
             .map(country => round1000(
               Object.values(Losses)
-                    .filter((value, index) => index > 8)
-                    .map(value => getLosses(country, value))
-                    .reduce((s, d) => s + (d ?? 0), 0)))
+                .filter((value, index) => index > 8)
+                .map(value => getLosses(country, value))
+                .reduce((s, d) => s + (d ?? 0), 0)))
             .sort(numberComparator))),
           filter: (save, country, filter) =>
             filter.includes(
               round1000(Object.values(Losses)
-                              .filter((value, index) => index > 8)
-                              .map(value => getLosses(country, value))
-                              .reduce((s, d) => s + (d ?? 0), 0)))
+                .filter((value, index) => index > 8)
+                .map(value => getLosses(country, value))
+                .reduce((s, d) => s + (d ?? 0), 0)))
         },
         ...col,
         getPlayerColumn(),
@@ -862,15 +905,15 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
   const intl = useIntl();
   const theme = useTheme();
 
-  const [columns, setColumns] = useState<Column[]>([]);
-  const [orderBy, setOrderBy] = useState<Column | undefined>(undefined);
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [countries, setCountries] = useState<SaveCountry[]>([]);
+  const [ columns, setColumns ] = useState<Column[]>([]);
+  const [ orderBy, setOrderBy ] = useState<Column | undefined>(undefined);
+  const [ order, setOrder ] = useState<'asc' | 'desc'>('asc');
+  const [ countries, setCountries ] = useState<SaveCountry[]>([]);
 
-  const [filters, setFilters] = useState<Record<string, (string | number)[]>>({});
-  const [filterPopoverOpen, setFilterPopoverOpen] = useState<boolean>(false);
-  const [filterPopoverLoc, setFilterPopoverLoc] = useState<number[]>([0, 0]);
-  const [filterPopoverColumn, setFilterPopoverColumn] = useState<Column>(columns[0]);
+  const [ filters, setFilters ] = useState<Record<string, (string | number)[]>>({});
+  const [ filterPopoverOpen, setFilterPopoverOpen ] = useState<boolean>(false);
+  const [ filterPopoverLoc, setFilterPopoverLoc ] = useState<number[]>([ 0, 0 ]);
+  const [ filterPopoverColumn, setFilterPopoverColumn ] = useState<Column>(columns[0]);
   const filterPopoverDiv = useRef<HTMLDivElement>(null);
 
   const columnsRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -902,7 +945,7 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
           return true;
         }
 
-        for (const [key, value] of Object.entries(filters)) {
+        for (const [ key, value ] of Object.entries(filters)) {
           if (key === onlyPlayers && (country.players === undefined || country.players.length === 0)) {
             return false;
           } else {
@@ -952,11 +995,11 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
     if (listRef.current) {
       listRef.current.scrollToItem(0, 'start');
     }
-  }, [columns, filters, order, orderBy, save, type]);
+  }, [ columns, filters, order, orderBy, save, type ]);
 
   useEffect(() => {
     columnsRefs.current = columnsRefs.current.slice(0, columns.length);
-  }, [columns]);
+  }, [ columns ]);
 
   useEffect(() => {
     setColumns(getColumns(type, save));
@@ -964,12 +1007,12 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
     if (listRef.current) {
       listRef.current.scrollToItem(0, 'start');
     }
-  }, [type, save]);
+  }, [ type, save ]);
 
   useEffect(() => {
     setOrderBy(columns[columns.length - 1]);
     setOrder('asc');
-  }, [columns]);
+  }, [ columns ]);
 
   const renderRow = ({ index, style }: ListChildComponentProps<SaveCountry[]>) => {
     const country = countries[index];
@@ -998,157 +1041,155 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
   };
 
   return (
-    visible ?
-      <>
+    visible &&
+    <>
         <div ref={ filterPopoverDiv }
              style={ { position: 'fixed', left: filterPopoverLoc[0], top: filterPopoverLoc[1] } }/>
-        {
-          filterPopoverOpen && filterPopoverDiv.current &&
-          (
-            <ClickAwayListener onClickAway={ () => setFilterPopoverOpen(false) }>
-              <Popper open
-                      anchorEl={ filterPopoverDiv.current }
-                      placement="bottom-start"
-                      style={ { zIndex: 1500 } }
-              >
-                <Card style={ {
-                  minWidth: 300,
-                  borderColor: theme.palette.primary.main,
-                  borderWidth: 1,
-                  borderStyle: 'solid'
-                } }>
-                  <CardContent style={ { color: 'white', paddingTop: 8, paddingBottom: 8 } }>
-                    <Autocomplete
-                      multiple
-                      disablePortal
-                      options={ filterPopoverColumn.filterValues(save) }
-                      getOptionLabel={ option => option.toString() }
-                      groupBy={ (option) => typeof option === 'string' ? cleanString(option.slice(0, 1))
-                        .toUpperCase() : ''
-                      }
-                      renderInput={ (params) =>
-                        <TextField { ...params }
-                                   label={ filterPopoverColumn.label }
-                                   variant="filled"
-                                   color="primary"
-                        /> }
-                      value={ filters[filterPopoverColumn.id] ?? [] }
-                      onChange={ (event, newInputValue) => {
-                        if (!newInputValue || newInputValue.length === 0) {
-                          setFilters(prevState => {
-                            const newState: Record<string, (string | number) []> = {};
-                            for (let key in prevState) {
-                              if (key !== filterPopoverColumn.id) {
-                                newState[key] = prevState[key];
-                              }
+      {
+        filterPopoverOpen && filterPopoverDiv.current &&
+        (
+          <ClickAwayListener onClickAway={ () => setFilterPopoverOpen(false) }>
+            <Popper open
+                    anchorEl={ filterPopoverDiv.current }
+                    placement="bottom-start"
+                    style={ { zIndex: 1500 } }
+            >
+              <Card style={ {
+                minWidth: 300,
+                borderColor: theme.palette.primary.main,
+                borderWidth: 1,
+                borderStyle: 'solid'
+              } }>
+                <CardContent style={ { color: 'white', paddingTop: 8, paddingBottom: 8 } }>
+                  <Autocomplete
+                    multiple
+                    disablePortal
+                    options={ filterPopoverColumn.filterValues(save) }
+                    getOptionLabel={ option => option.toString() }
+                    groupBy={ (option) => typeof option === 'string' ? cleanString(option.slice(0, 1)).toUpperCase() : '' }
+                    renderInput={ (params) =>
+                      <TextField { ...params }
+                                 label={ filterPopoverColumn.label }
+                                 variant="filled"
+                                 color="primary"
+                      /> }
+                    value={ filters[filterPopoverColumn.id] ?? [] }
+                    onChange={ (event, newInputValue) => {
+                      if (!newInputValue || newInputValue.length === 0) {
+                        setFilters(prevState => {
+                          const newState: Record<string, (string | number) []> = {};
+                          for (let key in prevState) {
+                            if (key !== filterPopoverColumn.id) {
+                              newState[key] = prevState[key];
                             }
+                          }
 
-                            return newState;
-                          });
-                        } else {
-                          setFilters(prevState => ({
-                            ...prevState,
-                            [filterPopoverColumn.id]: newInputValue
-                          }));
-                        }
-                      } }
-                    />
-                  </CardContent>
-                </Card>
-              </Popper>
-            </ClickAwayListener>
-          )
-        }
+                          return newState;
+                        });
+                      } else {
+                        setFilters(prevState => ({
+                          ...prevState,
+                          [filterPopoverColumn.id]: newInputValue
+                        }));
+                      }
+                    } }
+                  />
+                </CardContent>
+              </Card>
+            </Popper>
+          </ClickAwayListener>
+        )
+      }
         <GridLegacy>
-          <FormControlLabel
-            control={ <Checkbox checked={ Object.keys(filters).includes(onlyPlayers) }
-                                onChange={ (event, checked) => {
-                                  if (!checked) {
-                                    setFilters(prevState => {
-                                      const newState: Record<string, (string | number) []> = {};
-                                      for (let key in prevState) {
-                                        if (key !== onlyPlayers) {
-                                          newState[key] = prevState[key];
-                                        }
-                                      }
+            <FormControlLabel
+                control={ <Checkbox checked={ Object.keys(filters).includes(onlyPlayers) }
+                                    onChange={ (event, checked) => {
+                                      if (!checked) {
+                                        setFilters(prevState => {
+                                          const newState: Record<string, (string | number) []> = {};
+                                          for (let key in prevState) {
+                                            if (key !== onlyPlayers) {
+                                              newState[key] = prevState[key];
+                                            }
+                                          }
 
-                                      return newState;
-                                    });
-                                  } else {
-                                    setFilters(prevState => ({
-                                      ...prevState,
-                                      [onlyPlayers]: ['true']
-                                    }));
-                                  }
-                                } }/>
-            }
-            label={ intl.formatMessage({ id: 'country.onlyPlayers' }) }
-            style={ { padding: 8 } }/>
+                                          return newState;
+                                        });
+                                      } else {
+                                        setFilters(prevState => ({
+                                          ...prevState,
+                                          [onlyPlayers]: [ 'true' ]
+                                        }));
+                                      }
+                                    } }/>
+                }
+                label={ intl.formatMessage({ id: 'country.onlyPlayers' }) }
+                style={ { padding: 8 } }/>
         </GridLegacy>
         <TableContainer component={ Paper } style={ { height: `100%`, borderRadius: 0 } }>
-          <Table style={ { width: '100%', height: `100%` } }>
-            <TableHead ref={ headerRef }>
-              <TableRow>
-                { columns.map((column, index) => (
-                  <TableCell
-                    key={ column.id }
-                    style={ { minWidth: column.minWidth, backgroundColor: theme.palette.primary.light } }
-                  >
-                    <GridLegacy container alignItems="center" ref={ el => {columnsRefs.current[index] = el;} }
-                                style={ { flexFlow: 'nowrap' } }>
-                      <IconButton
-                        onClick={ (e) => {
-                          setFilterPopoverLoc([e.clientX, e.clientY + 25]);
-                          setFilterPopoverOpen(true);
-                          setFilterPopoverColumn(column);
-                        } }
-                        style={ { marginRight: 4, padding: 0 } }>
-                        <FilterList fontSize="small"
-                                    style={ { color: filters[column.id] === undefined ? theme.palette.primary.contrastText : theme.palette.primary.main } }/>
-                      </IconButton>
-                      <TableSortLabel
-                        active={ column.id === (orderBy && orderBy.id) }
-                        direction={ column.id === (orderBy && orderBy.id) ? order : 'asc' }
-                        onClick={ () => handleSort(column) }
-                        sx={ {
-                          '& .MuiTableSortLabel-icon': {
-                            color: `${ theme.palette.primary.contrastText } !important`,
-                          }
-                        } }
+            <Table style={ { width: '100%', height: `calc(100% - ${ headerRef.current?.clientHeight ?? 0 }px)` } }>
+                <TableHead ref={ headerRef }>
+                    <TableRow>
+                      { columns.map((column, index) => (
+                        <TableCell
+                          key={ column.id }
+                          style={ { minWidth: column.minWidth, backgroundColor: theme.palette.primary.light } }
+                        >
+                          <GridLegacy container alignItems="center" ref={ el => {
+                            columnsRefs.current[index] = el;
+                          } }
+                                      style={ { flexFlow: 'nowrap' } }>
+                            <IconButton
+                              onClick={ (e) => {
+                                setFilterPopoverLoc([ e.clientX, e.clientY + 25 ]);
+                                setFilterPopoverOpen(true);
+                                setFilterPopoverColumn(column);
+                              } }
+                              style={ { marginRight: 4, padding: 0 } }>
+                              <FilterList fontSize="small"
+                                          style={ { color: filters[column.id] === undefined ? theme.palette.primary.contrastText : theme.palette.primary.main } }/>
+                            </IconButton>
+                            <TableSortLabel
+                              active={ column.id === (orderBy && orderBy.id) }
+                              direction={ column.id === (orderBy && orderBy.id) ? order : 'asc' }
+                              onClick={ () => handleSort(column) }
+                              sx={ {
+                                '& .MuiTableSortLabel-icon': {
+                                  color: `${ theme.palette.primary.contrastText } !important`,
+                                }
+                              } }
+                            >
+                              <Typography variant="button"
+                                          style={ { fontWeight: 'bold', color: theme.palette.primary.contrastText } }>
+                                { column.label }
+                              </Typography>
+                            </TableSortLabel>
+                          </GridLegacy>
+                        </TableCell>
+                      )) }
+                    </TableRow>
+                </TableHead>
+                <AutoSizer>
+                  { ({ height, width }) =>
+                    <TableBody>
+                      <FixedSizeList
+                        height={ height ?? 0 - (headerRef.current?.clientHeight ?? 0) - 1 }
+                        itemCount={ countries.length }
+                        itemSize={ 72 }
+                        width={ Math.max(width ?? 0, columns.reduce((s, a) => s + a.minWidth, 0)) }
+                        itemData={ countries }
+                        itemKey={ (index, data) => `${ data[index].tag }-${ type }` }
+                        overscanCount={ 15 }
+                        ref={ listRef }
                       >
-                        <Typography variant="button"
-                                    style={ { fontWeight: 'bold', color: theme.palette.primary.contrastText } }>
-                          { column.label }
-                        </Typography>
-                      </TableSortLabel>
-                    </GridLegacy>
-                  </TableCell>
-                )) }
-              </TableRow>
-            </TableHead>
-            <AutoSizer>
-              { ({ height, width }) =>
-                <TableBody>
-                  <FixedSizeList
-                    height={ height ?? 0 - (headerRef.current ? headerRef.current?.clientHeight : 0) - 1 }
-                    itemCount={ countries.length }
-                    itemSize={ 72 }
-                    width={ Math.max(width ?? 0, columns.reduce((s, a) => s + a.minWidth, 0)) }
-                    itemData={ countries }
-                    itemKey={ (index, data) => `${ data[index].tag }-${ type }` }
-                    overscanCount={ 10 }
-                    ref={ listRef }
-                  >
-                    { renderRow }
-                  </FixedSizeList>
-                </TableBody>
-              }
-            </AutoSizer>
-          </Table>
+                        { renderRow }
+                      </FixedSizeList>
+                    </TableBody>
+                  }
+                </AutoSizer>
+            </Table>
         </TableContainer>
-      </>
-      :
-      <></>
+    </>
   );
 }
 

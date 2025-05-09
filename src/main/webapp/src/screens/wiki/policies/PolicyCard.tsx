@@ -1,6 +1,17 @@
 import {
-  Avatar, Card, CardActionArea, CardContent, CardHeader, Collapse, GridLegacy, Table, TableBody, TableCell, TableContainer,
-  TableRow, Typography
+  Avatar,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardHeader,
+  Collapse,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -27,7 +38,7 @@ function PolicyCard({ policy, wiki, version }: PolicyCardProps) {
       <CardActionArea onClick={ () => setExpanded(!expanded) }>
         <CardHeader disableTypography
                     title={
-                      <GridLegacy container item alignItems='center'>
+                      <Grid container alignItems='center'>
                         <Typography variant='h5'
                                     sx={ {
                                       color: theme.palette.primary.contrastText,
@@ -39,7 +50,7 @@ function PolicyCard({ policy, wiki, version }: PolicyCardProps) {
                         <Avatar
                           src={ `/eu4/wiki/${ policy.category.toLowerCase() }.png` }
                           variant='square' sx={ { width: 28, height: 28 } }/>
-                      </GridLegacy>
+                      </Grid>
                     }
                     sx={ {
                       backgroundColor: theme.palette.primary.dark, borderBottomRightRadius: borderRadius,

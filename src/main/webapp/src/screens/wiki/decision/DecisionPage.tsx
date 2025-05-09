@@ -1,5 +1,5 @@
 import { Home, PriorityHigh } from '@mui/icons-material';
-import { Backdrop, CircularProgress, GridLegacy, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
+import { Backdrop, CircularProgress, Grid, IconButton, Toolbar, Tooltip, Typography } from '@mui/material';
 import { WikiContext } from 'AppRouter';
 import React, { useContext, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -20,14 +20,14 @@ function DecisionPage() {
   const intl = useIntl();
   const { wikiState } = useContext(WikiContext)!;
 
-  const [wiki, setWiki] = useState<Wiki>();
-  const [decision, setDecision] = useState<Decision>();
-  const [decisions, setDecisions] = useState<Array<Decision>>();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-  const [useExample, setUseExample] = useState<boolean>(false);
-  const [expandedPotential, setExpandedPotential] = useState<boolean>(true);
-  const [expandedAllow, setExpandedAllow] = useState<boolean>(true);
+  const [ wiki, setWiki ] = useState<Wiki>();
+  const [ decision, setDecision ] = useState<Decision>();
+  const [ decisions, setDecisions ] = useState<Array<Decision>>();
+  const [ loading, setLoading ] = useState<boolean>(true);
+  const [ error, setError ] = useState<boolean>(false);
+  const [ useExample, setUseExample ] = useState<boolean>(false);
+  const [ expandedPotential, setExpandedPotential ] = useState<boolean>(true);
+  const [ expandedAllow, setExpandedAllow ] = useState<boolean>(true);
 
   const { id, version } = params;
 
@@ -41,13 +41,13 @@ function DecisionPage() {
       setLoading(false);
       setError(false);
     }
-  }, [id, wikiState, version]);
+  }, [ id, wikiState, version ]);
 
   return (
     <>
       {
         (error || (!loading && (!decision || !version || !wiki))) ?
-          <GridLegacy container alignItems="center" justifyContent="center" flexDirection="column"
+          <Grid container alignItems="center" justifyContent="center" flexDirection="column"
                 style={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
             <Typography variant="h2" color={ theme.palette.primary.contrastText }>
               404
@@ -58,28 +58,28 @@ function DecisionPage() {
             <Link to="/">
               <Home fontSize="large" color="primary" style={ { width: 40, height: 40 } }/>
             </Link>
-          </GridLegacy>
+          </Grid>
           :
           <>
             <WikiBar type={ wikiTypes.decisions } objects={ decisions } value={ decision }>
               {
                 decision ?
                   (
-                    <Toolbar style={ { justifyContent: 'center', backgroundColor: theme.palette.primary.dark } }>
-                      <GridLegacy container item alignItems="center" xs={ 12 } xl={ 10 }>
+                    <Toolbar style={ { backgroundColor: theme.palette.primary.dark } }>
+                      <Grid container alignItems="center" size={ { xs: 12, xl: 10 } }>
                         <LocalisedExample example={ decision }
                                           useExample={ useExample } suffix={ ` (${ decision.id })` }
                                           variant="h6" color={ theme.palette.primary.contrastText }/>
                         {
                           decision.major &&
-                          <Tooltip title={ intl.formatMessage({ id: 'wiki.decision.isMajor' }) }>
-                            <IconButton color="success" style={ { marginLeft: 8 } }>
-                              <PriorityHigh style={ { width: 24, height: 24 } }/>
-                            </IconButton>
-                          </Tooltip>
+                            <Tooltip title={ intl.formatMessage({ id: 'wiki.decision.isMajor' }) }>
+                                <IconButton color="success" style={ { marginLeft: 8 } }>
+                                    <PriorityHigh style={ { width: 24, height: 24 } }/>
+                                </IconButton>
+                            </Tooltip>
                         }
                         <ExampleIcon onClick={ () => setUseExample(!useExample) } color="secondary"/>
-                      </GridLegacy>
+                      </Grid>
                     </Toolbar>
                   )
                   :
@@ -92,52 +92,52 @@ function DecisionPage() {
                   <CircularProgress color="primary"/>
                 </Backdrop>
                 :
-                <GridLegacy container justifyContent="center" sx={ { p: 3 } }>
-                  <GridLegacy container item xs={ 12 } xl={ 10 } rowSpacing={ 3 }>
-                    <GridLegacy container item flexDirection="column">
-                      <GridLegacy container alignItems="center">
+                <Grid container justifyContent="center" sx={ { p: 3 } }>
+                  <Grid container size={ { xs: 12, xl: 10 } } rowSpacing={ 3 }>
+                    <Grid container flexDirection="column">
+                      <Grid container alignItems="center">
                         <Typography variant="h4">
                           { intl.formatMessage({ id: 'wiki.decision.description' }) }
                         </Typography>
-                      </GridLegacy>
+                      </Grid>
                       <LocalisedExample example={ decision.description } useExample={ useExample }/>
-                    </GridLegacy>
-                    <GridLegacy container item columnSpacing={ 4 }>
-                      <GridLegacy container item flexDirection="column" xs={ 12 } lg={ 6 }>
+                    </Grid>
+                    <Grid container columnSpacing={ 4 } sx={ { flexGrow: 1 } }>
+                      <Grid container flexDirection="column" size={ { xs: 12, lg: 6 } }>
                         <WikiAccordion expanded={ expandedPotential }
                                        onChange={ () => setExpandedPotential(!expandedPotential) }
                                        summary={
-                                         <GridLegacy container alignItems="center">
+                                         <Grid container alignItems="center">
                                            <Typography variant="h4">
                                              { intl.formatMessage({ id: 'wiki.decision.potential' }) }
                                            </Typography>
-                                         </GridLegacy>
+                                         </Grid>
                                        }
                                        details={
                                          <ConditionsList condition={ decision.potential } wiki={ wiki } root
                                                          useExample={ useExample } wikiVersion={ version }/>
                                        }
                         />
-                      </GridLegacy>
-                      <GridLegacy container item flexDirection="column" xs={ 12 } lg={ 6 }>
+                      </Grid>
+                      <Grid container flexDirection="column" size={ { xs: 12, lg: 6 } }>
                         <WikiAccordion expanded={ expandedAllow }
                                        onChange={ () => setExpandedAllow(!expandedAllow) }
                                        summary={
-                                         <GridLegacy container alignItems="center">
+                                         <Grid container alignItems="center">
                                            <Typography variant="h4">
                                              { intl.formatMessage({ id: 'wiki.decision.allow' }) }
                                            </Typography>
-                                         </GridLegacy>
+                                         </Grid>
                                        }
                                        details={
                                          <ConditionsList condition={ decision.allow } wiki={ wiki } root
                                                          useExample={ useExample } wikiVersion={ version }/>
                                        }
                         />
-                      </GridLegacy>
-                    </GridLegacy>
-                  </GridLegacy>
-                </GridLegacy>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
             }
           </>
       }

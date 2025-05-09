@@ -1,7 +1,19 @@
 import { PhotoCamera } from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
-  Autocomplete, Avatar, Card, CardContent, CardHeader, Chip, CircularProgress, GridLegacy, IconButton, TextField, Tooltip as Tt, Typography, useTheme
+  Autocomplete,
+  Avatar,
+  Card,
+  CardContent,
+  CardHeader,
+  Chip,
+  CircularProgress,
+  GridLegacy,
+  IconButton,
+  TextField,
+  Tooltip as Tt,
+  Typography,
+  useTheme
 } from '@mui/material';
 import { toPng } from 'html-to-image';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -12,7 +24,14 @@ import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { CurrentLine, getCurrentLine, previousCharts } from 'utils/chart.utils';
 import { cleanString, colorToHex, formatNumber, stringComparator } from 'utils/format.utils';
-import { getCountries, getCountry, getCountryFlag, getCountryName, getCountrysFlag, getCountrysName } from 'utils/save.utils';
+import {
+  getCountries,
+  getCountry,
+  getCountryFlag,
+  getCountryName,
+  getCountrysFlag,
+  getCountrysName
+} from 'utils/save.utils';
 
 interface CompareTableProps {
   save: MapSave;
@@ -23,27 +42,27 @@ function CompareTable({ save, visible }: CompareTableProps) {
   const intl = useIntl();
   const theme = useTheme();
 
-  const [countriesA, setCountriesA] = useState<Array<SaveCountry>>([]);
-  const [countriesB, setCountriesB] = useState<Array<SaveCountry>>([]);
-  const [teamA, setTeamA] = useState<Array<CurrentLine>>([]);
-  const [teamB, setTeamB] = useState<Array<CurrentLine>>([]);
-  const [players, setPlayers] = useState<Array<SaveCountry>>([]);
-  const [exporting, setExporting] = useState<boolean>(false);
+  const [ countriesA, setCountriesA ] = useState<Array<SaveCountry>>([]);
+  const [ countriesB, setCountriesB ] = useState<Array<SaveCountry>>([]);
+  const [ teamA, setTeamA ] = useState<Array<CurrentLine>>([]);
+  const [ teamB, setTeamB ] = useState<Array<CurrentLine>>([]);
+  const [ players, setPlayers ] = useState<Array<SaveCountry>>([]);
+  const [ exporting, setExporting ] = useState<boolean>(false);
   const mainRef = useRef<HTMLDivElement>(null);
   const refs = useRef<Array<HTMLDivElement | null>>(Array(previousCharts.length).fill(null));
 
   useEffect(() => {
     setPlayers(
       getCountries(save).filter(value => value.players && value.players.length > 0).sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b))));
-  }, [save]);
+  }, [ save ]);
 
   useEffect(() => {
     setTeamA(previousCharts.map(value => getCurrentLine(save, countriesA.map(c => c.tag), value.current, 'a')));
-  }, [countriesA, save]);
+  }, [ countriesA, save ]);
 
   useEffect(() => {
     setTeamB(previousCharts.map(value => getCurrentLine(save, countriesB.map(c => c.tag), value.current, 'b')));
-  }, [countriesB, save]);
+  }, [ countriesB, save ]);
 
   const exportToPng = useCallback(async () => {
     try {
@@ -52,7 +71,11 @@ function CompareTable({ save, visible }: CompareTableProps) {
         return
       }
 
-      await toPng(mainRef.current, { cacheBust: true, backgroundColor: 'white', filter: domNode => domNode.id !== 'export-button' })
+      await toPng(mainRef.current, {
+        cacheBust: true,
+        backgroundColor: 'white',
+        filter: domNode => domNode.id !== 'export-button'
+      })
         .then((dataUrl) => {
           const link = document.createElement('a');
           link.href = dataUrl;
@@ -69,7 +92,7 @@ function CompareTable({ save, visible }: CompareTableProps) {
     } finally {
       setExporting(false);
     }
-  }, [mainRef, setExporting]);
+  }, [ mainRef, setExporting ]);
 
 
   const exportPartToPng = useCallback(async (part: string, ref: HTMLDivElement | null) => {
@@ -98,7 +121,7 @@ function CompareTable({ save, visible }: CompareTableProps) {
     } finally {
       setExporting(false);
     }
-  }, [refs, setExporting]);
+  }, [ refs, setExporting ]);
 
   return (
     visible ?
@@ -133,7 +156,10 @@ function CompareTable({ save, visible }: CompareTableProps) {
                     <Chip label={ getCountrysName(option) }
                           avatar={ <Avatar src={ getCountrysFlag(option) } variant='circular'/> }
                           { ...getTagProps({ index }) }
-                          style={ { backgroundColor: theme.palette.primary.main, color: theme.palette.primary.contrastText } }/>
+                          style={ {
+                            backgroundColor: theme.palette.primary.main,
+                            color: theme.palette.primary.contrastText
+                          } }/>
                   ))
                 }
                 renderInput={ (params) => (
@@ -176,7 +202,10 @@ function CompareTable({ save, visible }: CompareTableProps) {
                     <Chip label={ getCountrysName(option) }
                           avatar={ <Avatar src={ getCountrysFlag(option) } variant='circular'/> }
                           { ...getTagProps({ index }) }
-                          style={ { backgroundColor: theme.palette.primary.main, color: theme.palette.primary.contrastText } }/>
+                          style={ {
+                            backgroundColor: theme.palette.primary.main,
+                            color: theme.palette.primary.contrastText
+                          } }/>
                   ))
                 }
                 renderInput={ (params) => (
@@ -191,18 +220,22 @@ function CompareTable({ save, visible }: CompareTableProps) {
             </CardContent>
           </Card>
           <LoadingButton variant='contained' color='primary' onClick={ exportToPng } loading={ exporting }
-                         disabled={ exporting || Object.keys(teamA[0]).length <= 1 || Object.keys(teamB[0]).length <= 1 } id='export-button'>
+                         disabled={ exporting || Object.keys(teamA[0]).length <= 1 || Object.keys(teamB[0]).length <= 1 }
+                         id='export-button'>
             { intl.formatMessage({ id: 'common.export' }) }
           </LoadingButton>
         </GridLegacy>
         <GridLegacy container item xs={ 12 } md={ 10 } lg={ 8 } xl={ 8 }>
           <AutoSizer disableHeight>
-            { ({ height, width }) => (
-              <GridLegacy container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } } key='compare-grid'>
+            { ({ width }) => (
+              <GridLegacy container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } }
+                          key='compare-grid'>
                 {
                   previousCharts.map((chart, i) => {
                       return (
-                        <div key={ `rank-${ chart.key }-${ i }` } id={ chart.key } ref={ el => refs.current[i] = el }>
+                        <div key={ `rank-${ chart.key }-${ i }` } id={ chart.key } ref={ el => {
+                          refs.current[i] = el;
+                        } }>
                           <Typography variant='h6' style={ { textAlign: 'center' } }>
                             { intl.formatMessage({ id: `country.${ chart.key }` }) }
                             {
@@ -220,7 +253,9 @@ function CompareTable({ save, visible }: CompareTableProps) {
                                                 paddingTop: 4
                                               } }>
                                     {
-                                      (exporting) ? <CircularProgress color='primary' style={ { width: 24, height: 24 } }/> : <PhotoCamera/>
+                                      (exporting) ?
+                                        <CircularProgress color='primary' style={ { width: 24, height: 24 } }/> :
+                                        <PhotoCamera/>
                                     }
                                   </IconButton>
                                 </span>
@@ -230,7 +265,7 @@ function CompareTable({ save, visible }: CompareTableProps) {
                           <BarChart
                             width={ width }
                             height={ 500 }
-                            data={ [teamA[i], teamB[i]] }
+                            data={ [ teamA[i], teamB[i] ] }
                             margin={ {
                               top: 25,
                               right: 40,
@@ -244,13 +279,19 @@ function CompareTable({ save, visible }: CompareTableProps) {
                               return props.active && props.payload ?
                                 (
                                   <GridLegacy container alignItems='center' rowGap={ 2 }
-                                        style={ { padding: 10, backgroundColor: 'white', border: '1px solid rgb(204, 204, 204)', flexDirection: 'column' } }>
+                                              style={ {
+                                                padding: 10,
+                                                backgroundColor: 'white',
+                                                border: '1px solid rgb(204, 204, 204)',
+                                                flexDirection: 'column'
+                                              } }>
                                     {
                                       props.payload.sort((a, b) => stringComparator(getCountryName(save, (a.name as string).slice(0, 3)),
                                         getCountryName(save, (b.name as string).slice(0, 3))))
                                         .map(payload => (
                                           <GridLegacy container item alignItems='center' style={ { width: '100%' } }>
-                                            <Avatar src={ getCountryFlag(save, (payload.name as string).slice(0, 3)) } variant='square'
+                                            <Avatar src={ getCountryFlag(save, (payload.name as string).slice(0, 3)) }
+                                                    variant='square'
                                                     style={ { display: 'inline-block' } }/>
                                             <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                                               { `${ getCountryName(save, (payload.name as string).slice(0, 3)) } : ${ formatNumber(payload.value as number) }` }
@@ -267,13 +308,13 @@ function CompareTable({ save, visible }: CompareTableProps) {
                                 .map(tag => (
                                   <Bar dataKey={ tag } stackId='team' isAnimationActive={ false }
                                        fill={ colorToHex(getCountry(save, tag.slice(0, 3)).colors.countryColor) }>
-                                    <LabelList dataKey={ tag } position='middle'
+                                    <LabelList dataKey={ tag } position='middle' fill='black'
                                                formatter={ (value: number) =>
                                                  `${ chart.valueMapper(value) } (${ formatNumber(100 * value / teamA[i].total) }%)` }/>
                                     {
                                       (teamA[i].total < teamB[i].total) &&
-                                      <LabelList dataKey={ tag } position='top' fill='red'
-                                                 formatter={ () => `-${ formatNumber(teamB[i].total - teamA[i].total) } 
+                                        <LabelList dataKey={ tag } position='top' fill='red'
+                                                   formatter={ () => `-${ formatNumber(teamB[i].total - teamA[i].total) } 
                                                  (-${ formatNumber((1 - (teamA[i].total / teamB[i].total)) * 100) }%)` }/>
                                     }
                                   </Bar>
@@ -285,14 +326,14 @@ function CompareTable({ save, visible }: CompareTableProps) {
                                 .map(tag => (
                                   <Bar dataKey={ tag } stackId='team' isAnimationActive={ false }
                                        fill={ colorToHex(getCountry(save, tag.slice(0, 3)).colors.countryColor) }>
-                                    <LabelList dataKey={ tag } position='middle'
+                                    <LabelList dataKey={ tag } position='middle' fill='black'
                                                formatter={ (value: number) => `${ chart.valueMapper(value) } (${ formatNumber(
                                                  100 * value / teamB[i].total) }%)` }/>
                                     {
                                       (teamB[i].total < teamA[i].total) &&
-                                      <LabelList dataKey={ tag } position='top' fill='red'
-                                                 formatter={ (value: number) => `-${ formatNumber(teamA[i].total - teamB[i].total) } (-${ formatNumber(
-                                                   (1 - (teamB[i].total / teamA[i].total)) * 100) }%)` }/>
+                                        <LabelList dataKey={ tag } position='top' fill='red'
+                                                   formatter={ (value: number) => `-${ formatNumber(teamA[i].total - teamB[i].total) } (-${ formatNumber(
+                                                     (1 - (teamB[i].total / teamA[i].total)) * 100) }%)` }/>
                                     }
                                   </Bar>
                                 ))

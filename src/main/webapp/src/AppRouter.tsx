@@ -12,6 +12,7 @@ import PoliciesList from 'screens/wiki/policies/PoliciesList';
 import { Wiki } from 'types/api.types';
 import DecisionPage from './screens/wiki/decision/DecisionPage';
 import IdeasGroupsList from './screens/wiki/ideaGroups/IdeaGroupList';
+import DecisionsList from "./screens/wiki/decision/DecisionsList";
 
 export type WikiState = {
   versions?: Record<string, string>;
@@ -42,9 +43,10 @@ const AppRouter: React.FunctionComponent = () => {
         <Route path="/save/:id/trade-node/:nodeId" element={ <NodePage/> }/>
         <Route path="/wiki" element={ <HomePage/> }/>
         <Route path="/wiki/:version" element={ <HomePage/> }/>
-        <Route path="/wiki/:version/decisions" element={ <HomePage/> }/>
+        <Route path="/wiki/:version/decisions" element={ <DecisionsList/> }/>
         <Route path="/wiki/:version/decisions/:id" element={ <DecisionPage/> }/>
         <Route path="/wiki/:version/idea-groups" element={ <IdeasGroupsList/> }/>
+        <Route path="/wiki/:version/idea-groups/:id" element={ <IdeasGroupsList/> }/>
         <Route path="/wiki/:version/policies" element={ <PoliciesList/> }/>
         <Route path="/wiki/:version/ideas" element={ <Ideas/> }/>
         <Route path="/" element={ <HomePage/> }/>

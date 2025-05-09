@@ -4,21 +4,20 @@ import { WikiContext } from 'AppRouter';
 import React, { useContext, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useParams } from 'react-router-dom';
-import PolicyCard from 'screens/wiki/policies/PolicyCard';
 import WikiBar from 'screens/wiki/WikiBar';
 import theme from 'theme';
-import { Policy, Power, Wiki } from 'types/api.types';
+import { Decision, Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';
-import { stringComparator, stringLocalisedComparator } from 'utils/format.utils';
+import { stringLocalisedComparator } from 'utils/format.utils';
+import DecisionCard from "./DecisionCard";
 
-function PoliciesList() {
+function DecisionsList() {
   const { version } = useParams();
   const intl = useIntl();
   const { wikiState } = useContext(WikiContext)!;
 
   const [ wiki, setWiki ] = useState<Wiki>();
-  const [ policies, setPolicies ] = useState<Array<Policy>>();
-  const [ filtered, setFiltered ] = useState<Array<Policy>>();
+  const [ decisions, setDecisions ] = useState<Array<Decision>>();
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ error, setError ] = useState<boolean>(false);
 
@@ -26,31 +25,26 @@ function PoliciesList() {
     if (!wiki && version && wikiState && wikiState.wikis && wikiState.wikis[version]) {
       const wiki = wikiState.wikis[version];
       setWiki(wiki);
-      setPolicies(
-        Object.values(wiki.policies).filter(i => i.category !== undefined).sort(stringLocalisedComparator));
-      document.title = intl.formatMessage({ id: 'wiki.policies' });
+      setDecisions(Object.values(wiki.decisions).sort(stringLocalisedComparator));
+      document.title = intl.formatMessage({ id: 'wiki.decisions' });
       setLoading(false);
       setError(false);
+
+      Object.values(wiki.decisions).filter(d => d.effects)
     }
   }, [ wikiState, version, wiki, intl ]);
-
-  useEffect(() => {
-    if (policies) {
-      setFiltered(policies.sort((a, b) => stringComparator(a.category, b.category) || stringLocalisedComparator(a, b)));
-    }
-  }, [ policies ]);
 
   return (
     <>
       {
-        (error || (!loading && (!policies || !version || !wiki))) ?
+        (error || (!loading && (!decisions || !version || !wiki))) ?
           <Grid container alignItems='center' justifyContent='center' flexDirection='column'
                 sx={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
             <Typography variant='h2' color={ theme.palette.primary.contrastText }>
               404
             </Typography>
             <Typography variant='h3' color={ theme.palette.primary.contrastText }>
-              { intl.formatMessage({ id: 'wiki.policy.notFound' }) }
+              { intl.formatMessage({ id: 'wiki.decision.notFound' }) }
             </Typography>
             <Link to='/'>
               <Home fontSize='large' color='primary' sx={ { width: 40, height: 40 } }/>
@@ -58,15 +52,15 @@ function PoliciesList() {
           </Grid>
           :
           <>
-            <WikiBar type={ wikiTypes.policies } objects={ policies } group={ p => intl.formatMessage({ id: `wiki.policy.${ p.category }` }) }>
+            <WikiBar type={ wikiTypes.decisions } objects={ decisions }>
               <Toolbar sx={ { backgroundColor: theme.palette.primary.dark } }>
                 <Typography variant='h6' color={ theme.palette.primary.contrastText }>
-                  { intl.formatMessage({ id: 'wiki.policies' }) }
+                  { intl.formatMessage({ id: 'wiki.decisions' }) }
                 </Typography>
               </Toolbar>
             </WikiBar>
             {
-              (loading || !filtered || !wiki || !version) ?
+              (loading || !decisions || !wiki || !version) ?
                 <Backdrop open sx={ { backgroundColor: theme.palette.primary.light } }>
                   <CircularProgress color='primary'/>
                 </Backdrop>
@@ -75,26 +69,12 @@ function PoliciesList() {
                   <Grid container size={ 12 } spacing={ 2 }>
                     <Grid container rowSpacing={ 4 }>
                       {
-                        Object.keys(Power).map(category => (
-                            <Grid container sx={ { flexDirection: 'column' } } rowSpacing={ 1 } key={ category }>
-                              <Typography variant='h4'>
-                                { intl.formatMessage({ id: `wiki.policy.${ category }` }) }
-                              </Typography>
-                              <Grid container spacing={ 3 }>
-                                {
-                                  filtered && filtered.filter(i => category === i.category)
-                                    .map((policy, index) => (
-                                      <Grid container size={ { xs: 12, md: 6, xl: 4 } }
-                                            key={ policy.id } id={ policy.id }>
-                                        <PolicyCard policy={ policy } wiki={ wiki }
-                                                    version={ version }/>
-                                      </Grid>
-                                    ))
-                                }
-                              </Grid>
-                            </Grid>
-                          )
-                        )
+                        decisions && decisions.map((decision, index) => (
+                          <Grid container size={ { xs: 12, md: 6, xl: 4 } }
+                                key={ decision.id } id={ decision.id }>
+                            <DecisionCard decision={ decision } wiki={ wiki } version={ version }/>
+                          </Grid>
+                        ))
                       }
                     </Grid>
                   </Grid>
@@ -106,4 +86,4 @@ function PoliciesList() {
   )
 }
 
-export default PoliciesList;
+export default DecisionsList;

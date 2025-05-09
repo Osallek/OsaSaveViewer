@@ -1,30 +1,41 @@
 import { Home } from '@mui/icons-material';
-import { AppBar, Avatar, GridLegacy, Toolbar, Tooltip } from '@mui/material';
+import { AppBar, Avatar, Grid, Toolbar, Tooltip } from '@mui/material';
 import { api } from 'api';
 import { WikiContext } from 'AppRouter';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { IdImageLocalised, IdLocalised, Wiki } from 'types/api.types';
 import { WikiType, wikiTypes } from 'types/wiki.types';
 import MenuMenu from './MenuMenu';
 
-interface WikiBarProps {
+interface WikiBarProps<T extends (IdLocalised | IdImageLocalised)> {
   type?: WikiType;
-  value?: IdLocalised | null;
-  imagedValue?: IdImageLocalised | null;
-  objects?: Array<IdLocalised>;
-  imagedObjects?: Array<IdImageLocalised>;
+  value?: T | null;
+  objects?: Array<T>;
   children: React.ReactElement;
   showId?: boolean;
-  group?: boolean;
+  group?: (value: T) => string;
+  imageFunction?: (value: T) => string;
+  setHeight?: (height: number) => void;
 }
 
-function WikiBar({ value, imagedValue, type, objects, imagedObjects, children, showId, group }: WikiBarProps) {
+function WikiBar<T extends (IdLocalised | IdImageLocalised)>({
+                                                               value,
+                                                               type,
+                                                               objects,
+                                                               children,
+                                                               showId,
+                                                               group,
+                                                               imageFunction,
+                                                               setHeight: parentSetHeight,
+                                                             }: WikiBarProps<T>) {
   const intl = useIntl();
   const navigate = useNavigate();
   const { wikiState, setWikiState } = useContext(WikiContext)!;
   const { version } = useParams();
+  const appbarRef = useRef<HTMLHeadElement>(null);
+  const [ height, setHeight ] = useState<number | undefined>(undefined);
 
   const handleMenuChange = (value: IdLocalised | IdImageLocalised | null) => {
     if (value && type) {
@@ -57,46 +68,55 @@ function WikiBar({ value, imagedValue, type, objects, imagedObjects, children, s
         console.error(e);
       }
     })();
-  }, [version, wikiState]);
+  }, [ version, wikiState ]);
+
+  useEffect(() => {
+    setHeight(appbarRef.current?.clientHeight);
+
+    if (parentSetHeight) {
+      parentSetHeight(appbarRef.current?.clientHeight ?? 0);
+    }
+  }, [ appbarRef, appbarRef.current, value, objects ]);
 
   return (
-    <AppBar style={ { position: 'relative' } }>
-      <Toolbar style={ { justifyContent: 'center' } }>
-        <GridLegacy container item alignItems="center" xs={ 12 } xl={ 10 }>
-          <Link to={ `/wiki/${ version }` }>
-            <Home color="secondary" style={ { width: 40, height: 40 } }/>
-          </Link>
-          {
-            type && (
-              objects ?
-                <MenuMenu title={ intl.formatMessage({ id: `wiki.${ type.path }` }) } showId={ showId }
-                          objects={ Object.values(objects) } value={ value } group={ group }
-                          onChange={ handleMenuChange }
-                />
-                :
-                imagedObjects &&
-                <MenuMenu title={ intl.formatMessage({ id: `wiki.${ type.path }` }) } showId={ showId }
-                          objects={ Object.values(imagedObjects) } imagedValue={ imagedValue } group={ group }
-                          onChange={ handleMenuChange }
-                />
-            )
-          }
-          {
-            Object.values(wikiTypes).filter(value => value !== type).map(value => (
-              <Tooltip title={ intl.formatMessage({ id: `wiki.${ value.path }` }) } key={ `tooltip-${ value.path }` }>
-                <Link to={ `/wiki/${ version }/${ value.path }` } key={ value.path } style={ { marginLeft: 8 } }>
-                  <Avatar variant="square" src={ `/eu4/wiki/${ value.icon }.png` } color="secondary"
-                          sx={ { width: 24, height: 24 } }/>
-                </Link>
-              </Tooltip>
-            ))
-          }
-        </GridLegacy>
-      </Toolbar>
-      {
-        children
-      }
-    </AppBar>
+    <>
+      <AppBar ref={ appbarRef }>
+        <Toolbar>
+          <Grid container size={ { xs: 12, xl: 10 } }
+                sx={ { width: '100%', alignItems: 'center', flexWrap: 'nowrap' } }>
+            <Grid container sx={ { minWidth: objects ? 300 : undefined } }>
+              <Link to={ `/wiki/${ version }` }>
+                <Home color="secondary" style={ { width: 40, height: 40 } }/>
+              </Link>
+              {
+                type && objects &&
+                  <MenuMenu title={ intl.formatMessage({ id: `wiki.${ type.path }` }) } showId={ showId }
+                            objects={ Object.values(objects) } value={ value } group={ group }
+                            onChange={ handleMenuChange } imageFunction={ imageFunction }
+                  />
+              }
+            </Grid>
+            <Grid container rowGap={ 1 } padding={ 1 }>
+              {
+                Object.values(wikiTypes).map(value => (
+                  <Tooltip title={ intl.formatMessage({ id: `wiki.${ value.path }` }) }
+                           key={ `tooltip-${ value.path }` }>
+                    <Link to={ `/wiki/${ version }/${ value.path }` } key={ value.path } style={ { marginLeft: 8 } }>
+                      <Avatar variant="square" src={ `/eu4/wiki/${ value.icon }.png` } color="secondary"
+                              sx={ { width: 24, height: 24 } }/>
+                    </Link>
+                  </Tooltip>
+                ))
+              }
+            </Grid>
+          </Grid>
+        </Toolbar>
+        {
+          children
+        }
+      </AppBar>
+      <div style={ { height: height } }/>
+    </>
   );
 }
 

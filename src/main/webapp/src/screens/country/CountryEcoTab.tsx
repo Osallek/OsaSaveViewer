@@ -1,5 +1,13 @@
 import {
-  GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography
+  GridLegacy,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
 } from '@mui/material';
 import { green, red } from '@mui/material/colors';
 import React from 'react';
@@ -8,7 +16,11 @@ import { Bar, BarChart, CartesianGrid, Cell, LabelList, Tooltip, XAxis, YAxis } 
 import theme from 'theme';
 import { Expense, Income, SaveCountry } from 'types/api.types';
 import {
-  expenseToColor, getExpenseStackBar, getIncomeStackBar, getTotalExpenseStackBar, incomeToColor
+  expenseToColor,
+  getExpenseStackBar,
+  getIncomeStackBar,
+  getTotalExpenseStackBar,
+  incomeToColor
 } from 'utils/chart.utils';
 import { formatNumber, numberComparator } from 'utils/format.utils';
 import { getTotalStableExpense, getTotalStableIncome, getTotalTotalExpenses } from 'utils/save.utils';
@@ -19,18 +31,21 @@ interface CountryEcoTabProps {
 
 function CountryEcoTab({ country }: CountryEcoTabProps) {
   const intl = useIntl();
+  const totalStableIncome = getTotalStableIncome(country);
+  const totalStableExpense = getTotalStableExpense(country);
+  const stableDiff = totalStableIncome - totalStableExpense;
 
   return (
     <>
       <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
-            key={ `grid-incomevsexpense-${ country.tag }` }>
+                  key={ `grid-incomevsexpense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.incomeVsExpense' }) }
         </Typography>
         <BarChart
           width={ 600 } height={ 500 }
-          data={ [ { name: intl.formatMessage({ id: 'country.income' }), value: getTotalStableIncome(country) },
-            { name: intl.formatMessage({ id: 'country.expense' }), value: getTotalStableExpense(country) } ] }
+          data={ [ { name: intl.formatMessage({ id: 'country.income' }), value: totalStableIncome },
+            { name: intl.formatMessage({ id: 'country.expense' }), value: totalStableExpense } ] }
           margin={ {
             top: 20,
             right: 30,
@@ -45,32 +60,25 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
             return [ formatNumber(value), undefined ];
           } }/>
           <Bar dataKey='value' isAnimationActive={ false }>
-            { [ { name: intl.formatMessage({ id: 'country.income' }), value: getTotalStableIncome(country) },
-              { name: intl.formatMessage({ id: 'country.expense' }), value: getTotalStableExpense(country) } ]
-              .map((entry, index) => (
-                <>
-                  <Cell fill={ index === 0 ? green[500] : red[500] } key={ `cell-${ index }` }/>
-                </>
-              )) }
+            <Cell fill={ green[500] } key={ `cell-income` }/>
+            <Cell fill={ red[500] } key={ `cell-expense` }/>
             <LabelList dataKey='value' position='middle' formatter={ (value: number) => formatNumber(value) }
                        fill='inherit' key='label-middle'/>
-            <LabelList dataKey='value' position='top' formatter={ (value: number) => {
-              const i = getTotalStableIncome(country);
-              const e = getTotalStableExpense(country);
+            <LabelList dataKey='value' position='top' fill={ stableDiff > 0 ? green[500] : red[500] }
+                       formatter={ (value: number) => {
+                         if (value === totalStableIncome && stableDiff > 0) {
+                           return `+${ formatNumber(stableDiff) }`;
+                         } else if (value === totalStableExpense && stableDiff < 0) {
+                           return `${ formatNumber(stableDiff) }`;
+                         }
 
-              if (value === i && i > e) {
-                return `+${ formatNumber(i - e) }`;
-              } else if (value === e && e > i) {
-                return `-${ formatNumber(e - i) }`;
-              }
-
-              return undefined;
-            } }/>
+                         return undefined;
+                       } }/>
           </Bar>
         </BarChart>
       </GridLegacy>
       <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
-            key={ `grid-income-${ country.tag }` }>
+                  key={ `grid-income-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.income' }) }
         </Typography>
@@ -88,7 +96,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           <XAxis dataKey='name'/>
           <YAxis/>
           <Tooltip formatter={ (value: number, name: string) => ([ `${ formatNumber(value) } (${ formatNumber(
-            (100 * value) / getTotalStableIncome(country)) }%)`,
+            (100 * value) / totalStableIncome) }%)`,
             intl.formatMessage({ id: `country.income.${ name }` }) ]) }/>
           {
             country.incomes &&
@@ -98,10 +106,11 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
               .map(([ key, value ]) => (
                 <Bar dataKey={ key } stackId='a' isAnimationActive={ false }
                      fill={ incomeToColor(Income[key as keyof typeof Income]) }>
-                  <LabelList dataKey={ key } position='middle' formatter={ (value: number) => {
-                    return value / getTotalStableIncome(country) > 0.03 ? `${ formatNumber(value) } (${ formatNumber(
-                      (100 * value) / getTotalStableIncome(country)) }%)` : '';
-                  } }/>
+                  <LabelList dataKey={ key } position='middle' fill='black'
+                             formatter={ (value: number) => {
+                               return value / totalStableIncome > 0.03 ? `${ formatNumber(value) } (${ formatNumber(
+                                 (100 * value) / totalStableIncome) }%)` : '';
+                             } }/>
                 </Bar>
               ))
           }
@@ -142,7 +151,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
                       <TableCell>{ intl.formatMessage({ id: `country.income.${ key }` }) }</TableCell>
                       <TableCell align='right'>{ formatNumber(value) }</TableCell>
                       <TableCell
-                        align='right'>{ `${ formatNumber((100 * value) / getTotalStableIncome(country)) }%` }</TableCell>
+                        align='right'>{ `${ formatNumber((100 * value) / totalStableIncome) }%` }</TableCell>
                     </TableRow>
                   )) }
               <TableRow style={ { backgroundColor: theme.palette.primary.light } }>
@@ -155,7 +164,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
                 <TableCell align='right' style={ { borderBottom: 'none' } }>
                   <Typography variant='body1' color={ theme.palette.primary.contrastText }
                               style={ { fontWeight: 'bold' } }>
-                    { formatNumber(getTotalStableIncome(country)) }
+                    { formatNumber(totalStableIncome) }
                   </Typography>
                 </TableCell>
                 <TableCell style={ { borderBottom: 'none' } }/>
@@ -165,7 +174,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
         </TableContainer>
       </GridLegacy>
       <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
-            key={ `grid-expense-${ country.tag }` }>
+                  key={ `grid-expense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.expense' }) }
         </Typography>
@@ -183,7 +192,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
           <XAxis dataKey='name'/>
           <YAxis/>
           <Tooltip formatter={ (value: number, name: string) => ([ `${ formatNumber(value) } (${ formatNumber(
-            (100 * value) / getTotalStableExpense(country)) }%)`,
+            (100 * value) / totalStableExpense) }%)`,
             intl.formatMessage({ id: `country.expense.${ name }` }) ]) }/>
           {
             country.expenses &&
@@ -193,10 +202,11 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
               .map(([ key, value ]) => (
                 <Bar dataKey={ key } stackId='a' isAnimationActive={ false }
                      fill={ expenseToColor(Expense[key as keyof typeof Expense]) }>
-                  <LabelList dataKey={ key } position='middle' formatter={ (value: number) => {
-                    return value / getTotalStableExpense(country) > 0.03 ? `${ formatNumber(value) } (${ formatNumber(
-                      (100 * value) / getTotalStableExpense(country)) }%)` : '';
-                  } }/>
+                  <LabelList dataKey={ key } position='middle' fill='black'
+                             formatter={ (value: number) => {
+                               return value / totalStableExpense > 0.03 ? `${ formatNumber(value) } (${ formatNumber(
+                                 (100 * value) / totalStableExpense) }%)` : '';
+                             } }/>
                 </Bar>
               ))
           }
@@ -233,7 +243,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
                       <TableCell>{ intl.formatMessage({ id: `country.expense.${ key }` }) }</TableCell>
                       <TableCell align='right'>{ formatNumber(value) }</TableCell>
                       <TableCell
-                        align='right'>{ `${ formatNumber((100 * value) / getTotalStableExpense(country)) }%` }</TableCell>
+                        align='right'>{ `${ formatNumber((100 * value) / totalStableExpense) }%` }</TableCell>
                     </TableRow>
                   )) }
               <TableRow style={ { backgroundColor: theme.palette.primary.light } }>
@@ -246,7 +256,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
                 <TableCell align='right' style={ { borderBottom: 'none' } }>
                   <Typography variant='body1' color={ theme.palette.primary.contrastText }
                               style={ { fontWeight: 'bold' } }>
-                    { formatNumber(getTotalStableExpense(country)) }
+                    { formatNumber(totalStableExpense) }
                   </Typography>
                 </TableCell>
                 <TableCell style={ { borderBottom: 'none' } }/>
@@ -256,7 +266,7 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
         </TableContainer>
       </GridLegacy>
       <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: 8 } }
-            key={ `grid-totalexpense-${ country.tag }` }>
+                  key={ `grid-totalexpense-${ country.tag }` }>
         <Typography variant='h6' style={ { width: '100%', textAlign: 'center', marginBottom: 8 } }>
           { intl.formatMessage({ id: 'country.totalExpense' }) }
         </Typography>
@@ -283,10 +293,11 @@ function CountryEcoTab({ country }: CountryEcoTabProps) {
               .map(([ key, value ]) => (
                 <Bar dataKey={ key } stackId='a' isAnimationActive={ false }
                      fill={ expenseToColor(Expense[key as keyof typeof Expense]) }>
-                  <LabelList dataKey={ key } position='middle' formatter={ (value: number) => {
-                    return value / getTotalTotalExpenses(country) > 0.02 ? `${ formatNumber(value) } (${ formatNumber(
-                      (100 * value) / getTotalTotalExpenses(country)) }%)` : '';
-                  } }/>
+                  <LabelList dataKey={ key } position='middle' fill='black'
+                             formatter={ (value: number) => {
+                               return value / getTotalTotalExpenses(country) > 0.02 ? `${ formatNumber(value) } (${ formatNumber(
+                                 (100 * value) / getTotalTotalExpenses(country)) }%)` : '';
+                             } }/>
                 </Bar>
               ))
           }

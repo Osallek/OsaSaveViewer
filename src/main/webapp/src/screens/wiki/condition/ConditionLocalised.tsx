@@ -1,4 +1,4 @@
-import { Avatar, GridLegacy, Theme, Typography, useTheme } from '@mui/material';
+import { Avatar, Grid, Theme, Typography, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -8,14 +8,42 @@ import { Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
 import {
-  getAdvisor, getAdvisorImage, getAge, getAgeImage, getArea, getBuilding, getBuildingImage, getColonialRegion,
-  getContinent, getCountry, getCountrysFlag, getDisaster, getDisasterImage, getDlc, getDlcImage, getEstateImage,
-  getFaction, getFactionImage, getIdea, getIdeaGroup, getIdeaGroupImage, getIdExampleLocalised, getImperialIncident,
-  getInstitution, getInstitutionImage, getMission, getMissionImage, getProvince, getRegion, getReligion,
-  getReligionImage, getSuperRegion, getTradeGood, getTradeGoodImage
+  getAdvisor,
+  getAdvisorImage,
+  getAge,
+  getAgeImage,
+  getArea,
+  getBuilding,
+  getBuildingImage,
+  getColonialRegion,
+  getContinent,
+  getCountry,
+  getCountrysFlag,
+  getDisaster,
+  getDisasterImage,
+  getDlc,
+  getDlcImage,
+  getEstateImage,
+  getFaction,
+  getFactionImage,
+  getIdea,
+  getIdeaGroup,
+  getIdeaGroupImage,
+  getIdExampleLocalised,
+  getImperialIncident,
+  getInstitution,
+  getInstitutionImage,
+  getMission,
+  getMissionImage,
+  getProvince,
+  getRegion,
+  getReligion,
+  getReligionImage,
+  getSuperRegion,
+  getTradeGood,
+  getTradeGoodImage
 } from 'utils/wiki.utils';
 import ConditionLocalisedLink from './ConditionLocalisedLink';
-import ConditionsBlock from './ConditionsBlock';
 import ConditionsNumber from './ConditionsNumber';
 
 interface ConditionLocalisedProps extends TypographyProps {
@@ -84,9 +112,9 @@ const defaultNode = (props: DefaultNodeProps) => {
   return (
     grid ?
       (
-        <GridLegacy container item sx={ { ...sx } }>
+        <Grid container sx={ { ...sx } }>
           { innerDefaultNode({ ...props }) }
-        </GridLegacy>
+        </Grid>
       )
       :
       (
@@ -125,39 +153,39 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
   const building = getBuilding(wiki, condition.toLowerCase());
   if (building !== null) {
     return (
-      <GridLegacy container item alignItems='center'>
+      <Grid container alignItems='center'>
         <ConditionsNumber condition={ 'building' } negate={ negate } value={ value ? Number(value) : undefined }
                           sx={ { width: undefined } } grid={ false }/>
         <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } grid={ false }
                                 record={ wiki.buildings } value={ condition } type={ wikiTypes.buildings }
                                 avatar={ getBuildingImage(building) } colons={ false }/>
-      </GridLegacy>
+      </Grid>
     );
   }
 
   const ideaGroup = getIdeaGroup(wiki, condition.toLowerCase());
   if (ideaGroup !== null) {
     return (
-      <GridLegacy container item alignItems='center'>
+      <Grid container alignItems='center'>
         <ConditionsNumber condition={ 'ideaGroup' } negate={ negate } value={ value ? Number(value) : undefined }
                           sx={ { width: undefined } } grid={ false }/>
         <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } grid={ false }
                                 record={ wiki.ideaGroups } value={ condition } type={ wikiTypes.ideaGroups }
                                 avatar={ getIdeaGroupImage(ideaGroup) } colons={ false }/>
-      </GridLegacy>
+      </Grid>
     );
   }
 
   const tradeGood = getTradeGood(wiki, condition.toLowerCase());
   if (tradeGood !== null) {
     return (
-      <GridLegacy container item alignItems='center'>
+      <Grid container alignItems='center'>
         <ConditionsNumber condition={ 'tradeGood' } negate={ negate } value={ value ? Number(value) : undefined }
                           sx={ { width: undefined } } grid={ false }/>
         <ConditionLocalisedLink wikiVersion={ wikiVersion } negate={ negate } grid={ false }
                                 record={ wiki.tradeGoods } value={ condition } type={ wikiTypes.tradeGoods }
                                 avatar={ getTradeGoodImage(tradeGood) } colons={ false }/>
-      </GridLegacy>
+      </Grid>
     );
   }
 
@@ -334,7 +362,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     }
     case 'has_global_flag': {
       return (
-        <GridLegacy container item>
+        <Grid container>
           <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } }
                       key={ `title-${ condition }-${ value }` }>
             { intl.formatMessage({ id: `wiki.condition.${ condition }${ negate ? '.not' : '' }` }) }
@@ -352,7 +380,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
                       key={ `suffix-${ condition }-${ value }` }>
             { intl.formatMessage({ id: `wiki.condition.active${ negate ? '.not' : '' }` }) }
           </Typography>
-        </GridLegacy>
+        </Grid>
       )
     }
     case 'num_of_ports':
@@ -683,7 +711,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
     }
     case 'monthly_income':
       return (
-        <GridLegacy container item alignItems='center'>
+        <Grid container alignItems='center'>
           <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText, ...others.sx } } { ...others }>
             { `${ intl.formatMessage(
               { id: `wiki.condition.${ condition + (negate ? '.not' : '') }` }) }` }
@@ -709,7 +737,7 @@ function ConditionLocalised(props: ConditionLocalisedProps) {
             </>
           }
           <Avatar src={ '/eu4/country/income.png' } variant='square' sx={ { width: 36, height: 36, ml: 0.25 } }/>
-        </GridLegacy>
+        </Grid>
       )
     case 'is_strongest_trade_power':
       if ('root' === value?.toLowerCase()) {

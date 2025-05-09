@@ -1,4 +1,15 @@
-import { CircularProgress, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+  CircularProgress,
+  GridLegacy,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
@@ -65,107 +76,122 @@ interface CountryCultureTabProps {
 function CountryCultureTab({ country, save }: CountryCultureTabProps) {
   const intl = useIntl();
 
-  const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [cultures, setCultures] = useState<Array<CulturePie>>([]);
-  const [nbProvinces, setNbProvinces] = useState<number>(0);
-  const [ranks, setRanks] = useState<Array<number>>([]);
-  const [devRanks, setDevRanks] = useState<Array<number>>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [ activeIndex, setActiveIndex ] = useState<number>(0);
+  const [ cultures, setCultures ] = useState<Array<CulturePie>>([]);
+  const [ nbProvinces, setNbProvinces ] = useState<number>(0);
+  const [ ranks, setRanks ] = useState<Array<number>>([]);
+  const [ devRanks, setDevRanks ] = useState<Array<number>>([]);
+  const [ loading, setLoading ] = useState<boolean>(true);
 
   useEffect(() => {
     setCultures(getCulturesPie(country, save));
     setNbProvinces(getProvinces(country, save).length);
-  }, [country, save]);
+  }, [ country, save ]);
 
   useEffect(() => {
     setRanks(cultures.map(culture => getRank(save, country, c => getNbCulture(c, save, culture.type))));
     setDevRanks(cultures.map(culture => getRank(save, country, c => getDevCulture(c, save, culture.type))));
-  }, [country, save, cultures]);
+  }, [ country, save, cultures ]);
 
   useEffect(() => {
     if (ranks.length > 0 && devRanks.length > 0) {
       setLoading(false);
     }
-  }, [ranks, devRanks]);
+  }, [ ranks, devRanks ]);
 
   return (
-    <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `cultures-${ country.tag }` }>
-      <PieChart width={ 500 } height={ 500 }>
-        <Pie
-          activeIndex={ activeIndex }
-          activeShape={ renderActiveShape }
-          data={ cultures }
-          innerRadius={ 100 }
-          outerRadius={ 120 }
-          dataKey='dev'
-          onMouseEnter={ (_, index) => setActiveIndex(index) }
-          isAnimationActive={ false }
-        >
-          { cultures.map((entry, index) => (
-            <Cell key={ `cell-culture-${ index }` } fill={ entry.color }/>
-          )) }
-        </Pie>
-      </PieChart>
-      <TableContainer component={ Paper } style={ { borderRadius: 0, width: 'auto' } }>
-        <Table>
-          <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>
-            <TableRow>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.color' }) }</TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.type' }) }</TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
-                { intl.formatMessage({ id: 'country.nbProvinces' }) }
-              </TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>
-                { intl.formatMessage({ id: 'common.rank' }) }
-              </TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>
-                { intl.formatMessage({ id: 'common.percent' }) }
-              </TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
-                { intl.formatMessage({ id: 'country.dev' }) }
-              </TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>
-                { intl.formatMessage({ id: 'common.rank' }) }
-              </TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>
-                { intl.formatMessage({ id: 'common.percent' }) }
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-              cultures.map((item, index) => (
-                <TableRow key={ `culture-${ item.type }-${ country.tag }` } style={ { height: 73 } }>
-                  <TableCell align='center'>
-                    <div style={ {
-                      width: 10,
-                      height: 10,
-                      backgroundColor: item.color,
-                      margin: 'auto'
-                    } }/>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant='body1' component='span'>
-                      { item.name }
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='right'>{ formatNumber(item.value) }</TableCell>
-                  <TableCell align='right'>
-                    { loading ? <CircularProgress color='primary' style={ { height: 30, width: 30 } }/> : getRankDisplay(ranks[index] ?? 0) }
-                  </TableCell>
-                  <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                    { `${ formatNumber(item.value * 100 / nbProvinces) }%` }
-                  </TableCell>
-                  <TableCell align='right'>{ formatNumber(item.dev) }</TableCell>
-                  <TableCell align='right'>
-                    { loading ? <CircularProgress color='primary' style={ { height: 30, width: 30 } }/> : getRankDisplay(devRanks[index] ?? 0) }
-                  </TableCell>
-                  <TableCell align='right'>{ `${ formatNumber(item.dev * 100 / country.dev) }%` }</TableCell>
-                </TableRow>
-              )) }
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
+                key={ `cultures-${ country.tag }` }>
+      {
+        loading ? <CircularProgress color='primary'/> : (
+          <>
+            <PieChart width={ 500 } height={ 500 }>
+              <Pie
+                activeIndex={ activeIndex }
+                activeShape={ renderActiveShape }
+                data={ cultures }
+                innerRadius={ 100 }
+                outerRadius={ 120 }
+                dataKey='dev'
+                onMouseEnter={ (_, index) => setActiveIndex(index) }
+                isAnimationActive={ false }
+              >
+                { cultures.map((entry, index) => (
+                  <Cell key={ `cell-culture-${ index }` } fill={ entry.color }/>
+                )) }
+              </Pie>
+            </PieChart>
+            <TableContainer component={ Paper } style={ { borderRadius: 0, width: 'auto' } }>
+              <Table>
+                <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>
+                  <TableRow>
+                    <TableCell
+                      style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.color' }) }</TableCell>
+                    <TableCell
+                      style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.type' }) }</TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
+                      { intl.formatMessage({ id: 'country.nbProvinces' }) }
+                    </TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } }>
+                      { intl.formatMessage({ id: 'common.rank' }) }
+                    </TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } }>
+                      { intl.formatMessage({ id: 'common.percent' }) }
+                    </TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
+                      { intl.formatMessage({ id: 'country.dev' }) }
+                    </TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } }>
+                      { intl.formatMessage({ id: 'common.rank' }) }
+                    </TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } }>
+                      { intl.formatMessage({ id: 'common.percent' }) }
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    cultures.map((item, index) => (
+                      <TableRow key={ `culture-${ item.type }-${ country.tag }` } style={ { height: 73 } }>
+                        <TableCell align='center'>
+                          <div style={ {
+                            width: 10,
+                            height: 10,
+                            backgroundColor: item.color,
+                            margin: 'auto'
+                          } }/>
+                        </TableCell>
+                        <TableCell>
+                          <Typography variant='body1' component='span'>
+                            { item.name }
+                          </Typography>
+                        </TableCell>
+                        <TableCell align='right'>{ formatNumber(item.value) }</TableCell>
+                        <TableCell align='right'>
+                          { loading ? <CircularProgress color='primary' style={ {
+                            height: 30,
+                            width: 30
+                          } }/> : getRankDisplay(ranks[index] ?? 0) }
+                        </TableCell>
+                        <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
+                          { `${ formatNumber(item.value * 100 / nbProvinces) }%` }
+                        </TableCell>
+                        <TableCell align='right'>{ formatNumber(item.dev) }</TableCell>
+                        <TableCell align='right'>
+                          { loading ? <CircularProgress color='primary' style={ {
+                            height: 30,
+                            width: 30
+                          } }/> : getRankDisplay(devRanks[index] ?? 0) }
+                        </TableCell>
+                        <TableCell align='right'>{ `${ formatNumber(item.dev * 100 / country.dev) }%` }</TableCell>
+                      </TableRow>
+                    )) }
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
+        )
+      }
     </GridLegacy>
   )
 }

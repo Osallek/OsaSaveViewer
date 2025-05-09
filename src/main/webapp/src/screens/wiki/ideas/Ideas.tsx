@@ -1,9 +1,18 @@
 import { Home } from '@mui/icons-material';
 import {
-  Autocomplete, Avatar, Backdrop, Card, CardContent, CardHeader, Chip, CircularProgress, GridLegacy, TextField, Toolbar,
+  Autocomplete,
+  Avatar,
+  Backdrop,
+  Card,
+  CardContent,
+  CardHeader,
+  Chip,
+  CircularProgress,
+  Grid,
+  TextField,
+  Toolbar,
   Typography
 } from '@mui/material';
-import { api } from 'api';
 import { WikiContext } from 'AppRouter';
 import React, { useContext, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -21,16 +30,16 @@ function Ideas() {
   const intl = useIntl();
   const { wikiState } = useContext(WikiContext)!;
 
-  const [wiki, setWiki] = useState<Wiki>();
-  const [ideaGroups, setIdeaGroups] = useState<Array<IdeaGroup>>();
-  const [tagIdeas, setTagIdeas] = useState<Array<IdeaGroup>>();
-  const [policies, setPolicies] = useState<Array<Policy>>();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-  const [selectedIdeas, setSelectedIdeas] = useState<Array<IdeaGroup>>([]);
-  const [selectedTag, setSelectedTag] = useState<IdeaGroup | null>(null);
-  const [selectedPolicies, setSelectedPolicies] = useState<Array<Policy>>([]);
-  const [modifiers, setModifiers] = useState<Modifiers | undefined>(undefined);
+  const [ wiki, setWiki ] = useState<Wiki>();
+  const [ ideaGroups, setIdeaGroups ] = useState<Array<IdeaGroup>>();
+  const [ tagIdeas, setTagIdeas ] = useState<Array<IdeaGroup>>();
+  const [ policies, setPolicies ] = useState<Array<Policy>>();
+  const [ loading, setLoading ] = useState<boolean>(true);
+  const [ error, setError ] = useState<boolean>(false);
+  const [ selectedIdeas, setSelectedIdeas ] = useState<Array<IdeaGroup>>([]);
+  const [ selectedTag, setSelectedTag ] = useState<IdeaGroup | null>(null);
+  const [ selectedPolicies, setSelectedPolicies ] = useState<Array<Policy>>([]);
+  const [ modifiers, setModifiers ] = useState<Modifiers | undefined>(undefined);
 
   useEffect(() => {
     if (!wiki && version && wikiState && wikiState.wikis && wikiState.wikis[version]) {
@@ -38,21 +47,21 @@ function Ideas() {
       setWiki(wiki);
       setIdeaGroups(
         Object.values(wiki.ideaGroups)
-              .filter(i => i.category !== undefined)
-              .sort((a, b) => stringComparator(a.category, b.category) || stringLocalisedComparator(a, b)));
+          .filter(i => i.category !== undefined)
+          .sort((a, b) => stringComparator(a.category, b.category) || stringLocalisedComparator(a, b)));
       setPolicies(
         Object.values(wiki.policies)
-              .filter(i => i.category != undefined)
-              .sort((a, b) => stringComparator(a.category, b.category) || stringLocalisedComparator(a, b)));
+          .filter(i => i.category != undefined)
+          .sort((a, b) => stringComparator(a.category, b.category) || stringLocalisedComparator(a, b)));
       setTagIdeas(
         Object.values(wiki.ideaGroups)
-              .filter(i => i.free && i.start && (i.start.modifiers || i.start.enables))
-              .sort(stringLocalisedComparator));
+          .filter(i => i.free && i.start && (i.start.modifiers || i.start.enables))
+          .sort(stringLocalisedComparator));
       document.title = intl.formatMessage({ id: 'wiki.ideaGroups' });
       setLoading(false);
       setError(false);
     }
-  }, [wikiState, version, wiki, intl]);
+  }, [ wikiState, version, wiki, intl ]);
 
   useEffect(() => {
     const modifs: Array<Modifiers> = [];
@@ -117,20 +126,20 @@ function Ideas() {
       }
 
       if (m.modifiers) {
-        for (const [name, value] of Object.entries(m.modifiers)) {
+        for (const [ name, value ] of Object.entries(m.modifiers)) {
           modif[name] = (modif[name] ?? 0) + value;
         }
       }
     }
 
     setModifiers({ enables, modifiers: modif });
-  }, [selectedIdeas, selectedTag, selectedPolicies]);
+  }, [ selectedIdeas, selectedTag, selectedPolicies ]);
 
   return (
     <>
       {
         (error || (!loading && (!ideaGroups || !version || !wiki))) ?
-          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
+          <Grid container alignItems='center' justifyContent='center' flexDirection='column'
                 sx={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
             <Typography variant='h2' color={ theme.palette.primary.contrastText }>
               404
@@ -141,11 +150,11 @@ function Ideas() {
             <Link to='/'>
               <Home fontSize='large' color='primary' sx={ { width: 40, height: 40 } }/>
             </Link>
-          </GridLegacy>
+          </Grid>
           :
           <>
-            <WikiBar  group={ false }>
-              <Toolbar sx={ { justifyContent: 'center', backgroundColor: theme.palette.primary.dark } }>
+            <WikiBar>
+              <Toolbar sx={ { backgroundColor: theme.palette.primary.dark } }>
                 <Typography variant='h6' color={ theme.palette.primary.contrastText }>
                   { intl.formatMessage({ id: 'wiki.ideas' }) }
                 </Typography>
@@ -157,10 +166,10 @@ function Ideas() {
                   <CircularProgress color='primary'/>
                 </Backdrop>
                 :
-                <GridLegacy container sx={ { alignItems: 'flex-start', justifyContent: 'center', padding: 3 } }>
-                  <GridLegacy container item xs={ 12 } md={ 6 } xl={ 5 } rowGap={ 2 }
+                <Grid container sx={ { alignItems: 'flex-start', justifyContent: 'center', padding: 3 } }>
+                  <Grid container size={ { xs: 12, md: 6, xl: 5 } } rowGap={ 2 }
                         sx={ { flexDirection: 'column' } } style={ { paddingTop: 0, paddingLeft: 0 } }>
-                    <GridLegacy container item>
+                    <Grid container>
                       <Card style={ { width: '100%', backgroundColor: theme.palette.primary.light } }>
                         <CardHeader title={ intl.formatMessage({ id: 'wiki.ideas.tagIdeas' }) }
                                     titleTypographyProps={ {
@@ -174,16 +183,16 @@ function Ideas() {
                             options={ tagIdeas }
                             getOptionLabel={ option => `${ getLName(option) } (${ option.id })` }
                             getOptionDisabled={ option => option === selectedTag }
-                            renderOption={ (props, option) => {
+                            renderOption={ ({ key, ...props }, option) => {
                               return (
-                                <li { ...props }>
-                                  <GridLegacy container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
+                                <li key={ key } { ...props }>
+                                  <Grid container alignItems='center' style={ { width: '100%' } } key={ props.id }>
                                     <Avatar src={ getIdeaGroupImage(option) } variant='square'
                                             style={ { display: 'inline-block' } }/>
                                     <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                                       { `${ getLName(option) } (${ option.id })` }
                                     </Typography>
-                                  </GridLegacy>
+                                  </Grid>
                                 </li>
                               )
                             } }
@@ -199,8 +208,8 @@ function Ideas() {
                           />
                         </CardContent>
                       </Card>
-                    </GridLegacy>
-                    <GridLegacy container item>
+                    </Grid>
+                    <Grid container>
                       <Card style={ { width: '100%', backgroundColor: theme.palette.primary.light } }>
                         <CardHeader title={ intl.formatMessage({ id: 'wiki.ideas.ideas' }) }
                                     titleTypographyProps={ {
@@ -216,29 +225,32 @@ function Ideas() {
                             options={ ideaGroups }
                             getOptionLabel={ option => getLName(option) ?? option.id }
                             getOptionDisabled={ option => selectedIdeas.includes(option) }
-                            renderOption={ (props, option) => {
+                            renderOption={ ({ key, ...props }, option) => {
                               return (
-                                <li { ...props }>
-                                  <GridLegacy container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
+                                <li key={ key } { ...props }>
+                                  <Grid container alignItems='center' style={ { width: '100%' } } key={ props.id }>
                                     <Avatar src={ getIdeaGroupImage(option) } variant='square'
                                             style={ { display: 'inline-block' } }/>
                                     <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                                       { getLName(option) }
                                     </Typography>
-                                  </GridLegacy>
+                                  </Grid>
                                 </li>
                               )
                             } }
                             renderTags={ (value: readonly IdeaGroup[], getTagProps) =>
-                              value.map((option: IdeaGroup, index: number) => (
-                                <Chip label={ getLName(option) }
-                                      avatar={ <Avatar src={ getIdeaGroupImage(option) } variant='circular'/> }
-                                      { ...getTagProps({ index }) }
-                                      style={ {
-                                        backgroundColor: theme.palette.primary.main,
-                                        color: theme.palette.primary.contrastText
-                                      } }/>
-                              ))
+                              value.map((option: IdeaGroup, index: number) => {
+                                  const { key, ...props } = getTagProps({ index });
+                                  return <Chip key={ key }
+                                               label={ getLName(option) }
+                                               avatar={ <Avatar src={ getIdeaGroupImage(option) } variant='circular'/> }
+                                               { ...props }
+                                               style={ {
+                                                 backgroundColor: theme.palette.primary.main,
+                                                 color: theme.palette.primary.contrastText
+                                               } }/>
+                                }
+                              )
                             }
                             renderInput={ (params) => (<TextField { ...params } variant='outlined'/>) }
                             value={ selectedIdeas }
@@ -246,8 +258,8 @@ function Ideas() {
                           />
                         </CardContent>
                       </Card>
-                    </GridLegacy>
-                    <GridLegacy container item>
+                    </Grid>
+                    <Grid container>
                       <Card style={ { width: '100%', backgroundColor: theme.palette.primary.light } }>
                         <CardHeader title={ intl.formatMessage({ id: 'wiki.ideas.policies' }) }
                                     titleTypographyProps={ {
@@ -265,32 +277,35 @@ function Ideas() {
                             getOptionLabel={ option => getLName(option) ?? option.id }
                             getOptionDisabled={ option => selectedPolicies.includes(option) ||
                               !option.groups.every(i => selectedIdeas.map(g => g.id).includes(i)) }
-                            renderOption={ (props, option) => {
+                            renderOption={ ({ key, ...props }, option) => {
                               return (
-                                <li { ...props }>
-                                  <GridLegacy container item alignItems='center' style={ { width: '100%' } } key={ props.id }>
+                                <li key={ key } { ...props }>
+                                  <Grid container alignItems='center' style={ { width: '100%' } } key={ props.id }>
                                     <Avatar src={ `/eu4/wiki/${ option.category.toLowerCase() }.png` } variant='square'
                                             style={ { display: 'inline-block' } }/>
                                     <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
                                       { `${ getLName(option) } (${ option.groups.map(g => getLName(wiki?.ideaGroups[g]))
-                                                                         .sort(stringUComparator)
-                                                                         .join(' + ') })` }
+                                        .sort(stringUComparator)
+                                        .join(' + ') })` }
                                     </Typography>
-                                  </GridLegacy>
+                                  </Grid>
                                 </li>
                               )
                             } }
                             renderTags={ (value: readonly Policy[], getTagProps) =>
-                              value.map((option: Policy, index: number) => (
-                                <Chip label={ getLName(option) }
-                                      avatar={ <Avatar src={ `/eu4/wiki/${ option.category.toLowerCase() }.png` }
-                                                       variant='circular'/> }
-                                      { ...getTagProps({ index }) }
-                                      style={ {
-                                        backgroundColor: theme.palette.primary.main,
-                                        color: theme.palette.primary.contrastText
-                                      } }/>
-                              ))
+                              value.map((option: Policy, index: number) => {
+                                  const { key, ...props } = getTagProps({ index });
+                                  return <Chip key={ key }
+                                               label={ getLName(option) }
+                                               avatar={ <Avatar src={ `/eu4/wiki/${ option.category.toLowerCase() }.png` }
+                                                                variant='circular'/> }
+                                               { ...props }
+                                               style={ {
+                                                 backgroundColor: theme.palette.primary.main,
+                                                 color: theme.palette.primary.contrastText
+                                               } }/>
+                                }
+                              )
                             }
                             renderInput={ (params) => (<TextField { ...params } variant='outlined'/>) }
                             value={ selectedPolicies }
@@ -298,9 +313,9 @@ function Ideas() {
                           />
                         </CardContent>
                       </Card>
-                    </GridLegacy>
-                  </GridLegacy>
-                  <GridLegacy container item xs={ 12 } md={ 10 } lg={ 6 } xl={ 5 } sx={ { paddingLeft: 3 } }>
+                    </Grid>
+                  </Grid>
+                  <Grid container size={ { xs: 12, md: 10, lg: 6, xl: 5 } } sx={ { paddingLeft: 3 } }>
                     { modifiers && (
                       <Card style={ { width: '100%', backgroundColor: theme.palette.primary.light } }>
                         <CardHeader title={ intl.formatMessage({ id: 'wiki.ideas.total' }) }
@@ -313,8 +328,8 @@ function Ideas() {
                         </CardContent>
                       </Card>
                     ) }
-                  </GridLegacy>
-                </GridLegacy>
+                  </Grid>
+                </Grid>
             }
           </>
       }

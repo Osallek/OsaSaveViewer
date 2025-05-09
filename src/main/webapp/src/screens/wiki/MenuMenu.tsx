@@ -1,98 +1,88 @@
-import { Autocomplete, Avatar, GridLegacy, Popper, PopperProps, TextField, Typography, useTheme } from '@mui/material';
+import { Autocomplete, Avatar, Grid, Popper, PopperProps, TextField, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { IdImageLocalised, IdLocalised } from 'types/api.types';
 import { getLName } from 'utils/data.utils';
 import { cleanString } from 'utils/format.utils';
 
-interface MenuMenuProps {
+interface MenuMenuProps<T extends (IdLocalised | IdImageLocalised)> {
   title: string;
-  value?: IdLocalised | null;
-  imagedValue?: IdImageLocalised | null;
-  objects?: Array<IdLocalised>;
-  imagedObjects?: Array<IdImageLocalised>;
-  onChange: (value: IdLocalised | IdImageLocalised | null) => void;
+  value?: T | null;
+  objects?: Array<T>;
+  onChange: (value: T | null) => void;
   showId?: boolean;
-  group?: boolean;
+  group?: (value: T) => string;
+  imageFunction?: (value: T) => string;
 }
 
 const MenuMenuPopper = function (props: PopperProps) {
   return <Popper { ...props } style={ { maxWidth: 'fit-content' } } placement="bottom-start"/>;
 };
 
-function MenuMenu({
-                    title, value, imagedValue, objects, imagedObjects, onChange, showId = true, group = true
-                  }: MenuMenuProps) {
+function MenuMenu<T extends (IdLocalised | IdImageLocalised)>({
+                                                                title,
+                                                                value,
+                                                                objects,
+                                                                onChange,
+                                                                showId = true,
+                                                                group = t => cleanString((getLName(t) ?? ' ').slice(0, 1)).toUpperCase(),
+                                                                imageFunction,
+                                                              }: MenuMenuProps<T>) {
   const theme = useTheme();
 
   return (
-    <GridLegacy container item xs={ 2 } style={ { marginLeft: 8 } }>
+    <Grid container size={ 2 } sx={ { marginLeft: 1, flexGrow: 1 } }>
       {
-        objects ?
+        objects &&
           <Autocomplete
-            fullWidth
-            disablePortal
-            clearOnBlur
-            selectOnFocus
-            handleHomeEndKeys
-            value={ value }
-            PopperComponent={ MenuMenuPopper }
-            options={ objects }
-            getOptionLabel={ option => `${ getLName(option) }${ showId ? ` (${ option.id })` : '' }` }
-            isOptionEqualToValue={ (option, value) => option.id === value.id }
-            groupBy={ option => group ? cleanString((getLName(option) ?? ' ').slice(0, 1)).toUpperCase() : '' }
-            renderInput={ (params) =>
-              <TextField { ...params } label={ title } size="small" color="secondary"
-                         InputProps={ { ...params.InputProps, style: { color: theme.palette.primary.contrastText } } }
-                         InputLabelProps={ {
-                           ...params.InputLabelProps,
-                           style: { color: theme.palette.primary.contrastText }
-                         } }/>
-            }
-            noOptionsText=""
-            renderOption={ (props, option) => {
-              const { key, ...others } = props;
-              return (
-                <li key={ key } { ...others }>
-                  <GridLegacy container item alignItems="center" style={ { width: '100%' } } key={ props.id }>
-                    <Typography variant="body1" component="span">
-                      { `${ getLName(option) }${ showId ? ` (${ option.id })` : '' }` }
-                    </Typography>
-                  </GridLegacy>
-                </li>
-              );
-            } }
-            onChange={ (event, value) => onChange(value) }
-          />
-          :
-          (
-            imagedObjects &&
-            <Autocomplete
               fullWidth
               disablePortal
-              value={ imagedValue }
-              options={ imagedObjects }
+              clearOnBlur
+              selectOnFocus
+              handleHomeEndKeys
+              value={ value }
+              options={ objects }
               getOptionLabel={ option => `${ getLName(option) }${ showId ? ` (${ option.id })` : '' }` }
               isOptionEqualToValue={ (option, value) => option.id === value.id }
-              groupBy={ option => group ? cleanString((getLName(option) ?? ' ').slice(0, 1)).toUpperCase() : '' }
-              renderInput={ (params) => <TextField { ...params } label={ title }/> }
+              groupBy={ group }
+              renderInput={ (params) =>
+                <TextField { ...params } label={ title } size="small" color="secondary"
+                           slotProps={ {
+                             input: {
+                               ...params.InputProps,
+                               sx: { color: theme.palette.primary.contrastText }
+                             },
+                             inputLabel: {
+                               ...params.InputLabelProps,
+                               sx: { color: theme.palette.primary.contrastText }
+                             },
+                             htmlInput: {
+                               ...params.inputProps,
+                               sx: { width: '100% !important' }
+                             }
+                           } }/>
+              }
               noOptionsText=""
-              renderOption={ (props, option) => {
+              renderOption={ ({ key, ...props }, option) => {
                 return (
-                  <li { ...props }>
-                    <GridLegacy container item alignItems="center" style={ { width: '100%' } } key={ props.id }>
-                      <Avatar src={ option.image } variant="square" style={ { display: 'inline-block' } }/>
-                      <Typography variant="body1" component="span" style={ { marginLeft: 8 } }>
+                  <li key={ key } { ...props }>
+                    <Grid container alignItems="center" style={ { width: '100%' } } key={ props.id }>
+                      { imageFunction && 'image' in option &&
+                          <Avatar src={ imageFunction(option) } variant="square" style={ { display: 'inline-block' } }/> }
+                      <Typography variant="body1" component="span"
+                                  style={ { marginLeft: 'image' in option ? 8 : undefined } }>
                         { `${ getLName(option) }${ showId ? ` (${ option.id })` : '' }` }
                       </Typography>
-                    </GridLegacy>
+                    </Grid>
                   </li>
                 );
               } }
               onChange={ (event, value) => onChange(value) }
-            />
-          )
+              slots={ {
+                popper: MenuMenuPopper
+              } }
+          />
       }
-    </GridLegacy>
+    </Grid>
   );
 }
 

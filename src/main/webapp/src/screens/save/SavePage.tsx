@@ -2,16 +2,16 @@ import { BarChart, Clear, Download, Home, PhotoCamera, PlayArrow, Stop } from '@
 import {
   Avatar,
   Backdrop,
-  Badge,
   Button,
   Chip,
   CircularProgress,
+  createTheme,
   Dialog,
   GridLegacy,
   IconButton,
   MenuItem,
   Select,
-  TextField,
+  ThemeProvider,
   Tooltip,
   Typography,
   useTheme
@@ -20,7 +20,6 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { api, endpoints } from 'api';
 import { env } from 'env/env';
-import * as ENV from 'env/env';
 import moment from 'moment';
 import 'moment/locale/en-gb';
 import 'moment/locale/fr';
@@ -36,28 +35,26 @@ import { cleanString, formatDate, stringComparator } from 'utils/format.utils';
 import { convertSave, getBuildingImage, getBuildingName, getBuildingsImage, getBuildingsName } from 'utils/save.utils';
 
 function SavePage() {
-  const params = useParams();
+  const { id } = useParams();
   const intl = useIntl();
   const theme = useTheme();
 
-  const [save, setSave] = useState<MapSave>();
-  const [ready, setReady] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [exporting, setExporting] = useState<boolean>(false);
-  const [exportingModal, setExportingModal] = useState<boolean>(false);
-  const [timelapse, setTimelapse] = useState<boolean>(false);
-  const [maxTimelapse, setMaxTimelapse] = useState<boolean>(false);
-  const [timelapseId, setTimelapseId] = useState<NodeJS.Timeout | undefined>(undefined);
-  const [error, setError] = useState<boolean>(false);
-  const [mapReady, setMapReady] = useState<boolean>(false);
-  const [statDialog, setStatDialog] = useState<boolean>(false);
+  const [ save, setSave ] = useState<MapSave>();
+  const [ ready, setReady ] = useState<boolean>(false);
+  const [ loading, setLoading ] = useState<boolean>(true);
+  const [ exporting, setExporting ] = useState<boolean>(false);
+  const [ exportingModal, setExportingModal ] = useState<boolean>(false);
+  const [ timelapse, setTimelapse ] = useState<boolean>(false);
+  const [ maxTimelapse, setMaxTimelapse ] = useState<boolean>(false);
+  const [ timelapseId, setTimelapseId ] = useState<NodeJS.Timeout | undefined>(undefined);
+  const [ error, setError ] = useState<boolean>(false);
+  const [ mapReady, setMapReady ] = useState<boolean>(false);
+  const [ statDialog, setStatDialog ] = useState<boolean>(false);
   const mapRef = useRef<any>(null);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [mapMode, setMapMode] = useState<MapMode>(MapMode.POLITICAL);
-  const [date, setDate] = useState<moment.Moment | undefined>(undefined);
-  const [building, setBuilding] = useState<string | null>(null);
-
-  const { id } = params;
+  const [ searchParams, setSearchParams ] = useSearchParams();
+  const [ mapMode, setMapMode ] = useState<MapMode>(MapMode.POLITICAL);
+  const [ date, setDate ] = useState<moment.Moment | undefined>(undefined);
+  const [ building, setBuilding ] = useState<string | null>(null);
 
   const handleMapMode = (mm: MapMode) => {
     if (searchParams.get('mapMode') === MapMode.BUILDINGS && MapMode.BUILDINGS !== mm) {
@@ -149,6 +146,21 @@ function SavePage() {
     }
   }
 
+  const datePickerTheme = createTheme({
+    components: {
+      MuiPickersSectionList: {
+        styleOverrides: {
+          root: {
+            color: theme.palette.primary.contrastText,
+            fontWeight: 700,
+            width: 'auto !important',
+            padding: '0px !important'
+          }
+        }
+      }
+    }
+  });
+
   useEffect(() => {
     if (maxTimelapse && timelapseId) {
       clearInterval(timelapseId);
@@ -157,7 +169,7 @@ function SavePage() {
     setTimelapse(false);
     setTimelapseId(undefined);
     setMaxTimelapse(false);
-  }, [maxTimelapse]);
+  }, [ maxTimelapse ]);
 
   useEffect(() => {
     ;(async () => {
@@ -178,7 +190,7 @@ function SavePage() {
         setLoading(false);
       }
     })()
-  }, [id]);
+  }, [ id ]);
 
   useEffect(() => {
     if (searchParams.get('mapMode')) {
@@ -186,7 +198,7 @@ function SavePage() {
     } else {
       handleMapMode(MapMode.POLITICAL);
     }
-  }, [searchParams]);
+  }, [ searchParams ]);
 
   useEffect(() => {
     const date = searchParams.get('date');
@@ -213,7 +225,7 @@ function SavePage() {
     } else {
       setBuilding(null);
     }
-  }, [save, searchParams]);
+  }, [ save, searchParams ]);
 
   return (
     <>
@@ -221,7 +233,7 @@ function SavePage() {
         error ?
           (
             <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
-                  style={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
+                        style={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
               <Typography variant='h2' color={ theme.palette.primary.contrastText }>
                 404
               </Typography>
@@ -273,209 +285,187 @@ function SavePage() {
                 </div>
                 {
                   save &&
-                  <Chip label={ intl.formatMessage({ id: 'common.graph' }) }
-                        icon={ <BarChart style={ { color: 'white' } }/> }
-                        onClick={ () => setStatDialog(true) }
-                        style={ {
-                          position: 'absolute',
-                          top: 48,
-                          left: 5,
-                          backgroundColor: theme.palette.primary.main,
-                          color: 'white',
-                          fontWeight: 'bold',
-                          fontSize: '1.2em'
-                        } }/>
+                    <Chip label={ intl.formatMessage({ id: 'common.graph' }) }
+                          icon={ <BarChart style={ { color: 'white' } }/> }
+                          onClick={ () => setStatDialog(true) }
+                          style={ {
+                            position: 'absolute',
+                            top: 48,
+                            left: 5,
+                            backgroundColor: theme.palette.primary.main,
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '1.2em'
+                          } }/>
                 }
                 {
                   save &&
-                  <div style={ {
-                    position: 'absolute',
-                    top: 48,
-                    left: 230,
-                    backgroundColor: theme.palette.primary.main,
-                    borderRadius: '16px',
-                  } }>
-                    <LocalizationProvider dateAdapter={ AdapterMoment } adapterLocale={ intl.locale }>
-                      <DatePicker
-                        openTo='year'
-                        views={ ['year', 'month', 'day'] }
-                        minDate={ moment(save.startDate, 'YYYY-MM-DD') }
-                        maxDate={ moment(save.date, 'YYYY-MM-DD') }
-                        value={ date }
-                        disabled={ timelapse }
-                        onChange={ value => handleDate(value?.format('YYYY-MM-DD')) }
-                        // OpenPickerButtonProps={ { style: { left: '-16px' } } }
-/*                        renderInput={ (params) => <Badge color='error' variant='dot'
-                                                         invisible={ mapModes[MapMode[mapMode]].supportDate }
-                                                         anchorOrigin={ { horizontal: 'right', vertical: 'bottom' } }>
-                          <Tooltip title={ intl.formatMessage(
-                            { id: mapModes[MapMode[mapMode]].supportDate ? 'common.date' : 'common.date.error' }) }>
-                            <TextField { ...params }
-                                       disabled
-                                       variant='standard'
-                                       InputProps={ {
-                                         ...params.InputProps,
-                                         disableUnderline: true,
-                                       } }
-                                       sx={ {
-                                         svg: {
-                                           color: 'white',
-                                         },
-                                         input: {
-                                           color: 'white',
-                                           fontWeight: 'bold',
-                                           fontSize: '1.0em',
-                                           paddingTop: '5px',
-                                           paddingBottom: '5px',
-                                           paddingLeft: 2,
-                                           borderRadius: '16px',
-                                           width: '100px'
-                                         },
-                                         '& .MuiInputBase-input.Mui-disabled': {
-                                           WebkitTextFillColor: 'white',
-                                         },
-                                       } }/>
-                          </Tooltip>
-                        </Badge> }*/
-                      />
-                    </LocalizationProvider>
-                  </div>
+                    <div style={ {
+                      position: 'absolute',
+                      top: 48,
+                      left: 230,
+                      backgroundColor: theme.palette.primary.main,
+                      borderRadius: '16px',
+                    } }>
+                        <LocalizationProvider dateAdapter={ AdapterMoment } adapterLocale={ intl.locale }>
+                            <ThemeProvider theme={ datePickerTheme }>
+                                <DatePicker
+                                    openTo='year'
+                                    views={ [ 'year', 'month', 'day' ] }
+                                    minDate={ moment(save.startDate, 'YYYY-MM-DD') }
+                                    maxDate={ moment(save.date, 'YYYY-MM-DD') }
+                                    value={ date }
+                                    disabled={ timelapse }
+                                    onChange={ value => handleDate(value?.format('YYYY-MM-DD')) }
+                                    format={ 'YYYY-MM-DD' }
+                                    slotProps={ {
+                                      openPickerIcon: {
+                                        sx: {
+                                          color: theme.palette.primary.contrastText,
+                                        },
+                                      }
+                                    } }
+                                />
+                            </ThemeProvider>
+                        </LocalizationProvider>
+                    </div>
                 }
                 {
                   save && MapMode.BUILDINGS === mapMode &&
-                  <div style={ {
-                    position: 'absolute',
-                    top: 48,
-                    left: 389,
-                    backgroundColor: theme.palette.primary.main,
-                    borderRadius: '16px',
-                  } }>
-                    <Select
-                      id='building-select'
-                      value={ building ?? '' }
-                      variant='standard'
-                      onChange={ event => handleBuilding(event.target.value as string) }
-                      disableUnderline
-                      displayEmpty
-                      renderValue={ value => (
-                        value ?
-                          <GridLegacy container item alignItems='center'>
-                            <Avatar src={ getBuildingImage(save, value) } variant='square'
-                                    style={ { display: 'inline-block', width: 24, height: 24 } }/>
-                            <Typography variant='body1' style={ {
-                              color: theme.palette.primary.contrastText,
+                    <div style={ {
+                      position: 'absolute',
+                      top: 48,
+                      left: 389,
+                      backgroundColor: theme.palette.primary.main,
+                      borderRadius: '16px',
+                    } }>
+                        <Select
+                            id='building-select'
+                            value={ building ?? '' }
+                            variant='standard'
+                            onChange={ event => handleBuilding(event.target.value as string) }
+                            disableUnderline
+                            displayEmpty
+                            renderValue={ value => (
+                              value ?
+                                <GridLegacy container item alignItems='center'>
+                                  <Avatar src={ getBuildingImage(save, value) } variant='square'
+                                          style={ { display: 'inline-block', width: 24, height: 24 } }/>
+                                  <Typography variant='body1' style={ {
+                                    color: theme.palette.primary.contrastText,
+                                    fontWeight: 'bold',
+                                    marginLeft: 8
+                                  } }>
+                                    { value && getBuildingName(save, value) }
+                                  </Typography>
+                                </GridLegacy>
+                                :
+                                <Typography variant='body1' style={ {
+                                  color: theme.palette.primary.contrastText,
+                                  fontWeight: 'bold',
+                                  marginLeft: 8
+                                } }>
+                                  { intl.formatMessage({ id: 'common.quantity' }) }
+                                </Typography>
+                            ) }
+                            sx={ {
+                              "& .MuiSelect-iconStandard": { display: building ? 'none' : '' },
+                              fontSize: '1.0em',
+                              paddingTop: '1px',
+                              paddingLeft: 2,
+                              borderRadius: '16px',
+                              minWidth: 120,
+                            } }
+                            endAdornment={
+                              <IconButton onClick={ clearBuilding } style={ {
+                                display: building ? '' : 'none',
+                                width: 16,
+                                height: 16,
+                                marginRight: 8
+                              } }>
+                                <Clear/>
+                              </IconButton>
+                            }
+                        >
+                          {
+                            save.buildings.sort((a, b) => stringComparator(getBuildingsName(a), getBuildingsName(b)))
+                              .map(building => (
+                                <MenuItem value={ building.name } key={ building.name }>
+                                  <Avatar src={ getBuildingsImage(building) } variant='square'
+                                          style={ { display: 'inline-block' } }/>
+                                  <Typography variant='body1' style={ { marginLeft: 8 } }>
+                                    { getBuildingsName(building) }
+                                  </Typography>
+                                </MenuItem>
+                              ))
+                          }
+                        </Select>
+                    </div>
+                }
+                {
+                  save &&
+                    <>
+                        <Tooltip title={ intl.formatMessage({ id: 'common.download' }) }>
+                            <IconButton onClick={ download } style={ {
+                              position: 'absolute',
+                              top: 92,
+                              left: 5,
+                              backgroundColor: theme.palette.primary.main,
+                              color: 'white',
                               fontWeight: 'bold',
-                              marginLeft: 8
+                              fontSize: '1.2em',
+                              borderRadius: '50%',
                             } }>
-                              { value && getBuildingName(save, value) }
-                            </Typography>
-                          </GridLegacy>
-                          :
-                          <Typography variant='body1' style={ {
-                            color: theme.palette.primary.contrastText,
-                            fontWeight: 'bold',
-                            marginLeft: 8
-                          } }>
-                            { intl.formatMessage({ id: 'common.quantity' }) }
-                          </Typography>
-                      ) }
-                      sx={ {
-                        "& .MuiSelect-iconStandard": { display: building ? 'none' : '' },
-                        fontSize: '1.0em',
-                        paddingTop: '1px',
-                        paddingLeft: 2,
-                        borderRadius: '16px',
-                        minWidth: 120,
-                      } }
-                      endAdornment={
-                        <IconButton onClick={ clearBuilding } style={ {
-                          display: building ? '' : 'none',
-                          width: 16,
-                          height: 16,
-                          marginRight: 8
-                        } }>
-                          <Clear/>
-                        </IconButton>
-                      }
-                    >
-                      {
-                        save.buildings.sort((a, b) => stringComparator(getBuildingsName(a), getBuildingsName(b)))
-                          .map(building => (
-                            <MenuItem value={ building.name } key={ building.name }>
-                              <Avatar src={ getBuildingsImage(building) } variant='square'
-                                      style={ { display: 'inline-block' } }/>
-                              <Typography variant='body1' style={ { marginLeft: 8 } }>
-                                { getBuildingsName(building) }
-                              </Typography>
-                            </MenuItem>
-                          ))
-                      }
-                    </Select>
-                  </div>
+                                <Download/>
+                            </IconButton>
+                        </Tooltip>
+                    </>
                 }
                 {
                   save &&
-                  <>
-                    <Tooltip title={ intl.formatMessage({ id: 'common.download' }) }>
-                      <IconButton onClick={ download } style={ {
-                        position: 'absolute',
-                        top: 92,
-                        left: 5,
-                        backgroundColor: theme.palette.primary.main,
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                        borderRadius: '50%',
-                      } }>
-                        <Download/>
-                      </IconButton>
-                    </Tooltip>
-                  </>
+                    <>
+                        <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
+                            <IconButton onClick={ () => setExportingModal(true) } disabled={ exporting } style={ {
+                              position: 'absolute',
+                              top: 92,
+                              left: 52,
+                              backgroundColor: theme.palette.primary.main,
+                              color: 'white',
+                              fontWeight: 'bold',
+                              fontSize: '1.2em',
+                              borderRadius: '50%',
+                            } }>
+                              {
+                                (exporting || timelapse) ?
+                                  <CircularProgress color='secondary' style={ { width: 24, height: 24 } }/> :
+                                  <PhotoCamera/>
+                              }
+                            </IconButton>
+                        </Tooltip>
+                        <ExportModal open={ exportingModal } save={ save } onClose={ () => setExportingModal(false) }
+                                     onExport={ exportImage }/>
+                    </>
                 }
                 {
                   save &&
-                  <>
-                    <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
-                      <IconButton onClick={ () => setExportingModal(true) } disabled={ exporting } style={ {
-                        position: 'absolute',
-                        top: 92,
-                        left: 52,
-                        backgroundColor: theme.palette.primary.main,
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                        borderRadius: '50%',
-                      } }>
-                        {
-                          (exporting || timelapse) ?
-                            <CircularProgress color='secondary' style={ { width: 24, height: 24 } }/> : <PhotoCamera/>
-                        }
-                      </IconButton>
-                    </Tooltip>
-                    <ExportModal open={ exportingModal } save={ save } onClose={ () => setExportingModal(false) }
-                                 onExport={ exportImage }/>
-                  </>
-                }
-                {
-                  save &&
-                  <>
-                    <Tooltip title={ intl.formatMessage({ id: 'common.timelapse' }) }>
-                      <IconButton onClick={ runTimelapse } style={ {
-                        position: 'absolute',
-                        top: 92,
-                        left: 99,
-                        backgroundColor: theme.palette.primary.main,
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: '1.2em',
-                        borderRadius: '50%',
-                      } }>
-                        {
-                          timelapse ? <Stop/> : <PlayArrow/>
-                        }
-                      </IconButton>
-                    </Tooltip>
-                  </>
+                    <>
+                        <Tooltip title={ intl.formatMessage({ id: 'common.timelapse' }) }>
+                            <IconButton onClick={ runTimelapse } style={ {
+                              position: 'absolute',
+                              top: 92,
+                              left: 99,
+                              backgroundColor: theme.palette.primary.main,
+                              color: 'white',
+                              fontWeight: 'bold',
+                              fontSize: '1.2em',
+                              borderRadius: '50%',
+                            } }>
+                              {
+                                timelapse ? <Stop/> : <PlayArrow/>
+                              }
+                            </IconButton>
+                        </Tooltip>
+                    </>
                 }
                 <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady } dataId={ searchParams.get('id') }
                          date={ date?.format('YYYY-MM-DD') } ref={ mapRef }/>

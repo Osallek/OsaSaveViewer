@@ -1,4 +1,4 @@
-import { Avatar, GridLegacy, Typography, useTheme } from '@mui/material';
+import { Avatar, Grid, Typography, useTheme } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { SxProps } from '@mui/system';
 import React from 'react';
@@ -64,9 +64,9 @@ function ConditionsNumber(props: ConditionItemProps) {
   return (
     grid ?
       (
-        <GridLegacy container item>
+        <Grid container>
           { innerDefaultNode({ theme, intl, ...props }) }
-        </GridLegacy>
+        </Grid>
       )
       :
       (

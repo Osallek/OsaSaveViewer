@@ -1,5 +1,5 @@
 import { Home } from '@mui/icons-material';
-import { Backdrop, CircularProgress, GridLegacy, Toolbar, Typography } from '@mui/material';
+import { Backdrop, CircularProgress, Grid, Toolbar, Typography } from '@mui/material';
 import { WikiContext } from 'AppRouter';
 import React, { useContext, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -10,19 +10,19 @@ import theme from 'theme';
 import { IdeaGroup, Power, Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';
 import { stringComparator, stringLocalisedComparator } from 'utils/format.utils';
+import { getIdeaGroupImage } from "utils/wiki.utils";
 
 function IdeaGroupList() {
-  const params = useParams();
+  const { version, id } = useParams();
   const intl = useIntl();
   const { wikiState } = useContext(WikiContext)!;
 
-  const [wiki, setWiki] = useState<Wiki>();
-  const [ideaGroups, setIdeaGroups] = useState<Array<IdeaGroup>>();
-  const [filtered, setFiltered] = useState<Array<IdeaGroup>>();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-
-  const { version } = params;
+  const [ wiki, setWiki ] = useState<Wiki>();
+  const [ ideaGroups, setIdeaGroups ] = useState<Array<IdeaGroup>>();
+  const [ filtered, setFiltered ] = useState<Array<IdeaGroup>>();
+  const [ loading, setLoading ] = useState<boolean>(true);
+  const [ error, setError ] = useState<boolean>(false);
+  const [ barHeight, setBarHeight ] = useState<number>(0);
 
   useEffect(() => {
     if (!wiki && version && wikiState && wikiState.wikis && wikiState.wikis[version]) {
@@ -34,20 +34,34 @@ function IdeaGroupList() {
       setLoading(false);
       setError(false);
     }
-  }, [wikiState, version]);
+  }, [ wikiState, version ]);
 
   useEffect(() => {
     if (ideaGroups) {
       setFiltered(
         ideaGroups.sort((a, b) => stringComparator(a.category, b.category) || stringLocalisedComparator(a, b)));
     }
-  }, [ideaGroups]);
+  }, [ ideaGroups ]);
+
+  useEffect(() => {
+    if (id) {
+      const targetElement = document.getElementById(id);
+
+      if (targetElement) {
+        const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+          top: elementPosition - barHeight - 8,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [ id, filtered, barHeight ]);
 
   return (
     <>
       {
         (error || (!loading && (!ideaGroups || !version || !wiki))) ?
-          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
+          <Grid container alignItems='center' justifyContent='center' flexDirection='column'
                 sx={ { height: '100%', width: '100%', backgroundColor: theme.palette.primary.light } }>
             <Typography variant='h2' color={ theme.palette.primary.contrastText }>
               404
@@ -58,13 +72,14 @@ function IdeaGroupList() {
             <Link to='/'>
               <Home fontSize='large' color='primary' sx={ { width: 40, height: 40 } }/>
             </Link>
-          </GridLegacy>
+          </Grid>
           :
           <>
-            <WikiBar  type={ wikiTypes.ideaGroups }
+            <WikiBar type={ wikiTypes.ideaGroups } setHeight={ setBarHeight }
                      objects={ ideaGroups?.filter(idea => !idea.free) }
-                     group={ false }>
-              <Toolbar sx={ { justifyContent: 'center', backgroundColor: theme.palette.primary.dark } }>
+                     group={ ig => intl.formatMessage({ id: `wiki.ideaGroups.${ ig.category }` }) }
+                     imageFunction={ getIdeaGroupImage }>
+              <Toolbar sx={ { backgroundColor: theme.palette.primary.dark } }>
                 <Typography variant='h6' color={ theme.palette.primary.contrastText }>
                   { intl.formatMessage({ id: 'wiki.ideaGroups' }) }
                 </Typography>
@@ -76,34 +91,34 @@ function IdeaGroupList() {
                   <CircularProgress color='primary'/>
                 </Backdrop>
                 :
-                <GridLegacy container sx={ { p: 3, flexDirection: 'column', alignItems: 'center' } }>
-                  <GridLegacy container item xs={ 12 } spacing={ 2 }>
-                    <GridLegacy container item rowSpacing={ 4 }>
+                <Grid container sx={ { p: 3, flexDirection: 'column', alignItems: 'center' } }>
+                  <Grid container size={ 12 } spacing={ 2 }>
+                    <Grid container rowSpacing={ 4 }>
                       {
                         Object.keys(Power).map(category => (
-                            <GridLegacy container item sx={ { flexDirection: 'column' } } rowSpacing={ 1 } key={ category }>
+                            <Grid container sx={ { flexDirection: 'column' } } rowSpacing={ 1 } key={ category }>
                               <Typography variant='h4'>
                                 { intl.formatMessage({ id: `wiki.ideaGroups.${ category }` }) }
                               </Typography>
-                              <GridLegacy container item spacing={ 3 }>
+                              <Grid container spacing={ 3 }>
                                 {
                                   filtered && filtered.filter(i => category === i.category)
-                                                      .map((group, index) => (
-                                                        <GridLegacy container item xs={ 12 } md={ 6 } xl={ 4 } key={ group.id }
-                                                              id={ group.id }>
-                                                          <IdeaGroupCard group={ group } wiki={ wiki }
-                                                                         version={ version }/>
-                                                        </GridLegacy>
-                                                      ))
+                                    .map((group, index) => (
+                                      <Grid container size={ { xs: 12, md: 6, xl: 4 } } key={ group.id }
+                                            id={ group.id }>
+                                        <IdeaGroupCard group={ group } wiki={ wiki }
+                                                       version={ version } expanded={ id === group.id }/>
+                                      </Grid>
+                                    ))
                                 }
-                              </GridLegacy>
-                            </GridLegacy>
+                              </Grid>
+                            </Grid>
                           )
                         )
                       }
-                    </GridLegacy>
-                  </GridLegacy>
-                </GridLegacy>
+                    </Grid>
+                  </Grid>
+                </Grid>
             }
           </>
       }

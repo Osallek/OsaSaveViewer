@@ -1,6 +1,6 @@
 import { useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
-import React from 'react';
+import React, { JSX } from 'react';
 import { useIntl } from 'react-intl';
 import ConditionLocalisedLink from 'screens/wiki/condition/ConditionLocalisedLink';
 import ConditionsBlock from 'screens/wiki/condition/ConditionsBlock';

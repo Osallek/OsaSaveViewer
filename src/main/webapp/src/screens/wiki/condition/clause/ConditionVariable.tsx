@@ -29,7 +29,7 @@ function ConditionVariable({ wiki, wikiVersion, condition, negate, useExample }:
 
   if (value !== undefined && variable !== undefined) {
     return (
-      <GridLegacy container item alignItems='center'>
+      <Grid container alignItems='center'>
         <Typography variant='body1' sx={ { color: theme.palette.primary.contrastText } } key={ `title-${ condition }-${ value }` }>
           { intl.formatMessage({ id: 'wiki.condition.variable' }) }
         </Typography>
@@ -44,7 +44,7 @@ function ConditionVariable({ wiki, wikiVersion, condition, negate, useExample }:
         </Typography>
         <ConditionLocalised wiki={ wiki } condition={ 'check_variable' } wikiVersion={ wikiVersion } negate={ negate } value={ value } grid={ false }
                             useExample={ useExample }/>
-      </GridLegacy>
+      </Grid>
     )
   } else {
     return <></>

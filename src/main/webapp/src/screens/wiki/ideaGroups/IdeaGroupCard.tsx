@@ -1,6 +1,17 @@
 import {
-  Avatar, Card, CardActionArea, CardContent, CardHeader, Collapse, GridLegacy, Table, TableBody, TableCell, TableContainer,
-  TableRow, Typography
+  Avatar,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardHeader,
+  Collapse,
+  Grid,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useState } from 'react';
@@ -15,19 +26,20 @@ interface IdeaGroupCardProps {
   group: IdeaGroup;
   wiki: Wiki;
   version: string;
+  expanded?: boolean;
 }
 
-function IdeaGroupCard({ group, wiki, version }: IdeaGroupCardProps) {
-  const [expanded, setExpanded] = useState<boolean>(false);
-  const [borderRadius, setBorderRadius] = useState<number>(4);
+function IdeaGroupCard({ group, wiki, version, expanded: initExpanded = false }: IdeaGroupCardProps) {
+  const [ expanded, setExpanded ] = useState<boolean>(initExpanded);
+  const [ borderRadius, setBorderRadius ] = useState<number>(4);
   const nbIdeas = group.ideas ? Object.values(group.ideas).length : 0;
 
   return (
-    <Card sx={ { width: '100%', height: 'fit-content' } } elevation={ expanded ? 1 : 0 }>
+    <Card id={ group.id } sx={ { width: '100%', height: 'fit-content' } } elevation={ expanded ? 1 : 0 }>
       <CardActionArea onClick={ () => setExpanded(!expanded) }>
         <CardHeader disableTypography
                     title={
-                      <GridLegacy container item alignItems='center'>
+                      <Grid container alignItems='center'>
                         <Typography variant='h5'
                                     sx={ {
                                       color: theme.palette.primary.contrastText,
@@ -39,7 +51,7 @@ function IdeaGroupCard({ group, wiki, version }: IdeaGroupCardProps) {
                         <Avatar
                           src={ `/eu4/wiki/${ group.category.toLowerCase() }.png` }
                           variant='square' sx={ { width: 28, height: 28 } }/>
-                      </GridLegacy>
+                      </Grid>
                     }
                     avatar={ <Avatar src={ getIdeaGroupImage(group) }
                                      variant='square'/> }

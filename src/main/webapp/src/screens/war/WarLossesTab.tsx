@@ -81,7 +81,7 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                              fill={ colorToHex(getCountry(save, tag).colors.countryColor) }>
                           {
                             charts[0][tag] / charts[0]['total'] > 0.03 &&
-                            <LabelList dataKey={ tag } position='middle'
+                            <LabelList dataKey={ tag } position='middle' fill='black'
                                        formatter={ (value: number) => `${ charts[0][tag] } (${ formatNumber(100 * value / charts[0]['total']) }%)` }/>
                           }
                           {
@@ -102,7 +102,7 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                              fill={ colorToHex(getCountry(save, tag).colors.countryColor) }>
                           {
                             charts[1][tag] / charts[1]['total'] > 0.03 &&
-                            <LabelList dataKey={ tag } position='middle'
+                            <LabelList dataKey={ tag } position='middle' fill='black'
                                        formatter={ (value: number) => `${ charts[1][tag] } (${ formatNumber(100 * value / charts[1]['total']) }%)` }/>
                           }
                           {
@@ -169,7 +169,7 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                       .map((type, index) => (
                         <Bar dataKey={ type } stackId='type' isAnimationActive={ false } key={ `bar-land-${ type }` }
                              fill={ lossesToColor(type) }>
-                          <LabelList dataKey={ type } position='middle'
+                          <LabelList dataKey={ type } position='middle' fill='black'
                                      formatter={ (value: number) => {
                                        if (value === charts[0][type]) {
                                          return value / (charts[0]['land']) > 0.03 ? `${ value } (${ formatNumber(100 * value / charts[0]['land']) }%)` : '';
@@ -254,7 +254,7 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                       .map((type, index) => (
                         <Bar dataKey={ type } stackId='type' isAnimationActive={ false } key={ `bar-naval-${ type }` }
                              fill={ lossesToColor(type) }>
-                          <LabelList dataKey={ type } position='middle'
+                          <LabelList dataKey={ type } position='middle' fill='black'
                                      formatter={ (value: number) => {
                                        if (value === charts[0][type]) {
                                          return value / (charts[0]['naval']) > 0.03 ? `${ value } (${ formatNumber(100 * value / charts[0]['naval']) }%)` : '';
@@ -339,7 +339,7 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                                    fill={ colorToHex(getCountry(save, tag).colors.countryColor) }>
                                 {
                                   charts[0][`${ tag }-${ type }`] / charts[0][type] > 0.03 &&
-                                  <LabelList dataKey={ `${ tag }-${ type }` } position='middle'
+                                  <LabelList dataKey={ `${ tag }-${ type }` } position='middle' fill='black'
                                              formatter={ (value: number) => `${ charts[0][`${ tag }-${ type }`] } 
                                              (${ formatNumber(100 * value / charts[0][type]) }%)` }/>
                                 }
@@ -362,7 +362,7 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
                                    fill={ colorToHex(getCountry(save, tag).colors.countryColor) }>
                                 {
                                   charts[1][`${ tag }-${ type }`] / charts[1][type] > 0.03 &&
-                                  <LabelList dataKey={ `${ tag }-${ type }` } position='middle'
+                                  <LabelList dataKey={ `${ tag }-${ type }` } position='middle' fill='black'
                                              formatter={ (value: number) => `${ charts[1][`${ tag }-${ type }`] } 
                                              (${ formatNumber(100 * value / charts[1][type]) }%)` }/>
                                 }

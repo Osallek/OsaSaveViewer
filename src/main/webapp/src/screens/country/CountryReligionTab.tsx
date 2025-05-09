@@ -1,4 +1,16 @@
-import { Avatar, CircularProgress, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+  Avatar,
+  CircularProgress,
+  GridLegacy,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
@@ -65,111 +77,126 @@ interface CountryReligionTabProps {
 function CountryReligionTab({ country, save }: CountryReligionTabProps) {
   const intl = useIntl();
 
-  const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [religions, setReligions] = useState<Array<ReligionPie>>([]);
-  const [nbProvinces, setNbProvinces] = useState<number>(0);
-  const [ranks, setRanks] = useState<Array<number>>([]);
-  const [devRanks, setDevRanks] = useState<Array<number>>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [ activeIndex, setActiveIndex ] = useState<number>(0);
+  const [ religions, setReligions ] = useState<Array<ReligionPie>>([]);
+  const [ nbProvinces, setNbProvinces ] = useState<number>(0);
+  const [ ranks, setRanks ] = useState<Array<number>>([]);
+  const [ devRanks, setDevRanks ] = useState<Array<number>>([]);
+  const [ loading, setLoading ] = useState<boolean>(true);
 
   useEffect(() => {
     setReligions(getReligionsPie(country, save));
     setNbProvinces(getProvinces(country, save).length);
-  }, [country, save]);
+  }, [ country, save ]);
 
   useEffect(() => {
     setRanks(religions.map(religion => getRank(save, country, c => getNbReligion(c, save, religion.type))));
     setDevRanks(religions.map(religion => getRank(save, country, c => getDevReligion(c, save, religion.type))));
-  }, [country, save, religions]);
+  }, [ country, save, religions ]);
 
   useEffect(() => {
     if (ranks.length > 0 && devRanks.length > 0) {
       setLoading(false);
     }
-  }, [ranks, devRanks]);
+  }, [ ranks, devRanks ]);
 
   return (
-    <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } } key={ `religions-${ country.tag }` }>
-      <PieChart width={ 500 } height={ 500 }>
-        <Pie
-          activeIndex={ activeIndex }
-          activeShape={ renderActiveShape }
-          data={ religions }
-          innerRadius={ 100 }
-          outerRadius={ 120 }
-          dataKey='dev'
-          onMouseEnter={ (_, index) => setActiveIndex(index) }
-          isAnimationActive={ false }
-        >
-          { religions.map((entry, index) => (
-            <Cell key={ `cell-religion-${ index }` } fill={ entry.color }/>
-          )) }
-        </Pie>
-      </PieChart>
-      <TableContainer component={ Paper } style={ { borderRadius: 0, width: 'auto' } }>
-        <Table>
-          <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>
-            <TableRow>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.color' }) }</TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.type' }) }</TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
-                { intl.formatMessage({ id: 'country.nbProvinces' }) }
-              </TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>
-                { intl.formatMessage({ id: 'common.rank' }) }
-              </TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>
-                { intl.formatMessage({ id: 'common.percent' }) }
-              </TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
-                { intl.formatMessage({ id: 'country.dev' }) }
-              </TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>
-                { intl.formatMessage({ id: 'common.rank' }) }
-              </TableCell>
-              <TableCell style={ { color: theme.palette.primary.contrastText } }>
-                { intl.formatMessage({ id: 'common.percent' }) }
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-              religions.map((item, index) => (
-                <TableRow key={ `religion-${ item.type }-${ country.tag }` } style={ { height: 73 } }>
-                  <TableCell align='center'>
-                    <div style={ {
-                      width: 10,
-                      height: 10,
-                      backgroundColor: item.color,
-                      margin: 'auto'
-                    } }/>
-                  </TableCell>
-                  <TableCell>
-                    <GridLegacy container item alignItems='center'>
-                      <Avatar src={ getReligionImage(save, item.type) } variant='square'/>
-                      <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
-                        { item.name }
-                      </Typography>
-                    </GridLegacy>
-                  </TableCell>
-                  <TableCell align='right'>{ formatNumber(item.value) }</TableCell>
-                  <TableCell align='right'>
-                    { loading ? <CircularProgress color='primary' style={ { height: 30, width: 30 } }/> : getRankDisplay(ranks[index] ?? 0) }
-                  </TableCell>
-                  <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                    { `${ formatNumber(item.value * 100 / nbProvinces) }%` }
-                  </TableCell>
-                  <TableCell align='right'>{ formatNumber(item.dev) }</TableCell>
-                  <TableCell align='right'>
-                    { loading ? <CircularProgress color='primary' style={ { height: 30, width: 30 } }/> : getRankDisplay(devRanks[index] ?? 0) }
-                  </TableCell>
-                  <TableCell align='right'>{ `${ formatNumber(item.dev * 100 / country.dev) }%` }</TableCell>
-                </TableRow>
-              ))
-            }
-          </TableBody>
-        </Table>
-      </TableContainer>
+    <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
+                key={ `religions-${ country.tag }` }>
+      {
+        loading ? <CircularProgress color='primary'/> : (
+          <>
+            <PieChart width={ 500 } height={ 500 }>
+              <Pie
+                activeIndex={ activeIndex }
+                activeShape={ renderActiveShape }
+                data={ religions }
+                innerRadius={ 100 }
+                outerRadius={ 120 }
+                dataKey='dev'
+                onMouseEnter={ (_, index) => setActiveIndex(index) }
+                isAnimationActive={ false }
+              >
+                { religions.map((entry, index) => (
+                  <Cell key={ `cell-religion-${ index }` } fill={ entry.color }/>
+                )) }
+              </Pie>
+            </PieChart>
+            <TableContainer component={ Paper } style={ { borderRadius: 0, width: 'auto' } }>
+              <Table>
+                <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>
+                  <TableRow>
+                    <TableCell
+                      style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.color' }) }</TableCell>
+                    <TableCell
+                      style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.type' }) }</TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
+                      { intl.formatMessage({ id: 'country.nbProvinces' }) }
+                    </TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } }>
+                      { intl.formatMessage({ id: 'common.rank' }) }
+                    </TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } }>
+                      { intl.formatMessage({ id: 'common.percent' }) }
+                    </TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
+                      { intl.formatMessage({ id: 'country.dev' }) }
+                    </TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } }>
+                      { intl.formatMessage({ id: 'common.rank' }) }
+                    </TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } }>
+                      { intl.formatMessage({ id: 'common.percent' }) }
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+                    religions.map((item, index) => (
+                      <TableRow key={ `religion-${ item.type }-${ country.tag }` } style={ { height: 73 } }>
+                        <TableCell align='center'>
+                          <div style={ {
+                            width: 10,
+                            height: 10,
+                            backgroundColor: item.color,
+                            margin: 'auto'
+                          } }/>
+                        </TableCell>
+                        <TableCell>
+                          <GridLegacy container item alignItems='center'>
+                            <Avatar src={ getReligionImage(save, item.type) } variant='square'/>
+                            <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
+                              { item.name }
+                            </Typography>
+                          </GridLegacy>
+                        </TableCell>
+                        <TableCell align='right'>{ formatNumber(item.value) }</TableCell>
+                        <TableCell align='right'>
+                          { loading ? <CircularProgress color='primary' style={ {
+                            height: 30,
+                            width: 30
+                          } }/> : getRankDisplay(ranks[index] ?? 0) }
+                        </TableCell>
+                        <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
+                          { `${ formatNumber(item.value * 100 / nbProvinces) }%` }
+                        </TableCell>
+                        <TableCell align='right'>{ formatNumber(item.dev) }</TableCell>
+                        <TableCell align='right'>
+                          { loading ? <CircularProgress color='primary' style={ {
+                            height: 30,
+                            width: 30
+                          } }/> : getRankDisplay(devRanks[index] ?? 0) }
+                        </TableCell>
+                        <TableCell align='right'>{ `${ formatNumber(item.dev * 100 / country.dev) }%` }</TableCell>
+                      </TableRow>
+                    ))
+                  }
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
+        )
+      }
     </GridLegacy>
   )
 }

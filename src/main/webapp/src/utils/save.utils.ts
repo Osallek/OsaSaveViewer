@@ -35,8 +35,8 @@ import {
   getGoodUrl,
   getIdeaGroupUrl,
   getLeaderPersonalityUrl,
-  getMissionUrl,
   getLName,
+  getMissionUrl,
   getPersonalityUrl,
   getPrivilegeUrl,
   getReligionUrl
@@ -54,12 +54,12 @@ export function convertSave(save: Save, history: boolean): MapSave {
   };
 
   if (history) {
-    const historyWorkers: Array<Worker> = [new Worker('/eu4/script/province_history_worker.js'), new Worker(
+    const historyWorkers: Array<Worker> = [ new Worker('/eu4/script/province_history_worker.js'), new Worker(
       '/eu4/script/province_history_worker.js'),
       new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
       new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
       new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js')];
+      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js') ];
     let count = 0;
     const start = new Date();
 
@@ -149,8 +149,8 @@ export function getCountries(save: MapSave): Array<SaveCountry> {
 }
 
 export function getPHistory(province: SaveProvince, save: MapSave, date?: string): ProvinceHistory {
-  return (date && save.date !== date) ? getPHistoryInternal(province, date) : save.currentProvinces.get(
-    province.id) ?? save.currentProvinces.values().next().value;
+  return (date && save.date !== date) ? getPHistoryInternal(province, date) :
+    save.currentProvinces.get(province.id) ?? {date: date ?? save.date};
 }
 
 function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHistory {
@@ -198,7 +198,7 @@ function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHist
         let buildings: Set<string> = (history && history.buildings) ?? new Set();
 
         if (h.buildings) {
-          Object.entries(h.buildings).forEach(([key, value]) => {
+          Object.entries(h.buildings).forEach(([ key, value ]) => {
             if (value) {
               buildings.add(key);
             } else {
@@ -255,7 +255,7 @@ export function mapProvinces(country: SaveCountry, save: MapSave, predicate: (hi
 export function getPHistories(country: SaveCountry, save: MapSave, predicate: (history: ProvinceHistory) => boolean): ProvinceHistory[] {
   const histories: ProvinceHistory[] = [];
 
-  for (const [, history] of save.currentProvinces) {
+  for (const [ , history ] of save.currentProvinces) {
     if (history.owner === country.tag && predicate(history)) {
       histories.push(history);
     }
@@ -267,7 +267,7 @@ export function getPHistories(country: SaveCountry, save: MapSave, predicate: (h
 export function mapPHistories(country: SaveCountry, save: MapSave, predicate: (history: ProvinceHistory) => boolean, acc: (history: ProvinceHistory) => number): number {
   let sum = 0;
 
-  for (const [, history] of save.currentProvinces) {
+  for (const [ , history ] of save.currentProvinces) {
     if (history.owner === country.tag && predicate(history)) {
       sum += acc(history);
     }
@@ -576,8 +576,7 @@ export function getAreaState(area: SaveArea, tag?: string): SaveCountryState | n
 }
 
 export function getCHistory(country: SaveCountry, save: MapSave, date?: string): CountryHistory {
-  return (date && save.date !== date) ? getCHistoryInternal(country, date) : save.currentCountries.get(
-    country.tag) ?? save.currentCountries.values().next().value;
+  return (date && save.date !== date) ? getCHistoryInternal(country, date) : save.currentCountries.get(country.tag) ?? { date: date ?? save.date };
 }
 
 function getCHistoryInternal(country: SaveCountry, date: string): CountryHistory {
@@ -602,7 +601,7 @@ function getCHistoryInternal(country: SaveCountry, date: string): CountryHistory
       let ideasLevel: Record<string, string> = (history && history.ideasLevel) ?? {};
 
       if (h.ideasLevel) {
-        Object.entries(h.ideasLevel).forEach(([key, value]) => {
+        Object.entries(h.ideasLevel).forEach(([ key, value ]) => {
           if (value) {
             ideasLevel[key] = h.date;
           } else {
@@ -678,11 +677,11 @@ export function interestingHistory(h: SaveProvinceHistory): boolean {
 }
 
 export function getTerritory(country: SaveCountry): number {
-  return 100 - (country.estates ? country.estates.reduce((s, e) => s + e.territory ?? 0, 0) : 0);
+  return 100 - (country.estates ? country.estates.reduce((s, e) => s + e.territory, 0) : 0);
 }
 
 export function getLoans(country: SaveCountry): number {
-  return country.loans ? country.loans.reduce((s, l) => s + l.amount ?? 0, 0) : 0;
+  return country.loans ? country.loans.reduce((s, l) => s + l.amount, 0) : 0;
 }
 
 export function getStableIncome(country: SaveCountry): number {
@@ -690,7 +689,7 @@ export function getStableIncome(country: SaveCountry): number {
     return 0;
   }
 
-  return Object.values(country.incomes).filter((value, index) => index <= 7).reduce((s, d) => s + d ?? 0, 0)
+  return Object.values(country.incomes).filter((value, index) => index <= 7).reduce((s, d) => s + d, 0)
 }
 
 export function getManaSpent(country: SaveCountry, type: PowerSpent): number {
@@ -722,25 +721,25 @@ export function getPlayer(country: SaveCountry): string | undefined {
 }
 
 export function getTotalIncome(country: SaveCountry): number {
-  return Object.values(Income).map(value => getIncome(country, value)).reduce((s, d) => s + d ?? 0, 0);
+  return Object.values(Income).map(value => getIncome(country, value)).reduce((s, d) => s + d, 0);
 }
 
 export function getTotalStableIncome(country: SaveCountry): number {
   return Object.values(Income).filter((value, index) => index <= 7).map(value => getIncome(country, value)).reduce(
-    (s, d) => s + d ?? 0, 0);
+    (s, d) => s + d, 0);
 }
 
 export function getTotalExpense(country: SaveCountry): number {
-  return Object.values(Expense).map(value => getExpense(country, value)).reduce((s, d) => s + d ?? 0, 0);
+  return Object.values(Expense).map(value => getExpense(country, value)).reduce((s, d) => s + d, 0);
 }
 
 export function getTotalStableExpense(country: SaveCountry): number {
   return Object.values(Expense).filter((value, index) => index <= 8).map(value => getExpense(country, value)).reduce(
-    (s, d) => s + d ?? 0, 0);
+    (s, d) => s + d, 0);
 }
 
 export function getTotalTotalExpenses(country: SaveCountry): number {
-  return Object.values(Expense).map(value => getTotalExpenses(country, value)).reduce((s, d) => s + d ?? 0, 0);
+  return Object.values(Expense).map(value => getTotalExpenses(country, value)).reduce((s, d) => s + d, 0);
 }
 
 export function getRank(save: MapSave, country: SaveCountry, mapper: (country: SaveCountry) => number | undefined, onlyPlayer: boolean = false): number {
@@ -1001,9 +1000,9 @@ export function getWar(save: MapSave, id: number): SaveWar | undefined {
 
 export function getWarLosses(war: SaveWar): number {
   return Object.values(war.attackers).map(
-      attacker => Object.values(attacker.losses).reduce((s, d) => s + d ?? 0, 0)).reduce((s, d) => s + d ?? 0, 0)
+      attacker => Object.values(attacker.losses).reduce((s, d) => s + d, 0)).reduce((s, d) => s + d, 0)
     + Object.values(war.defenders).map(
-      defender => Object.values(defender.losses).reduce((s, d) => s + d ?? 0, 0)).reduce((s, d) => s + d ?? 0, 0);
+      defender => Object.values(defender.losses).reduce((s, d) => s + d, 0)).reduce((s, d) => s + d, 0);
 }
 
 export function getProvinceLosses(war: SaveWar, id: number): number {
@@ -1033,10 +1032,10 @@ export function getBattleLosses(battle: SaveBattle): number {
 export function getWarValue(tag: string, war: SaveWar): number {
   if (Object.keys(war.attackers).includes(tag)) {
     return war.attackers[tag].value / Object.values(war.attackers).map(value => value.value).reduce(
-      (s, d) => s + d ?? 0, 0);
+      (s, d) => s + d, 0);
   } else if (Object.keys(war.defenders).includes(tag)) {
     return war.defenders[tag].value / Object.values(war.defenders).map(value => value.value).reduce(
-      (s, d) => s + d ?? 0, 0);
+      (s, d) => s + d, 0);
   }
 
   return 0;
