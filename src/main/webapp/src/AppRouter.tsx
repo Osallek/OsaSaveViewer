@@ -48,6 +48,7 @@ const AppRouter: React.FunctionComponent = () => {
         <Route path="/wiki/:version/idea-groups" element={ <IdeasGroupsList/> }/>
         <Route path="/wiki/:version/idea-groups/:id" element={ <IdeasGroupsList/> }/>
         <Route path="/wiki/:version/policies" element={ <PoliciesList/> }/>
+        <Route path="/wiki/:version/policies/:id" element={ <PoliciesList/> }/>
         <Route path="/wiki/:version/ideas" element={ <Ideas/> }/>
         <Route path="/" element={ <HomePage/> }/>
         <Route path="*" element={ <Navigate to="/" replace/> }/>

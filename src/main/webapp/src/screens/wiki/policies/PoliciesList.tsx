@@ -12,7 +12,7 @@ import { wikiTypes } from 'types/wiki.types';
 import { stringComparator, stringLocalisedComparator } from 'utils/format.utils';
 
 function PoliciesList() {
-  const { version } = useParams();
+  const { version, id } = useParams();
   const intl = useIntl();
   const { wikiState } = useContext(WikiContext)!;
 
@@ -21,6 +21,7 @@ function PoliciesList() {
   const [ filtered, setFiltered ] = useState<Array<Policy>>();
   const [ loading, setLoading ] = useState<boolean>(true);
   const [ error, setError ] = useState<boolean>(false);
+  const [ barHeight, setBarHeight ] = useState<number>(0);
 
   useEffect(() => {
     if (!wiki && version && wikiState && wikiState.wikis && wikiState.wikis[version]) {
@@ -40,6 +41,20 @@ function PoliciesList() {
     }
   }, [ policies ]);
 
+  useEffect(() => {
+    if (id) {
+      const targetElement = document.getElementById(id);
+
+      if (targetElement) {
+        const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+          top: elementPosition - barHeight - 8,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [ id, filtered, barHeight ]);
+
   return (
     <>
       {
@@ -58,7 +73,9 @@ function PoliciesList() {
           </Grid>
           :
           <>
-            <WikiBar type={ wikiTypes.policies } objects={ policies } group={ p => intl.formatMessage({ id: `wiki.policy.${ p.category }` }) }>
+            <WikiBar type={ wikiTypes.policies } objects={ policies }
+                     group={ p => intl.formatMessage({ id: `wiki.policy.${ p.category }` }) }
+                     setHeight={ setBarHeight }>
               <Toolbar sx={ { backgroundColor: theme.palette.primary.dark } }>
                 <Typography variant='h6' color={ theme.palette.primary.contrastText }>
                   { intl.formatMessage({ id: 'wiki.policies' }) }
@@ -73,21 +90,21 @@ function PoliciesList() {
                 :
                 <Grid container sx={ { p: 3, flexDirection: 'column', alignItems: 'center' } }>
                   <Grid container size={ 12 } spacing={ 2 }>
-                    <Grid container rowSpacing={ 4 }>
+                    <Grid container rowSpacing={ 2 }>
                       {
                         Object.keys(Power).map(category => (
                             <Grid container sx={ { flexDirection: 'column' } } rowSpacing={ 1 } key={ category }>
                               <Typography variant='h4'>
                                 { intl.formatMessage({ id: `wiki.policy.${ category }` }) }
                               </Typography>
-                              <Grid container spacing={ 3 }>
+                              <Grid container spacing={ 2 }>
                                 {
                                   filtered && filtered.filter(i => category === i.category)
-                                    .map((policy, index) => (
+                                    .map((policy) => (
                                       <Grid container size={ { xs: 12, md: 6, xl: 4 } }
                                             key={ policy.id } id={ policy.id }>
-                                        <PolicyCard policy={ policy } wiki={ wiki }
-                                                    version={ version }/>
+                                        <PolicyCard policy={ policy } wiki={ wiki } version={ version }
+                                                    expanded={ id === policy.id }/>
                                       </Grid>
                                     ))
                                 }

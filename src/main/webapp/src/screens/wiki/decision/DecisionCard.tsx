@@ -1,28 +1,26 @@
 import { Card, CardActionArea, CardContent, CardHeader, Grid, IconButton, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 import theme from 'theme';
-import { Decision, Wiki } from 'types/api.types';
+import { Decision } from 'types/api.types';
 import LocalisedExample from "../LocalisedExample";
 import { useIntl } from "react-intl";
 import { PriorityHigh } from '@mui/icons-material';
 import ExampleIcon from '../ExampleIcon';
-import { useNavigate } from "react-router-dom";
+import { wikiTypes } from "types/wiki.types";
 
 interface DecisionCardProps {
   decision: Decision;
-  wiki: Wiki;
   version: string;
 }
 
-function DecisionCard({ decision }: DecisionCardProps) {
+function DecisionCard({ decision, version }: DecisionCardProps) {
   const intl = useIntl();
-  const navigate = useNavigate();
   const [ useExample, setUseExample ] = useState<boolean>(false);
 
   return (
     <Tooltip title={ `id: ${ decision.id }` } placement='right-start'>
       <Card sx={ { width: '100%', height: 'fit-content' } } elevation={ 1 }>
-        <CardActionArea onClick={ () => navigate('')}>
+        <CardActionArea component="a" href={`/wiki/${ version }/${ wikiTypes.decisions.path }/${ decision.id }`}>
           <CardHeader disableTypography
                       title={
                         <Grid display='inline-flex' flexWrap='nowrap' alignItems='baseline' gap={ 1 }>

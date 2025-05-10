@@ -1,6 +1,6 @@
 import { Typography, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
-import React from 'react';
+import React, { JSX } from 'react';
 import LocalisedExample from 'screens/wiki/LocalisedExample';
 import { Condition, Wiki } from 'types/api.types';
 

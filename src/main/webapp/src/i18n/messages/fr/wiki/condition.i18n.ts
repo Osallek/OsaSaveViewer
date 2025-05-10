@@ -1,4 +1,5 @@
 const wikiCondition = {
+  'wiki.effects': 'Effets',
   'wiki.condition': 'Condition',
   'wiki.condition.always': 'Toujours',
   'wiki.condition.always.not': 'Jamais',

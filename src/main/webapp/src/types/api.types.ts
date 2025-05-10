@@ -744,6 +744,7 @@ export type Color = {
 
 export type Wiki = {
   decisions: Record<string, Decision>;
+  sortedDecisions?: Decision[];
   countries: Record<string, Country>;
   advisors: Record<string, Advisor>;
   idExampleLocalised: Record<string, IdExampleLocalised>;
