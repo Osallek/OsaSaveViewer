@@ -8,7 +8,7 @@ import { MapMode, mapModes, MapSave } from 'types/map.types';
 interface NodeMapTabProps {
   node: SaveTradeNode;
   save: MapSave;
-  containerRef: RefObject<HTMLDivElement>;
+  containerRef: RefObject<HTMLDivElement | null>;
 }
 
 function NodeMapTab({ node, save, containerRef }: NodeMapTabProps) {

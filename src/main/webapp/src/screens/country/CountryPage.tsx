@@ -1,5 +1,18 @@
 import { Home, KeyboardArrowDown, Map } from '@mui/icons-material';
-import { AppBar, Avatar, Backdrop, Button, CircularProgress, GridLegacy, Menu, MenuItem, Tab, Tabs, Toolbar, Typography } from '@mui/material';
+import {
+    AppBar,
+    Avatar,
+    Backdrop,
+    Button,
+    CircularProgress,
+    GridLegacy,
+    Menu,
+    MenuItem,
+    Tab,
+    Tabs,
+    Toolbar,
+    Typography
+} from '@mui/material';
 import { api } from 'api';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -22,9 +35,9 @@ import CountryReligionTab from 'screens/country/CountryReligionTab';
 import theme from 'theme';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
+import { fakeTag } from 'utils/data.utils';
 import { formatDate, stringComparator } from 'utils/format.utils';
 import { convertSave, getCountries, getCountry, getCountrysFlag, getCountrysName, getPlayer } from 'utils/save.utils';
-import { fakeTag } from 'utils/data.utils';
 
 function CountryPage() {
   const params = useParams();

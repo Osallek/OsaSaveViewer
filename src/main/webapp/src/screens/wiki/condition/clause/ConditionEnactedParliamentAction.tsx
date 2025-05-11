@@ -1,8 +1,7 @@
 import { TypographyProps } from '@mui/material/Typography/Typography';
-import React from 'react';
+import React, { JSX } from 'react';
 import { Condition, Wiki } from 'types/api.types';
 import { wikiTypes } from '../../../../types/wiki.types';
-import ConditionLocalised from '../ConditionLocalised';
 import ConditionLocalisedLink from '../ConditionLocalisedLink';
 
 interface ConditionEnactedParliamentActionProps extends TypographyProps {

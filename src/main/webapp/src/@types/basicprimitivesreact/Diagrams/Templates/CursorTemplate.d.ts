@@ -27,5 +27,6 @@ declare class CursorTemplate extends AbstractTemplate {
         top: string;
     };
 }
+
 import AbstractTemplate from "./AbstractTemplate";
 //# sourceMappingURL=CursorTemplate.d.ts.map

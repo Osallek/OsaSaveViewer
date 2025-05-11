@@ -16,5 +16,6 @@ declare class RotatedText extends Component<any, any, any> {
     constructor(props: any, context: any);
     getTransform(orientation: any): string;
 }
+
 import { Component } from "react";
 //# sourceMappingURL=RotatedText.d.ts.map

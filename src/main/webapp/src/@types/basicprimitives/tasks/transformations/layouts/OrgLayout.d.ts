@@ -32,5 +32,5 @@ export default class OrgLayout {
         bottomConnectorInterval: number;
     };
 }
-import TreeItemPosition from "../../../models/TreeItemPosition";
 import Rect from "../../../graphics/structs/Rect";
+import TreeItemPosition from "../../../models/TreeItemPosition";

@@ -26,8 +26,14 @@ import { Condition, Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';
 import { getLName } from 'utils/data.utils';
 import {
-  getArea, getColonialRegion, getContinent, getCountry, getCountrysFlag, getProvince, getRegion, getSuperRegion,
-  getTradeGood, getTradeGoodImage
+    getArea,
+    getColonialRegion,
+    getContinent,
+    getCountry,
+    getCountrysFlag,
+    getProvince,
+    getRegion,
+    getSuperRegion
 } from 'utils/wiki.utils';
 import ConditionEnactedEstateAction from './clause/ConditionEnactedEstateAction';
 import ConditionEnactedParliamentAction from './clause/ConditionEnactedParliamentAction';

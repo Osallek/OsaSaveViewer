@@ -24,5 +24,5 @@ export default class HorizontalLayout {
     arrange(thisArg: any, parentPosition: any, layoutDirection: any, treeItemsPositions: any, options: any, onItemPositioned: any): void;
     getItemPosition(visibility: any, offset: any, row: any, size: any, options: any): Rect;
 }
-import TreeItemPosition from "../../../models/TreeItemPosition";
 import Rect from "../../../graphics/structs/Rect";
+import TreeItemPosition from "../../../models/TreeItemPosition";

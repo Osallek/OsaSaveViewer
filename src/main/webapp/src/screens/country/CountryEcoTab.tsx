@@ -1,13 +1,13 @@
 import {
-  GridLegacy,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography
+    GridLegacy,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
 } from '@mui/material';
 import { green, red } from '@mui/material/colors';
 import React from 'react';
@@ -16,11 +16,11 @@ import { Bar, BarChart, CartesianGrid, Cell, LabelList, Tooltip, XAxis, YAxis } 
 import theme from 'theme';
 import { Expense, Income, SaveCountry } from 'types/api.types';
 import {
-  expenseToColor,
-  getExpenseStackBar,
-  getIncomeStackBar,
-  getTotalExpenseStackBar,
-  incomeToColor
+    expenseToColor,
+    getExpenseStackBar,
+    getIncomeStackBar,
+    getTotalExpenseStackBar,
+    incomeToColor
 } from 'utils/chart.utils';
 import { formatNumber, numberComparator } from 'utils/format.utils';
 import { getTotalStableExpense, getTotalStableIncome, getTotalTotalExpenses } from 'utils/save.utils';

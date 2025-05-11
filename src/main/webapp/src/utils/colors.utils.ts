@@ -1,5 +1,17 @@
 import {
-  amber, blue, blueGrey, brown, cyan, deepOrange, green, grey, orange, purple, red, teal, yellow
+    amber,
+    blue,
+    blueGrey,
+    brown,
+    cyan,
+    deepOrange,
+    green,
+    grey,
+    orange,
+    purple,
+    red,
+    teal,
+    yellow
 } from '@mui/material/colors';
 import Gradient from 'javascript-color-gradient';
 import { Losses, PowerSpent, SaveColor } from 'types/api.types';

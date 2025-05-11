@@ -1,12 +1,12 @@
+import { PriorityHigh } from '@mui/icons-material';
 import { Card, CardActionArea, CardContent, CardHeader, Grid, IconButton, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
+import { useIntl } from "react-intl";
 import theme from 'theme';
 import { Decision } from 'types/api.types';
-import LocalisedExample from "../LocalisedExample";
-import { useIntl } from "react-intl";
-import { PriorityHigh } from '@mui/icons-material';
-import ExampleIcon from '../ExampleIcon';
 import { wikiTypes } from "types/wiki.types";
+import ExampleIcon from '../ExampleIcon';
+import LocalisedExample from "../LocalisedExample";
 
 interface DecisionCardProps {
   decision: Decision;

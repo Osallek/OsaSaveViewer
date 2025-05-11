@@ -244,6 +244,6 @@ export type loopRectEdgesCallback = (vector: Vector, placementType: {
     Left: number;
     LeftTop: number;
 }) => boolean;
-import Point from "./Point";
 import Interval from "./Interval";
+import Point from "./Point";
 import Vector from "./Vector";

@@ -4,7 +4,12 @@ import { useIntl } from 'react-intl';
 import { SaveTradeNode } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { formatNumber } from 'utils/format.utils';
-import { getTradeNodeIncomingValue, getTradeNodeLocalValue, getTradeNodeOutgoingValue, getTradeNodeValue } from 'utils/save.utils';
+import {
+    getTradeNodeIncomingValue,
+    getTradeNodeLocalValue,
+    getTradeNodeOutgoingValue,
+    getTradeNodeValue
+} from 'utils/save.utils';
 
 interface NodeInfoTabProps {
   node: SaveTradeNode;

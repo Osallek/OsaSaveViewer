@@ -116,7 +116,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
     }, [adjustOffset, lastMousePos, lastOffset, offset, zoom]);
 
     const resize = useCallback((draw: boolean) => {
-      if (gl && provincesTexture && ratioLoc) {
+      if (gl && provincesTexture && ratioLoc && gl.canvas instanceof HTMLCanvasElement) {
         const width = gl.canvas.clientWidth;
         const height = gl.canvas.clientHeight;
 
@@ -134,7 +134,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
     }, [gl, provincesTexture, ratioLoc]);
 
     const clickProvince = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-      if (gl && save) {
+      if (gl && save && gl.canvas instanceof HTMLCanvasElement) {
         if (!moved && provincesContext && provincesTexture && provincesData) {
           const scaledWidth = gl.canvas.width / zoom;
           const scaledHeight = gl.canvas.height / zoom;
@@ -161,7 +161,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
         return;
       }
 
-      if (gl && save && provincesData && provincesTexture && canvas.current && Date.now() > lastTooltip + tooltipBounce) {
+      if (gl && save && provincesData && provincesTexture && canvas.current && Date.now() > lastTooltip + tooltipBounce && gl.canvas instanceof HTMLCanvasElement) {
         const scaledWidth = gl.canvas.width / zoom;
         const scaledHeight = gl.canvas.height / zoom;
 

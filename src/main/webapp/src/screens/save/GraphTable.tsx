@@ -27,7 +27,7 @@ function GraphTable({ save, visible }: GraphTableProps) {
       <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', padding: 24 } }>
         <GridLegacy container item xs={ 12 } lg={ 10 } xl={ 8 }>
           <AutoSizer disableHeight>
-            { ({ height, width }) => (
+            { ({ width }) => (
               <GridLegacy container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } }>
                 {
                   charts.map((chart, i) => (

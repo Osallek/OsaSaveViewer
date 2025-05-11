@@ -8,7 +8,7 @@ import { MapMode, mapModes, MapSave } from 'types/map.types';
 interface CountryMapTabProps {
   country: SaveCountry;
   save: MapSave;
-  containerRef: RefObject<HTMLDivElement>;
+  containerRef: RefObject<HTMLDivElement | null>;
 }
 
 function CountryMapTab({ country, save, containerRef }: CountryMapTabProps) {

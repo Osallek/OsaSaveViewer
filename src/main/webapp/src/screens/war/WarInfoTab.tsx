@@ -1,4 +1,17 @@
-import { Avatar, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
+import {
+    Avatar,
+    GridLegacy,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Tooltip,
+    Typography,
+    useTheme
+} from '@mui/material';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { SaveWar } from 'types/api.types';
@@ -98,10 +111,10 @@ function WarInfoTab({ war, save }: WarInfoTabProps) {
                 </GridLegacy>
               </TableCell>
               <TableCell style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
-                { formatNumber(Object.values(war.attackers).map(a => a.losses).map(losses => Object.values(losses).reduce((s, e) => s + e ?? 0, 0)).reduce((s, e) => s + e ?? 0, 0)) }
+                { formatNumber(Object.values(war.attackers).map(a => a.losses).map(losses => Object.values(losses).reduce((s, e) => s + e, 0)).reduce((s, e) => s + e, 0)) }
               </TableCell>
               <TableCell>
-                { formatNumber(Object.values(war.defenders).map(a => a.losses).map(losses => Object.values(losses).reduce((s, e) => s + e ?? 0, 0)).reduce((s, e) => s + e ?? 0, 0)) }
+                { formatNumber(Object.values(war.defenders).map(a => a.losses).map(losses => Object.values(losses).reduce((s, e) => s + e, 0)).reduce((s, e) => s + e, 0)) }
               </TableCell>
             </TableRow>
             <TableRow key={ `war-${ war.id }-battle` }>

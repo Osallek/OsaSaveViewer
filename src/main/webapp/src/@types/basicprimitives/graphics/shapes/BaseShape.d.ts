@@ -4,5 +4,5 @@ export default class BaseShape {
     _betweenPoint(first: any, second: any): Point;
     _offsetPoint(first: any, second: any, offset: any): Point;
 }
-import Rect from "../structs/Rect";
 import Point from "../structs/Point";
+import Rect from "../structs/Rect";

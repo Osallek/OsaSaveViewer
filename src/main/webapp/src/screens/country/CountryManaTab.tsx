@@ -1,4 +1,15 @@
-import { CircularProgress, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+    CircularProgress,
+    GridLegacy,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Legend, Pie, PieChart, Sector } from 'recharts';
@@ -102,7 +113,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
             }/>
             <Pie
               activeIndex={ activeIndex[0] }
-              activeShape={ props => renderActiveShape(props, totals[0]) }
+              activeShape={ (props: any) => renderActiveShape(props, totals[0]) }
               data={ data }
               innerRadius={ 90 }
               outerRadius={ 110 }
@@ -124,7 +135,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
             }/>
             <Pie
               activeIndex={ activeIndex[1] }
-              activeShape={ props => renderActiveShape(props, totals[1]) }
+              activeShape={ (props: any) => renderActiveShape(props, totals[1]) }
               data={ data }
               innerRadius={ 90 }
               outerRadius={ 110 }
@@ -146,7 +157,7 @@ function CountryManaTab({ country, save }: CountryManaTabProps) {
             }/>
             <Pie
               activeIndex={ activeIndex[2] }
-              activeShape={ props => renderActiveShape(props, totals[2]) }
+              activeShape={ (props: any) => renderActiveShape(props, totals[2]) }
               data={ data }
               innerRadius={ 90 }
               outerRadius={ 110 }

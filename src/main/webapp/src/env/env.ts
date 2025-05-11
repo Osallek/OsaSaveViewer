@@ -1,11 +1,12 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  VITE_API_BASE_URL: z.string().url(),
-  VITE_DATA_BASE_URL: z.string().url(),
-  VITE_WIKI_BASE_URL: z.string().url(),
+  VITE_API_BASE_URL: z.string(),
+  VITE_DATA_BASE_URL: z.string(),
+  VITE_WIKI_BASE_URL: z.string(),
 });
 
+// @ts-ignore
 const parsedEnv = envSchema.safeParse(import.meta.env);
 
 if (!parsedEnv.success) {

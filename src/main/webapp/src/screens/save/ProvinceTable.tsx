@@ -1,25 +1,25 @@
 import { FilterList } from '@mui/icons-material';
 import {
-  Autocomplete,
-  Avatar,
-  Card,
-  CardContent,
-  ClickAwayListener,
-  GridLegacy,
-  IconButton,
-  Paper,
-  Popper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  TextField,
-  Tooltip,
-  Typography,
-  useTheme
+    Autocomplete,
+    Avatar,
+    Card,
+    CardContent,
+    ClickAwayListener,
+    GridLegacy,
+    IconButton,
+    Paper,
+    Popper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableSortLabel,
+    TextField,
+    Tooltip,
+    Typography,
+    useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -32,25 +32,25 @@ import { MapSave } from 'types/map.types';
 import { fakeTag } from 'utils/data.utils';
 import { cleanString, formatNumber, numberComparator, stringComparator } from 'utils/format.utils';
 import {
-  getBuilding,
-  getBuildingName,
-  getBuildingsImage,
-  getBuildingsName,
-  getCountries,
-  getCountryFlag,
-  getCountryName,
-  getCountrysName,
-  getCultureName,
-  getCulturesName,
-  getGoodImage,
-  getGoodName,
-  getGoodsName,
-  getPDev,
-  getPHistory,
-  getPRealDev,
-  getReligionImage,
-  getReligionName,
-  getReligionsName
+    getBuilding,
+    getBuildingName,
+    getBuildingsImage,
+    getBuildingsName,
+    getCountries,
+    getCountryFlag,
+    getCountryName,
+    getCountrysName,
+    getCultureName,
+    getCulturesName,
+    getGoodImage,
+    getGoodName,
+    getGoodsName,
+    getPDev,
+    getPHistory,
+    getPRealDev,
+    getReligionImage,
+    getReligionName,
+    getReligionsName
 } from 'utils/save.utils';
 
 interface Column {
@@ -542,7 +542,7 @@ function ProvinceTable({ save, type, visible }: ProvinceTableProps) {
                     key={ column.id }
                     style={ { minWidth: column.minWidth, backgroundColor: theme.palette.primary.light } }
                   >
-                    <GridLegacy container alignItems='center' ref={ el => columnsRefs.current[index] = el }
+                    <GridLegacy container alignItems='center' ref={ el => {columnsRefs.current[index] = el;} }
                           style={ { flexFlow: 'nowrap' } }>
                       <IconButton
                         onClick={ (e) => {

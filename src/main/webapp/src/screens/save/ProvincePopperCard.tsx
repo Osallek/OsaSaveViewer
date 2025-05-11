@@ -1,14 +1,14 @@
 import { Close } from '@mui/icons-material';
 import {
-  Avatar,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  IconButton,
-  Typography
+    Avatar,
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    CardHeader,
+    Divider,
+    IconButton,
+    Typography
 } from '@mui/material';
 import React from 'react';
 import { useIntl } from 'react-intl';

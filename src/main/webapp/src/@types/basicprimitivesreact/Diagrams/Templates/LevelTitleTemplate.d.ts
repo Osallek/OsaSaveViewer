@@ -28,5 +28,6 @@ declare class LevelTitleTemplate extends AbstractTemplate {
         top: string;
     };
 }
+
 import AbstractTemplate from "./AbstractTemplate";
 //# sourceMappingURL=LevelTitleTemplate.d.ts.map

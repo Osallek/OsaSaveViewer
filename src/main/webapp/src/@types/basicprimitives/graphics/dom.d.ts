@@ -12,4 +12,5 @@ export function hasClass(element: any, className: any): boolean;
  */
 export function stopPropagation(event: object): void;
 export function getInnerSize(element: any): Size;
+
 import Size from "./structs/Size";

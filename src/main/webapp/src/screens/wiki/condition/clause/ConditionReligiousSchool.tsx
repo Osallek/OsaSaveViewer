@@ -1,7 +1,7 @@
 import { Circle } from '@mui/icons-material';
 import { ListItem, ListItemIcon, useTheme } from '@mui/material';
 import { TypographyProps } from '@mui/material/Typography/Typography';
-import React from 'react';
+import React, { JSX } from 'react';
 import ConditionLocalised from 'screens/wiki/condition/ConditionLocalised';
 import { Condition, Wiki } from 'types/api.types';
 import { getLName } from 'utils/data.utils';

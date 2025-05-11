@@ -1,19 +1,19 @@
 import { PhotoCamera } from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
-  Autocomplete,
-  Avatar,
-  Card,
-  CardContent,
-  CardHeader,
-  Chip,
-  CircularProgress,
-  GridLegacy,
-  IconButton,
-  TextField,
-  Tooltip as Tt,
-  Typography,
-  useTheme
+    Autocomplete,
+    Avatar,
+    Card,
+    CardContent,
+    CardHeader,
+    Chip,
+    CircularProgress,
+    GridLegacy,
+    IconButton,
+    TextField,
+    Tooltip as Tt,
+    Typography,
+    useTheme
 } from '@mui/material';
 import { toPng } from 'html-to-image';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -25,12 +25,12 @@ import { MapSave } from 'types/map.types';
 import { CurrentLine, getCurrentLine, previousCharts } from 'utils/chart.utils';
 import { cleanString, colorToHex, formatNumber, stringComparator } from 'utils/format.utils';
 import {
-  getCountries,
-  getCountry,
-  getCountryFlag,
-  getCountryName,
-  getCountrysFlag,
-  getCountrysName
+    getCountries,
+    getCountry,
+    getCountryFlag,
+    getCountryName,
+    getCountrysFlag,
+    getCountrysName
 } from 'utils/save.utils';
 
 interface CompareTableProps {

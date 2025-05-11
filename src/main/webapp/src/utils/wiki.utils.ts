@@ -1,8 +1,29 @@
 import { env } from 'env/env';
 import {
-  Advisor, Age, AgeAbility, AgeObjective, Area, Building, ColonialRegion, Continent, Country, Disaster, Dlc, Idea,
-  IdeaGroup, IdExampleLocalised, IdImageLocalised, IdLocalised, Institution, Localised, Mission, Region, Religion,
-  SuperRegion, TradeGood, Wiki
+    Advisor,
+    Age,
+    AgeAbility,
+    AgeObjective,
+    Area,
+    Building,
+    ColonialRegion,
+    Continent,
+    Country,
+    Disaster,
+    Dlc,
+    Idea,
+    IdeaGroup,
+    IdExampleLocalised,
+    IdImageLocalised,
+    IdLocalised,
+    Institution,
+    Localised,
+    Mission,
+    Region,
+    Religion,
+    SuperRegion,
+    TradeGood,
+    Wiki
 } from 'types/api.types';
 
 export function getWikiImageUrl(path: string): string {

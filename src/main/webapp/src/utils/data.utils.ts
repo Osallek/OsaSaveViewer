@@ -1,5 +1,4 @@
 import { env } from 'env/env';
-import * as ENV from 'env/env';
 import { eu4Locale } from 'index';
 import { IdLocalised, Localised, Localization } from 'types/api.types';
 import { MapSave } from 'types/map.types';

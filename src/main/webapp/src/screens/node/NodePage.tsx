@@ -1,5 +1,17 @@
 import { Home, KeyboardArrowDown, Map } from '@mui/icons-material';
-import { AppBar, Backdrop, Button, CircularProgress, GridLegacy, Menu, MenuItem, Tab, Tabs, Toolbar, Typography } from '@mui/material';
+import {
+    AppBar,
+    Backdrop,
+    Button,
+    CircularProgress,
+    GridLegacy,
+    Menu,
+    MenuItem,
+    Tab,
+    Tabs,
+    Toolbar,
+    Typography
+} from '@mui/material';
 import { api } from 'api';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';

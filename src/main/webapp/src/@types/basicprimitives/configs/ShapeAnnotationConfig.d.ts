@@ -165,5 +165,5 @@ export default class ShapeAnnotationConfig {
      */
     labelOffset: number;
 }
-import Thickness from "../graphics/structs/Thickness";
 import Size from "../graphics/structs/Size";
+import Thickness from "../graphics/structs/Thickness";

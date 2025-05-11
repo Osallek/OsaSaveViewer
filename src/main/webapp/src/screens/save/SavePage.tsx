@@ -1,20 +1,20 @@
 import { BarChart, Clear, Download, Home, PhotoCamera, PlayArrow, Stop } from '@mui/icons-material';
 import {
-  Avatar,
-  Backdrop,
-  Button,
-  Chip,
-  CircularProgress,
-  createTheme,
-  Dialog,
-  GridLegacy,
-  IconButton,
-  MenuItem,
-  Select,
-  ThemeProvider,
-  Tooltip,
-  Typography,
-  useTheme
+    Avatar,
+    Backdrop,
+    Button,
+    Chip,
+    CircularProgress,
+    createTheme,
+    Dialog,
+    GridLegacy,
+    IconButton,
+    MenuItem,
+    Select,
+    ThemeProvider,
+    Tooltip,
+    Typography,
+    useTheme
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -145,9 +145,9 @@ function SavePage() {
       }, 400));
     }
   }
-
   const datePickerTheme = createTheme({
     components: {
+      // @ts-ignore
       MuiPickersSectionList: {
         styleOverrides: {
           root: {

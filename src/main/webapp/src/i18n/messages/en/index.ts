@@ -11,8 +11,8 @@ import wikiAdvisor from 'i18n/messages/en/wiki/advisor.i18n';
 import wikiCondition from 'i18n/messages/en/wiki/condition.i18n';
 import wikiCountry from 'i18n/messages/en/wiki/country.i18n';
 import wikiDecision from 'i18n/messages/en/wiki/decision.i18n';
-import { Localization } from 'types/api.types';
 import wikiPolicy from 'i18n/messages/en/wiki/policy.i18n';
+import { Localization } from 'types/api.types';
 
 const en = {
   locale: 'en',

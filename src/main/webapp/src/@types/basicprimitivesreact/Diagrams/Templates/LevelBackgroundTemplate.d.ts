@@ -8,5 +8,6 @@ declare class LevelBackgroundTemplate extends AbstractTemplate {
         height: string;
     };
 }
+
 import AbstractTemplate from "./AbstractTemplate";
 //# sourceMappingURL=LevelBackgroundTemplate.d.ts.map

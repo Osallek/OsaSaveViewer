@@ -2,14 +2,38 @@ import { green, grey, orange, red } from '@mui/material/colors';
 import { intl } from 'index';
 import { AxisDomain } from 'recharts/types/util/types';
 import {
-  CountryPreviousSave, Expense, Income, PowerSpent, SaveCountry, SaveEstate, SaveTradeNode, SaveTradeNodeCountry, SaveTradeNodeIncoming, SaveWarParticipant
+    CountryPreviousSave,
+    Expense,
+    Income,
+    PowerSpent,
+    SaveCountry,
+    SaveEstate,
+    SaveTradeNode,
+    SaveTradeNodeCountry,
+    SaveTradeNodeIncoming,
+    SaveWarParticipant
 } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { saveToColor } from 'utils/colors.utils';
 import { colorToHex, formatNumber, getYear, numberComparator, stringComparator } from 'utils/format.utils';
 import {
-  getBuildingsName, getCountries, getCountry, getCountrysName, getCulture, getCulturesName, getEstate, getEstatesName, getNbBuildings, getPHistory, getPrevious,
-  getProvinces, getRank, getReligion, getReligionsName, getTradeNode, getTradeNodesName
+    getBuildingsName,
+    getCountries,
+    getCountry,
+    getCountrysName,
+    getCulture,
+    getCulturesName,
+    getEstate,
+    getEstatesName,
+    getNbBuildings,
+    getPHistory,
+    getPrevious,
+    getProvinces,
+    getRank,
+    getReligion,
+    getReligionsName,
+    getTradeNode,
+    getTradeNodesName
 } from 'utils/save.utils';
 
 export function incomeToColor(income: Income): string {

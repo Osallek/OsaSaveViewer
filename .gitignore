@@ -40,3 +40,5 @@ build/
 logs/
 
 src/main/webapp/.env
+
+src/main/webapp/dist/

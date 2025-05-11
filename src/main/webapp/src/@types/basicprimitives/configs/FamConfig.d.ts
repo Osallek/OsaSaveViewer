@@ -1149,5 +1149,5 @@ export default class FamConfig {
     autoSizeMaximum: Size;
 }
 import { OrientationType } from "../enums";
-import Thickness from "../graphics/structs/Thickness";
 import Size from "../graphics/structs/Size";
+import Thickness from "../graphics/structs/Thickness";

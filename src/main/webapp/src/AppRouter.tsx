@@ -11,8 +11,8 @@ import Ideas from 'screens/wiki/ideas/Ideas';
 import PoliciesList from 'screens/wiki/policies/PoliciesList';
 import { Wiki } from 'types/api.types';
 import DecisionPage from './screens/wiki/decision/DecisionPage';
-import IdeasGroupsList from './screens/wiki/ideaGroups/IdeaGroupList';
 import DecisionsList from "./screens/wiki/decision/DecisionsList";
+import IdeasGroupsList from './screens/wiki/ideaGroups/IdeaGroupList';
 
 export type WikiState = {
   versions?: Record<string, string>;

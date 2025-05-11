@@ -1,5 +1,17 @@
 import { Close, Done } from '@mui/icons-material';
-import { Avatar, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
+import {
+    Avatar,
+    GridLegacy,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableRow,
+    Tooltip,
+    Typography,
+    useTheme
+} from '@mui/material';
 import React from 'react';
 import { SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';

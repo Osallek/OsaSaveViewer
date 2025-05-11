@@ -1,18 +1,18 @@
 import {
-  AppBar,
-  Avatar,
-  Backdrop,
-  Card,
-  CardContent,
-  CardHeader,
-  CardMedia,
-  CircularProgress,
-  GridLegacy,
-  List,
-  ListItem,
-  Toolbar,
-  Typography,
-  useTheme
+    AppBar,
+    Avatar,
+    Backdrop,
+    Card,
+    CardContent,
+    CardHeader,
+    CardMedia,
+    CircularProgress,
+    GridLegacy,
+    List,
+    ListItem,
+    Toolbar,
+    Typography,
+    useTheme
 } from '@mui/material';
 import { api } from 'api';
 import { UserContext, UserContextProps } from 'App';

@@ -27,5 +27,6 @@ declare class GroupTitleTemplate extends AbstractTemplate {
         top: string;
     };
 }
+
 import AbstractTemplate from "./AbstractTemplate";
 //# sourceMappingURL=GroupTitleTemplate.d.ts.map

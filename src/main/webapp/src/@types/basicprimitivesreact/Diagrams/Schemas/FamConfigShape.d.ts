@@ -1,10 +1,10 @@
 import {
-  Enabled,
-  FamItemConfig,
-  NavigationMode,
-  NeighboursSelectionMode,
-  PageFitMode,
-  ShapeAnnotationConfig
+    Enabled,
+    FamItemConfig,
+    NavigationMode,
+    NeighboursSelectionMode,
+    PageFitMode,
+    ShapeAnnotationConfig
 } from 'basicprimitives';
 
 export type FamConfigShape = {

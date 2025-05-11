@@ -3,12 +3,32 @@ import { green } from '@mui/material/colors';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { Area, AreaChart, Bar, CartesianGrid, Cell, ComposedChart, LabelList, Line, Tooltip, XAxis, YAxis } from 'recharts';
+import {
+    Area,
+    AreaChart,
+    Bar,
+    CartesianGrid,
+    Cell,
+    ComposedChart,
+    LabelList,
+    Line,
+    Tooltip,
+    XAxis,
+    YAxis
+} from 'recharts';
 import { AxisDomain } from 'recharts/types/util/types';
 import { getRankDisplay } from 'screens/country/CountryMilitaryTab';
 import { CountryPreviousSave, SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
-import { getIncomeLine, getNbProvincesLine, getPreviousBar, getSavesGradient, HistoryLine, PreviousBar, SaveGradient } from 'utils/chart.utils';
+import {
+    getIncomeLine,
+    getNbProvincesLine,
+    getPreviousBar,
+    getSavesGradient,
+    HistoryLine,
+    PreviousBar,
+    SaveGradient
+} from 'utils/chart.utils';
 import { formatNumber } from 'utils/format.utils';
 import { getCountries, getSaveIndex } from 'utils/save.utils';
 
@@ -81,7 +101,7 @@ function CountryHistoryTab({ country, save }: CountryHistoryTabProps) {
     <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center' } }>
       <GridLegacy container item xs={ 12 } lg={ 10 } xl={ 8 }>
         <AutoSizer disableHeight>
-          { ({ height, width }) => (
+          { ({ width }) => (
             <GridLegacy container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } }>
               <Typography variant='h6' style={ { textAlign: 'center' } }>
                 { intl.formatMessage({ id: 'country.history.income' }) }

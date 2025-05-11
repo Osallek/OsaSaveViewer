@@ -1,5 +1,22 @@
-import { Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineOppositeContent, TimelineSeparator } from '@mui/lab';
-import { Avatar, Box, DialogContent, DialogTitle, GridLegacy, LinearProgress, Tooltip, Typography } from '@mui/material';
+import {
+    Timeline,
+    TimelineConnector,
+    TimelineContent,
+    TimelineDot,
+    TimelineItem,
+    TimelineOppositeContent,
+    TimelineSeparator
+} from '@mui/lab';
+import {
+    Avatar,
+    Box,
+    DialogContent,
+    DialogTitle,
+    GridLegacy,
+    LinearProgress,
+    Tooltip,
+    Typography
+} from '@mui/material';
 import { LinearProgressProps } from '@mui/material/LinearProgress/LinearProgress';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -8,8 +25,26 @@ import { SaveProvince } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { formatDate, formatNumber, stringComparator } from 'utils/format.utils';
 import {
-  getArea, getAreaState, getBuilding, getBuildingImage, getBuildingName, getBuildingsImage, getBuildingsName, getCountry, getCountryFlag, getCountryName,
-  getCountrysFlag, getCountrysName, getCultureName, getGoodImage, getGoodName, getPDev, getPHistory, getReligionImage, getReligionName, interestingHistory
+    getArea,
+    getAreaState,
+    getBuilding,
+    getBuildingImage,
+    getBuildingName,
+    getBuildingsImage,
+    getBuildingsName,
+    getCountry,
+    getCountryFlag,
+    getCountryName,
+    getCountrysFlag,
+    getCountrysName,
+    getCultureName,
+    getGoodImage,
+    getGoodName,
+    getPDev,
+    getPHistory,
+    getReligionImage,
+    getReligionName,
+    interestingHistory
 } from 'utils/save.utils';
 
 interface ProvinceModalCardProps {

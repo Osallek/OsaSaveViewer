@@ -1,5 +1,15 @@
 import {
-  Avatar, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme
+    Avatar,
+    GridLegacy,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
+    useTheme
 } from '@mui/material';
 import React from 'react';
 import { useIntl } from 'react-intl';

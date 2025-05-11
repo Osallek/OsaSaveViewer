@@ -1,7 +1,23 @@
 import { FilterList, Launch } from '@mui/icons-material';
 import {
-  Autocomplete, Card, CardContent, ClickAwayListener, GridLegacy, IconButton, Paper, Popper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  TableSortLabel, TextField, Typography, useTheme
+    Autocomplete,
+    Card,
+    CardContent,
+    ClickAwayListener,
+    GridLegacy,
+    IconButton,
+    Paper,
+    Popper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableSortLabel,
+    TextField,
+    Typography,
+    useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -12,7 +28,13 @@ import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { SaveTradeNode } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { cleanString, colorToHex, formatNumber, numberComparator, round, stringComparator } from 'utils/format.utils';
-import { getTradeNodeIncomingValue, getTradeNodeLocalValue, getTradeNodeOutgoingValue, getTradeNodesName, getTradeNodeValue } from 'utils/save.utils';
+import {
+    getTradeNodeIncomingValue,
+    getTradeNodeLocalValue,
+    getTradeNodeOutgoingValue,
+    getTradeNodesName,
+    getTradeNodeValue
+} from 'utils/save.utils';
 
 interface Column {
   id: string;
@@ -329,7 +351,7 @@ function TradeNodeTable({ save, visible }: TradeNodeTableProps) {
                     key={ column.id }
                     style={ { minWidth: column.minWidth, backgroundColor: theme.palette.primary.light } }
                   >
-                    <GridLegacy container alignItems='center' ref={ el => columnsRefs.current[index] = el }
+                    <GridLegacy container alignItems='center' ref={ el => {columnsRefs.current[index] = el;} }
                           style={ { flexFlow: 'nowrap' } }>
                       <IconButton
                         onClick={ (e) => {

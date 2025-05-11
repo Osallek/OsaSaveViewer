@@ -1,18 +1,21 @@
 import { Component } from "react";
 import Graphics from "./Graphics";
-import { AnnotationLabelTemplate } from "./Templates";
-import { ButtonsTemplate } from "./Templates";
-import { CheckBoxTemplate } from "./Templates";
-import { CursorTemplate } from "./Templates";
-import { DotHighlightTemplate } from "./Templates";
-import { GroupTitleTemplate } from "./Templates";
-import { HighlightTemplate } from "./Templates";
-import { ItemTemplate } from "./Templates";
-import { UserTemplate } from "./Templates";
-import { CustomRenderTemplate } from "./Templates";
-import { LabelAnnotationTemplate } from "./Templates";
-import { LevelTitleTemplate } from "./Templates";
-import { LevelBackgroundTemplate } from "./Templates";
+import {
+    AnnotationLabelTemplate,
+    ButtonsTemplate,
+    CheckBoxTemplate,
+    CursorTemplate,
+    CustomRenderTemplate,
+    DotHighlightTemplate,
+    GroupTitleTemplate,
+    HighlightTemplate,
+    ItemTemplate,
+    LabelAnnotationTemplate,
+    LevelBackgroundTemplate,
+    LevelTitleTemplate,
+    UserTemplate
+} from "./Templates";
+
 export default BaseDiagram;
 declare class BaseDiagram extends Component<any, any, any> {
     static propTypes: {

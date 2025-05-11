@@ -1,17 +1,17 @@
 import {
-  Avatar,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardHeader,
-  Collapse,
-  Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Typography
+    Avatar,
+    Card,
+    CardActionArea,
+    CardContent,
+    CardHeader,
+    Collapse,
+    Grid,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableRow,
+    Typography
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useState } from 'react';

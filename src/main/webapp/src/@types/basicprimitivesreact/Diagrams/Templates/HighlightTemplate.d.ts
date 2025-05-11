@@ -27,5 +27,6 @@ declare class HighlightTemplate extends AbstractTemplate {
         top: string;
     };
 }
+
 import AbstractTemplate from "./AbstractTemplate";
 //# sourceMappingURL=HighlightTemplate.d.ts.map

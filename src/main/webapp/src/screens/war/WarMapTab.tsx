@@ -8,7 +8,7 @@ import { MapMode, mapModes, MapSave } from 'types/map.types';
 interface WarMapTabProps {
   war: SaveWar;
   save: MapSave;
-  containerRef: RefObject<HTMLDivElement>;
+  containerRef: RefObject<HTMLDivElement | null>;
 }
 
 function WarMapTab({ war, save, containerRef }: WarMapTabProps) {

@@ -1,20 +1,20 @@
 import {
-  Avatar,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardHeader,
-  Collapse,
-  Grid,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Tooltip,
-  Typography
+    Avatar,
+    Card,
+    CardActionArea,
+    CardContent,
+    CardHeader,
+    Collapse,
+    Grid,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableRow,
+    Tooltip,
+    Typography
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import ConditionsList from 'screens/wiki/condition/ConditionsList';
 import { modifiersGrid } from 'screens/wiki/ModifiersGrid';

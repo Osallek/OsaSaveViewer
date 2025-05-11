@@ -1,8 +1,27 @@
 import { FilterList, Launch } from '@mui/icons-material';
 import {
-  Autocomplete, Avatar, Card, CardContent, Checkbox, ClickAwayListener, FormControlLabel, GridLegacy, IconButton, Paper,
-  Popper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TextField, Tooltip,
-  Typography, useTheme
+    Autocomplete,
+    Avatar,
+    Card,
+    CardContent,
+    Checkbox,
+    ClickAwayListener,
+    FormControlLabel,
+    GridLegacy,
+    IconButton,
+    Paper,
+    Popper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableSortLabel,
+    TextField,
+    Tooltip,
+    Typography,
+    useTheme
 } from '@mui/material';
 import { intl } from 'index';
 import React, { useEffect, useRef, useState } from 'react';
@@ -13,10 +32,21 @@ import { ListChildComponentProps, VariableSizeList } from 'react-window';
 import { SaveWar } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import {
-  cleanString, formatDate, formatDuration, formatNumber, numberComparator, round, stringComparator
+    cleanString,
+    formatDate,
+    formatDuration,
+    formatNumber,
+    numberComparator,
+    round,
+    stringComparator
 } from 'utils/format.utils';
 import {
-  getCountries, getCountry, getCountryName, getCountrysFlag, getCountrysName, getWarLosses
+    getCountries,
+    getCountry,
+    getCountryName,
+    getCountrysFlag,
+    getCountrysName,
+    getWarLosses
 } from 'utils/save.utils';
 
 const onlyPlayers = 'onlyPlayers';

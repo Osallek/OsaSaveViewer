@@ -21,6 +21,6 @@ declare class Shape {
     draw(position: any, uiHash: any): void;
 }
 export default Shape;
-import Transform from "../Transform";
-import Thickness from "../structs/Thickness";
 import Size from "../structs/Size";
+import Thickness from "../structs/Thickness";
+import Transform from "../Transform";

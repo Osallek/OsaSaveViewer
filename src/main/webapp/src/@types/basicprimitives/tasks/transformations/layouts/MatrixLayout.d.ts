@@ -29,5 +29,5 @@ export default class MatrixLayout {
     arrange(thisArg: any, parentPosition: any, layoutDirection: any, treeItemsPositions: any, options: any, onItemPositioned: any): void;
     getItemPosition(visibility: any, column: any, row: any, size: any, verticalAlignment: any): Rect;
 }
-import TreeItemPosition from "../../../models/TreeItemPosition";
 import Rect from "../../../graphics/structs/Rect";
+import TreeItemPosition from "../../../models/TreeItemPosition";

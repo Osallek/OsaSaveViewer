@@ -1,9 +1,7 @@
 import { endpoints } from 'api/index';
 import axios, { AxiosPromise } from 'axios';
 import { env } from 'env/env';
-import * as ENV from 'env/env';
 import { Save, ServerSave, UserInfo, Wiki } from 'types/api.types';
-import { getWikiDataUrl } from 'utils/data.utils';
 
 const apiWs = axios.create({
   baseURL: env.VITE_API_BASE_URL,

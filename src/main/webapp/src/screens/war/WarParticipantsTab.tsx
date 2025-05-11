@@ -53,8 +53,8 @@ function WarParticipantsTab({ war, save }: WarParticipantsTabProps) {
   useEffect(() => {
     setCharts([Object.values(war.attackers).sort((a, b) => -numberComparator(a.value, b.value)),
       Object.values(war.defenders).sort((a, b) => -numberComparator(a.value, b.value))]);
-    setTotals([Object.values(war.attackers).map(value => value.value).reduce((s, d) => s + d ?? 0, 0),
-      Object.values(war.defenders).map(value => value.value).reduce((s, d) => s + d ?? 0, 0)]);
+    setTotals([Object.values(war.attackers).map(value => value.value).reduce((s, d) => s + d, 0),
+      Object.values(war.defenders).map(value => value.value).reduce((s, d) => s + d, 0)]);
   }, [war, save]);
 
   return (
@@ -69,7 +69,7 @@ function WarParticipantsTab({ war, save }: WarParticipantsTabProps) {
         >
           <Pie
             activeIndex={ activeIndex[0] }
-            activeShape={ props => renderActiveShape(props, totals[0], save) }
+            activeShape={ (props: any) => renderActiveShape(props, totals[0], save) }
             data={ charts[0] }
             innerRadius={ 100 }
             outerRadius={ 120 }
@@ -94,7 +94,7 @@ function WarParticipantsTab({ war, save }: WarParticipantsTabProps) {
         >
           <Pie
             activeIndex={ activeIndex[1] }
-            activeShape={ props => renderActiveShape(props, totals[1], save) }
+            activeShape={ (props: any) => renderActiveShape(props, totals[1], save) }
             data={ charts[1] }
             innerRadius={ 100 }
             outerRadius={ 120 }

@@ -1,4 +1,5 @@
 import AbstractTemplate from "./AbstractTemplate";
+
 export default ItemTemplate;
 declare class ItemTemplate extends AbstractTemplate {
     constructor(options: any, config: any);

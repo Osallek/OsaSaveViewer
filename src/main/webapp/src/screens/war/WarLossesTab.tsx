@@ -29,7 +29,7 @@ function WarLossesTab({ war, save }: WarLossesTabProps) {
       {
         charts.length > 0 &&
         <AutoSizer disableHeight>
-          { ({ height, width }) => (
+          { ({ width }) => (
             <GridLegacy container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } } key='losses-total-grid'>
               <React.Fragment key='losses'>
                 <Typography variant='h6' style={ { textAlign: 'center' } }>

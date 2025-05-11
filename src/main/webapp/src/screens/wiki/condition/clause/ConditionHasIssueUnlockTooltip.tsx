@@ -1,5 +1,5 @@
 import { TypographyProps } from '@mui/material/Typography/Typography';
-import React from 'react';
+import React, { JSX } from 'react';
 import ConditionLocalisedLink from 'screens/wiki/condition/ConditionLocalisedLink';
 import { Condition, Wiki } from 'types/api.types';
 import { wikiTypes } from 'types/wiki.types';

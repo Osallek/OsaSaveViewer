@@ -1,17 +1,17 @@
 import { Delete, Visibility } from '@mui/icons-material';
 import {
-  Avatar,
-  CircularProgress,
-  GridLegacy,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography
+    Avatar,
+    CircularProgress,
+    GridLegacy,
+    IconButton,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
 } from '@mui/material';
 import React from 'react';
 import { useIntl } from 'react-intl';

@@ -1,4 +1,15 @@
-import { Avatar, GridLegacy, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import {
+    Avatar,
+    GridLegacy,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Cell, Pie, PieChart, Sector } from 'recharts';
@@ -62,7 +73,7 @@ function NodeIncomingTab({ node, save }: NodeIncomingTabProps) {
         <PieChart width={ 500 } height={ 500 }>
           <Pie
             activeIndex={ activeIndex }
-            activeShape={ props => renderActiveShape(props, total, save) }
+            activeShape={ (props: any) => renderActiveShape(props, total, save) }
             data={ incoming }
             innerRadius={ 100 }
             outerRadius={ 120 }
