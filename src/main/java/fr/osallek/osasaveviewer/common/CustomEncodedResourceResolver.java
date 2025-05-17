@@ -8,7 +8,7 @@ import org.springframework.web.servlet.resource.EncodedResourceResolver;
 import org.springframework.web.servlet.resource.HttpResource;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

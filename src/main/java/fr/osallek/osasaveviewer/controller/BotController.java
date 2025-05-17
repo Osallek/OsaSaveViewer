@@ -43,7 +43,6 @@ public class BotController {
                     <meta property="og:image" content="{IMAGE}"/>
                     <meta property="og:site_name" content="Osa Save Viewer"/>
                     <meta property="og:url" content="https://eu4.osallek.net/{URL}"/>
-                        
                     <link rel="manifest" href="/manifest.json"/>
                     <title>{TITLE}</title>
                 </head>

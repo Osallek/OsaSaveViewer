@@ -46,7 +46,7 @@ public class SteamService {
     public Optional<Player> getSteamInfos(String id) {
         try {
             PlayerSummaries summaries = this.restTemplate.getForObject(
-                    UriComponentsBuilder.fromHttpUrl(SUMMARIES_URL)
+                    UriComponentsBuilder.fromUriString(SUMMARIES_URL)
                                         .queryParam("key", this.properties.getSteamApiKey())
                                         .queryParam("steamids", id)
                                         .build()
@@ -54,7 +54,7 @@ public class SteamService {
                     PlayerSummaries.class);
 
             return (summaries == null || summaries.getResponse() == null || CollectionUtils.isEmpty(summaries.getResponse().getPlayers())) ?
-                   Optional.empty() : Optional.of(summaries.getResponse().getPlayers().get(0));
+                   Optional.empty() : Optional.of(summaries.getResponse().getPlayers().getFirst());
         } catch (Exception e) {
             LOGGER.error("An error occurred while getting profile of {} from Steam: {}", id, e.getMessage(), e);
             return Optional.empty();

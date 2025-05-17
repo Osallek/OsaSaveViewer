@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 @Service
 @Primary

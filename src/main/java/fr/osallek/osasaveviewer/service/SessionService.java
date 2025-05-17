@@ -3,7 +3,7 @@ package fr.osallek.osasaveviewer.service;
 import fr.osallek.osasaveviewer.common.Constants;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
+import jakarta.servlet.http.Cookie;
 
 @Service
 public class SessionService {

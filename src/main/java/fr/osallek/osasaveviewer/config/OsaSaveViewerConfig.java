@@ -31,7 +31,7 @@ public class OsaSaveViewerConfig {
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
-        return restTemplateBuilder.setReadTimeout(Duration.ofHours(1)).additionalMessageConverters(new FormHttpMessageConverter()).build();
+        return restTemplateBuilder.readTimeout(Duration.ofHours(1)).additionalMessageConverters(new FormHttpMessageConverter()).build();
     }
 
     @Bean
