@@ -1,4 +1,4 @@
-import { Avatar, Badge, GridLegacy, Tooltip, Typography } from '@mui/material';
+import { Avatar, Badge, Grid, GridLegacy, Tooltip, Typography } from '@mui/material';
 import { ElbowType, Enabled, GroupByType, NavigationMode, PageFitMode } from 'basicprimitives';
 import { FamConfigShape, FamDiagram } from 'basicprimitivesreact';
 import React, { useEffect, useRef, useState } from 'react';
@@ -9,7 +9,7 @@ import { getLName } from 'utils/data.utils';
 import { getMissionsImage, getMissionsName } from 'utils/save.utils';
 
 const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
-  pageFitMode: PageFitMode.FitToPage,
+  pageFitMode: PageFitMode.None,
   cursorItem: null,
   linesWidth: 1,
   linesColor: 'black',
@@ -35,7 +35,7 @@ const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
         completed: mission.completed,
         parents: mission.required,
         templateName: mission.completed ? 'missionTemplateCompleted' : 'missionTemplate',
-      })
+      });
     }),
   templates: [
     {
@@ -46,13 +46,13 @@ const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
       onItemRender: ({ context }: any) => (
         <Tooltip title={ context.description ? getLName(context.description) ?? '' : '' }
                  key={ `tooltip-${ context.name }` }>
-          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
-                style={ { minHeight: '100%' } }>
-            <Badge color='error' variant='dot'>
+          <GridLegacy container alignItems="center" justifyContent="center" flexDirection="column"
+                      style={ { minHeight: '100%' } }>
+            <Badge color="error" variant="dot">
               <Avatar src={ context.image } alt={ context.title }
                       style={ { width: 60, height: 60, filter: 'grayscale(100%)' } }/>
             </Badge>
-            <Typography variant='body2' textAlign='center' style={ {
+            <Typography variant="body2" textAlign="center" style={ {
               backgroundColor: theme.palette.primary.light,
               padding: 4,
               borderRadius: 5,
@@ -72,12 +72,12 @@ const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
       onItemRender: ({ context }: any) => (
         <Tooltip title={ context.description ? getLName(context.description) ?? '' : '' }
                  key={ `tooltip-${ context.name }` }>
-          <GridLegacy container alignItems='center' justifyContent='center' flexDirection='column'
-                style={ { minHeight: '100%' } }>
-            <Badge color='success' variant='dot'>
+          <GridLegacy container alignItems="center" justifyContent="center" flexDirection="column"
+                      style={ { minHeight: '100%' } }>
+            <Badge color="success" variant="dot">
               <Avatar src={ context.image } alt={ context.title } style={ { width: 60, height: 60 } }/>
             </Badge>
-            <Typography variant='body2' textAlign='center'
+            <Typography variant="body2" textAlign="center"
                         style={ {
                           backgroundColor: theme.palette.primary.light,
                           padding: 4,
@@ -91,7 +91,7 @@ const getConfig = (country: SaveCountry, save: MapSave): FamConfigShape => ({
       ),
     }
   ],
-})
+});
 
 interface CountryMissionTabProps {
   country: SaveCountry;
@@ -110,7 +110,7 @@ function CountryMissionTab({ country, save }: CountryMissionTabProps) {
   }, [country, save]);
 
   return (
-    <GridLegacy container
+    <Grid container
           style={ {
             alignItems: 'center',
             justifyContent: 'center',
@@ -121,8 +121,8 @@ function CountryMissionTab({ country, save }: CountryMissionTabProps) {
       {
         config && <FamDiagram centerOnCursor={ true } config={ config }/>
       }
-    </GridLegacy>
-  )
+    </Grid>
+  );
 }
 
 export default CountryMissionTab;

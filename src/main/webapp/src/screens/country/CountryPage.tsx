@@ -1,17 +1,6 @@
 import { Home, KeyboardArrowDown, Map } from '@mui/icons-material';
 import {
-    AppBar,
-    Avatar,
-    Backdrop,
-    Button,
-    CircularProgress,
-    GridLegacy,
-    Menu,
-    MenuItem,
-    Tab,
-    Tabs,
-    Toolbar,
-    Typography
+  AppBar, Avatar, Backdrop, Button, CircularProgress, Grid, GridLegacy, Menu, MenuItem, Tab, Tabs, Toolbar, Typography
 } from '@mui/material';
 import { api } from 'api';
 import React, { useEffect, useRef, useState } from 'react';
@@ -186,7 +175,7 @@ function CountryPage() {
                     </GridLegacy>
                   </Toolbar>
                 </AppBar>
-                <GridLegacy item alignItems='center' justifyContent='center' xs={ 12 }>
+                <Grid alignItems="center" justifyContent="center" size={ 12 } sx={ { width: '100%' } }>
                   <Tabs
                     value={ activeTab }
                     onChange={ (event, value) => handleTab(value) }
@@ -194,7 +183,7 @@ function CountryPage() {
                     scrollButtons='auto'
                     style={ { marginBottom: 8 } }
                   >
-                    <GridLegacy item style={ { flex: 1 } }/>
+                    <Grid style={ { flex: 1, width: '100%' } }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.info' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.map' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.eco' }) }/>
@@ -210,9 +199,9 @@ function CountryPage() {
                     <Tab label={ intl.formatMessage({ id: 'country.tab.religions' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.cultures' }) }/>
                     <Tab label={ intl.formatMessage({ id: 'country.tab.history' }) }/>
-                    <GridLegacy item style={ { flex: 1 } }/>
+                    <Grid style={ { flex: 1, width: '100%' } }/>
                   </Tabs>
-                </GridLegacy>
+                </Grid>
                 <GridLegacy container alignItems='start' justifyContent='center' style={ { padding: 24 } } key={ `grid-g-${ tag }` } ref={ containerRef }>
                   {
                     activeTab == 1 &&

@@ -1,15 +1,5 @@
 import {
-    Avatar,
-    CircularProgress,
-    GridLegacy,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography
+  Avatar, CircularProgress, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -37,7 +27,7 @@ const renderActiveShape = (props: any) => {
 
   const g = (
     <g>
-      <text x={ cx } y={ cy } dy={ 8 } textAnchor="middle" fill={ fill }>
+      <text x={ cx } y={ cy } dy={ 8 } textAnchor="middle" fill='#333'>
         { payload.name }
       </text>
       <Sector
@@ -61,7 +51,12 @@ const renderActiveShape = (props: any) => {
       <path d={ `M${ sx },${ sy }L${ mx },${ my }L${ ex },${ ey }` } stroke={ fill } fill="none"/>
       <circle cx={ ex } cy={ ey } r={ 2 } fill={ fill } stroke="none"/>
       <text x={ ex + (cos >= 0 ? 1 : -1) * 12 } y={ ey } textAnchor={ textAnchor } fill="#333">
-        { `${ formatNumber(value) } (${ formatNumber(100 * percent) })%` }
+        <tspan>
+          { formatNumber(value) }
+        </tspan>
+        <tspan x={ ex + (cos >= 0 ? 1 : -1) * 12 } dy="16">
+          { `(${ formatNumber(100 * percent) })%` }
+        </tspan>
       </text>
     </g>
   );
@@ -77,34 +72,34 @@ interface CountryReligionTabProps {
 function CountryReligionTab({ country, save }: CountryReligionTabProps) {
   const intl = useIntl();
 
-  const [ activeIndex, setActiveIndex ] = useState<number>(0);
-  const [ religions, setReligions ] = useState<Array<ReligionPie>>([]);
-  const [ nbProvinces, setNbProvinces ] = useState<number>(0);
-  const [ ranks, setRanks ] = useState<Array<number>>([]);
-  const [ devRanks, setDevRanks ] = useState<Array<number>>([]);
-  const [ loading, setLoading ] = useState<boolean>(true);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [religions, setReligions] = useState<Array<ReligionPie>>([]);
+  const [nbProvinces, setNbProvinces] = useState<number>(0);
+  const [ranks, setRanks] = useState<Array<number>>([]);
+  const [devRanks, setDevRanks] = useState<Array<number>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     setReligions(getReligionsPie(country, save));
     setNbProvinces(getProvinces(country, save).length);
-  }, [ country, save ]);
+  }, [country, save]);
 
   useEffect(() => {
     setRanks(religions.map(religion => getRank(save, country, c => getNbReligion(c, save, religion.type))));
     setDevRanks(religions.map(religion => getRank(save, country, c => getDevReligion(c, save, religion.type))));
-  }, [ country, save, religions ]);
+  }, [country, save, religions]);
 
   useEffect(() => {
     if (ranks.length > 0 && devRanks.length > 0) {
       setLoading(false);
     }
-  }, [ ranks, devRanks ]);
+  }, [ranks, devRanks]);
 
   return (
-    <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
-                key={ `religions-${ country.tag }` }>
+    <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }
+          key={ `religions-${ country.tag }` }>
       {
-        loading ? <CircularProgress color='primary'/> : (
+        loading ? <CircularProgress color="primary"/> : (
           <>
             <PieChart width={ 500 } height={ 500 }>
               <Pie
@@ -113,7 +108,7 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
                 data={ religions }
                 innerRadius={ 100 }
                 outerRadius={ 120 }
-                dataKey='dev'
+                dataKey="dev"
                 onMouseEnter={ (_, index) => setActiveIndex(index) }
                 isAnimationActive={ false }
               >
@@ -127,10 +122,12 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
                 <TableHead style={ { backgroundColor: theme.palette.primary.dark } }>
                   <TableRow>
                     <TableCell
-                      style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.color' }) }</TableCell>
+                      style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage(
+                      { id: 'common.color' }) }</TableCell>
                     <TableCell
-                      style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage({ id: 'common.type' }) }</TableCell>
-                    <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
+                      style={ { color: theme.palette.primary.contrastText } }>{ intl.formatMessage(
+                      { id: 'common.type' }) }</TableCell>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } } align="right">
                       { intl.formatMessage({ id: 'country.nbProvinces' }) }
                     </TableCell>
                     <TableCell style={ { color: theme.palette.primary.contrastText } }>
@@ -139,7 +136,7 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
                     <TableCell style={ { color: theme.palette.primary.contrastText } }>
                       { intl.formatMessage({ id: 'common.percent' }) }
                     </TableCell>
-                    <TableCell style={ { color: theme.palette.primary.contrastText } } align='right'>
+                    <TableCell style={ { color: theme.palette.primary.contrastText } } align="right">
                       { intl.formatMessage({ id: 'country.dev' }) }
                     </TableCell>
                     <TableCell style={ { color: theme.palette.primary.contrastText } }>
@@ -154,7 +151,7 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
                   {
                     religions.map((item, index) => (
                       <TableRow key={ `religion-${ item.type }-${ country.tag }` } style={ { height: 73 } }>
-                        <TableCell align='center'>
+                        <TableCell align="center">
                           <div style={ {
                             width: 10,
                             height: 10,
@@ -163,31 +160,31 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
                           } }/>
                         </TableCell>
                         <TableCell>
-                          <GridLegacy container item alignItems='center'>
-                            <Avatar src={ getReligionImage(save, item.type) } variant='square'/>
-                            <Typography variant='body1' component='span' style={ { marginLeft: 8 } }>
+                          <Grid container alignItems="center" sx={ { width: '100%' } }>
+                            <Avatar src={ getReligionImage(save, item.type) } variant="square"/>
+                            <Typography variant="body1" component="span" style={ { marginLeft: 8 } }>
                               { item.name }
                             </Typography>
-                          </GridLegacy>
+                          </Grid>
                         </TableCell>
-                        <TableCell align='right'>{ formatNumber(item.value) }</TableCell>
-                        <TableCell align='right'>
-                          { loading ? <CircularProgress color='primary' style={ {
+                        <TableCell align="right">{ formatNumber(item.value) }</TableCell>
+                        <TableCell align="right">
+                          { loading ? <CircularProgress color="primary" style={ {
                             height: 30,
                             width: 30
                           } }/> : getRankDisplay(ranks[index] ?? 0) }
                         </TableCell>
-                        <TableCell align='right' style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
+                        <TableCell align="right" style={ { borderRight: '1px solid rgba(224, 224, 224, 1)' } }>
                           { `${ formatNumber(item.value * 100 / nbProvinces) }%` }
                         </TableCell>
-                        <TableCell align='right'>{ formatNumber(item.dev) }</TableCell>
-                        <TableCell align='right'>
-                          { loading ? <CircularProgress color='primary' style={ {
+                        <TableCell align="right">{ formatNumber(item.dev) }</TableCell>
+                        <TableCell align="right">
+                          { loading ? <CircularProgress color="primary" style={ {
                             height: 30,
                             width: 30
                           } }/> : getRankDisplay(devRanks[index] ?? 0) }
                         </TableCell>
-                        <TableCell align='right'>{ `${ formatNumber(item.dev * 100 / country.dev) }%` }</TableCell>
+                        <TableCell align="right">{ `${ formatNumber(item.dev * 100 / country.dev) }%` }</TableCell>
                       </TableRow>
                     ))
                   }
@@ -197,8 +194,8 @@ function CountryReligionTab({ country, save }: CountryReligionTabProps) {
           </>
         )
       }
-    </GridLegacy>
-  )
+    </Grid>
+  );
 }
 
 export default CountryReligionTab;
