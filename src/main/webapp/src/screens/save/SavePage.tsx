@@ -1,20 +1,20 @@
 import { BarChart, Clear, Download, Home, PhotoCamera, PlayArrow, Stop } from '@mui/icons-material';
 import {
-    Avatar,
-    Backdrop,
-    Button,
-    Chip,
-    CircularProgress,
-    createTheme,
-    Dialog,
-    GridLegacy,
-    IconButton,
-    MenuItem,
-    Select,
-    ThemeProvider,
-    Tooltip,
-    Typography,
-    useTheme
+  Avatar,
+  Backdrop,
+  Button,
+  Chip,
+  CircularProgress,
+  createTheme,
+  Dialog, Grid,
+  GridLegacy,
+  IconButton,
+  MenuItem,
+  Select,
+  ThemeProvider,
+  Tooltip,
+  Typography,
+  useTheme
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -53,7 +53,7 @@ function SavePage() {
   const mapRef = useRef<any>(null);
   const [ searchParams, setSearchParams ] = useSearchParams();
   const [ mapMode, setMapMode ] = useState<MapMode>(MapMode.POLITICAL);
-  const [ date, setDate ] = useState<moment.Moment | undefined>(undefined);
+  const [ date, setDate ] = useState<moment.Moment | null>(null );
   const [ building, setBuilding ] = useState<string | null>(null);
 
   const handleMapMode = (mm: MapMode) => {
@@ -348,7 +348,7 @@ function SavePage() {
                             displayEmpty
                             renderValue={ value => (
                               value ?
-                                <GridLegacy container item alignItems='center'>
+                                <Grid container alignItems='center'>
                                   <Avatar src={ getBuildingImage(save, value) } variant='square'
                                           style={ { display: 'inline-block', width: 24, height: 24 } }/>
                                   <Typography variant='body1' style={ {
@@ -358,7 +358,7 @@ function SavePage() {
                                   } }>
                                     { value && getBuildingName(save, value) }
                                   </Typography>
-                                </GridLegacy>
+                                </Grid>
                                 :
                                 <Typography variant='body1' style={ {
                                   color: theme.palette.primary.contrastText,

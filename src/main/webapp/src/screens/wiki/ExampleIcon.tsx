@@ -13,11 +13,15 @@ function ExampleIcon({ onClick, ...others }: ExampleIconProps) {
 
   return (
     <Tooltip title={ intl.formatMessage({ id: 'wiki.common.example' }) }>
-      <IconButton onClick={ onClick } { ...others }>
+      <IconButton onClick={ event => {
+        event.preventDefault();
+        onClick();
+      } }
+                  { ...others }>
         <Translate/>
       </IconButton>
     </Tooltip>
-  )
+  );
 }
 
 export default ExampleIcon;
