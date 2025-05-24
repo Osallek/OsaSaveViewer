@@ -1126,7 +1126,7 @@ function CountryTable({ save, type, visible }: CountryTableProps) {
                 label={ intl.formatMessage({ id: 'country.onlyPlayers' }) }
                 style={ { padding: 8 } }/>
         </GridLegacy>
-        <TableContainer component={ Paper } style={ { height: `100%`, borderRadius: 0 } }>
+        <TableContainer component={ Paper } style={ { height: `100%`, borderRadius: 0, overflowY: 'hidden' } }>
             <Table style={ { width: '100%', height: `calc(100% - ${ headerRef.current?.clientHeight ?? 0 }px)` } }>
                 <TableHead ref={ headerRef }>
                     <TableRow>

@@ -55,7 +55,7 @@ function SavePage() {
   const [selectable, setSelectable] = useState<string | null>(null);
 
   const handleMapMode = (mm: MapMode) => {
-    if (mm !== mapMode) {
+    if (mm !== mapMode || !searchParams.has('mapMode')) {
       searchParams.delete('id');
       searchParams.set('mapMode', mm);
       setSearchParams(searchParams);

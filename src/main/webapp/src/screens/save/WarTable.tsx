@@ -461,7 +461,7 @@ function WarTable({ save, visible }: WarTableProps) {
             label={ intl.formatMessage({ id: 'war.onlyPlayers' }) }
             style={ { padding: 8 } }/>
         </GridLegacy>
-        <TableContainer component={ Paper } style={ { height: `100%`, borderRadius: 0 } }>
+        <TableContainer component={ Paper } style={ { height: `100%`, borderRadius: 0, overflowY: 'hidden' } }>
           <Table stickyHeader style={ { width: '100%', height: `100%` } }>
             <TableHead ref={ headerRef }>
               <TableRow>
