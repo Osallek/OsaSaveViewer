@@ -462,7 +462,7 @@ export type SaveAdvisor = {
 }
 
 export type SaveInstitution = NamedImageLocalised & {
-  origin: number;
+  origin?: number;
 }
 
 export type ColorNamedImageLocalised = NamedImageLocalised & {

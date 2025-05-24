@@ -1,9 +1,10 @@
 import { Button, CircularProgress, GridLegacy, Tooltip, useTheme } from '@mui/material';
 import React, { RefObject, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
+import { mapModes } from 'screens/components/MapModes';
 import SaveMap from 'screens/save/SaveMap';
 import { SaveWar } from 'types/api.types';
-import { MapMode, mapModes, MapSave } from 'types/map.types';
+import { MapMode, MapSave } from 'types/map.types';
 
 interface WarMapTabProps {
   war: SaveWar;

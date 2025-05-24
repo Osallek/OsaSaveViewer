@@ -1,15 +1,13 @@
 import { BarChart, Clear, Download, Home, PhotoCamera, PlayArrow, Stop } from '@mui/icons-material';
 import {
-  Avatar,
   Backdrop,
   Button,
   Chip,
   CircularProgress,
   createTheme,
-  Dialog, Grid,
+  Dialog,
   GridLegacy,
   IconButton,
-  MenuItem,
   Select,
   ThemeProvider,
   Tooltip,
@@ -26,43 +24,42 @@ import 'moment/locale/fr';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { mapModes } from 'screens/components/MapModes';
 import ExportModal from 'screens/save/ExportModal';
 import SaveDialog from 'screens/save/SaveDialog';
 import SaveMap from 'screens/save/SaveMap';
-import { MapMode, mapModes, MapSave } from 'types/map.types';
+import { MapMode, MapSave } from 'types/map.types';
 import { isValidDate } from 'utils/data.utils';
-import { cleanString, formatDate, stringComparator } from 'utils/format.utils';
-import { convertSave, getBuildingImage, getBuildingName, getBuildingsImage, getBuildingsName } from 'utils/save.utils';
+import { cleanString, formatDate } from 'utils/format.utils';
+import { convertSave } from 'utils/save.utils';
 
 function SavePage() {
   const { id } = useParams();
   const intl = useIntl();
   const theme = useTheme();
 
-  const [ save, setSave ] = useState<MapSave>();
-  const [ ready, setReady ] = useState<boolean>(false);
-  const [ loading, setLoading ] = useState<boolean>(true);
-  const [ exporting, setExporting ] = useState<boolean>(false);
-  const [ exportingModal, setExportingModal ] = useState<boolean>(false);
-  const [ timelapse, setTimelapse ] = useState<boolean>(false);
-  const [ maxTimelapse, setMaxTimelapse ] = useState<boolean>(false);
-  const [ timelapseId, setTimelapseId ] = useState<NodeJS.Timeout | undefined>(undefined);
-  const [ error, setError ] = useState<boolean>(false);
-  const [ mapReady, setMapReady ] = useState<boolean>(false);
-  const [ statDialog, setStatDialog ] = useState<boolean>(false);
+  const [save, setSave] = useState<MapSave>();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [exporting, setExporting] = useState<boolean>(false);
+  const [exportingModal, setExportingModal] = useState<boolean>(false);
+  const [timelapse, setTimelapse] = useState<boolean>(false);
+  const [maxTimelapse, setMaxTimelapse] = useState<boolean>(false);
+  const [timelapseId, setTimelapseId] = useState<NodeJS.Timeout | undefined>(undefined);
+  const [error, setError] = useState<boolean>(false);
+  const [mapReady, setMapReady] = useState<boolean>(false);
+  const [statDialog, setStatDialog] = useState<boolean>(false);
   const mapRef = useRef<any>(null);
-  const [ searchParams, setSearchParams ] = useSearchParams();
-  const [ mapMode, setMapMode ] = useState<MapMode>(MapMode.POLITICAL);
-  const [ date, setDate ] = useState<moment.Moment | null>(null );
-  const [ building, setBuilding ] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [mapMode, setMapMode] = useState<MapMode>(MapMode.POLITICAL);
+  const [date, setDate] = useState<moment.Moment | null>(null);
+  const [selectable, setSelectable] = useState<string | null>(null);
 
   const handleMapMode = (mm: MapMode) => {
-    if (searchParams.get('mapMode') === MapMode.BUILDINGS && MapMode.BUILDINGS !== mm) {
+    if (mm !== mapMode) {
       searchParams.delete('id');
+      searchParams.set('mapMode', mm);
+      setSearchParams(searchParams);
     }
-
-    searchParams.set('mapMode', mm);
-    setSearchParams(searchParams);
   }
 
   const handleDate = (date?: string) => {
@@ -75,9 +72,9 @@ function SavePage() {
     setSearchParams(searchParams);
   }
 
-  const handleBuilding = (building: string | null) => {
-    if (building) {
-      searchParams.set('id', building);
+  const handleSelectable = (selectable: string | null) => {
+    if (selectable) {
+      searchParams.set('id', selectable);
     } else {
       searchParams.delete('id');
     }
@@ -85,8 +82,8 @@ function SavePage() {
     setSearchParams(searchParams);
   }
 
-  const clearBuilding = () => {
-    handleBuilding(null);
+  const clearSelectable = () => {
+    handleSelectable(null);
   }
 
   const download = () => {
@@ -169,7 +166,7 @@ function SavePage() {
     setTimelapse(false);
     setTimelapseId(undefined);
     setMaxTimelapse(false);
-  }, [ maxTimelapse ]);
+  }, [maxTimelapse]);
 
   useEffect(() => {
     ;(async () => {
@@ -190,42 +187,54 @@ function SavePage() {
         setLoading(false);
       }
     })()
-  }, [ id ]);
+  }, [id]);
 
   useEffect(() => {
-    if (searchParams.get('mapMode')) {
-      setMapMode(MapMode[searchParams.get('mapMode') as keyof typeof MapMode]);
+    const mmParam = searchParams.get('mapMode');
+
+    if (mmParam) {
+      if (MapMode[mmParam as keyof typeof MapMode] !== mapMode) {
+        setMapMode(MapMode[mmParam as keyof typeof MapMode]);
+      }
     } else {
       handleMapMode(MapMode.POLITICAL);
     }
-  }, [ searchParams ]);
+  }, [searchParams]);
 
   useEffect(() => {
-    const date = searchParams.get('date');
-    if (date) {
-      if (!isValidDate(date, save)) {
+    const dateParam = searchParams.get('date');
+    if (dateParam) {
+      if (!isValidDate(dateParam, save)) {
         if (save) {
           handleDate(save.date);
         } else {
           handleDate(undefined);
         }
       } else {
-        setDate(moment(date, 'YYYY-MM-DD'));
+        if (!moment(dateParam, 'YYYY-MM-DD').isSame(date)) {
+          setDate(moment(dateParam, 'YYYY-MM-DD'));
+        }
       }
     } else if (save) {
       handleDate(save.date);
     }
 
-    if (MapMode.BUILDINGS === mapMode) {
+    if (mapModes[mapMode].selectRenderInput) {
       if (searchParams.get('id')) {
-        setBuilding(searchParams.get('id'));
+        if (searchParams.get('id') !== selectable) {
+          setSelectable(searchParams.get('id'));
+        }
       } else {
-        setBuilding(null);
+        if (selectable !== null) {
+          setSelectable(null);
+        }
       }
     } else {
-      setBuilding(null);
+      if (selectable !== null) {
+        setSelectable(null);
+      }
     }
-  }, [ save, searchParams ]);
+  }, [save, searchParams]);
 
   return (
     <>
@@ -285,187 +294,156 @@ function SavePage() {
                 </div>
                 {
                   save &&
-                    <Chip label={ intl.formatMessage({ id: 'common.graph' }) }
-                          icon={ <BarChart style={ { color: 'white' } }/> }
-                          onClick={ () => setStatDialog(true) }
-                          style={ {
-                            position: 'absolute',
-                            top: 48,
-                            left: 5,
-                            backgroundColor: theme.palette.primary.main,
-                            color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: '1.2em'
-                          } }/>
+                  <Chip label={ intl.formatMessage({ id: 'common.graph' }) }
+                        icon={ <BarChart style={ { color: 'white' } }/> }
+                        onClick={ () => setStatDialog(true) }
+                        style={ {
+                          position: 'absolute',
+                          top: 48,
+                          left: 5,
+                          backgroundColor: theme.palette.primary.main,
+                          color: 'white',
+                          fontWeight: 'bold',
+                          fontSize: '1.2em'
+                        } }/>
                 }
                 {
                   save &&
-                    <div style={ {
-                      position: 'absolute',
-                      top: 48,
-                      left: 230,
-                      backgroundColor: theme.palette.primary.main,
-                      borderRadius: '16px',
-                    } }>
-                        <LocalizationProvider dateAdapter={ AdapterMoment } adapterLocale={ intl.locale }>
-                            <ThemeProvider theme={ datePickerTheme }>
-                                <DatePicker
-                                    openTo='year'
-                                    views={ [ 'year', 'month', 'day' ] }
-                                    minDate={ moment(save.startDate, 'YYYY-MM-DD') }
-                                    maxDate={ moment(save.date, 'YYYY-MM-DD') }
-                                    value={ date }
-                                    disabled={ timelapse }
-                                    onChange={ value => handleDate(value?.format('YYYY-MM-DD')) }
-                                    format={ 'YYYY-MM-DD' }
-                                    slotProps={ {
-                                      openPickerIcon: {
-                                        sx: {
-                                          color: theme.palette.primary.contrastText,
-                                        },
-                                      }
-                                    } }
-                                />
-                            </ThemeProvider>
-                        </LocalizationProvider>
-                    </div>
-                }
-                {
-                  save && MapMode.BUILDINGS === mapMode &&
-                    <div style={ {
-                      position: 'absolute',
-                      top: 48,
-                      left: 389,
-                      backgroundColor: theme.palette.primary.main,
-                      borderRadius: '16px',
-                    } }>
-                        <Select
-                            id='building-select'
-                            value={ building ?? '' }
-                            variant='standard'
-                            onChange={ event => handleBuilding(event.target.value as string) }
-                            disableUnderline
-                            displayEmpty
-                            renderValue={ value => (
-                              value ?
-                                <Grid container alignItems='center'>
-                                  <Avatar src={ getBuildingImage(save, value) } variant='square'
-                                          style={ { display: 'inline-block', width: 24, height: 24 } }/>
-                                  <Typography variant='body1' style={ {
-                                    color: theme.palette.primary.contrastText,
-                                    fontWeight: 'bold',
-                                    marginLeft: 8
-                                  } }>
-                                    { value && getBuildingName(save, value) }
-                                  </Typography>
-                                </Grid>
-                                :
-                                <Typography variant='body1' style={ {
-                                  color: theme.palette.primary.contrastText,
-                                  fontWeight: 'bold',
-                                  marginLeft: 8
-                                } }>
-                                  { intl.formatMessage({ id: 'common.quantity' }) }
-                                </Typography>
-                            ) }
-                            sx={ {
-                              "& .MuiSelect-iconStandard": { display: building ? 'none' : '' },
-                              fontSize: '1.0em',
-                              paddingTop: '1px',
-                              paddingLeft: 2,
-                              borderRadius: '16px',
-                              minWidth: 120,
-                            } }
-                            endAdornment={
-                              <IconButton onClick={ clearBuilding } style={ {
-                                display: building ? '' : 'none',
-                                width: 16,
-                                height: 16,
-                                marginRight: 8
-                              } }>
-                                <Clear/>
-                              </IconButton>
+                  <div style={ {
+                    position: 'absolute',
+                    top: 48,
+                    left: 230,
+                    backgroundColor: theme.palette.primary.main,
+                    borderRadius: '16px',
+                  } }>
+                    <LocalizationProvider dateAdapter={ AdapterMoment } adapterLocale={ intl.locale }>
+                      <ThemeProvider theme={ datePickerTheme }>
+                        <DatePicker
+                          openTo='year'
+                          views={ ['year', 'month', 'day'] }
+                          minDate={ moment(save.startDate, 'YYYY-MM-DD') }
+                          maxDate={ moment(save.date, 'YYYY-MM-DD') }
+                          value={ date }
+                          disabled={ timelapse }
+                          onChange={ value => handleDate(value?.format('YYYY-MM-DD')) }
+                          format={ 'YYYY-MM-DD' }
+                          slotProps={ {
+                            openPickerIcon: {
+                              sx: {
+                                color: theme.palette.primary.contrastText,
+                              },
                             }
-                        >
-                          {
-                            save.buildings.sort((a, b) => stringComparator(getBuildingsName(a), getBuildingsName(b)))
-                              .map(building => (
-                                <MenuItem value={ building.name } key={ building.name }>
-                                  <Avatar src={ getBuildingsImage(building) } variant='square'
-                                          style={ { display: 'inline-block' } }/>
-                                  <Typography variant='body1' style={ { marginLeft: 8 } }>
-                                    { getBuildingsName(building) }
-                                  </Typography>
-                                </MenuItem>
-                              ))
-                          }
-                        </Select>
-                    </div>
+                          } }
+                        />
+                      </ThemeProvider>
+                    </LocalizationProvider>
+                  </div>
+                }
+                {
+                  save && mapModes[mapMode].selectItems && mapModes[mapMode].selectRenderInput &&
+                  <div style={ {
+                    position: 'absolute',
+                    top: 48,
+                    left: 389,
+                    backgroundColor: theme.palette.primary.main,
+                    borderRadius: '16px',
+                  } }>
+                    <Select
+                      id='mapmod-selectable'
+                      value={ selectable ?? '' }
+                      variant='standard'
+                      onChange={ event => handleSelectable(event.target.value as string) }
+                      disableUnderline
+                      displayEmpty
+                      renderValue={ value => mapModes[mapMode].selectRenderInput &&
+                        mapModes[mapMode].selectRenderInput(value, save, theme) }
+                      sx={ {
+                        "& .MuiSelect-iconStandard": { display: selectable ? 'none' : '' },
+                        fontSize: '1.0em',
+                        paddingTop: '1px',
+                        paddingLeft: 2,
+                        borderRadius: '16px',
+                        minWidth: 120,
+                      } }
+                      endAdornment={
+                        <IconButton onClick={ clearSelectable } style={ {
+                          display: selectable ? '' : 'none',
+                          width: 16,
+                          height: 16,
+                          marginRight: 8
+                        } }>
+                          <Clear/>
+                        </IconButton>
+                      }
+                    >
+                      { mapModes[mapMode].selectItems(save, theme) }
+                    </Select>
+                  </div>
                 }
                 {
                   save &&
-                    <>
-                        <Tooltip title={ intl.formatMessage({ id: 'common.download' }) }>
-                            <IconButton onClick={ download } style={ {
-                              position: 'absolute',
-                              top: 92,
-                              left: 5,
-                              backgroundColor: theme.palette.primary.main,
-                              color: 'white',
-                              fontWeight: 'bold',
-                              fontSize: '1.2em',
-                              borderRadius: '50%',
-                            } }>
-                                <Download/>
-                            </IconButton>
-                        </Tooltip>
-                    </>
+                  <>
+                    <Tooltip title={ intl.formatMessage({ id: 'common.download' }) }>
+                      <IconButton onClick={ download } style={ {
+                        position: 'absolute',
+                        top: 92,
+                        left: 5,
+                        backgroundColor: theme.palette.primary.main,
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: '1.2em',
+                        borderRadius: '50%',
+                      } }>
+                        <Download/>
+                      </IconButton>
+                    </Tooltip>
+                  </>
                 }
                 {
                   save &&
-                    <>
-                        <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
-                            <IconButton onClick={ () => setExportingModal(true) } disabled={ exporting } style={ {
-                              position: 'absolute',
-                              top: 92,
-                              left: 52,
-                              backgroundColor: theme.palette.primary.main,
-                              color: 'white',
-                              fontWeight: 'bold',
-                              fontSize: '1.2em',
-                              borderRadius: '50%',
-                            } }>
-                              {
-                                (exporting || timelapse) ?
-                                  <CircularProgress color='secondary' style={ { width: 24, height: 24 } }/> :
-                                  <PhotoCamera/>
-                              }
-                            </IconButton>
-                        </Tooltip>
-                        <ExportModal open={ exportingModal } save={ save } onClose={ () => setExportingModal(false) }
-                                     onExport={ exportImage }/>
-                    </>
+                  <>
+                    <Tooltip title={ intl.formatMessage({ id: 'common.export' }) }>
+                      <IconButton onClick={ () => setExportingModal(true) } disabled={ exporting } style={ {
+                        position: 'absolute',
+                        top: 92,
+                        left: 52,
+                        backgroundColor: theme.palette.primary.main,
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: '1.2em',
+                        borderRadius: '50%',
+                      } }>
+                        {
+                          (exporting || timelapse) ?
+                            <CircularProgress color='secondary' style={ { width: 24, height: 24 } }/> :
+                            <PhotoCamera/>
+                        }
+                      </IconButton>
+                    </Tooltip>
+                    <ExportModal open={ exportingModal } save={ save } onClose={ () => setExportingModal(false) }
+                                 onExport={ exportImage }/>
+                  </>
                 }
                 {
                   save &&
-                    <>
-                        <Tooltip title={ intl.formatMessage({ id: 'common.timelapse' }) }>
-                            <IconButton onClick={ runTimelapse } style={ {
-                              position: 'absolute',
-                              top: 92,
-                              left: 99,
-                              backgroundColor: theme.palette.primary.main,
-                              color: 'white',
-                              fontWeight: 'bold',
-                              fontSize: '1.2em',
-                              borderRadius: '50%',
-                            } }>
-                              {
-                                timelapse ? <Stop/> : <PlayArrow/>
-                              }
-                            </IconButton>
-                        </Tooltip>
-                    </>
+                  <>
+                    <Tooltip title={ intl.formatMessage({ id: 'common.timelapse' }) }>
+                      <IconButton onClick={ runTimelapse } style={ {
+                        position: 'absolute',
+                        top: 92,
+                        left: 99,
+                        backgroundColor: theme.palette.primary.main,
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: '1.2em',
+                        borderRadius: '50%',
+                      } }>
+                        {
+                          timelapse ? <Stop/> : <PlayArrow/>
+                        }
+                      </IconButton>
+                    </Tooltip>
+                  </>
                 }
                 <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady } dataId={ searchParams.get('id') }
                          date={ date?.format('YYYY-MM-DD') } ref={ mapRef }/>

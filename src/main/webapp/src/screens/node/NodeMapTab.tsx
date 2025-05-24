@@ -1,9 +1,10 @@
 import { Button, CircularProgress, GridLegacy, Tooltip, useTheme } from '@mui/material';
 import React, { RefObject, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
+import { mapModes } from 'screens/components/MapModes';
 import SaveMap from 'screens/save/SaveMap';
 import { SaveTradeNode } from 'types/api.types';
-import { MapMode, mapModes, MapSave } from 'types/map.types';
+import { MapMode, MapSave } from 'types/map.types';
 
 interface NodeMapTabProps {
   node: SaveTradeNode;
@@ -20,33 +21,39 @@ function NodeMapTab({ node, save, containerRef }: NodeMapTabProps) {
   const [mapMode, setMapMode] = useState<MapMode>(MapMode.TRADE_NODE);
 
   return (
-    <div style={ { width: '100%', height: '100%' } }>
-      <GridLegacy container style={ {
+    <div style={{ width: '100%', height: '100%' }}>
+      <GridLegacy container style={{
         width: 'calc(100% - 48px)',
-        height: `calc(100% - ${ (containerRef.current ? containerRef.current.offsetTop : 0) + 48 }px)`,
+        height: `calc(100% - ${(containerRef.current ? containerRef.current.offsetTop : 0) + 48}px)`,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: theme.palette.primary.light,
         visibility: mapReady ? 'hidden' : 'visible',
         position: 'absolute',
-      } }>
+      }}>
         <CircularProgress color='primary'/>
       </GridLegacy>
-      <div style={ { position: 'fixed', top: 5 + (containerRef.current ? containerRef.current.offsetTop + 24 : 0), left: 29, zIndex: 1 } }>
-        <Tooltip title={ intl.formatMessage({ id: 'map.mod.TRADE_NODE' }) } key={ 'tooltip-node' }>
-          <Button onClick={ () => setMapMode(MapMode.TRADE_NODE) } style={ { padding: 0, minWidth: 0 } } disableRipple key={ `button-node` }>
+      <div style={{
+        position: 'fixed',
+        top: 5 + (containerRef.current ? containerRef.current.offsetTop + 24 : 0),
+        left: 29,
+        zIndex: 1
+      }}>
+        <Tooltip title={intl.formatMessage({ id: 'map.mod.TRADE_NODE' })} key={'tooltip-node'}>
+          <Button onClick={() => setMapMode(MapMode.TRADE_NODE)} style={{ padding: 0, minWidth: 0 }} disableRipple
+                  key={`button-node`}>
             <img
-              src={ `/eu4/map/map_mods/${ mapModes[MapMode.TRADE_NODE].image }_${ MapMode.TRADE_NODE === mapMode ? 'on' : 'off' }.png` }
-              alt={ intl.formatMessage({ id: 'map.mod.TRADE_NODE' }) }/>
+              src={`/eu4/map/map_mods/${mapModes[MapMode.TRADE_NODE].image}_${MapMode.TRADE_NODE === mapMode ? 'on' : 'off'}.png`}
+              alt={intl.formatMessage({ id: 'map.mod.TRADE_NODE' })}/>
           </Button>
         </Tooltip>
       </div>
-      <div style={ {
+      <div style={{
         width: 'calc(100% - 48px)',
-        height: `calc(100% - ${ (containerRef.current ? containerRef.current.offsetTop : 0) + 48 }px)`,
+        height: `calc(100% - ${(containerRef.current ? containerRef.current.offsetTop : 0) + 48}px)`,
         position: 'absolute',
-      } }>
-        <SaveMap save={ save } mapMode={ mapMode } setReady={ setMapReady } dataId={ node.name } ref={ mapRef }/>
+      }}>
+        <SaveMap save={save} mapMode={mapMode} setReady={setMapReady} dataId={node.name} ref={mapRef}/>
       </div>
     </div>
   )

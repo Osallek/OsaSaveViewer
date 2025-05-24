@@ -1,45 +1,47 @@
 import {
-    ColorNamedImageLocalised,
-    CountryPreviousSave,
-    Expense,
-    Income,
-    Losses,
-    NamedImageLocalised,
-    NamedLocalised,
-    PowerSpent,
-    Save,
-    SaveArea,
-    SaveBattle,
-    SaveCountry,
-    SaveCountryState,
-    SaveCulture,
-    SaveDependency,
-    SaveEmpire,
-    SaveIdeaGroup,
-    SaveLeader,
-    SaveMission,
-    SaveMonarch,
-    SaveProvince,
-    SaveProvinceHistory,
-    SaveReligion,
-    SaveSimpleProvince,
-    SaveTradeNode,
-    SaveWar
+  ColorNamedImageLocalised,
+  CountryPreviousSave,
+  Expense,
+  Income,
+  Losses,
+  NamedImageLocalised,
+  NamedLocalised,
+  PowerSpent,
+  Save,
+  SaveArea,
+  SaveBattle,
+  SaveCountry,
+  SaveCountryState,
+  SaveCulture,
+  SaveDependency,
+  SaveEmpire,
+  SaveIdeaGroup,
+  SaveInstitution,
+  SaveLeader,
+  SaveMission,
+  SaveMonarch,
+  SaveProvince,
+  SaveProvinceHistory,
+  SaveReligion,
+  SaveSimpleProvince,
+  SaveTradeNode,
+  SaveWar
 } from 'types/api.types';
 import { CleanMapSave, CountryHistory, MapSave, ProvinceHistory } from 'types/map.types';
 import {
-    fakeTag,
-    getBuildingUrl,
-    getEstateUrl,
-    getFlagUrl,
-    getGoodUrl,
-    getIdeaGroupUrl,
-    getLeaderPersonalityUrl,
-    getLName,
-    getMissionUrl,
-    getPersonalityUrl,
-    getPrivilegeUrl,
-    getReligionUrl
+  fakeTag,
+  getBuildingUrl,
+  getEstateUrl,
+  getFlagUrl,
+  getGoodUrl,
+  getIdeaGroupUrl,
+  getInstitutionUrl,
+  getLeaderPersonalityUrl,
+  getLName,
+  getMissionUrl,
+  getPersonalityUrl,
+  getPrivilegeUrl,
+  getReligionUrl
 } from 'utils/data.utils';
 import { getYear, numberComparator, stringComparator, toMap } from 'utils/format.utils';
 
@@ -54,12 +56,12 @@ export function convertSave(save: Save, history: boolean): MapSave {
   };
 
   if (history) {
-    const historyWorkers: Array<Worker> = [ new Worker('/eu4/script/province_history_worker.js'), new Worker(
+    const historyWorkers: Array<Worker> = [new Worker('/eu4/script/province_history_worker.js'), new Worker(
       '/eu4/script/province_history_worker.js'),
       new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
       new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
       new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js'),
-      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js') ];
+      new Worker('/eu4/script/province_history_worker.js'), new Worker('/eu4/script/province_history_worker.js')];
     let count = 0;
     const start = new Date();
 
@@ -150,7 +152,7 @@ export function getCountries(save: MapSave): Array<SaveCountry> {
 
 export function getPHistory(province: SaveProvince, save: MapSave, date?: string): ProvinceHistory {
   return (date && save.date !== date) ? getPHistoryInternal(province, date) :
-    save.currentProvinces.get(province.id) ?? {date: date ?? save.date};
+    save.currentProvinces.get(province.id) ?? { date: date ?? save.date };
 }
 
 function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHistory {
@@ -198,7 +200,7 @@ function getPHistoryInternal(province: SaveProvince, date: string): ProvinceHist
         let buildings: Set<string> = (history && history.buildings) ?? new Set();
 
         if (h.buildings) {
-          Object.entries(h.buildings).forEach(([ key, value ]) => {
+          Object.entries(h.buildings).forEach(([key, value]) => {
             if (value) {
               buildings.add(key);
             } else {
@@ -255,7 +257,7 @@ export function mapProvinces(country: SaveCountry, save: MapSave, predicate: (hi
 export function getPHistories(country: SaveCountry, save: MapSave, predicate: (history: ProvinceHistory) => boolean): ProvinceHistory[] {
   const histories: ProvinceHistory[] = [];
 
-  for (const [ , history ] of save.currentProvinces) {
+  for (const [, history] of save.currentProvinces) {
     if (history.owner === country.tag && predicate(history)) {
       histories.push(history);
     }
@@ -267,7 +269,7 @@ export function getPHistories(country: SaveCountry, save: MapSave, predicate: (h
 export function mapPHistories(country: SaveCountry, save: MapSave, predicate: (history: ProvinceHistory) => boolean, acc: (history: ProvinceHistory) => number): number {
   let sum = 0;
 
-  for (const [ , history ] of save.currentProvinces) {
+  for (const [, history] of save.currentProvinces) {
     if (history.owner === country.tag && predicate(history)) {
       sum += acc(history);
     }
@@ -369,8 +371,32 @@ export function getCulturesName(culture: SaveCulture): string {
   return getLName(culture) ?? culture.name;
 }
 
-export function getInstitName(save: MapSave, index: number): string {
-  return getLName(save.institutions[index]) ?? '';
+export function getInstitutionName(save: MapSave, indexOrName: number | string): string {
+  return getInstitutionsName(getInstitution(save, indexOrName));
+}
+
+export function getInstitutionsName(institution: SaveInstitution): string {
+  return getLName(institution) ?? institution.name;
+}
+
+export function getInstitution(save: MapSave, indexOrName: number | string): SaveInstitution {
+  return save.institutions[getInstitutionIndex(save, indexOrName)];
+}
+
+export function getInstitutionIndex(save: MapSave, indexOrName: number | string): number {
+  if (typeof indexOrName === 'number') {
+    return indexOrName;
+  }
+
+  return save.institutions.findIndex(institution => indexOrName === institution.name) ?? 0;
+}
+
+export function getInstitutionsImage(institution: SaveInstitution): string {
+  return getInstitutionUrl(institution.image);
+}
+
+export function getInstitutionImage(save: MapSave, indexOrName: number | string): string {
+  return getInstitutionsImage(getInstitution(save, indexOrName));
 }
 
 export function getBuilding(save: MapSave, name: string): NamedImageLocalised {
@@ -601,7 +627,7 @@ function getCHistoryInternal(country: SaveCountry, date: string): CountryHistory
       let ideasLevel: Record<string, string> = (history && history.ideasLevel) ?? {};
 
       if (h.ideasLevel) {
-        Object.entries(h.ideasLevel).forEach(([ key, value ]) => {
+        Object.entries(h.ideasLevel).forEach(([key, value]) => {
           if (value) {
             ideasLevel[key] = h.date;
           } else {

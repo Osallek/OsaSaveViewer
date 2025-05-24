@@ -57,6 +57,10 @@ export function getReligionUrl(key: string | undefined): string {
   return key ? getDataUrl(`religions/${ key }.png`) : getReligionUrl('noReligion');
 }
 
+export function getInstitutionUrl(key: string | undefined): string {
+  return key ? getDataUrl(`institutions/${ key }.png`) : getInstitutionUrl('noInstitution');
+}
+
 export function getBuildingUrl(key: string | undefined): string {
   return key ? getDataUrl(`buildings/${ key }.png`) : getBuildingUrl('noBuilding');
 }

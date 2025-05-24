@@ -1,6 +1,7 @@
 import { ProvincesTexture, Texture } from 'types/gl.types';
-import { MapMode, mapModes, MapSave } from 'types/map.types';
+import { MapMode, MapSave } from 'types/map.types';
 import { IMPASSABLE_COLOR, OCEAN_COLOR } from 'utils/colors.utils';
+import {mapModes} from "../screens/components/MapModes";
 
 export function loadShader(gl: WebGL2RenderingContext, type: GLenum, source: string) {
   const shader = gl.createShader(type);
@@ -119,7 +120,7 @@ export function getTextureFromSave(provincesTexture: ProvincesTexture, save: Map
 }
 
 export function fillMapArray(array: Uint8Array, save: MapSave, mapMod: MapMode, dataId: string | null, date?: string) {
-  const data = mapModes[mapMod].prepare(save, dataId, date);
+  const data = mapModes[mapMod].prepare(save, dataId);
 
   for (const province of save.provinces) {
     const color = mapModes[mapMod].provinceColor(province, save, data, [], date);

@@ -1,20 +1,21 @@
-import { Backdrop, Dialog, Fade, Grow, Popper, Tooltip } from '@mui/material';
-import { intl } from 'index';
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import {Backdrop, Dialog, Fade, Grow, Popper, Tooltip} from '@mui/material';
+import {intl} from 'index';
+import React, {forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState} from 'react';
+import {mapModes} from 'screens/components/MapModes';
 import mapWorker from 'screens/save/map_worker';
 import ProvinceDialogContent from 'screens/save/ProvinceModalCard';
 import ProvincePopperCard from 'screens/save/ProvincePopperCard';
 import WorkerBuilder from 'screens/save/worker_builder';
 import theme from 'theme';
-import { SaveColor, SaveProvince } from 'types/api.types';
-import { ProvincesTexture, Texture } from 'types/gl.types';
-import { IMapMode, MapMode, mapModes, MapSave } from 'types/map.types';
-import { getTexture } from 'utils';
-import { IMPASSABLE_COLOR, IMPASSABLE_PROV_COLOR, OCEAN_COLOR, OCEAN_PROV_COLOR } from 'utils/colors.utils';
-import { getProvincesUrl } from 'utils/data.utils';
-import { cleanString } from 'utils/format.utils';
-import { getProvinceAt, getTextureFromSave, initShaderProgram, prepareTexture } from 'utils/gl.utils';
-import { getProvince } from 'utils/save.utils';
+import {SaveColor, SaveProvince} from 'types/api.types';
+import {ProvincesTexture, Texture} from 'types/gl.types';
+import {IMapMode, MapMode, MapSave} from 'types/map.types';
+import {getTexture} from 'utils';
+import {IMPASSABLE_COLOR, IMPASSABLE_PROV_COLOR, OCEAN_COLOR, OCEAN_PROV_COLOR} from 'utils/colors.utils';
+import {getProvincesUrl} from 'utils/data.utils';
+import {cleanString} from 'utils/format.utils';
+import {getProvinceAt, getTextureFromSave, initShaderProgram, prepareTexture} from 'utils/gl.utils';
+import {getProvince} from 'utils/save.utils';
 
 interface SaveMapProps {
   save?: MapSave;
@@ -362,7 +363,7 @@ const SaveMap = forwardRef(({ save, mapMode, setReady, dataId, date }: SaveMapPr
               exportContext.imageSmoothingEnabled = false;
               const colorMapping = new Map<string, SaveColor>();
 
-              const modeData = mapModes[mm].prepare(save, null, date);
+              const modeData = mapModes[mm].prepare(save, null);
               for (const province of save.provinces) {
                 const b = province.id % 256;
                 const g = Math.floor(province.id / 256);
