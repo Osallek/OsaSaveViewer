@@ -21,6 +21,8 @@ const common = {
   'common.value': 'Valeur',
   'common.percent': 'Pourcentage',
   'common.rank': 'Classement',
+  'common.rankPlayers': 'Classement parmi les joueurs',
+  'common.rankAll': 'Classement parmi tous les pays',
   'common.duration.year': '{years, plural, =0 {} one {# an} other {# ans}}',
   'common.duration.month': '{months, plural, =0 {}  other {# mois}}',
   'common.quantity': 'Nombre',

@@ -1,33 +1,33 @@
-import { GridLegacy, Typography } from '@mui/material';
-import { green } from '@mui/material/colors';
+import { Grid, Typography, useTheme } from '@mui/material';
+import { blue, green } from '@mui/material/colors';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import {
-    Area,
-    AreaChart,
-    Bar,
-    CartesianGrid,
-    Cell,
-    ComposedChart,
-    LabelList,
-    Line,
-    Tooltip,
-    XAxis,
-    YAxis
+  Area,
+  AreaChart,
+  Bar,
+  CartesianGrid,
+  Cell,
+  ComposedChart,
+  LabelList,
+  Line,
+  Tooltip,
+  XAxis,
+  YAxis
 } from 'recharts';
 import { AxisDomain } from 'recharts/types/util/types';
 import { getRankDisplay } from 'screens/country/CountryMilitaryTab';
 import { CountryPreviousSave, SaveCountry } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import {
-    getIncomeLine,
-    getNbProvincesLine,
-    getPreviousBar,
-    getSavesGradient,
-    HistoryLine,
-    PreviousBar,
-    SaveGradient
+  getIncomeLine,
+  getNbProvincesLine,
+  getPreviousBar,
+  getSavesGradient,
+  HistoryLine,
+  PreviousBar,
+  SaveGradient
 } from 'utils/chart.utils';
 import { formatNumber } from 'utils/format.utils';
 import { getCountries, getSaveIndex } from 'utils/save.utils';
@@ -81,6 +81,7 @@ interface CountryHistoryTabProps {
 
 function CountryHistoryTab({ country, save }: CountryHistoryTabProps) {
   const intl = useIntl();
+  const theme = useTheme();
 
   const [income, setIncome] = useState<Array<HistoryLine>>([]);
   const [nbProvinces, setNbProvinces] = useState<Array<HistoryLine>>([]);
@@ -98,11 +99,11 @@ function CountryHistoryTab({ country, save }: CountryHistoryTabProps) {
   }, [save]);
 
   return (
-    <GridLegacy container style={ { alignItems: 'center', justifyContent: 'center' } }>
-      <GridLegacy container item xs={ 12 } lg={ 10 } xl={ 8 }>
+    <Grid container style={ { alignItems: 'center', justifyContent: 'center', width: '100%' } }>
+      <Grid container size={ { xs: 12, lg: 10, xl: 8 } }>
         <AutoSizer disableHeight>
           { ({ width }) => (
-            <GridLegacy container item flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } }>
+            <Grid container flexDirection='column' rowGap={ 2 } style={ { width: 'fit-content' } }>
               <Typography variant='h6' style={ { textAlign: 'center' } }>
                 { intl.formatMessage({ id: 'country.history.income' }) }
               </Typography>
@@ -139,7 +140,8 @@ function CountryHistoryTab({ country, save }: CountryHistoryTabProps) {
                     }
                   </linearGradient>
                 </defs>
-                <Area type='monotone' dataKey='value' stroke='#8884d8' fill='url(#splitColor)' connectNulls strokeWidth={ 2 }/>
+                <Area type='monotone' dataKey='value' stroke='#8884d8' fill='url(#splitColor)' connectNulls
+                      strokeWidth={ 2 }/>
               </AreaChart>
               <Typography variant='h6' style={ { textAlign: 'center' } }>
                 { intl.formatMessage({ id: 'country.history.nbProvinces' }) }
@@ -177,7 +179,8 @@ function CountryHistoryTab({ country, save }: CountryHistoryTabProps) {
                     }
                   </linearGradient>
                 </defs>
-                <Area type='monotone' dataKey='value' stroke='#8884d8' fill='url(#splitColor)' connectNulls strokeWidth={ 2 }/>
+                <Area type='monotone' dataKey='value' stroke='#8884d8' fill='url(#splitColor)' connectNulls
+                      strokeWidth={ 2 }/>
               </AreaChart>
               {
                 charts.map((chart, i) => (
@@ -198,35 +201,59 @@ function CountryHistoryTab({ country, save }: CountryHistoryTabProps) {
                       <defs>
                         <linearGradient id='splitColor' x1="0" y1="0" x2="1" y2="0">
                           {
-                            colors.map(value => <stop offset={ value.percent } stopColor={ value.color } stopOpacity={ 1 }/>)
+                            colors.map(value => <stop offset={ value.percent } stopColor={ value.color }
+                                                      stopOpacity={ 1 }/>)
                           }
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray='3 3'/>
                       <XAxis dataKey='name'/>
                       <YAxis yAxisId='left' dataKey='value' domain={ previousCharts[i].domain ?? [0, 'dataMax'] }
-                             label={ { value: intl.formatMessage({ id: 'common.value' }), angle: -90, position: 'left' } }/>
+                             label={ {
+                               value: intl.formatMessage({ id: 'common.value' }),
+                               angle: -90,
+                               position: 'left'
+                             } }/>
                       {
-                        country.players &&
-                          <YAxis yAxisId='right' dataKey='rank'
-                                 domain={ [1, (dataMax: number) => Math.max(dataMax, getCountries(save).filter(c => c.players !== undefined).length)] }
-                                 orientation='right'
-                                 label={ { value: intl.formatMessage({ id: 'common.rank' }), angle: 90, position: 'right' } }/>
+                        <YAxis yAxisId='right' dataKey='rankAll' allowDecimals={ false }
+                               domain={ [1, (dataMax: number) => Math.max(dataMax, getCountries(save).length)] }
+                               orientation='right'
+                               label={ {
+                                 value: intl.formatMessage({ id: 'common.rank' }),
+                                 angle: 90,
+                                 position: 'right'
+                               } }/>
                       }
                       <Tooltip content={ props => {
                         return props.active ? (
-                          <div style={ { padding: 10, backgroundColor: 'white', border: '1px solid rgb(204, 204, 204)' } }>
-                            <GridLegacy container flexDirection='column'>
+                          <div
+                            style={ { padding: 10, backgroundColor: 'white', border: '1px solid rgb(204, 204, 204)' } }>
+                            <Grid container flexDirection='column'>
                               <div>
                                 { `${ props.label } : ${ props.payload ? previousCharts[i].valueMapper(props.payload[0].payload.value) : '' }` }
                               </div>
                               {
                                 country.players &&
-                                  <GridLegacy container alignContent='center'>
-                                    { props.payload && `${ intl.formatMessage({ id: 'common.rank' }) } : ` }{ props.payload && getRankDisplay(props.payload[0].payload.rank ?? 0) }
-                                  </GridLegacy>
+                                <Grid container alignContent='center' alignItems='center'>
+                                  <div style={ {
+                                    width: 10,
+                                    height: 10,
+                                    backgroundColor: green[500],
+                                    marginRight: theme.spacing(1)
+                                  } }/>
+                                  { props.payload && `${ intl.formatMessage({ id: 'common.rankPlayers' }) } : ` }{ props.payload && getRankDisplay(props.payload[0].payload.rankPlayers ?? 0) }
+                                </Grid>
                               }
-                            </GridLegacy>
+                              <Grid container alignContent='center' alignItems='center'>
+                                <div style={ {
+                                  width: 10,
+                                  height: 10,
+                                  backgroundColor: blue[500],
+                                  marginRight: theme.spacing(1)
+                                } }/>
+                                { props.payload && `${ intl.formatMessage({ id: 'common.rankAll' }) } : ` }{ props.payload && getRankDisplay(props.payload[0].payload.rankAll ?? 0) }
+                              </Grid>
+                            </Grid>
                           </div>
                         ) : undefined;
                       } }/>
@@ -239,19 +266,20 @@ function CountryHistoryTab({ country, save }: CountryHistoryTabProps) {
                         <LabelList dataKey='progress' position='top' fill='inherit' key='label-top'
                                    formatter={ (progress: number) => progress !== undefined ? `${ progress >= 0 ? '+' : '' }${ formatNumber(progress, 0) }%` : undefined }/>
                       </Bar>
+                      <Line yAxisId='right' type='monotone' dataKey='rankAll' stroke={ blue[700] }/>
                       {
                         country.players &&
-                          <Line yAxisId='right' type='monotone' dataKey='rank' stroke={ green[700] }/>
+                        <Line yAxisId='right' type='monotone' dataKey='rankPlayers' stroke={ green[700] }/>
                       }
                     </ComposedChart>
                   </>
                 ))
               }
-            </GridLegacy>
+            </Grid>
           ) }
         </AutoSizer>
-      </GridLegacy>
-    </GridLegacy>
+      </Grid>
+    </Grid>
   )
 }
 

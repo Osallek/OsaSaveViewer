@@ -769,9 +769,11 @@ export function getTotalTotalExpenses(country: SaveCountry): number {
 }
 
 export function getRank(save: MapSave, country: SaveCountry, mapper: (country: SaveCountry) => number | undefined, onlyPlayer: boolean = false): number {
-  return Array.from(new Set<number>(
-    getCountries(save).filter(c => !onlyPlayer || (c.players && c.players.length > 0)).map(c => mapper(c) ?? 0)))
-    .sort((a, b) => -numberComparator(a, b)).indexOf(mapper(country) ?? 0) + 1;
+  return Array.from(new Set<number>(getCountries(save)
+    .filter(c => !onlyPlayer || (c.players && c.players.length > 0))
+    .map(c => mapper(c) ?? 0)))
+    .sort((a, b) => -numberComparator(a, b))
+    .indexOf(mapper(country) ?? 0) + 1;
 }
 
 export function getMonarchs(save: MapSave, country: SaveCountry): Array<SaveMonarch> {

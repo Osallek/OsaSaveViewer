@@ -400,7 +400,8 @@ export interface PreviousBar {
   name: string;
   value: number;
   index: number;
-  rank: number;
+  rankPlayers: number;
+  rankAll: number;
   progress?: number;
 }
 
@@ -410,7 +411,8 @@ export function getPreviousBar(country: SaveCountry, save: MapSave, mapper: (pre
       name: `${ intl.formatMessage({ id: 'common.save' }) } 1`,
       value: current(country),
       index: 1,
-      rank: getRank(save, country, c => current(c)),
+      rankPlayers: getRank(save, country, c => current(c), true),
+      rankAll: getRank(save, country, c => current(c), false),
       progress: undefined
     }];
   } else {
@@ -422,7 +424,8 @@ export function getPreviousBar(country: SaveCountry, save: MapSave, mapper: (pre
         name: `${ intl.formatMessage({ id: 'common.save' }) } ${ index + 1 }`,
         value: mapper(value),
         index: index + 1,
-        rank: getRank(save, country, c => (c.players !== undefined && c.previousSaves && c.previousSaves[index]) ? mapper(c.previousSaves[index]) : 0),
+        rankPlayers: getRank(save, country, c => (c.players !== undefined && c.previousSaves && c.previousSaves[index]) ? mapper(c.previousSaves[index]) : 0, true),
+        rankAll: getRank(save, country, c => (c.previousSaves && c.previousSaves[index]) ? mapper(c.previousSaves[index]) : 0, false),
         progress: (currentValue && previousValue) ? ((currentValue / previousValue) - 1) * 100 : undefined
       };
     });
@@ -434,7 +437,8 @@ export function getPreviousBar(country: SaveCountry, save: MapSave, mapper: (pre
       name: `${ intl.formatMessage({ id: 'common.save' }) } ${ country.previousSaves.length + 1 }`,
       value: current(country),
       index: country.previousSaves.length + 1,
-      rank: getRank(save, country, c => current(c)),
+      rankPlayers: getRank(save, country, c => current(c), true),
+      rankAll: getRank(save, country, c => current(c), false),
       progress: (currentValue && previousValue) ? ((currentValue / previousValue) - 1) * 100 : undefined
     });
 
