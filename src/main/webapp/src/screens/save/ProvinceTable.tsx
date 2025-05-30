@@ -32,25 +32,25 @@ import { MapSave } from 'types/map.types';
 import { fakeTag } from 'utils/data.utils';
 import { cleanString, formatNumber, numberComparator, stringComparator } from 'utils/format.utils';
 import {
-    getBuilding,
-    getBuildingName,
-    getBuildingsImage,
-    getBuildingsName,
-    getCountries,
-    getCountryFlag,
-    getCountryName,
-    getCountrysName,
-    getCultureName,
-    getCulturesName,
-    getGoodImage,
-    getGoodName,
-    getGoodsName,
-    getPDev,
-    getPHistory,
-    getPRealDev,
-    getReligionImage,
-    getReligionName,
-    getReligionsName
+  getBuilding,
+  getBuildingName,
+  getBuildingsImage,
+  getBuildingsName,
+  getCountries,
+  getCountryFlag,
+  getCountryName,
+  getCountrysName,
+  getCultureName,
+  getCulturesName,
+  getGoodImage,
+  getGoodName,
+  getGoodsName,
+  getPDev,
+  getPHistory, getPManualDev,
+  getPRealDev,
+  getReligionImage,
+  getReligionName,
+  getReligionsName
 } from 'utils/save.utils';
 
 interface Column {
@@ -141,7 +141,7 @@ function getDevColumns(save: MapSave): Column[] {
       label: intl.formatMessage({ id: 'province.manualDev' }),
       minWidth: 100,
       value: province => <Typography variant='body1' align='center'>
-        { province.improvements ? Object.values(province.improvements).reduce((s, a) => s + a, 0) : 0 }
+        { getPManualDev(province) }
       </Typography>,
       comparatorValue: province => province.improvements ? Object.values(province.improvements).reduce((s, a) => s + a,
         0) : 0,

@@ -16,6 +16,7 @@ const province = {
   'province.baseTax': 'Taxes',
   'province.baseProduction': 'Production',
   'province.baseManpower': 'Manpower',
+  'province.autonomy': 'Autonomy',
   'province.good': 'Good',
   'province.colonySize': 'Colony size',
   'province.buildings': 'Buildings',

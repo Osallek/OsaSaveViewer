@@ -243,6 +243,10 @@ export function getPRealDev(province: SaveProvince): number {
   return ((province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0)) * (100 - (province.autonomy ?? 0)) / 100;
 }
 
+export function getPManualDev(province: SaveProvince): number {
+  return province.improvements ? Object.values(province.improvements).reduce((s, a) => s + a, 0) : 0;
+}
+
 export function getProvinces(country: SaveCountry, save: MapSave): SaveProvince[] {
   return save.provinces.filter(p => country.tag === getPHistory(p, save).owner);
 }

@@ -31,6 +31,10 @@ const common = {
   'common.teamB': 'Team 2',
   'common.yes': 'Yes',
   'common.no': 'No',
+  'common.filters': 'Filters',
+  'common.columns': 'Columns',
+  'common.search': 'Search',
+  'common.downloadCsv': 'Download as CSV',
 }
 
 export default common;
