@@ -1,5 +1,8 @@
+import { Avatar, Grid, MenuItem, Typography } from "@mui/material";
 import { intl } from 'index';
+import * as React from "react";
 import { SaveColor, SaveCountry, SaveTradeNode, SaveWar } from 'types/api.types';
+import { IMapMode, MapMode, MapSave } from 'types/map.types';
 import {
   DEV_GRADIENT,
   DEVASTATION_GRADIENT,
@@ -17,15 +20,20 @@ import {
 import { colorToHex, formatDate, formatNumber, stringComparator } from 'utils/format.utils';
 import {
   getArea,
+  getAreasName,
   getAreaState,
   getBuildingImage,
   getBuildingName,
   getBuildingsImage,
   getBuildingsName,
   getCHistory,
+  getContinent,
+  getContinentsName,
   getCountries,
   getCountry,
+  getCountryFlag,
   getCountryName,
+  getCountrysFlag,
   getCountrysName,
   getCulture,
   getCultureName,
@@ -35,24 +43,57 @@ import {
   getGoodName,
   getGoodsImage,
   getGoodsName,
-  getInstitutionName, getInstitutionImage,
+  getInstitutionImage,
+  getInstitutionIndex,
+  getInstitutionName,
+  getInstitutionsImage,
+  getInstitutionsName,
   getOverlord,
   getPHistory,
+  getPlayer,
   getProvinceAllLosses,
+  getProvinceArea,
+  getProvinceContinent,
   getProvinceLosses,
+  getProvinceRegion,
+  getProvinceSuperRegion,
+  getRegion,
+  getRegionsName,
   getReligion,
   getReligionName,
   getReligionsImage,
   getReligionsName,
   getSubjects,
   getSubjectTypeName,
+  getSuperRegion,
+  getSuperRegionsName,
   getTradeNode,
   getTradeNodesName,
-  getWar, getInstitutionsName, getInstitutionsImage, getInstitutionIndex, getCountrysFlag, getCountryFlag, getPlayer
+  getWar,
+  hasAreaDetails
 } from 'utils/save.utils';
-import * as React from "react";
-import { IMapMode, MapMode } from 'types/map.types';
-import { Avatar, Grid, MenuItem, Typography } from "@mui/material";
+
+export const getMapModes = (save: MapSave): MapMode[] => {
+  const modes = new Set<MapMode>(Object.values(MapMode));
+
+  if (!hasAreaDetails(save)) {
+    modes.delete(MapMode.AREAS);
+  }
+
+  if (!save.regions || !save.regions.length) {
+    modes.delete(MapMode.REGIONS);
+  }
+
+  if (!save.superRegions || !save.superRegions.length) {
+    modes.delete(MapMode.SUPER_REGIONS);
+  }
+
+  if (!save.continents || !save.continents.length) {
+    modes.delete(MapMode.CONTINENTS);
+  }
+
+  return [...modes];
+};
 
 export const mapModes: Record<MapMode, IMapMode> = {
   [MapMode.POLITICAL]: {
@@ -60,7 +101,9 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, data, countries, date) => {
       const owner = getPHistory(province, save, date).owner;
 
-      if (!owner || (countries.length > 0 && !countries.includes(owner))) {
+      if (!owner || (
+        countries.length > 0 && !countries.includes(owner)
+      )) {
         return EMPTY_COLOR;
       }
 
@@ -88,40 +131,46 @@ export const mapModes: Record<MapMode, IMapMode> = {
     selectRenderInput: (value, save, theme) => {
       return (
         value ?
-          <Grid container alignItems='center'>
-            <Avatar src={ getCountryFlag(save, value) } variant='square'
-                    style={ { display: 'inline-block', width: 24, height: 24 } }/>
-            <Typography variant='body1' style={ {
-              color: theme.palette.primary.contrastText,
-              fontWeight: 'bold',
-              marginLeft: theme.spacing(1)
-            } }>
-              { getCountryName(save, value) }
-            </Typography>
-          </Grid>
-          :
-          <Typography variant='body1' style={ {
+        <Grid container alignItems="center">
+          <Avatar
+            src={ getCountryFlag(save, value) } variant="square" style={ { display: 'inline-block', width: 24, height: 24 } }
+          />
+          <Typography
+            variant="body1" style={ {
             color: theme.palette.primary.contrastText,
             fontWeight: 'bold',
             marginLeft: theme.spacing(1)
-          } }>
-            { intl.formatMessage({ id: 'map.mod.POLITICAL' }) }
+          } }
+          >
+            { getCountryName(save, value) }
           </Typography>
-      )
+        </Grid>
+              :
+        <Typography
+          variant="body1" style={ {
+          color: theme.palette.primary.contrastText,
+          fontWeight: 'bold',
+          marginLeft: theme.spacing(1)
+        } }
+        >
+          { intl.formatMessage({ id: 'map.mod.POLITICAL' }) }
+        </Typography>
+      );
     },
     selectItems: (save, theme) => {
       return save.countries
-        .filter(c => c.alive)
-        .sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b)))
-        .map(country => (
-          <MenuItem value={ country.tag } key={ country.tag }>
-            <Avatar src={ getCountrysFlag(country) } variant='square'
-                    style={ { display: 'inline-block' } }/>
-            <Typography variant='body1' style={ { marginLeft: theme.spacing(1) } }>
-              { getCountrysName(country) }
-            </Typography>
-          </MenuItem>
-        ))
+                 .filter(c => c.alive)
+                 .sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b)))
+                 .map(country => (
+                   <MenuItem value={ country.tag } key={ country.tag }>
+                     <Avatar
+                       src={ getCountrysFlag(country) } variant="square" style={ { display: 'inline-block' } }
+                     />
+                     <Typography variant="body1" style={ { marginLeft: theme.spacing(1) } }>
+                       { getCountrysName(country) }
+                     </Typography>
+                   </MenuItem>
+                 ));
     }
   },
   [MapMode.RELIGION]: {
@@ -129,7 +178,11 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, data, countries, date) => {
       const history = getPHistory(province, save, date);
 
-      if (!history.religion || (countries.length > 0 && (!history.owner || !countries.includes(history.owner)))) {
+      if (!history.religion || (
+        countries.length > 0 && (
+          !history.owner || !countries.includes(history.owner)
+        )
+      )) {
         return EMPTY_COLOR;
       }
 
@@ -162,52 +215,62 @@ export const mapModes: Record<MapMode, IMapMode> = {
       const religion = value ? getReligion(save, value) : null;
       return (
         religion ?
-          <Grid container>
-            <div style={ {
+        <Grid container>
+          <div
+            style={ {
               width: 10,
               height: 10,
               backgroundColor: colorToHex(religion.color),
               margin: 'auto'
-            } }/>
-            <Avatar src={ getReligionsImage(religion) } variant='square'
-                    style={ { display: 'inline-block', width: 24, height: 24 } }/>
-            <Typography variant='body1' style={ {
-              color: theme.palette.primary.contrastText,
-              fontWeight: 'bold',
-              marginLeft: theme.spacing(1)
-            } }>
-              { getReligionsName(religion) }
-            </Typography>
-          </Grid>
-          :
-          <Typography variant='body1' style={ {
+            } }
+          />
+          <Avatar
+            src={ getReligionsImage(religion) } variant="square" style={ { display: 'inline-block', width: 24, height: 24 } }
+          />
+          <Typography
+            variant="body1" style={ {
             color: theme.palette.primary.contrastText,
             fontWeight: 'bold',
             marginLeft: theme.spacing(1)
-          } }>
-            { intl.formatMessage({ id: 'map.mod.RELIGION' }) }
+          } }
+          >
+            { getReligionsName(religion) }
           </Typography>
-      )
+        </Grid>
+                 :
+        <Typography
+          variant="body1" style={ {
+          color: theme.palette.primary.contrastText,
+          fontWeight: 'bold',
+          marginLeft: theme.spacing(1)
+        } }
+        >
+          { intl.formatMessage({ id: 'map.mod.RELIGION' }) }
+        </Typography>
+      );
     },
     selectItems: (save, theme) => {
       return save.religions.sort((a, b) => stringComparator(getReligionsName(a), getReligionsName(b)))
-        .map(religion => (
-          <MenuItem value={ religion.name } key={ religion.name }>
-            <Grid container alignItems='center'>
-              <div style={ {
-                width: 10,
-                height: 10,
-                backgroundColor: colorToHex(religion.color),
-                margin: 'auto'
-              } }/>
-              <Avatar src={ getReligionsImage(religion) } variant='square'
-                      style={ { display: 'inline-block' } }/>
-              <Typography variant='body1' style={ { marginLeft: theme.spacing(1) } }>
-                { getReligionsName(religion) }
-              </Typography>
-            </Grid>
-          </MenuItem>
-        ))
+                 .map(religion => (
+                   <MenuItem value={ religion.name } key={ religion.name }>
+                     <Grid container alignItems="center">
+                       <div
+                         style={ {
+                           width: 10,
+                           height: 10,
+                           backgroundColor: colorToHex(religion.color),
+                           margin: 'auto'
+                         } }
+                       />
+                       <Avatar
+                         src={ getReligionsImage(religion) } variant="square" style={ { display: 'inline-block' } }
+                       />
+                       <Typography variant="body1" style={ { marginLeft: theme.spacing(1) } }>
+                         { getReligionsName(religion) }
+                       </Typography>
+                     </Grid>
+                   </MenuItem>
+                 ));
     }
   },
   [MapMode.DEVELOPMENT]: {
@@ -216,16 +279,26 @@ export const mapModes: Record<MapMode, IMapMode> = {
       if (countries.length > 0) {
         const history = getPHistory(province, save);
 
-        if (!history.owner || (history.owner && !countries.includes(history.owner))) {
+        if (!history.owner || (
+          history.owner && !countries.includes(history.owner)
+        )) {
           return EMPTY_COLOR;
         }
       }
 
-      const dev = (province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0);
+      const dev = (
+        province.baseTax ?? 0
+      ) + (
+        province.baseProduction ?? 0
+      ) + (
+        province.baseManpower ?? 0
+      );
       let color = Object.values(data)[0];
 
       for (const value in data) {
-        if ((value as unknown as keyof typeof data) > dev) {
+        if ((
+          value as unknown as keyof typeof data
+        ) > dev) {
           break;
         }
 
@@ -241,7 +314,13 @@ export const mapModes: Record<MapMode, IMapMode> = {
       let max = Number.MAX_VALUE;
 
       save.provinces.forEach(province => {
-        const dev = (province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0);
+        const dev = (
+          province.baseTax ?? 0
+        ) + (
+          province.baseProduction ?? 0
+        ) + (
+          province.baseManpower ?? 0
+        );
 
         if (dev < min) {
           min = dev;
@@ -256,20 +335,33 @@ export const mapModes: Record<MapMode, IMapMode> = {
       max = Math.min(min + 50, max);
 
       const toReturn: Record<number, SaveColor> = {};
-      const step = (max - min) / (DEV_GRADIENT.length - 1);
+      const step = (
+        max - min
+      ) / (
+        DEV_GRADIENT.length - 1
+      );
 
       DEV_GRADIENT.forEach((value, index) => {
-        toReturn[(min + index * step) | 0] = value;
+        toReturn[(
+          min + index * step
+        ) | 0] = value;
       });
 
       return toReturn;
     },
     selectable: true,
     tooltip: (province) => {
-      return `${ province.name } : ${ province.baseTax ?? 0 }/${ province.baseProduction ?? 0 }/${ province.baseManpower ?? 0 } (${ (province.baseTax ?? 0) + (province.baseProduction ?? 0) + (province.baseManpower ?? 0) })`;
+      return `${ province.name } : ${ province.baseTax ?? 0 }/${ province.baseProduction ?? 0 }/${ province.baseManpower
+      ?? 0 } (${ (
+        province.baseTax ?? 0
+      ) + (
+        province.baseProduction ?? 0
+      ) + (
+        province.baseManpower ?? 0
+      ) })`;
     },
     hasTooltip: true,
-    supportDate: false,
+    supportDate: false
   },
   [MapMode.HRE]: {
     mapMode: MapMode.HRE,
@@ -279,7 +371,9 @@ export const mapModes: Record<MapMode, IMapMode> = {
     }: { electors: Array<string>, emperor: string }, countries, date) => {
       const history = getPHistory(province, save, date);
 
-      if (countries.length > 0 && (!history.owner || !countries.includes(history.owner))) {
+      if (countries.length > 0 && (
+        !history.owner || !countries.includes(history.owner)
+      )) {
         return EMPTY_COLOR;
       }
 
@@ -300,7 +394,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
         electors: getCountries(save).filter(country => country.history).filter(
           country => getCHistory(country, save, date).elector).map(value => value.tag),
         emperor: getEmperor(save.hre, date ?? save.date)
-      }
+      };
     },
     selectable: true,
     tooltip: (province, save, dataId, date) => {
@@ -322,14 +416,18 @@ export const mapModes: Record<MapMode, IMapMode> = {
         { id: 'country.hre' }) }` : '';
     },
     hasTooltip: true,
-    supportDate: true,
+    supportDate: true
   },
   [MapMode.GREAT_POWER]: {
     mapMode: MapMode.GREAT_POWER,
     provinceColor: (province, save, data, countries) => {
       const owner = getPHistory(province, save).owner;
 
-      if (!owner || (countries.length > 0 && (!owner || !countries.includes(owner)))) {
+      if (!owner || (
+        countries.length > 0 && (
+          !owner || !countries.includes(owner)
+        )
+      )) {
         return EMPTY_COLOR;
       }
 
@@ -341,7 +439,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
     prepare: () => {
     },
     selectable: true,
-    tooltip: (province, save, dataId,) => {
+    tooltip: (province, save, dataId) => {
       const owner = getPHistory(province, save).owner;
 
       if (!owner) {
@@ -357,7 +455,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ getCountrysName(country) } : ${ country.greatPowerRank }`;
     },
     hasTooltip: true,
-    supportDate: false,
+    supportDate: false
   },
   [MapMode.INSTITUTION]: {
     mapMode: MapMode.INSTITUTION,
@@ -379,8 +477,8 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return {
         dataId: dataId,
         gradient: dataId ? getGradient(11, colorToHex(EMPTY_COLOR), colorToHex(GREEN_COLOR)) :
-          getGradient(save.institutions.filter(value => value !== undefined && value.origin !== undefined).length + 1)
-      }
+                  getGradient(save.institutions.filter(value => value !== undefined && value.origin !== undefined).length + 1)
+      };
     },
     selectable: true,
     tooltip: (province, save) => {
@@ -407,38 +505,44 @@ export const mapModes: Record<MapMode, IMapMode> = {
     selectRenderInput: (value, save, theme) => {
       return (
         value ?
-          <Grid container alignItems='center'>
-            <Avatar src={ getInstitutionImage(save, value) } variant='square'
-                    style={ { display: 'inline-block', width: 24, height: 24 } }/>
-            <Typography variant='body1' style={ {
-              color: theme.palette.primary.contrastText,
-              fontWeight: 'bold',
-              marginLeft: theme.spacing(1)
-            } }>
-              { getInstitutionName(save, value) }
-            </Typography>
-          </Grid>
-          :
-          <Typography variant='body1' style={ {
+        <Grid container alignItems="center">
+          <Avatar
+            src={ getInstitutionImage(save, value) } variant="square" style={ { display: 'inline-block', width: 24, height: 24 } }
+          />
+          <Typography
+            variant="body1" style={ {
             color: theme.palette.primary.contrastText,
             fontWeight: 'bold',
             marginLeft: theme.spacing(1)
-          } }>
-            { intl.formatMessage({ id: 'map.mod.INSTITUTION' }) }
+          } }
+          >
+            { getInstitutionName(save, value) }
           </Typography>
-      )
+        </Grid>
+              :
+        <Typography
+          variant="body1" style={ {
+          color: theme.palette.primary.contrastText,
+          fontWeight: 'bold',
+          marginLeft: theme.spacing(1)
+        } }
+        >
+          { intl.formatMessage({ id: 'map.mod.INSTITUTION' }) }
+        </Typography>
+      );
     },
     selectItems: (save, theme) => {
       return save.institutions
-        .map(institution => (
-          <MenuItem value={ institution.name } key={ institution.name }>
-            <Avatar src={ getInstitutionsImage(institution) } variant='square'
-                    style={ { display: 'inline-block' } }/>
-            <Typography variant='body1' style={ { marginLeft: theme.spacing(1) } }>
-              { getInstitutionsName(institution) }
-            </Typography>
-          </MenuItem>
-        ))
+                 .map(institution => (
+                   <MenuItem value={ institution.name } key={ institution.name }>
+                     <Avatar
+                       src={ getInstitutionsImage(institution) } variant="square" style={ { display: 'inline-block' } }
+                     />
+                     <Typography variant="body1" style={ { marginLeft: theme.spacing(1) } }>
+                       { getInstitutionsName(institution) }
+                     </Typography>
+                   </MenuItem>
+                 ));
     }
   },
   [MapMode.TECHNOLOGY]: {
@@ -450,14 +554,25 @@ export const mapModes: Record<MapMode, IMapMode> = {
     }: { gradient: Array<SaveColor>, min: number, max: number }, countries) => {
       const owner = getPHistory(province, save).owner;
 
-      if (!owner || (countries.length > 0 && (!owner || !countries.includes(owner)))) {
+      if (!owner || (
+        countries.length > 0 && (
+          !owner || !countries.includes(owner)
+        )
+      )) {
         return EMPTY_COLOR;
       }
 
       const country = getCountry(save, owner);
       const tech = country.admTech + country.dipTech + country.milTech;
 
-      return gradient[Math.min((Math.max(min, max - (max - tech) * 1.5 - 1) - min) | 0, gradient.length)];
+      return gradient[Math.min((
+                                 Math.max(
+                                   min,
+                                   max - (
+                                       max - tech
+                                     ) * 1.5 - 1
+                                 ) - min
+                               ) | 0, gradient.length)];
     },
     image: 'technology',
     allowDate: false,
@@ -487,7 +602,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
         min,
         max,
         gradient: getGradient(max - min)
-      }
+      };
     },
     selectable: true,
     tooltip: (province, save) => {
@@ -502,15 +617,19 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ getCountrysName(country) } : ${ country.admTech }/${ country.dipTech }/${ country.milTech }`;
     },
     hasTooltip: true,
-    supportDate: false,
+    supportDate: false
   },
   [MapMode.GOOD]: {
     mapMode: MapMode.GOOD,
     provinceColor: (province, save, data, countries, date) => {
       const history = getPHistory(province, save, date);
 
-      if (!history.tradeGood || (countries.length > 0 && (!history.owner || !countries.includes(
-        history.owner)))) {
+      if (!history.tradeGood || (
+        countries.length > 0 && (
+          !history.owner || !countries.includes(
+            history.owner)
+        )
+      )) {
         return EMPTY_COLOR;
       }
 
@@ -543,52 +662,62 @@ export const mapModes: Record<MapMode, IMapMode> = {
       const good = value ? getGood(save, value) : null;
       return (
         good ?
-          <Grid container alignItems='center'>
-            <div style={ {
+        <Grid container alignItems="center">
+          <div
+            style={ {
               width: 10,
               height: 10,
               backgroundColor: colorToHex(good.color),
               margin: 'auto'
-            } }/>
-            <Avatar src={ getGoodsImage(good) } variant='square'
-                    style={ { display: 'inline-block', width: 24, height: 24 } }/>
-            <Typography variant='body1' style={ {
-              color: theme.palette.primary.contrastText,
-              fontWeight: 'bold',
-              marginLeft: theme.spacing(1)
-            } }>
-              { getGoodsName(good) }
-            </Typography>
-          </Grid>
-          :
-          <Typography variant='body1' style={ {
+            } }
+          />
+          <Avatar
+            src={ getGoodsImage(good) } variant="square" style={ { display: 'inline-block', width: 24, height: 24 } }
+          />
+          <Typography
+            variant="body1" style={ {
             color: theme.palette.primary.contrastText,
             fontWeight: 'bold',
             marginLeft: theme.spacing(1)
-          } }>
-            { intl.formatMessage({ id: 'map.mod.GOOD' }) }
+          } }
+          >
+            { getGoodsName(good) }
           </Typography>
-      )
+        </Grid>
+             :
+        <Typography
+          variant="body1" style={ {
+          color: theme.palette.primary.contrastText,
+          fontWeight: 'bold',
+          marginLeft: theme.spacing(1)
+        } }
+        >
+          { intl.formatMessage({ id: 'map.mod.GOOD' }) }
+        </Typography>
+      );
     },
     selectItems: (save, theme) => {
       return save.tradeGoods.sort((a, b) => stringComparator(getGoodsName(a), getGoodsName(b)))
-        .map(good => (
-          <MenuItem value={ good.name } key={ good.name }>
-            <Grid container alignItems='center'>
-              <div style={ {
-                width: 10,
-                height: 10,
-                backgroundColor: colorToHex(good.color),
-                margin: 'auto'
-              } }/>
-              <Avatar src={ getGoodsImage(good) } variant='square'
-                      style={ { display: 'inline-block' } }/>
-              <Typography variant='body1' style={ { marginLeft: theme.spacing(1) } }>
-                { getGoodsName(good) }
-              </Typography>
-            </Grid>
-          </MenuItem>
-        ))
+                 .map(good => (
+                   <MenuItem value={ good.name } key={ good.name }>
+                     <Grid container alignItems="center">
+                       <div
+                         style={ {
+                           width: 10,
+                           height: 10,
+                           backgroundColor: colorToHex(good.color),
+                           margin: 'auto'
+                         } }
+                       />
+                       <Avatar
+                         src={ getGoodsImage(good) } variant="square" style={ { display: 'inline-block' } }
+                       />
+                       <Typography variant="body1" style={ { marginLeft: theme.spacing(1) } }>
+                         { getGoodsName(good) }
+                       </Typography>
+                     </Grid>
+                   </MenuItem>
+                 ));
     }
   },
   [MapMode.CULTURE]: {
@@ -596,7 +725,11 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, data, countries, date) => {
       const history = getPHistory(province, save, date);
 
-      if (!history.culture || (countries.length > 0 && (!history.owner || !countries.includes(history.owner)))) {
+      if (!history.culture || (
+        countries.length > 0 && (
+          !history.owner || !countries.includes(history.owner)
+        )
+      )) {
         return EMPTY_COLOR;
       }
 
@@ -629,48 +762,56 @@ export const mapModes: Record<MapMode, IMapMode> = {
       const culture = value ? getCulture(save, value) : null;
       return (
         culture ?
-          <Grid container alignItems='center'>
-            <div style={ {
+        <Grid container alignItems="center">
+          <div
+            style={ {
               width: 10,
               height: 10,
               backgroundColor: colorToHex(culture.color),
               margin: 'auto'
-            } }/>
-            <Typography variant='body1' style={ {
-              color: theme.palette.primary.contrastText,
-              fontWeight: 'bold',
-              marginLeft: theme.spacing(1)
-            } }>
-              { getCulturesName(culture) }
-            </Typography>
-          </Grid>
-          :
-          <Typography variant='body1' style={ {
+            } }
+          />
+          <Typography
+            variant="body1" style={ {
             color: theme.palette.primary.contrastText,
             fontWeight: 'bold',
             marginLeft: theme.spacing(1)
-          } }>
-            { intl.formatMessage({ id: 'map.mod.CULTURE' }) }
+          } }
+          >
+            { getCulturesName(culture) }
           </Typography>
-      )
+        </Grid>
+                :
+        <Typography
+          variant="body1" style={ {
+          color: theme.palette.primary.contrastText,
+          fontWeight: 'bold',
+          marginLeft: theme.spacing(1)
+        } }
+        >
+          { intl.formatMessage({ id: 'map.mod.CULTURE' }) }
+        </Typography>
+      );
     },
     selectItems: (save, theme) => {
       return save.cultures.sort((a, b) => stringComparator(getCulturesName(a), getCulturesName(b)))
-        .map(culture => (
-          <MenuItem value={ culture.name } key={ culture.name }>
-            <Grid container alignItems='center'>
-              <div style={ {
-                width: 10,
-                height: 10,
-                backgroundColor: colorToHex(culture.color),
-                margin: 'auto'
-              } }/>
-              <Typography variant='body1' style={ { marginLeft: theme.spacing(1) } }>
-                { getCulturesName(culture) }
-              </Typography>
-            </Grid>
-          </MenuItem>
-        ))
+                 .map(culture => (
+                   <MenuItem value={ culture.name } key={ culture.name }>
+                     <Grid container alignItems="center">
+                       <div
+                         style={ {
+                           width: 10,
+                           height: 10,
+                           backgroundColor: colorToHex(culture.color),
+                           margin: 'auto'
+                         } }
+                       />
+                       <Typography variant="body1" style={ { marginLeft: theme.spacing(1) } }>
+                         { getCulturesName(culture) }
+                       </Typography>
+                     </Grid>
+                   </MenuItem>
+                 ));
     }
   },
   [MapMode.DEVASTATION]: {
@@ -678,25 +819,32 @@ export const mapModes: Record<MapMode, IMapMode> = {
     provinceColor: (province, save, data, countries) => {
       const history = getPHistory(province, save);
 
-      if (countries.length > 0 && (!history.owner || !countries.includes(history.owner))) {
+      if (countries.length > 0 && (
+        !history.owner || !countries.includes(history.owner)
+      )) {
         return EMPTY_COLOR;
       }
 
       if (province.devastation) {
-        return DEVASTATION_GRADIENT[10 - (province.devastation / 10 | 0)];
+        return DEVASTATION_GRADIENT[10 - (
+          province.devastation / 10 | 0
+        )];
       }
 
-      const area = getArea(save, province);
+      const area = getProvinceArea(save, province);
 
       if (!area) {
         return EMPTY_COLOR;
       }
 
-      const owner = getPHistory(province, save).owner;
-      const state = getAreaState(area, owner);
+      const state = getAreaState(area, history.owner);
 
       if (state) {
-        return PROSPERITY_GRADIENT[((state.prosperity ?? 0) / 10 | 0)];
+        return PROSPERITY_GRADIENT[(
+          (
+            state.prosperity ?? 0
+          ) / 10 | 0
+        )];
       } else {
         return EMPTY_COLOR;
       }
@@ -711,7 +859,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
         return `${ province.name } : ${ intl.formatMessage({ id: 'province.devastation' }) } : ${ formatNumber(
           province.devastation) }`;
       } else {
-        const area = getArea(save, province);
+        const area = getProvinceArea(save, province);
 
         if (!area) {
           return '';
@@ -729,14 +877,18 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     hasTooltip: true,
-    supportDate: false,
+    supportDate: false
   },
   [MapMode.PLAYERS]: {
     mapMode: MapMode.PLAYERS,
     provinceColor: (province, save, data, countries, date) => {
       const owner = getPHistory(province, save, date).owner;
 
-      if (!owner || (countries.length > 0 && (!owner || !countries.includes(owner)))) {
+      if (!owner || (
+        countries.length > 0 && (
+          !owner || !countries.includes(owner)
+        )
+      )) {
         return EMPTY_COLOR;
       }
 
@@ -781,7 +933,9 @@ export const mapModes: Record<MapMode, IMapMode> = {
 
       const overlord = getOverlord(country, save);
 
-      return (overlord && overlord.players && overlord.players.length > 0) ? `${ getCountrysName(
+      return (
+               overlord && overlord.players && overlord.players.length > 0
+             ) ? `${ getCountrysName(
         country) } : ${ overlord.players[0] }` : '';
     },
     hasTooltip: true,
@@ -790,40 +944,46 @@ export const mapModes: Record<MapMode, IMapMode> = {
       const country = value ? getCountry(save, value) : null;
       return (
         country ?
-          <Grid container alignItems='center'>
-            <Avatar src={ getCountrysFlag(country) } variant='square'
-                    style={ { display: 'inline-block', width: 24, height: 24 } }/>
-            <Typography variant='body1' style={ {
-              color: theme.palette.primary.contrastText,
-              fontWeight: 'bold',
-              marginLeft: theme.spacing(1)
-            } }>
-              { `${getCountrysName(country)} (${getPlayer(country)})` }
-            </Typography>
-          </Grid>
-          :
-          <Typography variant='body1' style={ {
+        <Grid container alignItems="center">
+          <Avatar
+            src={ getCountrysFlag(country) } variant="square" style={ { display: 'inline-block', width: 24, height: 24 } }
+          />
+          <Typography
+            variant="body1" style={ {
             color: theme.palette.primary.contrastText,
             fontWeight: 'bold',
             marginLeft: theme.spacing(1)
-          } }>
-            { intl.formatMessage({ id: 'map.mod.PLAYERS' }) }
+          } }
+          >
+            { `${ getCountrysName(country) } (${ getPlayer(country) })` }
           </Typography>
-      )
+        </Grid>
+                :
+        <Typography
+          variant="body1" style={ {
+          color: theme.palette.primary.contrastText,
+          fontWeight: 'bold',
+          marginLeft: theme.spacing(1)
+        } }
+        >
+          { intl.formatMessage({ id: 'map.mod.PLAYERS' }) }
+        </Typography>
+      );
     },
     selectItems: (save, theme) => {
       return save.countries
-        .filter(c => c.alive && c.players && c.players.length > 0)
-        .sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b)))
-        .map(country => (
-          <MenuItem value={ country.tag } key={ country.tag }>
-            <Avatar src={ getCountrysFlag(country) } variant='square'
-                    style={ { display: 'inline-block' } }/>
-            <Typography variant='body1' style={ { marginLeft: theme.spacing(1) } }>
-              { `${getCountrysName(country)} (${getPlayer(country)})` }
-            </Typography>
-          </MenuItem>
-        ))
+                 .filter(c => c.alive && c.players && c.players.length > 0)
+                 .sort((a, b) => stringComparator(getCountrysName(a), getCountrysName(b)))
+                 .map(country => (
+                   <MenuItem value={ country.tag } key={ country.tag }>
+                     <Avatar
+                       src={ getCountrysFlag(country) } variant="square" style={ { display: 'inline-block' } }
+                     />
+                     <Typography variant="body1" style={ { marginLeft: theme.spacing(1) } }>
+                       { `${ getCountrysName(country) } (${ getPlayer(country) })` }
+                     </Typography>
+                   </MenuItem>
+                 ));
     }
   },
   [MapMode.LOSSES]: {
@@ -835,7 +995,9 @@ export const mapModes: Record<MapMode, IMapMode> = {
     }: { war: SaveWar, gradient: Array<SaveColor>, maxLosses: number }, countries, date) => {
       const losses = war ? getProvinceLosses(war, province.id) : getProvinceAllLosses(province, date);
 
-      return losses === 0 ? EMPTY_COLOR : gradient[(losses / maxLosses) * 9 | 0];
+      return losses === 0 ? EMPTY_COLOR : gradient[(
+        losses / maxLosses
+      ) * 9 | 0];
     },
     image: 'manpower',
     allowDate: true,
@@ -846,7 +1008,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
         const maxLosses = !war ? 0 : Math.max(
           ...war.history.filter(h => h.battles && h.battles.length > 0).flatMap(h => h.battles ?? []).map(
             b => b.location)
-            .map(loc => getProvinceLosses(war, loc)));
+                .map(loc => getProvinceLosses(war, loc)));
 
         return { war, gradient, maxLosses };
       } else {
@@ -871,7 +1033,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     hasTooltip: true,
-    supportDate: true,
+    supportDate: true
   },
   [MapMode.WAR]: {
     mapMode: MapMode.WAR,
@@ -922,7 +1084,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     hasTooltip: true,
-    supportDate: false,
+    supportDate: false
   },
   [MapMode.MANUAL_DEV]: {
     mapMode: MapMode.MANUAL_DEV,
@@ -930,7 +1092,9 @@ export const mapModes: Record<MapMode, IMapMode> = {
       if (countries.length > 0) {
         const history = getPHistory(province, save);
 
-        if (!history.owner || (history.owner && !countries.includes(history.owner))) {
+        if (!history.owner || (
+          history.owner && !countries.includes(history.owner)
+        )) {
           return EMPTY_COLOR;
         }
       }
@@ -941,7 +1105,11 @@ export const mapModes: Record<MapMode, IMapMode> = {
         return EMPTY_COLOR;
       }
 
-      return data[((dev / 3) - 1) | 0];
+      return data[(
+        (
+          dev / 3
+        ) - 1
+      ) | 0];
     },
     image: 'development',
     allowDate: false,
@@ -961,7 +1129,9 @@ export const mapModes: Record<MapMode, IMapMode> = {
         }
       });
 
-      return getGradient((Math.max(max, 3) / 3) | 0, colorToHex(EMPTY_COLOR), "#00FF00");
+      return getGradient((
+                           Math.max(max, 3) / 3
+                         ) | 0, colorToHex(EMPTY_COLOR), "#00FF00");
     },
     selectable: true,
     tooltip: (province, save, dataId) => {
@@ -970,7 +1140,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ dev }`;
     },
     hasTooltip: true,
-    supportDate: false,
+    supportDate: false
   },
   [MapMode.DIPLOMACY]: {
     mapMode: MapMode.DIPLOMACY,
@@ -994,7 +1164,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
           red: 97,
           green: 157,
           blue: 237,
-          alpha: 255,
+          alpha: 255
         };
       }
 
@@ -1007,7 +1177,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
           red: 88,
           green: 176,
           blue: 148,
-          alpha: 255,
+          alpha: 255
         };
       }
 
@@ -1016,7 +1186,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
           red: 156,
           green: 39,
           blue: 176,
-          alpha: 255,
+          alpha: 255
         };
       }
 
@@ -1025,7 +1195,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
           red: 121,
           green: 39,
           blue: 176,
-          alpha: 255,
+          alpha: 255
         };
       }
 
@@ -1034,7 +1204,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
           red: 74,
           green: 20,
           blue: 140,
-          alpha: 255,
+          alpha: 255
         };
       }
 
@@ -1071,8 +1241,10 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
 
       if (getSubjects(country, save, date).map(value => value.second).includes(owner)) {
-        return `${ getCountryName(save, owner) } : ${ getSubjectTypeName(save,
-          getSubjects(country, save, date).find(value => value.second === owner)?.type) }`;
+        return `${ getCountryName(save, owner) } : ${ getSubjectTypeName(
+          save,
+          getSubjects(country, save, date).find(value => value.second === owner)?.type
+        ) }`;
       }
 
       if (country.guarantees && country.guarantees.includes(owner)) {
@@ -1090,7 +1262,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return '';
     },
     hasTooltip: true,
-    supportDate: false,
+    supportDate: false
   },
   [MapMode.C_MANUAL_DEV]: {
     mapMode: MapMode.C_MANUAL_DEV,
@@ -1098,7 +1270,9 @@ export const mapModes: Record<MapMode, IMapMode> = {
       if (countries.length > 0) {
         const history = getPHistory(province, save);
 
-        if (!history.owner || (history.owner && !countries.includes(history.owner))) {
+        if (!history.owner || (
+          history.owner && !countries.includes(history.owner)
+        )) {
           return EMPTY_COLOR;
         }
       }
@@ -1113,7 +1287,11 @@ export const mapModes: Record<MapMode, IMapMode> = {
         return EMPTY_COLOR;
       }
 
-      return data[((dev / 3) - 1) | 0];
+      return data[(
+        (
+          dev / 3
+        ) - 1
+      ) | 0];
     },
     image: 'development',
     allowDate: false,
@@ -1122,7 +1300,9 @@ export const mapModes: Record<MapMode, IMapMode> = {
       let max = 0;
 
       save.provinces.forEach(province => {
-        const dev = (province.improvements && dataId) ? province.improvements[dataId] ?? 0 : 0;
+        const dev = (
+                      province.improvements && dataId
+                    ) ? province.improvements[dataId] ?? 0 : 0;
 
         if (dev < min) {
           min = dev;
@@ -1133,7 +1313,12 @@ export const mapModes: Record<MapMode, IMapMode> = {
         }
       });
 
-      return { tag: dataId, data: getGradient((max / 3) | 0, colorToHex(EMPTY_COLOR), "#00FF00") };
+      return {
+        tag: dataId,
+        data: getGradient((
+                            max / 3
+                          ) | 0, colorToHex(EMPTY_COLOR), "#00FF00")
+      };
     },
     selectable: false,
     tooltip: (province, save, dataId) => {
@@ -1144,7 +1329,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ province.improvements ? province.improvements[dataId] ?? 0 : 0 }`;
     },
     hasTooltip: true,
-    supportDate: false,
+    supportDate: false
   },
   [MapMode.ONCE_WAR]: {
     mapMode: MapMode.ONCE_WAR,
@@ -1164,9 +1349,13 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
 
       if (save.wars && save.wars.find(
-        war => (Object.keys(war.attackers).includes(tag) && Object.keys(war.defenders).includes(owner))
-          || (Object.keys(war.defenders).includes(tag) && Object.keys(war.attackers).includes(
-            owner))) !== undefined) {
+        war => (
+            Object.keys(war.attackers).includes(tag) && Object.keys(war.defenders).includes(owner)
+          )
+          || (
+            Object.keys(war.defenders).includes(tag) && Object.keys(war.attackers).includes(
+              owner)
+          )) !== undefined) {
         return HALF_RED_COLOR;
       } else {
         return EMPTY_COLOR;
@@ -1195,10 +1384,14 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
 
       const war = save.wars && save.wars.slice().reverse()
-        .find(war => (Object.keys(war.attackers).includes(country.tag) && Object.keys(war.defenders).includes(
-            owner))
-          || (Object.keys(war.defenders).includes(country.tag) && Object.keys(war.attackers).includes(
-            owner)));
+                                   .find(war => (
+                                       Object.keys(war.attackers).includes(country.tag) && Object.keys(war.defenders).includes(
+                                         owner)
+                                     )
+                                     || (
+                                       Object.keys(war.defenders).includes(country.tag) && Object.keys(war.attackers).includes(
+                                         owner)
+                                     ));
 
       if (war !== undefined) {
         return `${ getCountryName(save, owner) }: ${ formatDate(war.startDate) }`;
@@ -1207,7 +1400,7 @@ export const mapModes: Record<MapMode, IMapMode> = {
       }
     },
     hasTooltip: true,
-    supportDate: false,
+    supportDate: false
   },
   [MapMode.TRADE_NODE]: {
     mapMode: MapMode.TRADE_NODE,
@@ -1256,14 +1449,16 @@ export const mapModes: Record<MapMode, IMapMode> = {
       return `${ province.name } : ${ getTradeNodesName(node) }`;
     },
     hasTooltip: true,
-    supportDate: true,
+    supportDate: true
   },
   [MapMode.BUILDINGS]: {
     mapMode: MapMode.BUILDINGS,
     provinceColor: (province, save, data: { dataId?: string, gradient: Array<SaveColor> }, countries, date) => {
       const history = getPHistory(province, save, date);
 
-      if (countries.length > 0 && (!history.owner || !countries.includes(history.owner))) {
+      if (countries.length > 0 && (
+        !history.owner || !countries.includes(history.owner)
+      )) {
         return EMPTY_COLOR;
       }
 
@@ -1301,45 +1496,51 @@ export const mapModes: Record<MapMode, IMapMode> = {
       const history = getPHistory(province, save, date);
 
       return dataId ? `${ province.name } : ${ history.buildings && history.buildings.has(
-          dataId) ? getBuildingName(save, dataId) : intl.formatMessage(
-          { id: 'common.no' }) }`
-        : `${ province.name } : ${ history.buildings ? history.buildings.size : 0 }`;
+                      dataId) ? getBuildingName(save, dataId) : intl.formatMessage(
+                      { id: 'common.no' }) }`
+                    : `${ province.name } : ${ history.buildings ? history.buildings.size : 0 }`;
     },
     hasTooltip: true,
     supportDate: true,
     selectRenderInput: (value, save, theme) => (
       value ?
-        <Grid container alignItems='center'>
-          <Avatar src={ getBuildingImage(save, value) } variant='square'
-                  style={ { display: 'inline-block', width: 24, height: 24 } }/>
-          <Typography variant='body1' style={ {
-            color: theme.palette.primary.contrastText,
-            fontWeight: 'bold',
-            marginLeft: theme.spacing(1)
-          } }>
-            { value && getBuildingName(save, value) }
-          </Typography>
-        </Grid>
-        :
-        <Typography variant='body1' style={ {
+      <Grid container alignItems="center">
+        <Avatar
+          src={ getBuildingImage(save, value) } variant="square" style={ { display: 'inline-block', width: 24, height: 24 } }
+        />
+        <Typography
+          variant="body1" style={ {
           color: theme.palette.primary.contrastText,
           fontWeight: 'bold',
           marginLeft: theme.spacing(1)
-        } }>
-          { intl.formatMessage({ id: 'common.quantity' }) }
+        } }
+        >
+          { value && getBuildingName(save, value) }
         </Typography>
+      </Grid>
+            :
+      <Typography
+        variant="body1" style={ {
+        color: theme.palette.primary.contrastText,
+        fontWeight: 'bold',
+        marginLeft: theme.spacing(1)
+      } }
+      >
+        { intl.formatMessage({ id: 'common.quantity' }) }
+      </Typography>
     ),
     selectItems: (save, theme) => {
       return save.buildings.sort((a, b) => stringComparator(getBuildingsName(a), getBuildingsName(b)))
-        .map(building => (
-          <MenuItem value={ building.name } key={ building.name }>
-            <Avatar src={ getBuildingsImage(building) } variant='square'
-                    style={ { display: 'inline-block' } }/>
-            <Typography variant='body1' style={ { marginLeft: theme.spacing(1) } }>
-              { getBuildingsName(building) }
-            </Typography>
-          </MenuItem>
-        ))
+                 .map(building => (
+                   <MenuItem value={ building.name } key={ building.name }>
+                     <Avatar
+                       src={ getBuildingsImage(building) } variant="square" style={ { display: 'inline-block' } }
+                     />
+                     <Typography variant="body1" style={ { marginLeft: theme.spacing(1) } }>
+                       { getBuildingsName(building) }
+                     </Typography>
+                   </MenuItem>
+                 ));
     }
   },
   [MapMode.GREAT_PROJECTS]: {
@@ -1357,8 +1558,10 @@ export const mapModes: Record<MapMode, IMapMode> = {
         }
       }
 
-      return getGradient(province.greatProjects.reduce((s, v) => s + v.maxLevel, 0) + 1,
-        colorToHex(FULL_RED_COLOR), colorToHex(FULL_GREEN_COLOR))[province.greatProjects.reduce(
+      return getGradient(
+        province.greatProjects.reduce((s, v) => s + v.maxLevel, 0) + 1,
+        colorToHex(FULL_RED_COLOR), colorToHex(FULL_GREEN_COLOR)
+      )[province.greatProjects.reduce(
         (s, v) => s + v.level, 0)];
     },
     image: 'great_project',
@@ -1371,10 +1574,346 @@ export const mapModes: Record<MapMode, IMapMode> = {
         return province.name;
       }
 
-      return `${ province.name } : ${ province.greatProjects.reduce((s, v) => s + v.level,
-        0) }/${ province.greatProjects.reduce((s, v) => s + v.maxLevel, 0) }`;
+      return `${ province.name } : ${ province.greatProjects.reduce(
+        (s, v) => s + v.level,
+        0
+      ) }/${ province.greatProjects.reduce((s, v) => s + v.maxLevel, 0) }`;
     },
     hasTooltip: true,
-    supportDate: false,
+    supportDate: false
   },
-}
+  [MapMode.AREAS]: {
+    mapMode: MapMode.AREAS,
+    provinceColor: (province, save, data, countries, date) => {
+      const area = getProvinceArea(save, province);
+
+      if (!area || !area.name || !area.color || (data && area.name !== data)) {
+        return EMPTY_COLOR;
+      }
+
+      return area.color;
+    },
+    image: 'area',
+    allowDate: true,
+    prepare: (_save, dataId) => dataId,
+    selectable: true,
+    tooltip: (province, save, dataId, date) => {
+      const area = getProvinceArea(save, province);
+
+      if (!area || !area.name || !area.color) {
+        return '';
+      }
+
+      return `${ province.name } : ${ getAreasName(area) }`;
+    },
+    hasTooltip: true,
+    supportDate: true,
+    selectRenderInput: (value, save, theme) => {
+      const area = value ? getArea(save, value) : null;
+      return (
+        area && area.color ?
+        <Grid container alignItems="center">
+          <div
+            style={ {
+              width: 10,
+              height: 10,
+              backgroundColor: colorToHex(area.color),
+              margin: 'auto'
+            } }
+          />
+          <Typography
+            variant="body1" style={ {
+            color: theme.palette.primary.contrastText,
+            fontWeight: 'bold',
+            marginLeft: theme.spacing(1)
+          } }
+          >
+            { getAreasName(area) }
+          </Typography>
+        </Grid>
+                           :
+        <Typography
+          variant="body1" style={ {
+          color: theme.palette.primary.contrastText,
+          fontWeight: 'bold',
+          marginLeft: theme.spacing(1)
+        } }
+        >
+          { intl.formatMessage({ id: 'map.mod.AREAS' }) }
+        </Typography>
+      );
+    },
+    selectItems: (save, theme) => {
+      return save.areas.sort((a, b) => stringComparator(getAreasName(a), getAreasName(b)))
+                 .map(area => (
+                   <MenuItem value={ area.name } key={ area.name }>
+                     <Grid container alignItems="center">
+                       <div
+                         style={ {
+                           width: 10,
+                           height: 10,
+                           backgroundColor: area.color ? colorToHex(area.color) : "white",
+                           margin: 'auto'
+                         } }
+                       />
+                       <Typography variant="body1" style={ { marginLeft: theme.spacing(1) } }>
+                         { getAreasName(area) }
+                       </Typography>
+                     </Grid>
+                   </MenuItem>
+                 ));
+    }
+  },
+  [MapMode.REGIONS]: {
+    mapMode: MapMode.REGIONS,
+    provinceColor: (province, save, data, countries, date) => {
+      const region = getProvinceRegion(save, province);
+
+      if (!region || !region.name || !region.color || (data && region.name !== data)) {
+        return EMPTY_COLOR;
+      }
+
+      return region.color;
+    },
+    image: 'region',
+    allowDate: true,
+    prepare: (_save, dataId) => dataId,
+    selectable: true,
+    tooltip: (province, save, dataId, date) => {
+      const region = getProvinceRegion(save, province);
+
+      if (!region || !region.name || !region.color) {
+        return '';
+      }
+
+      return `${ province.name } : ${ getRegionsName(region) }`;
+    },
+    hasTooltip: true,
+    supportDate: true,
+    selectRenderInput: (value, save, theme) => {
+      const region = value ? getRegion(save, value) : null;
+      return (
+        region && region.color ?
+        <Grid container alignItems="center">
+          <div
+            style={ {
+              width: 10,
+              height: 10,
+              backgroundColor: colorToHex(region.color),
+              margin: 'auto'
+            } }
+          />
+          <Typography
+            variant="body1" style={ {
+            color: theme.palette.primary.contrastText,
+            fontWeight: 'bold',
+            marginLeft: theme.spacing(1)
+          } }
+          >
+            { getRegionsName(region) }
+          </Typography>
+        </Grid>
+                               :
+        <Typography
+          variant="body1" style={ {
+          color: theme.palette.primary.contrastText,
+          fontWeight: 'bold',
+          marginLeft: theme.spacing(1)
+        } }
+        >
+          { intl.formatMessage({ id: 'map.mod.REGIONS' }) }
+        </Typography>
+      );
+    },
+    selectItems: (save, theme) => {
+      return (
+        save.regions ?? []
+      ).sort((a, b) => stringComparator(getRegionsName(a), getRegionsName(b)))
+       .map(region => (
+         <MenuItem value={ region.name } key={ region.name }>
+           <Grid container alignItems="center">
+             <div
+               style={ {
+                 width: 10,
+                 height: 10,
+                 backgroundColor: region.color ? colorToHex(region.color) : "white",
+                 margin: 'auto'
+               } }
+             />
+             <Typography variant="body1" style={ { marginLeft: theme.spacing(1) } }>
+               { getRegionsName(region) }
+             </Typography>
+           </Grid>
+         </MenuItem>
+       ));
+    }
+  },
+  [MapMode.SUPER_REGIONS]: {
+    mapMode: MapMode.SUPER_REGIONS,
+    provinceColor: (province, save, data, countries, date) => {
+      const superRegion = getProvinceSuperRegion(save, province);
+
+      if (!superRegion || !superRegion.name || !superRegion.color || (data && superRegion.name !== data)) {
+        return EMPTY_COLOR;
+      }
+
+      return superRegion.color;
+    },
+    image: 'super_region',
+    allowDate: true,
+    prepare: (_save, dataId) => dataId,
+    selectable: true,
+    tooltip: (province, save, dataId, date) => {
+      const superRegion = getProvinceSuperRegion(save, province);
+
+      if (!superRegion || !superRegion.name || !superRegion.color) {
+        return '';
+      }
+
+      return `${ province.name } : ${ getSuperRegionsName(superRegion) }`;
+    },
+    hasTooltip: true,
+    supportDate: true,
+    selectRenderInput: (value, save, theme) => {
+      const superRegion = value ? getSuperRegion(save, value) : null;
+      return (
+        superRegion && superRegion.color ?
+        <Grid container alignItems="center">
+          <div
+            style={ {
+              width: 10,
+              height: 10,
+              backgroundColor: colorToHex(superRegion.color),
+              margin: 'auto'
+            } }
+          />
+          <Typography
+            variant="body1" style={ {
+            color: theme.palette.primary.contrastText,
+            fontWeight: 'bold',
+            marginLeft: theme.spacing(1)
+          } }
+          >
+            { getSuperRegionsName(superRegion) }
+          </Typography>
+        </Grid>
+                                         :
+        <Typography
+          variant="body1" style={ {
+          color: theme.palette.primary.contrastText,
+          fontWeight: 'bold',
+          marginLeft: theme.spacing(1)
+        } }
+        >
+          { intl.formatMessage({ id: 'map.mod.SUPER_REGIONS' }) }
+        </Typography>
+      );
+    },
+    selectItems: (save, theme) => {
+      return (
+        save.superRegions ?? []
+      ).sort((a, b) => stringComparator(getSuperRegionsName(a), getSuperRegionsName(b)))
+       .map(superRegion => (
+         <MenuItem value={ superRegion.name } key={ superRegion.name }>
+           <Grid container alignItems="center">
+             <div
+               style={ {
+                 width: 10,
+                 height: 10,
+                 backgroundColor: superRegion.color ? colorToHex(superRegion.color) : "white",
+                 margin: 'auto'
+               } }
+             />
+             <Typography variant="body1" style={ { marginLeft: theme.spacing(1) } }>
+               { getSuperRegionsName(superRegion) }
+             </Typography>
+           </Grid>
+         </MenuItem>
+       ));
+    }
+  },
+  [MapMode.CONTINENTS]: {
+    mapMode: MapMode.CONTINENTS,
+    provinceColor: (province, save, data, countries, date) => {
+      const continent = getProvinceContinent(save, province);
+
+      if (!continent || !continent.name || !continent.color || (data && continent.name !== data)) {
+        return EMPTY_COLOR;
+      }
+
+      return continent.color;
+    },
+    image: 'super_region',
+    allowDate: true,
+    prepare: (_save, dataId) => dataId,
+    selectable: true,
+    tooltip: (province, save, dataId, date) => {
+      const continent = getProvinceContinent(save, province);
+
+      if (!continent || !continent.name || !continent.color) {
+        return '';
+      }
+
+      return `${ province.name } : ${ getContinentsName(continent) }`;
+    },
+    hasTooltip: true,
+    supportDate: true,
+    selectRenderInput: (value, save, theme) => {
+      const continent = value ? getContinent(save, value) : null;
+      return (
+        continent && continent.color ?
+        <Grid container alignItems="center">
+          <div
+            style={ {
+              width: 10,
+              height: 10,
+              backgroundColor: colorToHex(continent.color),
+              margin: 'auto'
+            } }
+          />
+          <Typography
+            variant="body1" style={ {
+            color: theme.palette.primary.contrastText,
+            fontWeight: 'bold',
+            marginLeft: theme.spacing(1)
+          } }
+          >
+            { getContinentsName(continent) }
+          </Typography>
+        </Grid>
+                                     :
+        <Typography
+          variant="body1" style={ {
+          color: theme.palette.primary.contrastText,
+          fontWeight: 'bold',
+          marginLeft: theme.spacing(1)
+        } }
+        >
+          { intl.formatMessage({ id: 'map.mod.CONTINENTS' }) }
+        </Typography>
+      );
+    },
+    selectItems: (save, theme) => {
+      return (
+        save.continents ?? []
+      ).sort((a, b) => stringComparator(getContinentsName(a), getContinentsName(b)))
+       .map(continent => (
+         <MenuItem value={ continent.name } key={ continent.name }>
+           <Grid container alignItems="center">
+             <div
+               style={ {
+                 width: 10,
+                 height: 10,
+                 backgroundColor: continent.color ? colorToHex(continent.color) : "white",
+                 margin: 'auto'
+               } }
+             />
+             <Typography variant="body1" style={ { marginLeft: theme.spacing(1) } }>
+               { getContinentsName(continent) }
+             </Typography>
+           </Grid>
+         </MenuItem>
+       ));
+    }
+  }
+};

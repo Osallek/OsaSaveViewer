@@ -20,6 +20,10 @@ const map = {
   'map.mod.TRADE_NODE': 'Nœuds commerciaux',
   'map.mod.BUILDINGS': 'Bâtiments',
   'map.mod.GREAT_PROJECTS': 'Grands projets',
+  'map.mod.AREAS': 'États',
+  'map.mod.REGIONS': 'Régions',
+  'map.mod.SUPER_REGIONS': 'Super régions',
+  'map.mod.CONTINENTS': 'Continents',
   'map.building': 'Bâtiment',
 }
 

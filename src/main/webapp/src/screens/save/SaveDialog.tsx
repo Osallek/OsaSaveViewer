@@ -1,5 +1,16 @@
-import { Close, KeyboardArrowDown } from '@mui/icons-material';
-import { AppBar, Button, GridLegacy, IconButton, Menu, MenuItem, Toolbar, Typography, useTheme } from '@mui/material';
+import { Close, KeyboardArrowDown, Launch } from '@mui/icons-material';
+import {
+  AppBar,
+  Button,
+  GridLegacy,
+  IconButton,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
+  useTheme
+} from '@mui/material';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -15,6 +26,7 @@ import { getCountries } from 'utils/save.utils';
 
 interface SaveDialogProps {
   save: MapSave;
+  id: string;
   onClose: () => void;
 }
 
@@ -46,7 +58,7 @@ export enum CountryTableType {
   LOSSES_NAVY = 'LOSSES_NAVY',
 }
 
-function SaveDialog({ save, onClose }: SaveDialogProps) {
+function SaveDialog({ save, id, onClose }: SaveDialogProps) {
   const intl = useIntl();
   const theme = useTheme();
 
@@ -87,34 +99,31 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
     setCountriesAnchorEl(null);
     setProvincesAnchorEl(null);
     setView(type);
-  }
+  };
 
   return (
     <>
       <AppBar style={ { position: 'relative' } }>
         <Toolbar>
-          <GridLegacy container alignItems='center'>
+          <GridLegacy container alignItems="center">
             <IconButton
-              edge='start'
-              onClick={ onClose }
-              color='secondary'
-              aria-label='close'
+              edge="start" onClick={ onClose } color="secondary" aria-label="close"
             >
-              <Close/>
+              <Close />
             </IconButton>
-            <Typography sx={ { ml: 2, mr: 2 } } variant='h6' component='div'>
+            <Typography sx={ { ml: 2, mr: 2 } } variant="h6" component="div">
               { `${ save.name } (${ formatDate(save.date) })` }
             </Typography>
             <Button
-              key='button-countries'
-              variant='outlined'
-              color='secondary'
+              key="button-countries"
+              variant="outlined"
+              color="secondary"
               sx={ { m: 1 } }
               aria-controls={ countriesOpen ? 'basic-menu' : undefined }
               aria-haspopup="true"
               aria-expanded={ countriesOpen ? 'true' : undefined }
               onClick={ handleCountriesClick }
-              endIcon={ <KeyboardArrowDown/> }
+              endIcon={ <KeyboardArrowDown /> }
             >
               { intl.formatMessage({ id: 'common.countries' }) }
             </Button>
@@ -129,24 +138,26 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
             >
               {
                 Object.values(CountryTableType).map(value => (
-                  <MenuItem onClick={ () => handleCountriesClose(value) }
-                            style={ { color: theme.palette.primary.contrastText } }
-                            key={ `country-${ value }` }>
+                  <MenuItem
+                    onClick={ () => handleCountriesClose(value) }
+                    style={ { color: theme.palette.primary.contrastText } }
+                    key={ `country-${ value }` }
+                  >
                     { intl.formatMessage({ id: `country.${ value }` }) }
                   </MenuItem>
                 ))
               }
             </Menu>
             <Button
-              key='button-provinces'
-              variant='outlined'
-              color='secondary'
+              key="button-provinces"
+              variant="outlined"
+              color="secondary"
               sx={ { m: 1 } }
               aria-controls={ provincesOpen ? 'basic-menu' : undefined }
               aria-haspopup="true"
               aria-expanded={ provincesOpen ? 'true' : undefined }
               onClick={ handleProvincesClick }
-              endIcon={ <KeyboardArrowDown/> }
+              endIcon={ <KeyboardArrowDown /> }
             >
               { intl.formatMessage({ id: 'common.provinces' }) }
             </Button>
@@ -161,20 +172,34 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
             >
               {
                 Object.values(ProvinceTableType).map(value => (
-                  <MenuItem onClick={ () => handleProvincesClose(value) }
-                            style={ { color: theme.palette.primary.contrastText } }
-                            key={ `province-${ value }` }>
+                  <MenuItem
+                    onClick={ () => handleProvincesClose(value) }
+                    style={ { color: theme.palette.primary.contrastText } }
+                    key={ `province-${ value }` }
+                  >
                     { intl.formatMessage({ id: `province.${ value }` }) }
                   </MenuItem>
                 ))
               }
+              <MenuItem
+                component={ "a" }
+                href={ `${ window.location.pathname }/provinces` }
+                target="_blank"
+                style={ { color: theme.palette.primary.contrastText } }
+                key={ `province-provinces` }
+              >
+                { intl.formatMessage({ id: 'province.details' }) }
+                <ListItemIcon sx={ { ml: theme.spacing(1) } }>
+                  <Launch sx={ { color: theme.palette.primary.contrastText } } />
+                </ListItemIcon>
+              </MenuItem>
             </Menu>
             {
               save.tradeNodes && save.tradeNodes.length > 0 &&
               <Button
-                key='button-trade-nodes'
-                variant='outlined'
-                color='secondary'
+                key="button-trade-nodes"
+                variant="outlined"
+                color="secondary"
                 sx={ { m: 1 } }
                 onClick={ () => handleOtherClick(Views.TRADE_NODES) }
               >
@@ -184,9 +209,9 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
             {
               save.wars && save.wars.length > 0 &&
               <Button
-                key='button-wars'
-                variant='outlined'
-                color='secondary'
+                key="button-wars"
+                variant="outlined"
+                color="secondary"
                 sx={ { m: 1 } }
                 onClick={ () => handleOtherClick(Views.WARS) }
               >
@@ -196,9 +221,9 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
             {
               save.previousSaves && save.previousSaves.length > 0 &&
               <Button
-                key='button-graph'
-                variant='outlined'
-                color='secondary'
+                key="button-graph"
+                variant="outlined"
+                color="secondary"
                 sx={ { m: 1 } }
                 onClick={ () => handleOtherClick(Views.GRAPH) }
               >
@@ -208,9 +233,9 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
             {
               getCountries(save).filter(value => value.players && value.players.length > 0).length > 1 &&
               <Button
-                key='button-compare'
-                variant='outlined'
-                color='secondary'
+                key="button-compare"
+                variant="outlined"
+                color="secondary"
                 sx={ { m: 1 } }
                 onClick={ () => handleOtherClick(Views.COMPARE) }
               >
@@ -222,14 +247,14 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
               (
                 <>
                   <Button
-                    key='button-provinces'
-                    variant='outlined'
-                    color='secondary'
+                    key="button-provinces"
+                    variant="outlined"
+                    color="secondary"
                     aria-controls={ previousSavesOpen ? 'basic-menu' : undefined }
                     aria-haspopup="true"
                     aria-expanded={ previousSavesOpen ? 'true' : undefined }
                     onClick={ event => setPreviousSavesAnchorEl(event.currentTarget) }
-                    endIcon={ <KeyboardArrowDown/> }
+                    endIcon={ <KeyboardArrowDown /> }
                     style={ { marginLeft: 'auto' } }
                   >
                     { intl.formatMessage({ id: 'common.previousSaves' }) }
@@ -245,10 +270,14 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
                   >
                     {
                       save.previousSaves.map(previousSave => (
-                        <MenuItem component={ Link } to={ `/save/${ previousSave.id }` } target='_blank'
-                                  rel='noopener noreferrer'
-                                  style={ { color: theme.palette.primary.contrastText } }
-                                  key={ `save-${ previousSave.id }` }>
+                        <MenuItem
+                          component={ Link }
+                          to={ `/save/${ previousSave.id }` }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={ { color: theme.palette.primary.contrastText } }
+                          key={ `save-${ previousSave.id }` }
+                        >
                           { `${ previousSave.name } [${ formatDate(previousSave.date) }]` }
                         </MenuItem>
                       ))
@@ -260,14 +289,14 @@ function SaveDialog({ save, onClose }: SaveDialogProps) {
           </GridLegacy>
         </Toolbar>
       </AppBar>
-      <CountryTable save={ save } type={ countriesTable } visible={ Views.COUNTRIES === view }/>
-      <ProvinceTable save={ save } type={ provincesTable } visible={ Views.PROVINCES === view }/>
-      <TradeNodeTable save={ save } visible={ Views.TRADE_NODES === view }/>
-      <WarTable save={ save } visible={ Views.WARS === view }/>
-      <GraphTable save={ save } visible={ Views.GRAPH === view }/>
-      <CompareTable save={ save } visible={ Views.COMPARE === view }/>
+      <CountryTable save={ save } type={ countriesTable } visible={ Views.COUNTRIES === view } />
+      <ProvinceTable save={ save } type={ provincesTable } visible={ Views.PROVINCES === view } />
+      <TradeNodeTable save={ save } visible={ Views.TRADE_NODES === view } />
+      <WarTable save={ save } visible={ Views.WARS === view } />
+      <GraphTable save={ save } visible={ Views.GRAPH === view } />
+      <CompareTable save={ save } visible={ Views.COMPARE === view } />
     </>
-  )
+  );
 }
 
 export default SaveDialog;

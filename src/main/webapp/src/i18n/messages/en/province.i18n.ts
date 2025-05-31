@@ -9,6 +9,7 @@ const province = {
   'province.realDev': 'Realm development',
   'province.manualDev': 'Manual development',
   'province.cores': 'Cores',
+  'province.claims': 'Claims',
   'province.culture': 'Culture',
   'province.religion': 'Religion',
   'province.devastation': 'Devastation',
@@ -18,11 +19,19 @@ const province = {
   'province.baseManpower': 'Manpower',
   'province.autonomy': 'Autonomy',
   'province.good': 'Good',
+  'province.hre': 'In HRE',
   'province.colonySize': 'Colony size',
   'province.buildings': 'Buildings',
+  'province.nbBuildings': 'Nb buildings',
   'province.history': 'History',
   'province.noHre': 'Left the empire',
   'province.yesHre': 'Joined the empire',
+  'province.area': 'Area',
+  'province.region': 'Region',
+  'province.superRegion': 'Super region',
+  'province.continent': 'Continent',
+  'province.institutions': 'Institutions',
+  'province.details': 'Details'
 }
 
 export default province

@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { mapModes } from 'screens/components/MapModes';
+import { getMapModes, mapModes } from 'screens/components/MapModes';
 import { SaveCountry } from 'types/api.types';
 import { MapMode, MapSave } from 'types/map.types';
 import { cleanString, stringComparator } from 'utils/format.utils';
@@ -83,7 +83,7 @@ function ExportModal({ save, open, onClose, onExport }: CompareTableProps) {
                   )}
                 >
                   {
-                    Object.values(MapMode).filter(mapMod => mapModes[MapMode[mapMod]].selectable).map(mapMod => (
+                    getMapModes(save).filter(mapMod => mapModes[MapMode[mapMod]].selectable).map(mapMod => (
                       <MenuItem value={mapMod} key={mapMod}>
                         <Typography variant='body1'>
                           {intl.formatMessage({ id: `map.mod.${mapMod}` })}

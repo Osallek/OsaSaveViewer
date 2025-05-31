@@ -25,7 +25,7 @@ import { SaveProvince } from 'types/api.types';
 import { MapSave } from 'types/map.types';
 import { formatDate, formatNumber, stringComparator } from 'utils/format.utils';
 import {
-    getArea,
+    getProvinceArea,
     getAreaState,
     getBuilding,
     getBuildingImage,
@@ -55,7 +55,7 @@ interface ProvinceModalCardProps {
 function ProvinceModalCard({ province, save }: ProvinceModalCardProps) {
   const intl = useIntl();
   const history = getPHistory(province, save);
-  const state = getAreaState(getArea(save, province), history.owner);
+  const state = getAreaState(getProvinceArea(save, province), history.owner);
   const timeline = province.history?.filter((value, index) => index !== 1).filter(h => interestingHistory(h)).sort((a, b) => -stringComparator(a.date, b.date));
 
   function LinearProgressWithLabel(props: LinearProgressProps) {

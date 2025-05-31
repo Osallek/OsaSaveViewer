@@ -20,6 +20,10 @@ const map = {
   'map.mod.TRADE_NODE': 'Trade nodes',
   'map.mod.BUILDINGS': 'Buildings',
   'map.mod.GREAT_PROJECTS': 'Great projects',
+  'map.mod.AREAS': 'Areas',
+  'map.mod.REGIONS': 'Regions',
+  'map.mod.SUPER_REGIONS': 'Super regions',
+  'map.mod.CONTINENTS': 'Continents',
   'map.building': 'Building',
 }
 

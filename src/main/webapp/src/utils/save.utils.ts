@@ -6,10 +6,10 @@ import {
   Losses,
   NamedImageLocalised,
   NamedLocalised,
-  PowerSpent,
+  PowerSpent, Region,
   Save,
   SaveArea,
-  SaveBattle,
+  SaveBattle, SaveContinent,
   SaveCountry,
   SaveCountryState,
   SaveCulture,
@@ -21,9 +21,9 @@ import {
   SaveMission,
   SaveMonarch,
   SaveProvince,
-  SaveProvinceHistory,
+  SaveProvinceHistory, SaveRegion,
   SaveReligion,
-  SaveSimpleProvince,
+  SaveSimpleProvince, SaveSuperRegion,
   SaveTradeNode,
   SaveWar
 } from 'types/api.types';
@@ -597,12 +597,70 @@ export function getLeaderPersonalitysImage(leaderPersonality: NamedImageLocalise
   return getLeaderPersonalityUrl(leaderPersonality.image);
 }
 
-export function getArea(save: MapSave, province: SaveProvince): SaveArea {
+export function hasAreaDetails(save: MapSave): boolean {
+  return save.areas && save.areas.length > 0 && save.areas[0].name !== undefined;
+}
+
+export function getArea(save: MapSave, name: string): SaveArea {
+  return save.areas.find(value => value.name == name) ?? save.areas[0];
+}
+
+export function getProvinceArea(save: MapSave, province: SaveProvince): SaveArea {
   return save.areas.find(value => value.provinces.includes(province.id)) ?? save.areas[0];
 }
 
 export function getAreaState(area: SaveArea, tag?: string): SaveCountryState | null {
   return (area.states && tag) ? area.states[tag] : null;
+}
+
+export function getAreasName(area: SaveArea): string {
+  return getLName(area) ?? area.name;
+}
+
+export function getRegion(save: MapSave, name: string): SaveRegion | undefined {
+  return save.regions && save.regions.find(value => value.name === name);
+}
+
+export function getProvinceRegion(save: MapSave, province: SaveProvince): SaveRegion | undefined {
+  const area = getProvinceArea(save, province);
+  return getAreaRegion(save, area);
+}
+
+export function getAreaRegion(save: MapSave, area: SaveArea): SaveRegion | undefined {
+  return save.regions && save.regions.find(value => value.areas.includes(area.name));
+}
+
+export function getRegionsName(region: SaveRegion | undefined): string {
+  return region ? getLName(region) ?? region.name : '';
+}
+
+export function getSuperRegion(save: MapSave, name: string): SaveSuperRegion | undefined {
+  return save.superRegions && save.superRegions.find(value => value.name === name);
+}
+
+export function getProvinceSuperRegion(save: MapSave, province: SaveProvince): SaveSuperRegion | undefined {
+  const region = getProvinceRegion(save, province);
+  return region && getRegionSuperRegion(save, region);
+}
+
+export function getRegionSuperRegion(save: MapSave, region: SaveRegion): SaveSuperRegion | undefined {
+  return save.superRegions && save.superRegions.find(value => value.regions.includes(region.name));
+}
+
+export function getSuperRegionsName(region: SaveSuperRegion | undefined): string {
+  return region ? getLName(region) ?? region.name : '';
+}
+
+export function getContinent(save: MapSave, name: string): SaveContinent | undefined {
+  return save.continents && save.continents.find(value => value.name === name);
+}
+
+export function getProvinceContinent(save: MapSave, province: SaveProvince): SaveContinent | undefined {
+  return save.continents && save.continents.find(value => value.provinces.includes(province.id));
+}
+
+export function getContinentsName(continent: SaveContinent | undefined): string {
+  return continent ? getLName(continent) ?? continent.name : '';
 }
 
 export function getCHistory(country: SaveCountry, save: MapSave, date?: string): CountryHistory {

@@ -37,6 +37,8 @@ const common = {
   'common.columns': 'Colonnes',
   'common.search': 'Rechercher',
   'common.downloadCsv': 'Télécharger en CSV',
+  'common.nbRows': 'Nombre de lignes ',
+  'common.of': 'sur'
 }
 
 export default common;

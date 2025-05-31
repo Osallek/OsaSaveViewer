@@ -15,7 +15,6 @@ export enum Localization {
 export type Save = {
   startDate: string;
   date: string;
-  id: string;
   name: string;
   provinceImage: string;
   nbProvinces: number;
@@ -26,6 +25,9 @@ export type Save = {
   impassableProvinces: Array<SaveSimpleProvince>;
   countries: Array<SaveCountry>;
   areas: Array<SaveArea>;
+  regions?: Array<SaveRegion>;
+  superRegions?: Array<SaveSuperRegion>;
+  continents?: Array<SaveContinent>;
   advisors: Array<SaveAdvisor>;
   cultures: Array<SaveCulture>;
   religions: Array<SaveReligion>;
@@ -469,10 +471,26 @@ export type ColorNamedImageLocalised = NamedImageLocalised & {
   color: SaveColor;
 }
 
-export type SaveArea = {
+export type SaveArea = NamedLocalised & {
+  color?: SaveColor;
   provinces: Array<number>;
   investments?: Record<string, Array<string>>;
   states?: Record<string, SaveCountryState>;
+}
+
+export type SaveRegion = NamedLocalised & {
+  color?: SaveColor;
+  areas: Array<string>;
+}
+
+export type SaveSuperRegion = NamedLocalised & {
+  color?: SaveColor;
+  regions: Array<string>;
+}
+
+export type SaveContinent = NamedLocalised & {
+  color?: SaveColor;
+  provinces: Array<number>;
 }
 
 export type SaveCountryState = {

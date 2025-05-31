@@ -45,6 +45,12 @@ public final class ExtractorSaveDTO {
 
     private List<AreaDTO> areas;
 
+    private List<RegionDTO> regions;
+
+    private List<SuperRegionDTO> superRegions;
+
+    private List<ProvinceListDTO> continents;
+
     private List<AdvisorDTO> advisors;
 
     private List<CultureDTO> cultures;
@@ -225,6 +231,30 @@ public final class ExtractorSaveDTO {
 
     public void setAreas(List<AreaDTO> areas) {
         this.areas = areas;
+    }
+
+    public List<RegionDTO> getRegions() {
+        return regions;
+    }
+
+    public void setRegions(List<RegionDTO> regions) {
+        this.regions = regions;
+    }
+
+    public List<SuperRegionDTO> getSuperRegions() {
+        return superRegions;
+    }
+
+    public void setSuperRegions(List<SuperRegionDTO> superRegions) {
+        this.superRegions = superRegions;
+    }
+
+    public List<ProvinceListDTO> getContinents() {
+        return continents;
+    }
+
+    public void setContinents(List<ProvinceListDTO> continents) {
+        this.continents = continents;
     }
 
     public List<AdvisorDTO> getAdvisors() {
